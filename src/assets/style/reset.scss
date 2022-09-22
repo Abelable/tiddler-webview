@@ -1,0 +1,126 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	position: relative;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+	box-sizing: border-box;
+}
+	
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+
+ul, ol {
+	list-style: none;
+}
+	
+blockquote, q {
+	quotes: none;
+}
+
+blockquote:before, blockquote:after, q:before, q:after {
+	content: '';
+	content: none;
+}
+
+input {
+	padding-top: 0;
+	padding-bottom: 0;
+	border: none;
+	background-color: transparent;
+	border-radius: 0;
+	box-sizing: border-box;
+}
+	
+input::-moz-focus-inner {
+	border: none;
+	padding: 0;
+}
+	
+select, input {
+	vertical-align: middle;
+}
+ 
+select, input, textarea {
+	margin: 0;
+	font-size: 12px;
+	box-shadow: 0px 0px 0px rgba(0,0,0,0);
+	-webkit-appearance: none;
+}
+	
+input[type="text"], input[type="password"], textarea {
+	outline-style: none;
+	-webkit-appearance: none;
+}
+ 
+textarea {
+	resize: none;
+}
+	
+table {
+	border-collapse: collapse;
+}
+	
+body {
+	color: #333;
+	font-family: PingFangSC-Regular, -apple-system-font, Helvetica Neue, Helvetica, sans-serif;
+}
+
+.clearfix:after {
+	content: ".";
+	display: block;
+	height: 0;
+	visibility: hidden;
+	clear: both;
+}
+
+.clearfix {
+	zoom: 1;
+}
+
+.clearit {
+	clear: both;
+	height: 0;
+	font-size: 0;
+	overflow: hidden;
+}
+
+a {
+	color: #666;
+	text-decoration: none;
+}
+	
+a:visited {
+	color: #666;
+}
+
+::-webkit-scrollbar {
+	width: 0 !important;
+	height: 0 !important;
+	color: transparent !important;
+}
+
+button {
+	margin: 0;
+	padding: 0;
+	border: none;
+	outline: none;
+	background: transparent;
+}
