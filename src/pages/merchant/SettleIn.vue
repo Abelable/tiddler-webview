@@ -7,10 +7,10 @@
         <div class="selection">
           <div
             class="option"
-            :class="{ selected: curOptionIdx === index }"
+            :class="{ selected: curTypeOptionIdx === index }"
             v-for="(item, index) in ['enterprise', 'personal']"
             :key="index"
-            @click="curOptionIdx = index"
+            @click="curTypeOptionIdx = index"
           >
             <img class="icon" :src="require(`./images/${item}.png`)" alt="" />
             <div class="name">
@@ -18,7 +18,7 @@
             </div>
           </div>
         </div>
-        <div class="confirm-btn" :class="{ active: curOptionIdx !== -1 }">
+        <div class="confirm-btn" :class="{ active: curTypeOptionIdx !== -1 }">
           下一步
         </div>
       </div>
@@ -29,7 +29,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-const curOptionIdx = ref(-1);
+const curTypeOptionIdx = ref(-1);
 </script>
 
 <style lang="scss" scoped>
