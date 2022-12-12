@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="step-one">
+    <div class="step-one" v-if="step === 0">
       <div class="main">
         <div class="title">商家入驻</div>
         <div class="second-title">请选择店铺类型:</div>
@@ -29,6 +29,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
+const step = ref(0);
 const curTypeOptionIdx = ref(-1);
 </script>
 
