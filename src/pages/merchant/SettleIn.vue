@@ -1,7 +1,106 @@
 <template>
-  <div>商家入驻</div>
+  <div class="container">
+    <div class="main">
+      <div class="title">商家入驻</div>
+      <div class="second-title">请选择店铺类型:</div>
+      <div class="selection">
+        <div
+          class="option"
+          :class="{ selected: curOptionIdx === index }"
+          v-for="(item, index) in ['enterprise', 'personal']"
+          :key="index"
+          @click="curOptionIdx = index"
+        >
+          <img class="icon" :src="require(`./images/${item}.png`)" alt="" />
+          <div class="name">
+            {{ item === "enterprise" ? "企业店铺" : "个人店铺" }}
+          </div>
+        </div>
+      </div>
+      <div class="confirm-btn" :class="{ active: curOptionIdx !== -1 }">
+        下一步
+      </div>
+    </div>
+  </div>
 </template>
 
-<script setup></script>
+<script setup lang="ts">
+import { ref } from "vue";
 
-<style lang="scss" scoped></style>
+const curOptionIdx = ref(-1);
+</script>
+
+<style lang="scss" scoped>
+.container {
+  padding-top: 3.5rem;
+  height: 100vh;
+  background-color: #fff;
+  background-image: url("./images/bg.jpeg");
+  background-size: 100% 5.62rem;
+  background-position-y: -1rem;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  .main {
+    padding: 0.32rem;
+    height: calc(100vh - 3.6rem);
+    background: #fff;
+    border-radius: 0.24rem 0.24rem 0 0;
+    .title {
+      color: #333;
+      font-size: 0.36rem;
+      font-weight: 550;
+    }
+    .second-title {
+      margin-top: 0.1rem;
+      color: #666;
+      font-size: 0.28rem;
+      font-weight: 500;
+    }
+    .selection {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+      .option {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0.24rem;
+        width: 3.3rem;
+        border-radius: 0.24rem;
+        border: 1px solid #eee;
+        &.selected {
+          border: 1px solid #a7c0fb;
+        }
+        .icon {
+          margin: 1rem 0;
+          width: 1.2rem;
+          height: 1.2rem;
+          opacity: 0.68;
+        }
+        .name {
+          margin-top: 0.24rem;
+          color: #333;
+          font-size: 0.28rem;
+          font-weight: 550;
+        }
+      }
+    }
+    .confirm-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1.6rem;
+      height: 0.88rem;
+      color: #999;
+      font-size: 0.3rem;
+      font-weight: 550;
+      background: #eee;
+      border-radius: 0.18rem;
+      &.active {
+        color: #fff;
+        background: #212121;
+      }
+    }
+  }
+}
+</style>
