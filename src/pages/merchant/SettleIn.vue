@@ -18,19 +18,62 @@
             </div>
           </div>
         </div>
-        <div
-          class="confirm-btn"
-          :class="{ active: curTypeOptionIdx !== -1 && agreementsChecked }"
-        >
-          下一步
+        <div class="btn-wrap">
+          <div
+            class="confirm-btn"
+            :class="{ active: curTypeOptionIdx !== -1 && agreementsChecked }"
+            @click="step = 1"
+          >
+            下一步
+          </div>
+          <div class="agreements">
+            <Checkbox v-model="agreementsChecked" icon-size="16px" />
+            <div style="margin-left: 0.1rem">
+              我已阅读并同意
+              <span style="color: #1b89fa" @click="checkAgreement"
+                >《小鱼游商家服务协议》</span
+              >
+            </div>
+          </div>
         </div>
-        <div class="agreements">
-          <Checkbox v-model="agreementsChecked" icon-size="16px" />
-          <div style="margin-left: 0.1rem">
-            我已阅读并同意
-            <span style="color: #1b89fa" @click="checkAgreement"
-              >《小鱼游商家服务协议》</span
+      </div>
+    </div>
+    <div class="information-filling" v-else>
+      <div class="header">
+        <div class="title">信息填写</div>
+        <div class="sub-title">真实有效的信息有助于您快速通过审核</div>
+        <div class="steps">
+          <div
+            class="step"
+            v-for="(item, index) in [
+              '实体店铺信息',
+              '个人身份信息',
+              '银行身份信息',
+              '小店信息',
+            ]"
+            :key="index"
+          >
+            <div
+              class="name"
+              :class="{
+                active: step === index + 1,
+                finished: step > index + 1,
+              }"
             >
+              {{ item }}
+            </div>
+            <div
+              class="progress-bar"
+              :class="{ finished: step >= index + 1 }"
+            ></div>
+          </div>
+        </div>
+      </div>
+      <div class="main">
+        <div class="btns">
+          <div class="btn previous-step" @click="step = step - 1">上一步</div>
+          <div class="btn next-step" @click="step = step + 1">
+            {{ step === 4 ? "提交审核" : "下一步" }}
           </div>
         </div>
       </div>
@@ -54,15 +97,19 @@ const checkAgreement = () => router.push("/agreement/merchant_agreement");
 <style lang="scss" scoped>
 .container {
   .step-one {
+    display: flex;
+    flex-direction: column;
     padding-top: 3.5rem;
+    height: 100vh;
     background-color: #fff;
     background-image: url("./images/bg.jpeg");
     background-size: 100% 5.62rem;
     background-position-y: -1rem;
     background-repeat: no-repeat;
     .main {
+      position: relative;
       padding: 0.32rem;
-      height: calc(100vh - 3.6rem);
+      flex: 1;
       background: #fff;
       border-radius: 0.24rem 0.24rem 0 0;
       .title {
@@ -79,7 +126,7 @@ const checkAgreement = () => router.push("/agreement/merchant_agreement");
       .selection {
         display: flex;
         justify-content: space-between;
-        margin-top: 1rem;
+        margin-top: 0.8rem;
         .option {
           display: flex;
           flex-direction: column;
@@ -105,26 +152,119 @@ const checkAgreement = () => router.push("/agreement/merchant_agreement");
           }
         }
       }
-      .confirm-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-top: 1.6rem;
-        height: 0.88rem;
-        color: #fff;
-        font-size: 0.3rem;
-        font-weight: 550;
-        background: #e6e6e6;
-        border-radius: 0.18rem;
-        &.active {
-          background: #212121;
+      .btn-wrap {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        padding: 0 0.32rem 0.48rem;
+        width: 100%;
+        .confirm-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-top: 1.6rem;
+          height: 0.88rem;
+          color: #fff;
+          font-size: 0.3rem;
+          font-weight: 550;
+          background: #e6e6e6;
+          border-radius: 0.18rem;
+          &.active {
+            background: #212121;
+          }
+        }
+        .agreements {
+          display: flex;
+          justify-content: center;
+          margin-top: 0.24rem;
+          font-size: 0.24rem;
         }
       }
-      .agreements {
-        display: flex;
-        justify-content: center;
-        margin-top: 0.24rem;
+    }
+  }
+  .information-filling {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    .header {
+      padding-top: 0.24rem;
+      .title {
+        padding: 0 0.24rem;
+        color: #222;
+        font-size: 0.36rem;
+        font-weight: 550;
+      }
+      .sub-title {
+        margin-top: 0.05rem;
+        padding: 0 0.24rem;
+        color: #999;
         font-size: 0.24rem;
+      }
+      .steps {
+        display: flex;
+        margin-top: 0.36rem;
+        padding: 0 0.16rem;
+        .step {
+          margin: 0 0.08em;
+          flex: 1;
+          .name {
+            color: #999;
+            font-size: 0.26rem;
+            text-align: center;
+            font-weight: 550;
+            &.active {
+              color: #1db15b;
+            }
+            &.finished {
+              color: #333;
+            }
+          }
+          .progress-bar {
+            margin-top: 0.12rem;
+            height: 0.1rem;
+            background: #ddd;
+            border-radius: 0.05rem;
+            &.finished {
+              background: #1db15b;
+            }
+          }
+        }
+      }
+    }
+    .main {
+      position: relative;
+      margin-top: 0.48rem;
+      flex: 1;
+      border-radius: 0.32rem 0.32rem 0 0;
+      background: #fff;
+      .btns {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        display: flex;
+        padding: 0.32rem;
+        width: 100%;
+        .btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 0.88rem;
+          font-size: 0.3rem;
+          border-radius: 0.18rem;
+          &.previous-step {
+            margin-right: 0.32rem;
+            flex: 1;
+            color: #333;
+            font-weight: 600;
+            border: 1px solid #ddd;
+          }
+          &.next-step {
+            flex: 3;
+            color: #fff;
+            font-weight: 550;
+            background: #212121;
+          }
+        }
       }
     }
   }
