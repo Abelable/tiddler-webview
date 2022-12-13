@@ -18,8 +18,20 @@
             </div>
           </div>
         </div>
-        <div class="confirm-btn" :class="{ active: curTypeOptionIdx !== -1 }">
+        <div
+          class="confirm-btn"
+          :class="{ active: curTypeOptionIdx !== -1 && agreementsChecked }"
+        >
           下一步
+        </div>
+        <div class="agreements">
+          <Checkbox v-model="agreementsChecked" icon-size="16px" />
+          <div style="margin-left: 0.1rem">
+            我已阅读并同意
+            <span style="color: #1b89fa" @click="checkAgreement"
+              >《小鱼游商家服务协议》</span
+            >
+          </div>
         </div>
       </div>
     </div>
@@ -27,10 +39,16 @@
 </template>
 
 <script setup lang="ts">
+import { Checkbox } from "vant";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const step = ref(0);
+const agreementsChecked = ref(false);
 const curTypeOptionIdx = ref(-1);
+
+const checkAgreement = () => router.push("/agreement/merchant_service");
 </script>
 
 <style lang="scss" scoped>
@@ -101,6 +119,12 @@ const curTypeOptionIdx = ref(-1);
         &.active {
           background: #212121;
         }
+      }
+      .agreements {
+        display: flex;
+        justify-content: center;
+        margin-top: 0.24rem;
+        font-size: 0.24rem;
       }
     }
   }
