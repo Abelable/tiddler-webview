@@ -8,7 +8,7 @@
           <div
             class="option"
             :class="{ selected: curTypeOptionIdx === index }"
-            v-for="(item, index) in ['enterprise', 'personal']"
+            v-for="(item, index) in ['personal', 'enterprise']"
             :key="index"
             @click="curTypeOptionIdx = index"
           >
@@ -48,7 +48,7 @@ const step = ref(0);
 const agreementsChecked = ref(false);
 const curTypeOptionIdx = ref(-1);
 
-const checkAgreement = () => router.push("/agreement/merchant_service");
+const checkAgreement = () => router.push("/agreement/merchant_agreement");
 </script>
 
 <style lang="scss" scoped>
