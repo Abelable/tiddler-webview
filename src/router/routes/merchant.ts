@@ -9,14 +9,6 @@ const merchant: Array<RouteRecordRaw> = [
     },
     component: () => import("@/pages/merchant/SettleIn.vue"),
   },
-  {
-    path: "/merchant/settle_in_status",
-    name: "merchant_settle_in_status",
-    meta: {
-      title: "入驻申请",
-    },
-    component: () => import("@/pages/merchant/SettleInStatus.vue"),
-  },
 ];
 
 export default merchant;
