@@ -292,7 +292,7 @@ const checkAgreement = () => router.push("/agreement/merchant_agreement");
             text-align: center;
             font-weight: 550;
             &.active {
-              color: #1db15b;
+              color: #19a0fa;
             }
             &.finished {
               color: #333;
@@ -304,7 +304,7 @@ const checkAgreement = () => router.push("/agreement/merchant_agreement");
             background: #ddd;
             border-radius: 0.05rem;
             &.finished {
-              background: #1db15b;
+              background: #19a0fa;
             }
           }
         }
@@ -349,7 +349,7 @@ const checkAgreement = () => router.push("/agreement/merchant_agreement");
               height: 1rem;
               font-size: 0.26rem;
               border-radius: 0.24rem;
-              background: #e9f7ee;
+              background: #e7f2fa;
             }
             .input {
               width: 100%;
