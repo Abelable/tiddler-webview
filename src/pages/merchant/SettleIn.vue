@@ -75,16 +75,12 @@
           <div class="form-wrap">
             <div class="form-item">
               <div class="form-title">店铺名称</div>
-              <input
-                class="input"
-                type="text"
-                placeholder="请输入实体店铺名称"
-              />
+              <input class="input" type="text" placeholder="例：小明的店" />
             </div>
             <div class="form-item">
               <div class="form-title">联系地址</div>
               <div
-                class="area-picker"
+                class="picker"
                 :class="{ active: pickedAreaDesc }"
                 @click="areaPickerPopupVisible = true"
               >
@@ -120,12 +116,124 @@
           <div class="title">请上传个人身份相关信息</div>
           <div class="form-wrap">
             <div class="form-item">
+              <div class="form-title">请点击上传身份证正反面照片</div>
+              <div class="uploader-wrap">
+                <Uploader max-count="1" :after-read="uploadIdCardFrontPhoto">
+                  <img
+                    class="photo"
+                    :src="idCardFrontPhoto || require('./images/front.png')"
+                    alt=""
+                  />
+                </Uploader>
+                <Uploader max-count="1" :after-read="uploadIdCardBehindPhoto">
+                  <img
+                    class="photo"
+                    :src="idCardFrontPhoto || require('./images/behind.png')"
+                    alt=""
+                  />
+                </Uploader>
+              </div>
+            </div>
+            <div class="form-item">
+              <div class="form-title">请点击上传手持身份证照片</div>
+              <div class="uploader-wrap">
+                <Uploader max-count="1" :after-read="uploadPersonalPhoto">
+                  <img
+                    class="photo"
+                    v-if="personalPhoto"
+                    :src="personalPhoto"
+                    alt=""
+                  />
+                  <div class="default-img" v-else>
+                    <div class="img-wrap">
+                      <img
+                        style="width: 0.5rem; height: 0.5rem"
+                        src="./images/camera.png"
+                        alt=""
+                      />
+                    </div>
+                    <div class="desc">手持身份证照片</div>
+                  </div>
+                </Uploader>
+                <img class="photo" src="./images/person-example.png" alt="" />
+              </div>
+            </div>
+            <div class="form-item">
               <div class="form-title">姓名</div>
-              <input class="input" type="text" placeholder="请输入姓名" />
+              <input class="input" type="text" placeholder="例：小明" />
             </div>
             <div class="form-item">
               <div class="form-title">身份证号</div>
-              <input class="input" type="text" placeholder="请输入身份证号" />
+              <input
+                class="input"
+                type="text"
+                placeholder="请输入18位身份证号"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="part" v-show="step === 3">
+          <div class="title">请填写银行相关信息</div>
+          <div class="form-wrap">
+            <div class="form-item">
+              <div class="form-title">持卡人姓名</div>
+              <input class="input" type="text" placeholder="例：小明" />
+            </div>
+            <div class="form-item">
+              <div class="form-title">个人银行账号</div>
+              <input
+                class="input"
+                type="number"
+                placeholder="例：622123456789012345"
+              />
+            </div>
+            <div class="form-item">
+              <div class="form-title">开户银行及支行名称</div>
+              <input
+                class="input"
+                type="text"
+                placeholder="例：中国招商银行城西支行"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="part" v-show="step === 4">
+          <div class="title">请填写小鱼小店信息</div>
+          <div class="form-wrap">
+            <div class="form-item">
+              <div class="form-title">店铺名称</div>
+              <input class="input" type="text" placeholder="例：小明的店" />
+            </div>
+            <div class="form-item">
+              <div class="form-title">店铺分类</div>
+              <div
+                class="picker"
+                :class="{ active: pickedCategoryDesc }"
+                @click="categoryPickerPopupVisible = true"
+              >
+                {{ pickedCategoryDesc || "请选择店铺分类" }}
+              </div>
+              <Popup
+                v-model:show="categoryPickerPopupVisible"
+                position="bottom"
+                round
+              >
+                <Picker
+                  :columns="[
+                    { text: '水果生鲜', value: 1 },
+                    { text: '服饰箱包', value: 2 },
+                    { text: '美妆个护', value: 3 },
+                    { text: '数码电器', value: 4 },
+                    { text: '居家日用', value: 5 },
+                    { text: '食品饮料', value: 6 },
+                    { text: '母婴玩具', value: 7 },
+                    { text: '宠物生活', value: 8 },
+                    { text: '特殊类目', value: 9 },
+                  ]"
+                  @confirm="categoryConfirm"
+                  @cancel="categoryPickerPopupVisible = false"
+                />
+              </Popup>
             </div>
           </div>
         </div>
@@ -141,18 +249,26 @@
 </template>
 
 <script setup lang="ts">
-import { Checkbox, Area, Popup } from "vant";
+import { Checkbox, Area, Popup, Uploader, Picker } from "vant";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { areaList } from "@vant/area-data";
 
+const cate = [];
+
 const router = useRouter();
-const step = ref(1);
+const step = ref(4);
 const agreementsChecked = ref(false);
 const curTypeOptionIdx = ref(-1);
 const areaPickerPopupVisible = ref(false);
 const pickedArea = ref<string[]>([]);
 const pickedAreaDesc = ref("");
+const idCardFrontPhoto = ref("");
+const idCardBehindPhoto = ref("");
+const personalPhoto = ref("");
+const categoryPickerPopupVisible = ref(false);
+const pickedCategory = ref(0);
+const pickedCategoryDesc = ref("");
 
 interface RegionOption {
   text: string;
@@ -169,6 +285,26 @@ const areaConfirm = ({
   pickedArea.value = selectedValues;
   pickedAreaDesc.value = `${selectedOptions[0].text} ${selectedOptions[1].text} ${selectedOptions[2].text}`;
   areaPickerPopupVisible.value = false;
+};
+const uploadIdCardFrontPhoto = (file: any) => {
+  idCardFrontPhoto.value = file.content;
+};
+const uploadIdCardBehindPhoto = (file: any) => {
+  idCardBehindPhoto.value = file.content;
+};
+const uploadPersonalPhoto = (file: any) => {
+  personalPhoto.value = file.content;
+};
+const categoryConfirm = ({
+  selectedValues,
+  selectedOptions,
+}: {
+  selectedValues: number[];
+  selectedOptions: RegionOption[];
+}) => {
+  pickedCategory.value = selectedValues[0];
+  pickedCategoryDesc.value = selectedOptions[0].text;
+  categoryPickerPopupVisible.value = false;
 };
 const checkAgreement = () => router.push("/agreement/merchant_agreement");
 </script>
@@ -334,7 +470,7 @@ const checkAgreement = () => router.push("/agreement/merchant_agreement");
           flex: 1;
           overflow-y: scroll;
           .form-item {
-            margin-bottom: 0.32rem;
+            margin-bottom: 0.42rem;
             font-size: 0;
             .form-title {
               padding-left: 0.12rem;
@@ -343,7 +479,7 @@ const checkAgreement = () => router.push("/agreement/merchant_agreement");
               font-weight: 550;
             }
             .input,
-            .area-picker {
+            .picker {
               margin-top: 0.12rem;
               padding: 0 0.24rem;
               height: 1rem;
@@ -354,12 +490,44 @@ const checkAgreement = () => router.push("/agreement/merchant_agreement");
             .input {
               width: 100%;
             }
-            .area-picker {
+            .picker {
               display: flex;
               align-items: center;
               color: #777;
               &.active {
                 color: #333;
+              }
+            }
+            .uploader-wrap {
+              margin-top: 0.2rem;
+              display: flex;
+              justify-content: space-between;
+              .photo,
+              .default-img {
+                width: 3.3rem;
+                height: 2.14rem;
+                box-shadow: 0 0 10px 0 #e6e6e6;
+                border-radius: 0.24rem;
+              }
+              .default-img {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                .img-wrap {
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  width: 1rem;
+                  height: 1rem;
+                  background: rgba(0, 0, 0, 0.6);
+                  border-radius: 50%;
+                }
+                .desc {
+                  margin-top: 0.3rem;
+                  color: #000;
+                  font-size: 0.2rem;
+                }
               }
             }
           }
