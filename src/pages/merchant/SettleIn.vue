@@ -254,8 +254,6 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { areaList } from "@vant/area-data";
 
-const cate = [];
-
 const router = useRouter();
 const step = ref(4);
 const agreementsChecked = ref(false);
