@@ -38,19 +38,14 @@
         </div>
       </div>
     </div>
-    <div class="information-filling" v-if="step !== 0 && step !== 5">
+    <div class="information-filling" v-if="step !== 0 && step !== 4">
       <div class="header">
         <div class="title">信息填写</div>
         <div class="sub-title">真实有效的信息有助于您快速通过审核</div>
         <div class="steps">
           <div
             class="step"
-            v-for="(item, index) in [
-              '店铺信息',
-              '个人信息',
-              '银行信息',
-              '其他信息',
-            ]"
+            v-for="(item, index) in ['个人信息', '银行信息', '店铺信息']"
             :key="index"
           >
             <div
@@ -71,49 +66,7 @@
       </div>
       <div class="main">
         <div class="part" v-show="step === 1">
-          <div class="title">请输入实体店铺相关信息</div>
-          <div class="form-wrap">
-            <div class="form-item">
-              <div class="form-title">店铺名称</div>
-              <input class="input" type="text" placeholder="例：小明的店" />
-            </div>
-            <div class="form-item">
-              <div class="form-title">联系地址</div>
-              <div
-                class="picker"
-                :class="{ active: pickedAreaDesc }"
-                @click="areaPickerPopupVisible = true"
-              >
-                {{ pickedAreaDesc || "请选择省、市、区" }}
-              </div>
-              <Popup
-                v-model:show="areaPickerPopupVisible"
-                position="bottom"
-                round
-              >
-                <Area
-                  :area-list="areaList"
-                  @confirm="areaConfirm"
-                  @cancel="areaPickerPopupVisible = false"
-                />
-              </Popup>
-            </div>
-            <div class="form-item">
-              <div class="form-title">详细地址</div>
-              <input class="input" type="text" placeholder="请输入详细地址" />
-            </div>
-            <div class="form-item">
-              <div class="form-title">联系电话</div>
-              <input class="input" type="tel" placeholder="请输入联系电话" />
-            </div>
-            <div class="form-item">
-              <div class="form-title">电子邮箱</div>
-              <input class="input" type="email" placeholder="请输入电子邮箱" />
-            </div>
-          </div>
-        </div>
-        <div class="part" v-show="step === 2">
-          <div class="title">请上传个人身份相关信息</div>
+          <div class="title">请完善个人相关信息</div>
           <div class="form-wrap">
             <div class="form-item">
               <div class="form-title">请点击上传身份证正反面照片</div>
@@ -170,10 +123,43 @@
                 placeholder="请输入18位身份证号"
               />
             </div>
+            <div class="form-item">
+              <div class="form-title">联系地址</div>
+              <div
+                class="picker"
+                :class="{ active: pickedAreaDesc }"
+                @click="areaPickerPopupVisible = true"
+              >
+                {{ pickedAreaDesc || "请选择省、市、区" }}
+              </div>
+              <Popup
+                v-model:show="areaPickerPopupVisible"
+                position="bottom"
+                round
+              >
+                <Area
+                  :area-list="areaList"
+                  @confirm="areaConfirm"
+                  @cancel="areaPickerPopupVisible = false"
+                />
+              </Popup>
+            </div>
+            <div class="form-item">
+              <div class="form-title">详细地址</div>
+              <input class="input" type="text" placeholder="请输入详细地址" />
+            </div>
+            <div class="form-item">
+              <div class="form-title">联系电话</div>
+              <input class="input" type="tel" placeholder="请输入联系电话" />
+            </div>
+            <div class="form-item">
+              <div class="form-title">电子邮箱</div>
+              <input class="input" type="email" placeholder="请输入电子邮箱" />
+            </div>
           </div>
         </div>
-        <div class="part" v-show="step === 3">
-          <div class="title">请填写银行相关信息</div>
+        <div class="part" v-show="step === 2">
+          <div class="title">请完善银行相关信息</div>
           <div class="form-wrap">
             <div class="form-item">
               <div class="form-title">持卡人姓名</div>
@@ -197,8 +183,8 @@
             </div>
           </div>
         </div>
-        <div class="part" v-show="step === 4">
-          <div class="title">请填写小鱼小店信息</div>
+        <div class="part" v-show="step === 3">
+          <div class="title">请完善店铺相关信息</div>
           <div class="form-wrap">
             <div class="form-item">
               <div class="form-title">店铺名称</div>
@@ -245,7 +231,7 @@
         </div>
       </div>
     </div>
-    <div class="status" v-if="step === 5">
+    <div class="status" v-if="step === 4">
       <div class="status-illus" v-if="status !== 2">
         <img
           class="illus"
@@ -266,7 +252,7 @@
         <div class="desc" :class="{ err: status === 4 }">
           {{
             status === 1
-              ? "请耐心等待，平台正在策马扬鞭审核哦！"
+              ? "已提交申请，请耐心等待平台人员处理"
               : status === 3
               ? "店铺已开通"
               : "失败原因：身份证照片不够清晰"
