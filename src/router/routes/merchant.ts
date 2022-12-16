@@ -5,7 +5,7 @@ const merchant: Array<RouteRecordRaw> = [
     path: "/merchant/settle_in",
     name: "merchant_settle_in",
     meta: {
-      title: "入驻申请",
+      title: "商家入驻",
     },
     component: () => import("@/pages/merchant/SettleIn.vue"),
   },
