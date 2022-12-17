@@ -543,13 +543,13 @@ const checkAgreement = () => router.push("/agreement/merchant_agreement");
           border-radius: 0.24rem;
           border: 1px solid #eee;
           &.selected {
-            border: 1px solid #a7c0fb;
+            border: 1px solid #1b89fa;
           }
           .icon {
             margin: 1rem 0;
             width: 1.2rem;
             height: 1.2rem;
-            opacity: 0.68;
+            opacity: 0.8;
           }
           .name {
             margin-top: 0.24rem;
@@ -613,7 +613,7 @@ const checkAgreement = () => router.push("/agreement/merchant_agreement");
             text-align: center;
             font-weight: 550;
             &.active {
-              color: #19a0fa;
+              color: #1b89fa;
             }
             &.finished {
               color: #333;
@@ -625,7 +625,7 @@ const checkAgreement = () => router.push("/agreement/merchant_agreement");
             background: #ddd;
             border-radius: 0.05rem;
             &.finished {
-              background: #19a0fa;
+              background: #1b89fa;
             }
           }
         }
@@ -666,7 +666,7 @@ const checkAgreement = () => router.push("/agreement/merchant_agreement");
             height: 1rem;
             font-size: 0.26rem;
             border-radius: 0.24rem;
-            background: #e7f2fa;
+            background: #eaf6ff;
           }
           .input {
             width: 100%;
