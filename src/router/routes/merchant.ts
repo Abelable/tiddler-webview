@@ -17,6 +17,22 @@ const merchant: Array<RouteRecordRaw> = [
     },
     component: () => import("@/pages/merchant/FreightTemplates.vue"),
   },
+  {
+    path: "/merchant/create_freight_template",
+    name: "merchant_create_freight_template",
+    meta: {
+      title: "新增运费模板",
+    },
+    component: () => import("@/pages/merchant/CreateFreightTemplate.vue"),
+  },
+  {
+    path: "/merchant/edit_freight_template",
+    name: "merchant_edit_freight_template",
+    meta: {
+      title: "编辑运费模板",
+    },
+    component: () => import("@/pages/merchant/EditFreightTemplate.vue"),
+  },
 ];
 
 export default merchant;
