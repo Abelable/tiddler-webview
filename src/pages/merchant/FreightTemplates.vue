@@ -15,13 +15,31 @@
       </template>
     </SwipeCell>
   </div>
+  <button class="add-btn">新增运费模板</button>
 </template>
 
 <script setup lang="ts">
 import { SwipeCell, Button, Icon, showConfirmDialog } from "vant";
 import { ref } from "vue";
 
-const templateList = ref(["模板名称1", "模板名称2", "模板名称3", "模板名称4"]);
+const templateList = ref([
+  "模板名称1",
+  "模板名称2",
+  "模板名称3",
+  "模板名称4",
+  "模板名称1",
+  "模板名称2",
+  "模板名称3",
+  "模板名称4",
+  "模板名称1",
+  "模板名称2",
+  "模板名称3",
+  "模板名称4",
+  "模板名称1",
+  "模板名称2",
+  "模板名称3",
+  "模板名称4",
+]);
 
 const beforeClose = (res: any) => {
   if (res.position === "right") {
@@ -39,6 +57,7 @@ const beforeClose = (res: any) => {
 
 <style lang="scss" scoped>
 .template-list {
+  padding-bottom: 1.52rem;
   font-size: 0;
   .template {
     display: flex;
@@ -56,5 +75,17 @@ const beforeClose = (res: any) => {
   .delete-btn {
     height: 100%;
   }
+}
+.add-btn {
+  position: fixed;
+  left: 0.32rem;
+  bottom: 0.32rem;
+  width: calc(100vw - 0.64rem);
+  height: 0.88rem;
+  color: #fff;
+  font-size: 0.3rem;
+  font-weight: 550;
+  border-radius: 0.18rem;
+  background: #212121;
 }
 </style>
