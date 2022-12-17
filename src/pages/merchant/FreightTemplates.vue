@@ -20,15 +20,20 @@
 
 <script setup lang="ts">
 import { SwipeCell, Button, Icon, showConfirmDialog } from "vant";
-import { ref } from "vue";
+import { reactive } from "vue";
 
-const templateList = ref(["模板名称1", "模板名称2", "模板名称3", "模板名称4"]);
+const templateList = reactive([
+  "模板名称1",
+  "模板名称2",
+  "模板名称3",
+  "模板名称4",
+]);
 
 const beforeClose = (res: any) => {
   if (res.position === "right") {
     showConfirmDialog({ title: "确定删除该模板吗？" })
       .then(() => {
-        templateList.value.splice(res.name, 1);
+        templateList.splice(res.name, 1);
         return true;
       })
       .catch(() => true);

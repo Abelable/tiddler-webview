@@ -48,22 +48,35 @@
         <div>配送地区</div>
         <Button
           class="add-btn"
+          @click="addArea"
           icon="plus"
           text="新增"
           type="primary"
           size="mini"
         />
       </div>
-      <SwipeCell :before-close="beforeClose">
+      <SwipeCell
+        :before-close="deleteArea"
+        v-for="(item, index) in areaList"
+        :key="index"
+        :name="index"
+      >
         <div class="card">
           <div class="form">
             <div class="form-item">
               <div class="label">地区</div>
-              <div class="picker">请选择地区</div>
+              <div class="picker" :class="{ active: item.pickedAreaDesc }">
+                {{ item.pickedAreaDesc || "请选择地区" }}
+              </div>
             </div>
             <div class="form-item">
               <div class="label">运费</div>
-              <input class="input" type="number" placeholder="例：0.00" />
+              <input
+                class="input"
+                v-model="areaList[index].fee"
+                type="number"
+                placeholder="例：0.00"
+              />
             </div>
           </div>
         </div>
@@ -80,15 +93,17 @@
 
 <script setup lang="ts">
 import { RadioGroup, Radio, SwipeCell, showConfirmDialog, Button } from "vant";
-import { ref } from "vue";
-
+import { ref, reactive } from "vue";
 const templateType = ref(0);
 const computeType = ref(1);
+const areaList = reactive([{ pickedAreaDesc: "", fee: "" }]);
 
-const beforeClose = (res: any) => {
+const addArea = () => areaList.push({ pickedAreaDesc: "", fee: "" });
+const deleteArea = (res: any) => {
   if (res.position === "right") {
     showConfirmDialog({ title: "确定删除该配送地区配置吗？" })
       .then(() => {
+        areaList.splice(res.name, 1);
         return true;
       })
       .catch(() => true);
