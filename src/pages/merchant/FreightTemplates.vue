@@ -22,24 +22,7 @@
 import { SwipeCell, Button, Icon, showConfirmDialog } from "vant";
 import { ref } from "vue";
 
-const templateList = ref([
-  "模板名称1",
-  "模板名称2",
-  "模板名称3",
-  "模板名称4",
-  "模板名称1",
-  "模板名称2",
-  "模板名称3",
-  "模板名称4",
-  "模板名称1",
-  "模板名称2",
-  "模板名称3",
-  "模板名称4",
-  "模板名称1",
-  "模板名称2",
-  "模板名称3",
-  "模板名称4",
-]);
+const templateList = ref(["模板名称1", "模板名称2", "模板名称3", "模板名称4"]);
 
 const beforeClose = (res: any) => {
   if (res.position === "right") {
