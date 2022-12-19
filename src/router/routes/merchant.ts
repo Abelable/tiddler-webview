@@ -33,6 +33,14 @@ const merchant: Array<RouteRecordRaw> = [
     },
     component: () => import("@/pages/merchant/EditFreightTemplate.vue"),
   },
+  {
+    path: "/merchant/upload_goods",
+    name: "merchant_upload_goods",
+    meta: {
+      title: "上传商品",
+    },
+    component: () => import("@/pages/merchant/UploadGoods.vue"),
+  },
 ];
 
 export default merchant;
