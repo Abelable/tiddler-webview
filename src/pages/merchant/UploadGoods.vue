@@ -104,25 +104,38 @@
 
     <div class="title flex">
       <div>编辑商品规格</div>
-      <Button icon="plus" text="新增规格" type="primary" size="mini" />
+      <Button
+        @click="addSpec"
+        icon="plus"
+        text="新增规格"
+        type="primary"
+        size="mini"
+      />
     </div>
-    <SwipeCell>
+    <SwipeCell v-for="(item, index) in specList" :key="index">
       <div class="card">
         <ul class="form">
           <li class="form-item flex">
             <div class="name">规格名称</div>
-            <input class="input" type="text" placeholder="请输入规格名称" />
+            <input
+              class="input"
+              v-model="item.name"
+              type="text"
+              placeholder="请输入规格名称"
+            />
           </li>
           <li class="form-item">
             <div class="name">规格选项</div>
             <div class="sku-options">
               <Tag
+                v-for="(option, optionIndex) in item.options"
+                :key="optionIndex"
                 class="sku-option"
                 color="#DBEFFD"
                 text-color="#2A3664"
                 closeable
                 size="medium"
-                >红</Tag
+                >{{ option }}</Tag
               >
               <Tag
                 class="sku-option"
@@ -131,30 +144,36 @@
                 size="medium"
                 >+ 新增选项</Tag
               >
-              <Dialog
-                v-model:show="addSkuModalVisible"
-                title="新增规格选项"
-                show-cancel-button
-              >
-                <input
-                  class="sku-name-input"
-                  type="text"
-                  placeholder="请输入规格选项名称"
-                />
-              </Dialog>
             </div>
           </li>
         </ul>
       </div>
       <template #right>
-        <Button class="delete-btn" icon="delete" color="#EE0D23" plain />
+        <Button
+          class="delete-btn"
+          @click.stop="deleteSpec(index)"
+          icon="delete"
+          color="#EE0D23"
+          plain
+        />
       </template>
     </SwipeCell>
-    <div class="card">
+    <div class="card" v-if="!specList.length">
       <Empty image-size="1.8rem" description="暂无规格" />
     </div>
   </div>
   <button class="upload-btn">点击上传</button>
+  <Dialog
+    v-model:show="addSkuModalVisible"
+    title="新增规格选项"
+    show-cancel-button
+  >
+    <input
+      class="sku-option-input"
+      type="text"
+      placeholder="请输入规格选项名称"
+    />
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -167,14 +186,30 @@ import {
   Dialog,
   Tag,
   SwipeCell,
+  showConfirmDialog,
 } from "vant";
-import { ref } from "vue";
+import { ref, reactive } from "vue";
+
+interface SpecItem {
+  name: string;
+  options: string[];
+}
 
 const uploadVideoTipsVisible = ref(false);
 const uploadMainImgsTipsVisible = ref(false);
 const uploadDetailImgsTipsVisible = ref(false);
 const addSkuModalVisible = ref(false);
 const selectedFreightTemplateDesc = ref("");
+const specList = reactive<SpecItem[]>([]);
+
+const addSpec = () => {
+  specList.push({ name: "", options: [] });
+};
+const deleteSpec = (index: number) => {
+  showConfirmDialog({ title: "确定删除该商品规格吗？" })
+    .then(() => specList.splice(index, 1))
+    .catch(() => true);
+};
 </script>
 
 <style>
@@ -183,13 +218,6 @@ const selectedFreightTemplateDesc = ref("");
 }
 </style>
 <style lang="scss" scoped>
-.warning {
-  padding: 0.24rem;
-  color: #fff;
-  font-size: 0.24rem;
-  line-height: 1.5;
-  white-space: wrap;
-}
 .container {
   padding: 0.32rem 0.32rem 1.52rem;
   .title {
@@ -209,7 +237,6 @@ const selectedFreightTemplateDesc = ref("");
     padding: 0 0.32rem;
     background: #fff;
     border-radius: 0.32rem;
-    overflow: hidden;
     .form {
       .form-item {
         padding: 0.32rem 0;
@@ -263,15 +290,6 @@ const selectedFreightTemplateDesc = ref("");
             margin-top: 0.32rem;
             margin-right: 0.32rem;
           }
-          .sku-name-input {
-            margin: 0.32rem 0.32rem 0.5rem;
-            padding: 0.24rem;
-            width: calc(100% - 0.64rem);
-            height: 0.88rem;
-            font-size: 0.26rem;
-            border: 1px solid #ddd;
-            border-radius: 0.12rem;
-          }
         }
       }
     }
@@ -293,5 +311,21 @@ const selectedFreightTemplateDesc = ref("");
   font-weight: 550;
   border-radius: 0.18rem;
   background: #212121;
+}
+.warning {
+  padding: 0.24rem;
+  color: #fff;
+  font-size: 0.24rem;
+  line-height: 1.5;
+  white-space: wrap;
+}
+.sku-option-input {
+  margin: 0.32rem 0.32rem 0.5rem;
+  padding: 0.24rem;
+  width: calc(100% - 0.64rem);
+  height: 0.88rem;
+  font-size: 0.26rem;
+  border: 1px solid #ddd;
+  border-radius: 0.12rem;
 }
 </style>
