@@ -75,11 +75,27 @@
           <input class="input" type="number" placeholder="请输入店铺价格" />
         </li>
         <li class="form-item flex">
-          <div class="name required">市场价格</div>
+          <div class="name">市场价格</div>
           <input class="input" type="number" placeholder="请输入市场价格" />
         </li>
         <li class="form-item flex">
-          <div class="name required">推广佣金比例(0～70%)</div>
+          <div class="name required">商品库存</div>
+          <input class="input" type="number" placeholder="请输入商品库存" />
+        </li>
+        <li class="form-item flex">
+          <div class="name flex required">
+            <div>推广佣金比例</div>
+            <Popover
+              v-model:show="uploadVideoTipsVisible"
+              placement="bottom-start"
+              theme="dark"
+            >
+              <div class="warning">范围：0～70%</div>
+              <template #reference>
+                <Icon style="margin-left: 0.06rem" name="question-o" />
+              </template>
+            </Popover>
+          </div>
           <input class="input" type="number" placeholder="请输入佣金比例" />
           <div class="unit">%</div>
         </li>
