@@ -82,26 +82,53 @@
       </div>
     </div>
     <div class="card">
-      <div class="title">填写商品规格</div>
+      <div class="title flex between">
+        <div>填写商品规格</div>
+        <Button icon="plus" text="新增规格" type="primary" size="mini" />
+      </div>
+      <SwipeCell>
+        <div class="sku-item">
+          <div class="sku-name">
+            <div class="label">规格名称</div>
+            <input class="input" type="text" placeholder="请输入规格名称" />
+          </div>
+          <div class="sku-options-wrap">
+            <div class="label">规格选项</div>
+            <div class="sku-options">
+              <Tag
+                class="sku-option"
+                color="#DBEFFD"
+                text-color="#2A3664"
+                closeable
+                size="medium"
+                >红</Tag
+              >
+              <Tag
+                class="sku-option"
+                @click="addSkuModalVisible = true"
+                type="primary"
+                size="medium"
+                >+ 新增选项</Tag
+              >
+              <Dialog
+                v-model:show="addSkuModalVisible"
+                title="新增规格选项"
+                show-cancel-button
+              >
+                <input
+                  class="sku-name-input"
+                  type="text"
+                  placeholder="请输入规格选项名称"
+                />
+              </Dialog>
+            </div>
+          </div>
+        </div>
+        <template #right>
+          <Button class="delete-btn" icon="delete" color="#EE0D23" plain />
+        </template>
+      </SwipeCell>
       <Empty image-size="1.8rem" description="暂无规格" />
-      <!-- <div class="form">
-        <div class="form-list">
-          <div class="label">颜色分类</div>
-          <input
-            class="input"
-            type="text"
-            placeholder="如红、黄（请用顿号分割）"
-          />
-        </div>
-        <div class="form-list">
-          <div class="label">尺码分类</div>
-          <input
-            class="input"
-            type="text"
-            placeholder="如X、L（请用顿号分割）"
-          />
-        </div>
-      </div> -->
     </div>
     <div class="card">
       <div class="title required flex">
@@ -124,12 +151,22 @@
 </template>
 
 <script setup lang="ts">
-import { Uploader, Icon, Empty, Popover } from "vant";
+import {
+  Uploader,
+  Icon,
+  Empty,
+  Popover,
+  Button,
+  Dialog,
+  Tag,
+  SwipeCell,
+} from "vant";
 import { ref } from "vue";
 
 const uploadVideoTipsVisible = ref(false);
 const uploadMainImgsTipsVisible = ref(false);
 const uploadDetailImgsTipsVisible = ref(false);
+const addSkuModalVisible = ref(false);
 const selectedFreightTemplateDesc = ref("");
 </script>
 
@@ -192,6 +229,7 @@ const selectedFreightTemplateDesc = ref("");
         }
         .label {
           color: #333;
+          font-weight: 500;
         }
         .input {
           flex: 1;
@@ -207,9 +245,56 @@ const selectedFreightTemplateDesc = ref("");
         }
       }
     }
+    .sku-item {
+      padding: 0.32rem;
+      border: 1px solid #eee;
+      border-radius: 0.24rem;
+      .sku-name {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 0.32rem;
+        font-size: 0.26rem;
+        border-bottom: 1px solid #eee;
+        .label {
+          color: #333;
+          font-weight: 500;
+        }
+        .input {
+          flex: 1;
+          text-align: right;
+        }
+      }
+      .sku-options-wrap {
+        margin-top: 0.32rem;
+        font-size: 0.26rem;
+        .label {
+          color: #333;
+          font-weight: 500;
+        }
+        .sku-options {
+          .sku-option {
+            margin-top: 0.24rem;
+            margin-right: 0.24rem;
+          }
+        }
+        .sku-name-input {
+          margin: 0.32rem 0.32rem 0.5rem;
+          padding: 0.24rem;
+          width: calc(100% - 0.64rem);
+          height: 0.88rem;
+          font-size: 0.26rem;
+          border: 1px solid #ddd;
+          border-radius: 0.12rem;
+        }
+      }
+    }
+    .delete-btn {
+      height: 100%;
+      border: none;
+    }
   }
 }
-
 .upload-btn {
   position: fixed;
   left: 0.32rem;
