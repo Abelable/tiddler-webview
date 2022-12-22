@@ -116,7 +116,7 @@
       <div class="card">
         <ul class="form">
           <li class="form-item flex">
-            <div class="name">规格名称</div>
+            <div class="name required">规格名称</div>
             <input
               class="input"
               v-model="item.name"
@@ -125,11 +125,12 @@
             />
           </li>
           <li class="form-item">
-            <div class="name">规格选项</div>
+            <div class="name required">规格选项</div>
             <div class="sku-options">
               <Tag
                 v-for="(option, optionIndex) in item.options"
                 :key="optionIndex"
+                @close="deleteSpecOption(index, optionIndex)"
                 class="sku-option"
                 color="#DBEFFD"
                 text-color="#2A3664"
@@ -139,7 +140,7 @@
               >
               <Tag
                 class="sku-option"
-                @click="addSkuModalVisible = true"
+                @click="showSpecOptionModalVisible(index)"
                 type="primary"
                 size="medium"
                 >+ 新增选项</Tag
@@ -164,12 +165,14 @@
   </div>
   <button class="upload-btn">点击上传</button>
   <Dialog
-    v-model:show="addSkuModalVisible"
+    v-model:show="specOptionModalVisible"
     title="新增规格选项"
     show-cancel-button
+    :before-close="addSpecOption"
   >
     <input
       class="sku-option-input"
+      v-model="specOptionName"
       type="text"
       placeholder="请输入规格选项名称"
     />
@@ -187,6 +190,7 @@ import {
   Tag,
   SwipeCell,
   showConfirmDialog,
+  showToast,
 } from "vant";
 import { ref, reactive } from "vue";
 
@@ -198,9 +202,11 @@ interface SpecItem {
 const uploadVideoTipsVisible = ref(false);
 const uploadMainImgsTipsVisible = ref(false);
 const uploadDetailImgsTipsVisible = ref(false);
-const addSkuModalVisible = ref(false);
 const selectedFreightTemplateDesc = ref("");
 const specList = reactive<SpecItem[]>([]);
+const specOptionModalVisible = ref(false);
+const curSpecIndex = ref(0);
+const specOptionName = ref("");
 
 const addSpec = () => {
   specList.push({ name: "", options: [] });
@@ -209,6 +215,26 @@ const deleteSpec = (index: number) => {
   showConfirmDialog({ title: "确定删除该商品规格吗？" })
     .then(() => specList.splice(index, 1))
     .catch(() => true);
+};
+const showSpecOptionModalVisible = (index: number) => {
+  curSpecIndex.value = index;
+  specOptionModalVisible.value = true;
+};
+const addSpecOption = (action: string) => {
+  if (action === "cancel") {
+    return true;
+  }
+  if (!specOptionName.value) {
+    showToast("名称不能为空");
+    return false;
+  }
+  specList[curSpecIndex.value].options.push(specOptionName.value);
+  specOptionName.value = "";
+  specOptionModalVisible.value = false;
+  return true;
+};
+const deleteSpecOption = (index: number, optionIndex: number) => {
+  specList[index].options.splice(optionIndex, 1);
 };
 </script>
 
