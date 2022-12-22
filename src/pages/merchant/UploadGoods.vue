@@ -1,20 +1,40 @@
 <template>
   <div class="container">
     <div class="card">
-      <div class="title">上传主图视频</div>
-      <div class="warning">
-        <p>时长：建议不超过60s</p>
-        <p>大小：建议不超过50M，否则无法保证视频清晰度</p>
-        <p>尺寸：建议比例16:9或3:4</p>
-        <p>格式：mp4</p>
-        <p>内容：建议突出商品1-2个核心卖点</p>
+      <div class="title flex">
+        <div>上传主图视频</div>
+        <Popover
+          v-model:show="uploadVideoTipsVisible"
+          placement="bottom-start"
+          theme="dark"
+        >
+          <div class="warning">
+            <p>时长：建议不超过60s</p>
+            <p>大小：建议不超过50M</p>
+            <p>尺寸：建议比例16:9或3:4</p>
+            <p>格式：mp4</p>
+            <p>内容：建议突出商品1-2个核心卖点</p>
+          </div>
+          <template #reference>
+            <Icon style="margin-left: 0.06rem" name="question-o" />
+          </template>
+        </Popover>
       </div>
       <Uploader max-count="1" accept="video/*" />
     </div>
     <div class="card">
-      <div class="title required">上传主图图片</div>
-      <div class="warning">
-        <p>数量：最多不超过10张</p>
+      <div class="title required flex">
+        <div>上传主图图片</div>
+        <Popover
+          v-model:show="uploadMainImgsTipsVisible"
+          placement="bottom-start"
+          theme="dark"
+        >
+          <div class="warning">数量：最多不超过10张</div>
+          <template #reference>
+            <Icon style="margin-left: 0.06rem" name="question-o" />
+          </template>
+        </Popover>
       </div>
       <Uploader max-count="10" />
     </div>
@@ -63,7 +83,8 @@
     </div>
     <div class="card">
       <div class="title">填写商品规格</div>
-      <div class="form">
+      <Empty image-size="1.8rem" description="暂无规格" />
+      <!-- <div class="form">
         <div class="form-list">
           <div class="label">颜色分类</div>
           <input
@@ -80,11 +101,22 @@
             placeholder="如X、L（请用顿号分割）"
           />
         </div>
-      </div>
+      </div> -->
     </div>
     <div class="card">
-      <div class="title required">上传详情图片</div>
-      <div class="warning">注意图片顺序</div>
+      <div class="title required flex">
+        <div>上传详情图片</div>
+        <Popover
+          v-model:show="uploadDetailImgsTipsVisible"
+          placement="bottom-start"
+          theme="dark"
+        >
+          <div class="warning">注意图片顺序</div>
+          <template #reference>
+            <Icon style="margin-left: 0.06rem" name="question-o" />
+          </template>
+        </Popover>
+      </div>
       <Uploader />
     </div>
   </div>
@@ -92,13 +124,28 @@
 </template>
 
 <script setup lang="ts">
-import { Uploader, Icon } from "vant";
+import { Uploader, Icon, Empty, Popover } from "vant";
 import { ref } from "vue";
 
+const uploadVideoTipsVisible = ref(false);
+const uploadMainImgsTipsVisible = ref(false);
+const uploadDetailImgsTipsVisible = ref(false);
 const selectedFreightTemplateDesc = ref("");
 </script>
 
+<style>
+.van-empty__description {
+  font-size: 0.24rem;
+}
+</style>
 <style lang="scss" scoped>
+.warning {
+  padding: 0.24rem;
+  color: #fff;
+  font-size: 0.24rem;
+  line-height: 1.5;
+  white-space: wrap;
+}
 .container {
   padding: 0.32rem 0.32rem 1.52rem;
   .card {
@@ -113,6 +160,13 @@ const selectedFreightTemplateDesc = ref("");
       font-size: 0.28rem;
       font-weight: 550;
       line-height: 1;
+      &.flex {
+        display: flex;
+        align-items: center;
+        &.between {
+          justify-content: space-between;
+        }
+      }
       &.required {
         position: relative;
         &::before {
@@ -124,12 +178,6 @@ const selectedFreightTemplateDesc = ref("");
           font-size: 0.24rem;
         }
       }
-    }
-    .warning {
-      margin-bottom: 0.32rem;
-      color: #999;
-      font-size: 0.24rem;
-      line-height: 1.5;
     }
     .form {
       .form-list {
