@@ -178,7 +178,42 @@
     <div class="card" v-if="!specList.length">
       <Empty image-size="1.8rem" description="暂无规格" />
     </div>
+
+    <div class="title" v-if="skuList.length">补充规格信息</div>
+    <div class="card" v-if="skuList.length" style="padding: 0">
+      <Collapse v-model="activeSkuNames">
+        <CollapseItem
+          v-for="(item, index) in skuList"
+          :key="index"
+          :title="item.name"
+          :name="index"
+        >
+          <ul
+            class="form"
+            style="
+              padding: 0 0.32rem;
+              border: 1px solid #eee;
+              border-radius: 0.24rem;
+            "
+          >
+            <li class="form-item">
+              <div class="name">图片</div>
+              <Uploader style="margin-top: 0.32rem" max-count="1" />
+            </li>
+            <li class="form-item flex">
+              <div class="name">价格</div>
+              <input class="input" type="number" placeholder="请输入价格" />
+            </li>
+            <li class="form-item flex">
+              <div class="name">库存</div>
+              <input class="input" type="number" placeholder="请输入库存" />
+            </li>
+          </ul>
+        </CollapseItem>
+      </Collapse>
+    </div>
   </div>
+
   <button class="upload-btn">点击上传</button>
   <Dialog
     v-model:show="specOptionModalVisible"
@@ -207,6 +242,8 @@ import {
   SwipeCell,
   showConfirmDialog,
   showToast,
+  Collapse,
+  CollapseItem,
 } from "vant";
 import { ref, reactive } from "vue";
 
@@ -223,6 +260,13 @@ const specList = reactive<SpecItem[]>([]);
 const specOptionModalVisible = ref(false);
 const curSpecIndex = ref(0);
 const specOptionName = ref("");
+const skuList = reactive([
+  { name: "红色,X", image: "", price: "", stock: 0 },
+  { name: "蓝色,X", image: "", price: "", stock: 0 },
+  { name: "红色,M", image: "", price: "", stock: 0 },
+  { name: "蓝色,M", image: "", price: "", stock: 0 },
+]);
+const activeSkuNames = ref([]);
 
 const addSpec = () => {
   specList.push({ name: "", options: [] });
@@ -258,6 +302,10 @@ const deleteSpecOption = (index: number, optionIndex: number) => {
 .van-empty__description {
   font-size: 0.24rem;
 }
+.van-collapse-item__title {
+  font-size: 0.26rem;
+  font-weight: 500;
+}
 </style>
 <style lang="scss" scoped>
 .container {
@@ -279,6 +327,7 @@ const deleteSpecOption = (index: number, optionIndex: number) => {
     padding: 0 0.32rem;
     background: #fff;
     border-radius: 0.32rem;
+    overflow: hidden;
     .form {
       .form-item {
         padding: 0.32rem 0;
@@ -316,6 +365,7 @@ const deleteSpecOption = (index: number, optionIndex: number) => {
           }
         }
         .input {
+          color: #333;
           flex: 1;
           text-align: right;
         }
