@@ -202,11 +202,21 @@
             </li>
             <li class="form-item flex">
               <div class="name">价格</div>
-              <input class="input" type="number" placeholder="请输入价格" />
+              <input
+                class="input"
+                v-model="item.price"
+                type="number"
+                placeholder="请输入价格"
+              />
             </li>
             <li class="form-item flex">
               <div class="name">库存</div>
-              <input class="input" type="number" placeholder="请输入库存" />
+              <input
+                class="input"
+                v-model="item.stock"
+                type="number"
+                placeholder="请输入库存"
+              />
             </li>
           </ul>
         </CollapseItem>
@@ -245,11 +255,18 @@ import {
   Collapse,
   CollapseItem,
 } from "vant";
-import { ref, reactive } from "vue";
+import { ref, reactive, watch } from "vue";
+import _ from "lodash";
 
 interface SpecItem {
   name: string;
   options: string[];
+}
+interface SkuItem {
+  name: string;
+  image: string;
+  price: string;
+  stock: string;
 }
 
 const uploadVideoTipsVisible = ref(false);
@@ -260,13 +277,38 @@ const specList = reactive<SpecItem[]>([]);
 const specOptionModalVisible = ref(false);
 const curSpecIndex = ref(0);
 const specOptionName = ref("");
-const skuList = reactive([
-  { name: "红色,X", image: "", price: "", stock: 0 },
-  { name: "蓝色,X", image: "", price: "", stock: 0 },
-  { name: "红色,M", image: "", price: "", stock: 0 },
-  { name: "蓝色,M", image: "", price: "", stock: 0 },
-]);
-const activeSkuNames = ref([]);
+const skuList = ref<SkuItem[]>([]);
+const activeSkuNames = ref([0]);
+
+watch(specList, () => {
+  let nameList: string[][] = [];
+  specList.forEach((item, index) => {
+    const nameListUnit = _.cloneDeep(nameList);
+    for (let i = 0; i < item.options.length - 1; i++) {
+      nameList = [...nameList, ..._.cloneDeep(nameListUnit)];
+    }
+    item.options.forEach((_item, _index) => {
+      if (index === 0) {
+        if (!nameList[_index]) nameList[_index] = [];
+        nameList[_index][index] = _item;
+      } else {
+        const unitLength = nameList.length / item.options.length;
+        for (let j = 0; j < unitLength; j++) {
+          if (!nameList[j + _index * unitLength]) {
+            nameList[j + _index * unitLength] = [];
+          }
+          nameList[j + _index * unitLength][index] = _item;
+        }
+      }
+    });
+  });
+  skuList.value = nameList.map((item) => ({
+    name: item.join(),
+    image: "",
+    price: "",
+    stock: "",
+  }));
+});
 
 const addSpec = () => {
   specList.push({ name: "", options: [] });
