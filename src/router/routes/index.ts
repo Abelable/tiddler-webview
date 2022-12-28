@@ -1,7 +1,7 @@
 import { RouteRecordRaw } from "vue-router";
 import merchant from "./merchant";
-import common from "./common";
+import shop from "./shop";
 
-const routes: Array<RouteRecordRaw> = [...common, ...merchant];
+const routes: Array<RouteRecordRaw> = [...merchant, ...shop];
 
 export default routes;
