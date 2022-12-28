@@ -12,7 +12,11 @@
             :key="index"
             @click="merchantType = index"
           >
-            <img class="icon" :src="require(`./images/${item}.png`)" alt="" />
+            <img
+              class="icon"
+              :src="require(`./images/settle-in/${item}.png`)"
+              alt=""
+            />
             <div class="name">
               {{ item === "enterprise" ? "企业店铺" : "个人店铺" }}
             </div>
@@ -90,14 +94,20 @@
                 <Uploader max-count="1" :after-read="uploadIdCardFrontPhoto">
                   <img
                     class="photo"
-                    :src="idCardFrontPhoto || require('./images/front.png')"
+                    :src="
+                      idCardFrontPhoto ||
+                      require('./images/settle-in/front.png')
+                    "
                     alt=""
                   />
                 </Uploader>
                 <Uploader max-count="1" :after-read="uploadIdCardBehindPhoto">
                   <img
                     class="photo"
-                    :src="idCardFrontPhoto || require('./images/behind.png')"
+                    :src="
+                      idCardFrontPhoto ||
+                      require('./images/settle-in/behind.png')
+                    "
                     alt=""
                   />
                 </Uploader>
@@ -117,14 +127,18 @@
                     <div class="img-wrap">
                       <img
                         style="width: 0.5rem; height: 0.5rem"
-                        src="./images/camera.png"
+                        src="./images/settle-in/camera.png"
                         alt=""
                       />
                     </div>
                     <div class="desc">手持身份证照片</div>
                   </div>
                 </Uploader>
-                <img class="photo" src="./images/person-example.png" alt="" />
+                <img
+                  class="photo"
+                  src="./images/settle-in/person-example.png"
+                  alt=""
+                />
               </div>
             </div>
             <div class="title">联系方式</div>
@@ -207,7 +221,7 @@
                     <div class="img-wrap">
                       <img
                         style="width: 0.5rem; height: 0.5rem"
-                        src="./images/camera.png"
+                        src="./images/settle-in/camera.png"
                         alt=""
                       />
                     </div>
@@ -216,7 +230,7 @@
                 </Uploader>
                 <img
                   class="photo"
-                  src="./images/enterprise-example.png"
+                  src="./images/settle-in/enterprise-example.png"
                   alt=""
                 />
               </div>
@@ -248,14 +262,20 @@
                 <Uploader max-count="1" :after-read="uploadIdCardFrontPhoto">
                   <img
                     class="photo"
-                    :src="idCardFrontPhoto || require('./images/front.png')"
+                    :src="
+                      idCardFrontPhoto ||
+                      require('./images/settle-in/front.png')
+                    "
                     alt=""
                   />
                 </Uploader>
                 <Uploader max-count="1" :after-read="uploadIdCardBehindPhoto">
                   <img
                     class="photo"
-                    :src="idCardFrontPhoto || require('./images/behind.png')"
+                    :src="
+                      idCardFrontPhoto ||
+                      require('./images/settle-in/behind.png')
+                    "
                     alt=""
                   />
                 </Uploader>
@@ -275,14 +295,18 @@
                     <div class="img-wrap">
                       <img
                         style="width: 0.5rem; height: 0.5rem"
-                        src="./images/camera.png"
+                        src="./images/settle-in/camera.png"
                         alt=""
                       />
                     </div>
                     <div class="desc">手持身份证照片</div>
                   </div>
                 </Uploader>
-                <img class="photo" src="./images/person-example.png" alt="" />
+                <img
+                  class="photo"
+                  src="./images/settle-in/person-example.png"
+                  alt=""
+                />
               </div>
             </div>
           </template>
@@ -362,10 +386,10 @@
           class="illus"
           :src="
             status === 1
-              ? require('./images/wait.png')
+              ? require('./images/settle-in/wait.png')
               : status === 3
-              ? require('./images/success.png')
-              : require('./images/fail.png')
+              ? require('./images/settle-in/success.png')
+              : require('./images/settle-in/fail.png')
           "
           alt=""
         />
@@ -509,7 +533,7 @@ const checkAgreement = () => router.push("/agreement/merchant_agreement");
     padding-top: 3.5rem;
     height: 100vh;
     background-color: #fff;
-    background-image: url("./images/bg.jpeg");
+    background-image: url("./images/settle-in/bg.jpeg");
     background-size: 100% 5.62rem;
     background-position-y: -1rem;
     background-repeat: no-repeat;
