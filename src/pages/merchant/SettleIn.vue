@@ -453,9 +453,17 @@
 
 <script setup lang="ts">
 import { Checkbox, Area, Popup, Uploader, Picker } from "vant";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { areaList } from "@vant/area-data";
+import { getOssConfig } from "./utils/api";
+import { stringify } from "qs";
+
+interface RegionOption {
+  text: string;
+  value: string;
+  children?: RegionOption[];
+}
 
 const router = useRouter();
 
@@ -474,11 +482,19 @@ const pickedCategory = ref(0);
 const pickedCategoryDesc = ref("");
 const status = ref(1);
 
-interface RegionOption {
-  text: string;
-  value: string;
-  children?: RegionOption[];
-}
+onMounted(async () => {
+  if (!localStorage.getItem("ossConfig")) {
+    await setOssConfig();
+  }
+  const ossConfig = JSON.parse(localStorage.getItem("ossConfig") as string);
+  console.log("ossConfig", ossConfig);
+});
+
+const setOssConfig = async () => {
+  const config = await getOssConfig();
+  localStorage.setItem("ossConfig", JSON.stringify(config));
+};
+
 const areaConfirm = ({
   selectedValues,
   selectedOptions,

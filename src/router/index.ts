@@ -10,6 +10,9 @@ router.beforeEach((to, from, next) => {
   if (to.meta.title) {
     document.title = to.meta.title as string;
   }
+  if (to.query.token) {
+    localStorage.setItem("token", to.query.token as string);
+  }
   next();
 });
 
