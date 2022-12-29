@@ -457,7 +457,7 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { areaList } from "@vant/area-data";
 import { getOssConfig } from "./utils/api";
-import { stringify } from "qs";
+import type { OssConfig } from "./utils/api";
 
 interface RegionOption {
   text: string;
@@ -467,7 +467,7 @@ interface RegionOption {
 
 const router = useRouter();
 
-const step = ref(0);
+const step = ref(1);
 const agreementsChecked = ref(false);
 const merchantType = ref(-1);
 const areaPickerPopupVisible = ref(false);
@@ -515,8 +515,30 @@ const uploadIdCardBehindPhoto = (file: any) => {
 const uploadPersonalPhoto = (file: any) => {
   personalPhoto.value = file.content;
 };
-const uploadEnterprisePhoto = (file: any) => {
-  enterprisePhoto.value = file.content;
+const uploadEnterprisePhoto = async ({ file }: any) => {
+  const ossConfig = JSON.parse(
+    localStorage.getItem("ossConfig") as string
+  ) as OssConfig;
+  const fileName = `${Date.now()}.${file.name.split(".")[1]}`;
+  const formData = new FormData();
+  formData.append("key", `${ossConfig.dir}${fileName}`);
+  formData.append("success_action_status", "200");
+  formData.append("x-oss-object-acl", "public-read");
+  formData.append("x-oss-meta-fullname", fileName);
+  formData.append("OSSAccessKeyId", ossConfig.accessId);
+  formData.append("policy", ossConfig.policy);
+  formData.append("signature", ossConfig.signature);
+  formData.append("file", file);
+  window
+    .fetch(ossConfig.host, {
+      method: "POST",
+      body: formData,
+    })
+    .then(() => {
+      enterprisePhoto.value = `${ossConfig.host}/${ossConfig.dir}${fileName}`;
+    });
+
+  // enterprisePhoto.value = file.content;
 };
 const categoryConfirm = ({
   selectedValues,

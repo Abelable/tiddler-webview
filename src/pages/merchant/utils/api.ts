@@ -10,7 +10,5 @@ export interface OssConfig {
   dir: string;
 }
 
-export const getOssConfig = async (): Promise<OssConfig> => {
-  const result: OssConfig = await http("oss_config");
-  return result;
-};
+export const getOssConfig = async (): Promise<OssConfig> =>
+  await http("oss_config");
