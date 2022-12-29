@@ -7,10 +7,10 @@
         <div class="selection">
           <div
             class="option"
-            :class="{ selected: type === index }"
+            :class="{ selected: merchantInfo.type === index + 1 }"
             v-for="(item, index) in ['personal', 'enterprise']"
             :key="index"
-            @click="type = index"
+            @click="merchantInfo.type = index + 1"
           >
             <img
               class="icon"
@@ -25,8 +25,8 @@
         <div class="btn-wrap">
           <div
             class="btn confirm"
-            :class="{ active: type !== -1 && agreementsChecked }"
-            @click="type !== -1 && agreementsChecked && (step = 1)"
+            :class="{ active: agreementsChecked }"
+            @click="agreementsChecked && (step = 1)"
           >
             下一步
           </div>
@@ -50,7 +50,7 @@
           <div
             class="step"
             v-for="(item, index) in [
-              type === 0 ? '填写个人信息' : '填写企业信息',
+              merchantInfo.type === 1 ? '填写个人信息' : '填写企业信息',
               '填写银行信息',
               '填写店铺信息',
             ]"
@@ -74,7 +74,7 @@
       </div>
       <div class="main">
         <div class="form-wrap" v-show="step === 1">
-          <template v-if="type === 0">
+          <template v-if="merchantInfo.type === 1">
             <div class="title">身份信息</div>
             <div class="form-item">
               <div class="form-title">姓名</div>
@@ -100,22 +100,33 @@
                 <Uploader max-count="1" :after-read="uploadIdCardFrontPhoto">
                   <img
                     class="photo"
+                    v-if="!uploadIdCardFrontPhotoLoading"
                     :src="
                       idCardFrontPhoto ||
                       require('./images/settle-in/front.png')
                     "
                     alt=""
                   />
+                  <div
+                    class="loading-wrap"
+                    v-if="uploadIdCardFrontPhotoLoading"
+                  >
+                    <Loading vertical color="#fff">上传中...</Loading>
+                  </div>
                 </Uploader>
                 <Uploader max-count="1" :after-read="uploadIdCardBackPhoto">
                   <img
                     class="photo"
+                    v-if="!uploadIdCardBackPhotoLoading"
                     :src="
                       idCardBackPhoto ||
                       require('./images/settle-in/behind.png')
                     "
                     alt=""
                   />
+                  <div class="loading-wrap" v-if="uploadIdCardBackPhotoLoading">
+                    <Loading vertical color="#fff">上传中...</Loading>
+                  </div>
                 </Uploader>
               </div>
             </div>
@@ -125,11 +136,14 @@
                 <Uploader max-count="1" :after-read="uploadHoldIdCardPhoto">
                   <img
                     class="photo"
-                    v-if="holdIdCardPhoto"
+                    v-if="!uploadHoldIdCardPhotoLoading && holdIdCardPhoto"
                     :src="holdIdCardPhoto"
                     alt=""
                   />
-                  <div class="default-img" v-else>
+                  <div
+                    class="default-img"
+                    v-if="!uploadHoldIdCardPhotoLoading && !holdIdCardPhoto"
+                  >
                     <div class="img-wrap">
                       <img
                         style="width: 0.5rem; height: 0.5rem"
@@ -138,6 +152,9 @@
                       />
                     </div>
                     <div class="desc">手持身份证照片</div>
+                  </div>
+                  <div class="loading-wrap" v-if="uploadHoldIdCardPhotoLoading">
+                    <Loading vertical color="#fff">上传中...</Loading>
                   </div>
                 </Uploader>
                 <img
@@ -150,11 +167,21 @@
             <div class="title">联系方式</div>
             <div class="form-item">
               <div class="form-title">联系电话</div>
-              <input class="input" type="tel" placeholder="请输入联系电话" />
+              <input
+                class="input"
+                v-model="mobile"
+                type="tel"
+                placeholder="请输入联系电话"
+              />
             </div>
             <div class="form-item">
               <div class="form-title">电子邮箱</div>
-              <input class="input" type="email" placeholder="请输入电子邮箱" />
+              <input
+                class="input"
+                v-model="email"
+                type="email"
+                placeholder="请输入电子邮箱"
+              />
             </div>
             <div class="form-item">
               <div class="form-title">联系地址</div>
@@ -393,13 +420,14 @@
 </template>
 
 <script setup lang="ts">
-import { Checkbox, Area, Popup, Uploader, Picker } from "vant";
-import { ref, onMounted } from "vue";
+import { Checkbox, Area, Popup, Uploader, Picker, Loading } from "vant";
+import { ref, onMounted, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { areaList } from "@vant/area-data";
 import { upload } from "@/utils/upload";
 
 import type { UploaderAfterRead } from "vant/lib/uploader/types";
+import type { MerchantInfo } from "./utils/api";
 interface RegionOption {
   text: string;
   value: string;
@@ -410,17 +438,43 @@ const router = useRouter();
 
 const step = ref(0);
 const agreementsChecked = ref(false);
+
+const merchantInfo = reactive<MerchantInfo>({
+  type: 1,
+  companyName: "",
+  businessLicensePhoto: "",
+  regionList: "",
+  addressDetail: "",
+  name: "",
+  mobile: "",
+  email: "",
+  idCardNumber: "",
+  idCardFrontPhoto: "",
+  idCardBackPhoto: "",
+  holdIdCardPhoto: "",
+  bankCardNumber: "",
+  bankName: "",
+  shopName: "",
+  shopCategoryId: 0,
+});
+
 const type = ref(-1);
 const name = ref("");
 const idCardNumber = ref("");
+const mobile = ref("");
+const email = ref("");
 
 const areaPickerPopupVisible = ref(false);
 const pickedArea = ref<string[]>([]);
 const pickedAreaDesc = ref("");
 const idCardFrontPhoto = ref("");
+const uploadIdCardFrontPhotoLoading = ref(false);
 const idCardBackPhoto = ref("");
+const uploadIdCardBackPhotoLoading = ref(false);
 const holdIdCardPhoto = ref("");
+const uploadHoldIdCardPhotoLoading = ref(false);
 const businessLicensePhoto = ref("");
+const uploadBusinessLicensePhotoLoading = ref(false);
 const categoryPickerPopupVisible = ref(false);
 const pickedCategory = ref(0);
 const pickedCategoryDesc = ref("");
@@ -441,16 +495,24 @@ const areaConfirm = ({
   areaPickerPopupVisible.value = false;
 };
 const uploadIdCardFrontPhoto = (async ({ file }: { file: File }) => {
+  uploadIdCardFrontPhotoLoading.value = true;
   idCardFrontPhoto.value = await upload(file);
+  uploadIdCardFrontPhotoLoading.value = false;
 }) as UploaderAfterRead;
 const uploadIdCardBackPhoto = (async ({ file }: { file: File }) => {
+  uploadIdCardBackPhotoLoading.value = true;
   idCardBackPhoto.value = await upload(file);
+  uploadIdCardBackPhotoLoading.value = false;
 }) as UploaderAfterRead;
 const uploadHoldIdCardPhoto = (async ({ file }: { file: File }) => {
+  uploadHoldIdCardPhotoLoading.value = true;
   holdIdCardPhoto.value = await upload(file);
+  uploadHoldIdCardPhotoLoading.value = false;
 }) as UploaderAfterRead;
 const uploadBusinessLicensePhoto = (async ({ file }: { file: File }) => {
+  uploadBusinessLicensePhotoLoading.value = true;
   businessLicensePhoto.value = await upload(file);
+  uploadBusinessLicensePhotoLoading.value = false;
 }) as UploaderAfterRead;
 const categoryConfirm = ({
   selectedValues,
@@ -658,7 +720,8 @@ const checkAgreement = () => router.push("/agreement/merchant_agreement");
             display: flex;
             justify-content: space-between;
             .photo,
-            .default-img {
+            .default-img,
+            .loading-wrap {
               width: 3.3rem;
               height: 2.14rem;
               box-shadow: 0 0 10px 0 #e6e6e6;
@@ -683,6 +746,12 @@ const checkAgreement = () => router.push("/agreement/merchant_agreement");
                 color: #000;
                 font-size: 0.2rem;
               }
+            }
+            .loading-wrap {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              background: rgba(0, 0, 0, 0.6);
             }
           }
         }
