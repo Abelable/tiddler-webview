@@ -26,6 +26,7 @@ export interface MerchantInfo {
   idCardFrontPhoto: string;
   idCardBackPhoto: string;
   holdIdCardPhoto: string;
+  bankCardOwnerName: string;
   bankCardNumber: string;
   bankName: string;
   shopName: string;
