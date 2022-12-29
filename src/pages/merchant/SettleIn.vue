@@ -547,7 +547,6 @@ const merchantInfo = reactive<MerchantInfo>({
 });
 
 const areaPickerPopupVisible = ref(false);
-const pickedArea = ref<string[]>([]);
 const pickedAreaDesc = ref("");
 const uploadIdCardFrontPhotoLoading = ref(false);
 const uploadIdCardBackPhotoLoading = ref(false);
@@ -567,7 +566,7 @@ const areaConfirm = ({
   selectedValues: string[];
   selectedOptions: RegionOption[];
 }) => {
-  pickedArea.value = selectedValues;
+  merchantInfo.regionList = JSON.stringify(selectedValues);
   pickedAreaDesc.value = `${selectedOptions[0].text} ${selectedOptions[1].text} ${selectedOptions[2].text}`;
   areaPickerPopupVisible.value = false;
 };
