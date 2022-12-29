@@ -7,10 +7,10 @@
         <div class="selection">
           <div
             class="option"
-            :class="{ selected: merchantType === index }"
+            :class="{ selected: type === index }"
             v-for="(item, index) in ['personal', 'enterprise']"
             :key="index"
-            @click="merchantType = index"
+            @click="type = index"
           >
             <img
               class="icon"
@@ -25,8 +25,8 @@
         <div class="btn-wrap">
           <div
             class="btn confirm"
-            :class="{ active: merchantType !== -1 && agreementsChecked }"
-            @click="step = 1"
+            :class="{ active: type !== -1 && agreementsChecked }"
+            @click="type !== -1 && agreementsChecked && (step = 1)"
           >
             下一步
           </div>
@@ -42,7 +42,7 @@
         </div>
       </div>
     </div>
-    <div class="information-filling" v-if="step !== 0 && step !== 4">
+    <div class="information-filling" v-else>
       <div class="header">
         <div class="title">信息填写</div>
         <div class="sub-title">真实有效的信息有助于您快速通过审核</div>
@@ -50,7 +50,7 @@
           <div
             class="step"
             v-for="(item, index) in [
-              merchantType === 0 ? '填写个人信息' : '填写企业信息',
+              type === 0 ? '填写个人信息' : '填写企业信息',
               '填写银行信息',
               '填写店铺信息',
             ]"
@@ -74,16 +74,22 @@
       </div>
       <div class="main">
         <div class="form-wrap" v-show="step === 1">
-          <template v-if="merchantType === 0">
+          <template v-if="type === 0">
             <div class="title">身份信息</div>
             <div class="form-item">
               <div class="form-title">姓名</div>
-              <input class="input" type="text" placeholder="例：小明" />
+              <input
+                class="input"
+                v-model="name"
+                type="text"
+                placeholder="例：小明"
+              />
             </div>
             <div class="form-item">
               <div class="form-title">身份证号</div>
               <input
                 class="input"
+                v-model="idCardNumber"
                 type="text"
                 placeholder="请输入18位身份证号"
               />
@@ -101,11 +107,11 @@
                     alt=""
                   />
                 </Uploader>
-                <Uploader max-count="1" :after-read="uploadIdCardBehindPhoto">
+                <Uploader max-count="1" :after-read="uploadIdCardBackPhoto">
                   <img
                     class="photo"
                     :src="
-                      idCardFrontPhoto ||
+                      idCardBackPhoto ||
                       require('./images/settle-in/behind.png')
                     "
                     alt=""
@@ -116,11 +122,11 @@
             <div class="form-item">
               <div class="form-title">请点击上传手持身份证照片</div>
               <div class="uploader-wrap">
-                <Uploader max-count="1" :after-read="uploadPersonalPhoto">
+                <Uploader max-count="1" :after-read="uploadHoldIdCardPhoto">
                   <img
                     class="photo"
-                    v-if="personalPhoto"
-                    :src="personalPhoto"
+                    v-if="holdIdCardPhoto"
+                    :src="holdIdCardPhoto"
                     alt=""
                   />
                   <div class="default-img" v-else>
@@ -210,11 +216,14 @@
             <div class="form-item">
               <div class="form-title">请点击上传企业营业执照照片</div>
               <div class="uploader-wrap">
-                <Uploader max-count="1" :after-read="uploadEnterprisePhoto">
+                <Uploader
+                  max-count="1"
+                  :after-read="uploadBusinessLicensePhoto"
+                >
                   <img
                     class="photo"
-                    v-if="enterprisePhoto"
-                    :src="enterprisePhoto"
+                    v-if="businessLicensePhoto"
+                    :src="businessLicensePhoto"
                     alt=""
                   />
                   <div class="default-img" v-else>
@@ -269,11 +278,11 @@
                     alt=""
                   />
                 </Uploader>
-                <Uploader max-count="1" :after-read="uploadIdCardBehindPhoto">
+                <Uploader max-count="1" :after-read="uploadIdCardBackPhoto">
                   <img
                     class="photo"
                     :src="
-                      idCardFrontPhoto ||
+                      idCardBackPhoto ||
                       require('./images/settle-in/behind.png')
                     "
                     alt=""
@@ -284,11 +293,11 @@
             <div class="form-item">
               <div class="form-title">请点击上传手持身份证照片</div>
               <div class="uploader-wrap">
-                <Uploader max-count="1" :after-read="uploadPersonalPhoto">
+                <Uploader max-count="1" :after-read="uploadHoldIdCardPhoto">
                   <img
                     class="photo"
-                    v-if="personalPhoto"
-                    :src="personalPhoto"
+                    v-if="holdIdCardPhoto"
+                    :src="holdIdCardPhoto"
                     alt=""
                   />
                   <div class="default-img" v-else>
@@ -380,74 +389,6 @@
         </div>
       </div>
     </div>
-    <div class="status" v-if="step === 4">
-      <div class="status-illus" v-if="status !== 2">
-        <img
-          class="illus"
-          :src="
-            status === 1
-              ? require('./images/settle-in/wait.png')
-              : status === 3
-              ? require('./images/settle-in/success.png')
-              : require('./images/settle-in/fail.png')
-          "
-          alt=""
-        />
-        <div class="title">
-          {{
-            status === 1 ? "等待审核" : status === 3 ? "缴纳成功" : "审核失败"
-          }}
-        </div>
-        <div class="desc" :class="{ err: status === 4 }">
-          {{
-            status === 1
-              ? "已提交申请，请耐心等待平台人员处理"
-              : status === 3
-              ? "店铺已开通"
-              : "失败原因：身份证照片不够清晰"
-          }}
-        </div>
-        <div class="btn back">{{ status === 4 ? "重新申请" : "返回" }}</div>
-      </div>
-      <div class="payment" v-else>
-        <div class="title">审核通过</div>
-        <div class="pay-amount">
-          缴纳保证金：<span style="color: #eaab63">1000元</span>
-        </div>
-        <div class="agreement">
-          <p>缴纳保证金默认接受以下条款:</p>
-          <p>
-            1.
-            商家在小鱼游参与经营活动必须缴纳服务保证金，保证金主要用于保证商家直播带货符合法律法规及小鱼游的平台规定。
-          </p>
-          <p>
-            2.
-            商家在入驻申请通过后需一次性足额缴纳保证金，保证金金额统一为人民币壹仟元。
-          </p>
-          <p>
-            3.
-            小鱼游有权根据商家的业务变化及实际违约赔付情况通知商家调整保证金金额，商家应在收到小鱼游通知后的3个工作日内补足保证金，如果没有及时补足保证金金额的，小鱼游有权中止合作。
-          </p>
-          <p>
-            4.
-            商家缴纳的保证金将冻结在商家的小鱼游企业账户中，在冻结期内保证金不产生利息，小鱼游不开具发票。
-          </p>
-          <p>
-            5.
-            商家需要退出小鱼游，终止合作，需向小鱼游提出保证金退还申请，小鱼游审核通过后会在30天内将保证金原路退回到您缴纳保证金时的支付账户。商家退出时存在前期违约金尚未支付的情况的，小鱼游从保证金余额中扣取。
-          </p>
-          <p>
-            6.
-            因重大违规被清退的商家将不退还保证金，因违规行为扣取的保证金不退还，作为商家违约金赔偿给用户及小鱼游，具体保证金扣取情况参见《平台商家违规管理规则》。
-          </p>
-          <p>
-            7.
-            小鱼游将根据国家经济情况、市场状况及小鱼游经营情况，适时适当调整保证金制度。保证金制度的调整会按相关规定提前公示予以所有商家。
-          </p>
-        </div>
-        <div class="btn pay">点击缴纳</div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -456,9 +397,9 @@ import { Checkbox, Area, Popup, Uploader, Picker } from "vant";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { areaList } from "@vant/area-data";
-import { getOssConfig } from "./utils/api";
-import type { OssConfig } from "./utils/api";
+import { upload } from "@/utils/upload";
 
+import type { UploaderAfterRead } from "vant/lib/uploader/types";
 interface RegionOption {
   text: string;
   value: string;
@@ -467,33 +408,26 @@ interface RegionOption {
 
 const router = useRouter();
 
-const step = ref(1);
+const step = ref(0);
 const agreementsChecked = ref(false);
-const merchantType = ref(-1);
+const type = ref(-1);
+const name = ref("");
+const idCardNumber = ref("");
+
 const areaPickerPopupVisible = ref(false);
 const pickedArea = ref<string[]>([]);
 const pickedAreaDesc = ref("");
 const idCardFrontPhoto = ref("");
-const idCardBehindPhoto = ref("");
-const personalPhoto = ref("");
-const enterprisePhoto = ref("");
+const idCardBackPhoto = ref("");
+const holdIdCardPhoto = ref("");
+const businessLicensePhoto = ref("");
 const categoryPickerPopupVisible = ref(false);
 const pickedCategory = ref(0);
 const pickedCategoryDesc = ref("");
-const status = ref(1);
 
 onMounted(async () => {
-  if (!localStorage.getItem("ossConfig")) {
-    await setOssConfig();
-  }
-  const ossConfig = JSON.parse(localStorage.getItem("ossConfig") as string);
-  console.log("ossConfig", ossConfig);
+  console.log("onMounted");
 });
-
-const setOssConfig = async () => {
-  const config = await getOssConfig();
-  localStorage.setItem("ossConfig", JSON.stringify(config));
-};
 
 const areaConfirm = ({
   selectedValues,
@@ -506,40 +440,18 @@ const areaConfirm = ({
   pickedAreaDesc.value = `${selectedOptions[0].text} ${selectedOptions[1].text} ${selectedOptions[2].text}`;
   areaPickerPopupVisible.value = false;
 };
-const uploadIdCardFrontPhoto = (file: any) => {
-  idCardFrontPhoto.value = file.content;
-};
-const uploadIdCardBehindPhoto = (file: any) => {
-  idCardBehindPhoto.value = file.content;
-};
-const uploadPersonalPhoto = (file: any) => {
-  personalPhoto.value = file.content;
-};
-const uploadEnterprisePhoto = async ({ file }: any) => {
-  const ossConfig = JSON.parse(
-    localStorage.getItem("ossConfig") as string
-  ) as OssConfig;
-  const fileName = `${Date.now()}.${file.name.split(".")[1]}`;
-  const formData = new FormData();
-  formData.append("key", `${ossConfig.dir}${fileName}`);
-  formData.append("success_action_status", "200");
-  formData.append("x-oss-object-acl", "public-read");
-  formData.append("x-oss-meta-fullname", fileName);
-  formData.append("OSSAccessKeyId", ossConfig.accessId);
-  formData.append("policy", ossConfig.policy);
-  formData.append("signature", ossConfig.signature);
-  formData.append("file", file);
-  window
-    .fetch(ossConfig.host, {
-      method: "POST",
-      body: formData,
-    })
-    .then(() => {
-      enterprisePhoto.value = `${ossConfig.host}/${ossConfig.dir}${fileName}`;
-    });
-
-  // enterprisePhoto.value = file.content;
-};
+const uploadIdCardFrontPhoto = (async ({ file }: { file: File }) => {
+  idCardFrontPhoto.value = await upload(file);
+}) as UploaderAfterRead;
+const uploadIdCardBackPhoto = (async ({ file }: { file: File }) => {
+  idCardBackPhoto.value = await upload(file);
+}) as UploaderAfterRead;
+const uploadHoldIdCardPhoto = (async ({ file }: { file: File }) => {
+  holdIdCardPhoto.value = await upload(file);
+}) as UploaderAfterRead;
+const uploadBusinessLicensePhoto = (async ({ file }: { file: File }) => {
+  businessLicensePhoto.value = await upload(file);
+}) as UploaderAfterRead;
 const categoryConfirm = ({
   selectedValues,
   selectedOptions,
@@ -795,64 +707,6 @@ const checkAgreement = () => router.push("/agreement/merchant_agreement");
           font-weight: 550;
           background: #212121;
         }
-      }
-    }
-  }
-  .status {
-    padding: 0.32rem;
-    height: 100vh;
-    background: #fff;
-    .back,
-    .pay {
-      margin-top: 0.8rem;
-      width: 100%;
-      color: #fff;
-      background: #212121;
-    }
-    .status-illus {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      padding-bottom: 3rem;
-      .illus {
-        width: 3.2rem;
-        height: 3.2rem;
-      }
-      .title {
-        margin-top: 0.32rem;
-        color: #333;
-        font-size: 0.36rem;
-        font-weight: 550;
-      }
-      .desc {
-        margin-top: 0.2rem;
-        color: #666;
-        font-size: 0.24rem;
-        &.err {
-          color: #f22237;
-        }
-      }
-    }
-    .payment {
-      height: 100%;
-      overflow-y: scroll;
-      .title {
-        color: #333;
-        font-size: 0.36rem;
-        font-weight: 550;
-      }
-      .pay-amount {
-        margin-top: 0.12rem;
-        color: #333;
-        font-size: 0.3rem;
-      }
-      .agreement {
-        margin-top: 0.24rem;
-        color: #666;
-        font-size: 0.26rem;
-        line-height: 1.6;
       }
     }
   }
