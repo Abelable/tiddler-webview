@@ -26,7 +26,7 @@
           <div
             class="btn confirm"
             :class="{ active: agreementsChecked }"
-            @click="agreementsChecked && (step = 1)"
+            @click="nextStep"
           >
             下一步
           </div>
@@ -172,12 +172,12 @@
             </div>
             <div class="title">联系方式</div>
             <div class="form-item">
-              <div class="form-title">联系电话</div>
+              <div class="form-title">手机号</div>
               <input
                 class="input"
                 v-model="merchantInfo.mobile"
                 type="tel"
-                placeholder="请输入联系电话"
+                placeholder="请输入手机号"
               />
             </div>
             <div class="form-item">
@@ -318,12 +318,12 @@
               />
             </div>
             <div class="form-item">
-              <div class="form-title">联系电话</div>
+              <div class="form-title">手机号</div>
               <input
                 class="input"
                 v-model="merchantInfo.mobile"
                 type="tel"
-                placeholder="请输入联系电话"
+                placeholder="请输入手机号"
               />
             </div>
             <div class="form-item">
@@ -438,7 +438,7 @@
             <input
               class="input"
               v-model="merchantInfo.bankCardNumber"
-              type="number"
+              type="tel"
               placeholder="例：622123456789012345"
             />
           </div>
@@ -488,7 +488,7 @@
         </div>
         <div class="btns">
           <div class="btn previous-step" @click="step = step - 1">上一步</div>
-          <div class="btn next-step" @click="step = step + 1">
+          <div class="btn next-step" @click="nextStep">
             {{ step === 3 ? "提交审核" : "下一步" }}
           </div>
         </div>
@@ -498,7 +498,15 @@
 </template>
 
 <script setup lang="ts">
-import { Checkbox, Area, Popup, Uploader, Picker, Loading } from "vant";
+import {
+  Checkbox,
+  Area,
+  Popup,
+  Uploader,
+  Picker,
+  Loading,
+  showToast,
+} from "vant";
 import { ref, onMounted, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { areaList } from "@vant/area-data";
@@ -517,7 +525,6 @@ const router = useRouter();
 
 const step = ref(0);
 const agreementsChecked = ref(false);
-
 const merchantInfo = reactive<MerchantInfo>({
   type: 1,
   companyName: "",
@@ -537,7 +544,6 @@ const merchantInfo = reactive<MerchantInfo>({
   shopName: "",
   shopCategoryId: 0,
 });
-
 const areaPickerPopupVisible = ref(false);
 const pickedAreaDesc = ref("");
 const uploadIdCardFrontPhotoLoading = ref(false);
@@ -551,6 +557,161 @@ const pickedCategoryDesc = ref("");
 onMounted(() => {
   setCategoryOptions();
 });
+
+const nextStep = () => {
+  switch (step.value) {
+    case 0:
+      if (!agreementsChecked.value) {
+        showToast("请阅读并同意商家协议");
+        return;
+      }
+      step.value = 1;
+      break;
+    case 1:
+      if (merchantInfo.type === 1) {
+        if (!merchantInfo.name) {
+          showToast("请输入姓名");
+          return;
+        }
+        if (
+          !merchantInfo.idCardNumber ||
+          !/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(
+            merchantInfo.idCardNumber
+          )
+        ) {
+          showToast("请输入正确身份证号");
+          return;
+        }
+        if (!merchantInfo.idCardFrontPhoto) {
+          showToast("请上传身份证正面照片");
+          return;
+        }
+        if (!merchantInfo.idCardBackPhoto) {
+          showToast("请上传身份证反面照片");
+          return;
+        }
+        if (!merchantInfo.holdIdCardPhoto) {
+          showToast("请上传手持身份证照片");
+          return;
+        }
+        if (
+          !merchantInfo.mobile ||
+          !/^1[345789][0-9]{9}$/.test(merchantInfo.mobile)
+        ) {
+          showToast("请输入正确手机号");
+          return;
+        }
+        if (
+          !merchantInfo.email ||
+          !/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(
+            merchantInfo.email
+          )
+        ) {
+          showToast("请输入正确电子邮箱");
+          return;
+        }
+        if (!merchantInfo.regionList) {
+          showToast("请选择省市区");
+          return;
+        }
+        if (!merchantInfo.addressDetail) {
+          showToast("请输入详细地址");
+          return;
+        }
+      } else {
+        if (!merchantInfo.companyName) {
+          showToast("请输入企业名称");
+          return;
+        }
+        if (!merchantInfo.regionList) {
+          showToast("请选择省市区");
+          return;
+        }
+        if (!merchantInfo.addressDetail) {
+          showToast("请输入详细地址");
+          return;
+        }
+        if (!merchantInfo.businessLicensePhoto) {
+          showToast("请上传营业执照照片");
+          return;
+        }
+        if (!merchantInfo.name) {
+          showToast("请输入法人姓名");
+          return;
+        }
+        if (
+          !merchantInfo.mobile ||
+          !/^1[345789][0-9]{9}$/.test(merchantInfo.mobile)
+        ) {
+          showToast("请输入正确手机号");
+          return;
+        }
+        if (
+          !merchantInfo.email ||
+          !/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(
+            merchantInfo.email
+          )
+        ) {
+          showToast("请输入正确电子邮箱");
+          return;
+        }
+        if (
+          !merchantInfo.idCardNumber ||
+          !/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(
+            merchantInfo.idCardNumber
+          )
+        ) {
+          showToast("请输入正确身份证号");
+          return;
+        }
+        if (!merchantInfo.idCardFrontPhoto) {
+          showToast("请上传身份证正面照片");
+          return;
+        }
+        if (!merchantInfo.idCardBackPhoto) {
+          showToast("请上传身份证反面照片");
+          return;
+        }
+        if (!merchantInfo.holdIdCardPhoto) {
+          showToast("请上传手持身份证照片");
+          return;
+        }
+      }
+      step.value = 2;
+      break;
+
+    case 2:
+      if (!merchantInfo.bankCardOwnerName) {
+        showToast("请输入持卡人姓名");
+        return;
+      }
+      if (
+        !merchantInfo.bankCardNumber ||
+        !/^([1-9]{1})(\d{15}|\d{16}|\d{18})$/.test(merchantInfo.bankCardNumber)
+      ) {
+        showToast("请输入正确银行卡号");
+        return;
+      }
+      if (!merchantInfo.bankName) {
+        showToast("请输入开户银行及支行名称");
+        return;
+      }
+      step.value = 3;
+      break;
+
+    case 3:
+      if (!merchantInfo.shopName) {
+        showToast("请输入店铺名称");
+        return;
+      }
+      if (!merchantInfo.shopCategoryId) {
+        showToast("请选择店铺分类");
+        return;
+      }
+      console.log("merchantInfo", merchantInfo);
+      break;
+  }
+};
 
 const setCategoryOptions = async () => {
   categoryOptions.value = await getShopCategoryOptions();
@@ -567,6 +728,7 @@ const areaConfirm = ({
   pickedAreaDesc.value = `${selectedOptions[0].text} ${selectedOptions[1].text} ${selectedOptions[2].text}`;
   areaPickerPopupVisible.value = false;
 };
+
 const uploadIdCardFrontPhoto = (async ({ file }: { file: File }) => {
   uploadIdCardFrontPhotoLoading.value = true;
   merchantInfo.idCardFrontPhoto = await upload(file);
@@ -587,6 +749,7 @@ const uploadBusinessLicensePhoto = (async ({ file }: { file: File }) => {
   merchantInfo.businessLicensePhoto = await upload(file);
   uploadBusinessLicensePhotoLoading.value = false;
 }) as UploaderAfterRead;
+
 const categoryConfirm = ({
   selectedValues,
   selectedOptions,
@@ -598,6 +761,7 @@ const categoryConfirm = ({
   pickedCategoryDesc.value = selectedOptions[0].name;
   categoryPickerPopupVisible.value = false;
 };
+
 const checkAgreement = () => router.push("/agreement/merchant_agreement");
 </script>
 
@@ -783,7 +947,7 @@ const checkAgreement = () => router.push("/agreement/merchant_agreement");
           .picker {
             display: flex;
             align-items: center;
-            color: #777;
+            color: #999;
             &.active {
               color: #333;
             }
