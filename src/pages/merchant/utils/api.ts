@@ -1,18 +1,5 @@
 import { http } from "@/utils/http";
 
-export interface OssConfig {
-  accessId: string;
-  host: string;
-  policy: string;
-  signature: string;
-  expire: number;
-  callback: string;
-  dir: string;
-}
-
-export const getOssConfig = async (): Promise<OssConfig> =>
-  await http("oss_config");
-
 export interface MerchantInfo {
   type: number;
   companyName?: string;
@@ -43,3 +30,13 @@ export interface ShopCategoryOption {
 
 export const getShopCategoryOptions = async (): Promise<ShopCategoryOption[]> =>
   await http("shop/category_options");
+
+export interface MerchantStatusInfo {
+  id: number;
+  type: number;
+  status: number;
+  failureReason: string;
+}
+
+export const getMerchantStatusInfo = async (): Promise<MerchantStatusInfo> =>
+  await http("shop/merchant/status");

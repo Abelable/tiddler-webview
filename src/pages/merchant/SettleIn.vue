@@ -511,7 +511,11 @@ import { ref, onMounted, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { areaList } from "@vant/area-data";
 import { upload } from "@/utils/upload";
-import { getShopCategoryOptions } from "./utils/api";
+import {
+  getShopCategoryOptions,
+  uploadMerchantInfo,
+  getMerchantStatusInfo,
+} from "./utils/api";
 
 import type { UploaderAfterRead } from "vant/lib/uploader/types";
 import type { MerchantInfo, ShopCategoryOption } from "./utils/api";
@@ -554,8 +558,16 @@ const categoryOptions = ref<ShopCategoryOption[]>([]);
 const categoryPickerPopupVisible = ref(false);
 const pickedCategoryDesc = ref("");
 
-onMounted(() => {
-  setCategoryOptions();
+onMounted(async () => {
+  const merchantStatusInfo = await getMerchantStatusInfo();
+  if (merchantStatusInfo) {
+    router.push({
+      path: "/merchant/status",
+      query: { status_info: JSON.stringify(merchantStatusInfo) },
+    });
+  } else {
+    setCategoryOptions();
+  }
 });
 
 const nextStep = () => {
@@ -708,13 +720,22 @@ const nextStep = () => {
         showToast("请选择店铺分类");
         return;
       }
-      console.log("merchantInfo", merchantInfo);
+      submit();
       break;
   }
 };
 
 const setCategoryOptions = async () => {
   categoryOptions.value = await getShopCategoryOptions();
+};
+
+const submit = async () => {
+  try {
+    await uploadMerchantInfo(merchantInfo);
+    router.push("/merchant/status");
+  } catch (error) {
+    showToast("审核提交失败，请重试");
+  }
 };
 
 const areaConfirm = ({
@@ -762,7 +783,7 @@ const categoryConfirm = ({
   categoryPickerPopupVisible.value = false;
 };
 
-const checkAgreement = () => router.push("/agreement/merchant_agreement");
+const checkAgreement = () => router.push("/merchant/agreement");
 </script>
 
 <style lang="scss" scoped>

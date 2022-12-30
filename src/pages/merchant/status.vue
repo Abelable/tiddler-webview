@@ -1,13 +1,13 @@
 <template>
   <div class="container">
     <div class="status">
-      <div class="status-illus" v-if="status !== 2">
+      <div class="status-illus" v-if="statusInfo.status !== 1">
         <img
           class="illus"
           :src="
-            status === 1
+            statusInfo.status === 0
               ? require('./images/settle-in/wait.png')
-              : status === 3
+              : statusInfo.status === 2
               ? require('./images/settle-in/success.png')
               : require('./images/settle-in/fail.png')
           "
@@ -15,19 +15,25 @@
         />
         <div class="title">
           {{
-            status === 1 ? "等待审核" : status === 3 ? "缴纳成功" : "审核失败"
+            statusInfo.status === 0
+              ? "等待审核"
+              : statusInfo.status === 2
+              ? "缴纳成功"
+              : "审核失败"
           }}
         </div>
-        <div class="desc" :class="{ err: status === 4 }">
+        <div class="desc" :class="{ err: statusInfo.status === 3 }">
           {{
-            status === 1
+            statusInfo.status === 0
               ? "已提交申请，请耐心等待平台人员处理"
-              : status === 3
+              : statusInfo.status === 2
               ? "店铺已开通"
-              : "失败原因：身份证照片不够清晰"
+              : `失败原因：${statusInfo.failureReason}`
           }}
         </div>
-        <div class="btn back">{{ status === 4 ? "重新申请" : "返回" }}</div>
+        <div class="btn back">
+          {{ statusInfo.status === 3 ? "重新申请" : "返回" }}
+        </div>
       </div>
       <div class="payment" v-else>
         <div class="title">审核通过</div>
@@ -73,11 +79,23 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
+import { getMerchantStatusInfo } from "./utils/api";
+import type { MerchantStatusInfo } from "./utils/api";
+import { useRoute } from "vue-router";
 
-const status = ref(1);
+const route = useRoute();
+
+const statusInfo = ref<MerchantStatusInfo>({
+  id: 0,
+  status: 0,
+  failureReason: "",
+  type: 1,
+});
 
 onMounted(async () => {
-  console.log("onMounted");
+  statusInfo.value = route.query.status_info
+    ? JSON.parse(route.query.status_info as string)
+    : await getMerchantStatusInfo();
 });
 </script>
 
