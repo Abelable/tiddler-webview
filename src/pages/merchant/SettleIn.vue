@@ -478,19 +478,10 @@
               round
             >
               <Picker
-                :columns="[
-                  { text: '水果生鲜', value: 1 },
-                  { text: '服饰箱包', value: 2 },
-                  { text: '美妆个护', value: 3 },
-                  { text: '数码电器', value: 4 },
-                  { text: '居家日用', value: 5 },
-                  { text: '食品饮料', value: 6 },
-                  { text: '母婴玩具', value: 7 },
-                  { text: '宠物生活', value: 8 },
-                  { text: '特殊类目', value: 9 },
-                ]"
+                :columns="categoryOptions"
                 @confirm="categoryConfirm"
                 @cancel="categoryPickerPopupVisible = false"
+                :columns-field-names="{ text: 'name', value: 'id' }"
               />
             </Popup>
           </div>
@@ -512,9 +503,10 @@ import { ref, onMounted, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { areaList } from "@vant/area-data";
 import { upload } from "@/utils/upload";
+import { getShopCategoryOptions } from "./utils/api";
 
 import type { UploaderAfterRead } from "vant/lib/uploader/types";
-import type { MerchantInfo } from "./utils/api";
+import type { MerchantInfo, ShopCategoryOption } from "./utils/api";
 interface RegionOption {
   text: string;
   value: string;
@@ -552,12 +544,17 @@ const uploadIdCardFrontPhotoLoading = ref(false);
 const uploadIdCardBackPhotoLoading = ref(false);
 const uploadHoldIdCardPhotoLoading = ref(false);
 const uploadBusinessLicensePhotoLoading = ref(false);
+const categoryOptions = ref<ShopCategoryOption[]>([]);
 const categoryPickerPopupVisible = ref(false);
 const pickedCategoryDesc = ref("");
 
-onMounted(async () => {
-  console.log("onMounted");
+onMounted(() => {
+  setCategoryOptions();
 });
+
+const setCategoryOptions = async () => {
+  categoryOptions.value = await getShopCategoryOptions();
+};
 
 const areaConfirm = ({
   selectedValues,
@@ -595,10 +592,10 @@ const categoryConfirm = ({
   selectedOptions,
 }: {
   selectedValues: number[];
-  selectedOptions: RegionOption[];
+  selectedOptions: ShopCategoryOption[];
 }) => {
   merchantInfo.shopCategoryId = selectedValues[0];
-  pickedCategoryDesc.value = selectedOptions[0].text;
+  pickedCategoryDesc.value = selectedOptions[0].name;
   categoryPickerPopupVisible.value = false;
 };
 const checkAgreement = () => router.push("/agreement/merchant_agreement");
