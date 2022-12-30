@@ -35,3 +35,11 @@ export interface MerchantInfo {
 
 export const uploadMerchantInfo = async (info: MerchantInfo) =>
   await http("shop/merchant/settle_in", { method: "POST", data: info });
+
+export interface ShopCategoryOption {
+  id: number;
+  name: string;
+}
+
+export const getShopCategoryOptions = async (): Promise<ShopCategoryOption[]> =>
+  await http("shop/category_options");

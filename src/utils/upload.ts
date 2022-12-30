@@ -1,6 +1,6 @@
 import { getOssConfig } from "./api";
 import type { OssConfig } from "./api";
-import { showLoadingToast, showToast } from "vant";
+import { showToast } from "vant";
 
 export const upload = async (file: File) => {
   let ossConfig: OssConfig;

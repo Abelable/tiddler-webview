@@ -17,6 +17,14 @@ const merchant: Array<RouteRecordRaw> = [
     },
     component: () => import("@/pages/merchant/agreement.vue"),
   },
+  {
+    path: "/merchant/status",
+    name: "merchant_status",
+    meta: {
+      title: "商家入驻",
+    },
+    component: () => import("@/pages/merchant/status.vue"),
+  },
 ];
 
 export default merchant;
