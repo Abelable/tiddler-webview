@@ -235,10 +235,10 @@
               <div class="form-title">企业经营地址</div>
               <div
                 class="picker"
-                :class="{ active: pickedAreaDesc }"
+                :class="{ active: merchantInfo.regionDesc }"
                 @click="areaPickerPopupVisible = true"
               >
-                {{ pickedAreaDesc || "请选择省、市、区" }}
+                {{ merchantInfo.regionDesc || "请选择省、市、区" }}
               </div>
               <Popup
                 v-model:show="areaPickerPopupVisible"
@@ -434,7 +434,7 @@
             />
           </div>
           <div class="form-item">
-            <div class="form-title">个人银行账号</div>
+            <div class="form-title">银行账号</div>
             <input
               class="input"
               v-model="merchantInfo.bankCardNumber"
@@ -533,7 +533,8 @@ const merchantInfo = reactive<MerchantInfo>({
   type: 1,
   companyName: "",
   businessLicensePhoto: "",
-  regionList: "",
+  regionDesc: "",
+  regionCodeList: "",
   addressDetail: "",
   name: "",
   mobile: "",
@@ -622,7 +623,7 @@ const nextStep = () => {
           showToast("请输入正确电子邮箱");
           return;
         }
-        if (!merchantInfo.regionList) {
+        if (!merchantInfo.regionCodeList) {
           showToast("请选择省市区");
           return;
         }
@@ -635,7 +636,7 @@ const nextStep = () => {
           showToast("请输入企业名称");
           return;
         }
-        if (!merchantInfo.regionList) {
+        if (!merchantInfo.regionCodeList) {
           showToast("请选择省市区");
           return;
         }
@@ -745,8 +746,8 @@ const areaConfirm = ({
   selectedValues: string[];
   selectedOptions: RegionOption[];
 }) => {
-  merchantInfo.regionList = JSON.stringify(selectedValues);
-  pickedAreaDesc.value = `${selectedOptions[0].text} ${selectedOptions[1].text} ${selectedOptions[2].text}`;
+  merchantInfo.regionCodeList = JSON.stringify(selectedValues);
+  merchantInfo.regionDesc = `${selectedOptions[0].text} ${selectedOptions[1].text} ${selectedOptions[2].text}`;
   areaPickerPopupVisible.value = false;
 };
 

@@ -4,7 +4,8 @@ export interface MerchantInfo {
   type: number;
   companyName?: string;
   businessLicensePhoto?: string;
-  regionList: string;
+  regionDesc: string;
+  regionCodeList: string;
   addressDetail: string;
   name: string;
   mobile: string;
