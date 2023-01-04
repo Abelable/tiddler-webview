@@ -193,10 +193,10 @@
               <div class="form-title">联系地址</div>
               <div
                 class="picker"
-                :class="{ active: pickedAreaDesc }"
+                :class="{ active: merchantInfo.regionDesc }"
                 @click="areaPickerPopupVisible = true"
               >
-                {{ pickedAreaDesc || "请选择省、市、区" }}
+                {{ merchantInfo.regionDesc || "请选择省、市、区" }}
               </div>
               <Popup
                 v-model:show="areaPickerPopupVisible"
@@ -748,6 +748,7 @@ const areaConfirm = ({
 }) => {
   merchantInfo.regionCodeList = JSON.stringify(selectedValues);
   merchantInfo.regionDesc = `${selectedOptions[0].text} ${selectedOptions[1].text} ${selectedOptions[2].text}`;
+  console.log(merchantInfo.regionDesc);
   areaPickerPopupVisible.value = false;
 };
 

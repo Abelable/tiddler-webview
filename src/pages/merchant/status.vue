@@ -31,14 +31,19 @@
               : `失败原因：${statusInfo.failureReason}`
           }}
         </div>
-        <div class="btn back">
-          {{ statusInfo.status === 3 ? "重新申请" : "返回" }}
+        <div class="btn back" v-if="statusInfo.status !== 3" @click="back">
+          返回
+        </div>
+        <div class="btn back" v-if="statusInfo.status === 3" @click="reApply">
+          重新申请
         </div>
       </div>
       <div class="payment" v-else>
         <div class="title">审核通过</div>
         <div class="pay-amount">
-          缴纳保证金：<span style="color: #eaab63">1000元</span>
+          缴纳保证金：<span style="color: #eaab63"
+            >{{ statusInfo.type === 1 ? 1000 : 10000 }}元</span
+          >
         </div>
         <div class="agreement">
           <p>缴纳保证金默认接受以下条款:</p>
@@ -79,11 +84,13 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { getMerchantStatusInfo } from "./utils/api";
+import { getMerchantStatusInfo, deleteMerchant } from "./utils/api";
 import type { MerchantStatusInfo } from "./utils/api";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+import { showToast } from "vant";
 
 const route = useRoute();
+const router = useRouter();
 
 const statusInfo = ref<MerchantStatusInfo>({
   id: 0,
@@ -97,6 +104,19 @@ onMounted(async () => {
     ? JSON.parse(route.query.status_info as string)
     : await getMerchantStatusInfo();
 });
+
+const reApply = async () => {
+  try {
+    await deleteMerchant();
+    router.push("/merchant/settle_in");
+  } catch (error) {
+    showToast("操作失败请重试");
+  }
+};
+
+const back = () => {
+  console.log("back");
+};
 </script>
 
 <style lang="scss" scoped>
