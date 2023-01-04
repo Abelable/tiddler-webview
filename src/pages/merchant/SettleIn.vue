@@ -550,7 +550,6 @@ const merchantInfo = reactive<MerchantInfo>({
   shopCategoryId: 0,
 });
 const areaPickerPopupVisible = ref(false);
-const pickedAreaDesc = ref("");
 const uploadIdCardFrontPhotoLoading = ref(false);
 const uploadIdCardBackPhotoLoading = ref(false);
 const uploadHoldIdCardPhotoLoading = ref(false);
