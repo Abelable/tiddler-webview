@@ -747,7 +747,6 @@ const areaConfirm = ({
 }) => {
   merchantInfo.regionCodeList = JSON.stringify(selectedValues);
   merchantInfo.regionDesc = `${selectedOptions[0].text} ${selectedOptions[1].text} ${selectedOptions[2].text}`;
-  console.log(merchantInfo.regionDesc);
   areaPickerPopupVisible.value = false;
 };
 
