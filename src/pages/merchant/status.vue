@@ -112,7 +112,7 @@ onMounted(async () => {
 const pay = async () => {
   const payParams = await payMerchantDeposit(statusInfo.value.id);
   window.wx.miniProgram.navigateTo({
-    url: `pages/common/pay/index?pay_params=${decodeURIComponent(
+    url: `/pages/common/pay/index?pay_params=${decodeURIComponent(
       JSON.stringify(payParams)
     )}`,
   });
