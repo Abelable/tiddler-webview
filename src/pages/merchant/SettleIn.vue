@@ -783,7 +783,7 @@ const categoryConfirm = ({
   categoryPickerPopupVisible.value = false;
 };
 
-const checkAgreement = () => router.push("/merchant/agreement");
+const checkAgreement = () => router.push("/agreements/merchant_service");
 </script>
 
 <style lang="scss" scoped>
