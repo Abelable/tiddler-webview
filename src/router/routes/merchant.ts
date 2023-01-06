@@ -10,14 +10,6 @@ const merchant: Array<RouteRecordRaw> = [
     component: () => import("@/pages/merchant/settleIn.vue"),
   },
   {
-    path: "/merchant/agreement",
-    name: "merchant_agreement",
-    meta: {
-      title: "商家服务协议",
-    },
-    component: () => import("@/pages/merchant/agreement.vue"),
-  },
-  {
     path: "/merchant/status",
     name: "merchant_status",
     meta: {

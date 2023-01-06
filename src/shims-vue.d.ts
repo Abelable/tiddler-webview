@@ -6,3 +6,7 @@ declare module '*.vue' {
 }
 
 declare module 'lodash'
+
+interface Window {
+  wx: any;
+}

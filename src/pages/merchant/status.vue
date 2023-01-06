@@ -76,7 +76,7 @@
             小鱼游将根据国家经济情况、市场状况及小鱼游经营情况，适时适当调整保证金制度。保证金制度的调整会按相关规定提前公示予以所有商家。
           </p>
         </div>
-        <div class="btn pay">点击缴纳</div>
+        <div class="btn pay" @click="pay">点击缴纳</div>
       </div>
     </div>
   </div>
@@ -84,7 +84,11 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { getMerchantStatusInfo, deleteMerchant } from "./utils/api";
+import {
+  getMerchantStatusInfo,
+  deleteMerchant,
+  payMerchantDeposit,
+} from "./utils/api";
 import type { MerchantStatusInfo } from "./utils/api";
 import { useRoute, useRouter } from "vue-router";
 import { showToast } from "vant";
@@ -104,6 +108,15 @@ onMounted(async () => {
     ? JSON.parse(route.query.status_info as string)
     : await getMerchantStatusInfo();
 });
+
+const pay = async () => {
+  const payParams = await payMerchantDeposit(statusInfo.value.id);
+  window.wx.miniProgram.navigateTo({
+    url: `pages/common/pay/index?pay_params=${decodeURIComponent(
+      JSON.stringify(payParams)
+    )}`,
+  });
+};
 
 const reApply = async () => {
   try {
