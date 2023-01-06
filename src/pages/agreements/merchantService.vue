@@ -56,12 +56,12 @@
     A：
     <img
       style="width: 100%"
-      src="./images/agreement/personal_qualifications.jpg"
+      src="../../assets/images/personal_qualifications.jpg"
     />
     B：
     <img
       style="width: 100%"
-      src="./images/agreement/enterpris_qualifications.jpg"
+      src="../../assets/images/enterpris_qualifications.jpg"
     />
     C：经营食品、化妆品等其他特殊产品的，要求商品在上架之时提供相关资质证明和质检证明，如《食品生产许可证》、《食品卫生许可证》、《食品流通许可证》、《全国工业产品生产许可证》、《化妆品生产企业卫生许可证》、所有在售产品近一年的检测报告（需省级以上）、商标注册证等相关证明。涉及中间授权的，需提供中间授权商的各项相关资质证明。
     <br />

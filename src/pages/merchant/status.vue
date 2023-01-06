@@ -6,10 +6,10 @@
           class="illus"
           :src="
             statusInfo.status === 0
-              ? require('./images/settle-in/wait.png')
+              ? require('./images/wait.png')
               : statusInfo.status === 2
-              ? require('./images/settle-in/success.png')
-              : require('./images/settle-in/fail.png')
+              ? require('./images/success.png')
+              : require('./images/fail.png')
           "
           alt=""
         />
