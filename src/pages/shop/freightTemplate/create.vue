@@ -23,7 +23,17 @@
             <input class="input" type="text" placeholder="请输入模板名称" />
           </div>
           <div class="form-item">
-            <div class="label">运费标题</div>
+            <div class="label row">
+              <div>运费标题</div>
+              <Popover theme="dark" placement="bottom-start">
+                <div style="padding: 0.24rem; font-size: 0.26rem">
+                  可显示在商品详情
+                </div>
+                <template #reference>
+                  <Icon style="margin-left: 0.04rem" name="question-o" />
+                </template>
+              </Popover>
+            </div>
             <input class="input" type="text" placeholder="请输入运费标题" />
           </div>
           <div class="form-item">
@@ -146,7 +156,17 @@
             <input class="input" type="text" placeholder="请输入模板名称" />
           </div>
           <div class="form-item">
-            <div class="label">运费标题</div>
+            <div class="label row">
+              <div>运费标题</div>
+              <Popover theme="dark" placement="bottom-start">
+                <div style="padding: 0.24rem; font-size: 0.26rem">
+                  可显示在商品详情
+                </div>
+                <template #reference>
+                  <Icon style="margin-left: 0.04rem" name="question-o" />
+                </template>
+              </Popover>
+            </div>
             <input class="input" type="text" placeholder="请输入运费标题" />
           </div>
         </div>
@@ -229,6 +249,7 @@ import {
   showConfirmDialog,
   Button,
   Icon,
+  Popover,
 } from "vant";
 import { ref, reactive } from "vue";
 const templateType = ref(0);
@@ -265,6 +286,10 @@ const deleteExpress = (res: any) => {
 </script>
 
 <style lang="scss" scoped>
+.row {
+  display: flex;
+  align-items: center;
+}
 .container {
   display: flex;
   flex-direction: column;
