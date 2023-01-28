@@ -2342,6 +2342,11 @@ chalk@^4.0.0, chalk@^4.1.0, chalk@^4.1.2:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
+china-division@^2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/china-division/-/china-division-2.6.0.tgz#a55dd4e5d18a84a06d90b208444ad69d6efc1e1e"
+  integrity sha512-5ESNNt/xPD9u6uNRXqeRS+a5AcS746mPbA4CDojm/Fx5bNPmmOeRZ/0NGCOrIXWYl2MBO1w/7vWmOjvlVko2Fw==
+
 "chokidar@>=3.0.0 <4.0.0", chokidar@^3.4.2, chokidar@^3.5.3:
   version "3.5.3"
   resolved "https://registry.npmmirror.com/chokidar/-/chokidar-3.5.3.tgz#1cf37c8707b932bd1af1ae22c0432e2acd1903bd"

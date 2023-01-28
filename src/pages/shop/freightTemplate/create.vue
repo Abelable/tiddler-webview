@@ -239,6 +239,44 @@
       <button class="save-btn">保存</button>
     </div>
   </div>
+  <Popup v-model:show="areaSelectPopupVisible" position="bottom" round>
+    <div class="area-select-wrap">
+      <div class="header">
+        <div class="title">请选择地区</div>
+        <Checkbox
+          v-model="allAreaSelected"
+          label-position="left"
+          @change="selectAllArea"
+          >全选</Checkbox
+        >
+      </div>
+      <div class="main" v-if="regionOptions.length">
+        <div class="left">
+          <div
+            class="province-selection"
+            :class="{ active: activeProvinceIndex === index }"
+            v-for="(item, index) in regionOptions"
+            :key="index"
+            @click="activeProvinceIndex = index"
+          >
+            {{ item.label }}
+          </div>
+        </div>
+        <div class="right">
+          <div class="city-selection">
+            <Checkbox label-position="left">全选</Checkbox>
+          </div>
+          <div
+            class="city-selection"
+            v-for="(item, index) in regionOptions[activeProvinceIndex].children"
+            :key="index"
+          >
+            <Checkbox label-position="left">{{ item.label }}</Checkbox>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Popup>
 </template>
 
 <script setup lang="ts">
@@ -250,13 +288,28 @@ import {
   Button,
   Icon,
   Popover,
+  Popup,
+  Checkbox,
 } from "vant";
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
+import { RegionOption, getCityRegionOptions } from "@/utils/region-options";
+
+const areaSelectPopupVisible = ref(true);
+const allAreaSelected = ref(false);
+const regionOptions = ref<RegionOption[]>([]);
+const activeProvinceIndex = ref(0);
+const selectAllArea = (e: any) => {
+  console.log(e);
+};
+
+onMounted(() => {
+  regionOptions.value = getCityRegionOptions();
+});
+
 const templateType = ref(0);
 const computeType = ref(1);
 const areaList = reactive([{ pickedAreaDesc: "", fee: "" }]);
 const expressList = reactive([{ pickedExpressDesc: "", fee: "" }]);
-
 const addArea = () => areaList.push({ pickedAreaDesc: "", fee: "" });
 const deleteArea = (res: any) => {
   if (res.position === "right") {
@@ -392,6 +445,70 @@ const deleteExpress = (res: any) => {
       font-weight: 550;
       border-radius: 0.18rem;
       background: #212121;
+    }
+  }
+}
+.area-select-wrap {
+  background: #f7f8fa;
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.32rem;
+    font-size: 0.32rem;
+    .title {
+      color: #333;
+      font-weight: bold;
+    }
+  }
+  .main {
+    display: flex;
+    .left {
+      flex: 3;
+      height: 8rem;
+      overflow-y: scroll;
+      .province-selection {
+        display: flex;
+        align-items: center;
+        padding-left: 0.24rem;
+        height: 1rem;
+        color: #333;
+        font-size: 0.28rem;
+        &.active {
+          position: relative;
+          font-weight: 550;
+          background: #fff;
+          &::before {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0.1rem;
+            height: 0.4rem;
+            content: "";
+            background: #1b89fa;
+          }
+        }
+      }
+    }
+    .right {
+      flex: 5;
+      height: 8rem;
+      overflow-y: scroll;
+      background: #fff;
+      .city-selection {
+        display: flex;
+        align-items: center;
+        padding: 0 0.32rem;
+        height: 1rem;
+        color: #333;
+        font-size: 0.28rem;
+        font-weight: 550;
+        .van-checkbox {
+          justify-content: space-between;
+          width: 100%;
+        }
+      }
     }
   }
 }
