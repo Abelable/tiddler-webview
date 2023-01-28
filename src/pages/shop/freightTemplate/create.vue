@@ -75,8 +75,18 @@
           <div class="form">
             <div class="form-item">
               <div class="label">地区</div>
-              <div class="picker" :class="{ active: item.pickedAreaDesc }">
-                <div>{{ item.pickedAreaDesc || "请选择地区" }}</div>
+              <div
+                class="picker"
+                :class="{ active: item.pickedAreaDescs.length }"
+                @click="selectArea(index)"
+              >
+                <div>
+                  {{
+                    item.pickedAreaDescs.length
+                      ? `${item.pickedAreaDescs.join().slice(0, 20)}...`
+                      : "请选择地区"
+                  }}
+                </div>
                 <Icon name="arrow" />
               </div>
             </div>
@@ -223,8 +233,17 @@
             </div>
             <div class="form-item">
               <div class="label">目的地</div>
-              <div class="picker" :class="{ active: item.pickedAreaDesc }">
-                <div>{{ item.pickedAreaDesc || "请选择目的地" }}</div>
+              <div
+                class="picker"
+                :class="{ active: item.pickedAreaDescs.length }"
+              >
+                <div>
+                  {{
+                    item.pickedAreaDescs.length
+                      ? `${item.pickedAreaDescs.join().slice(0, 20)}...`
+                      : "请选择目的地"
+                  }}
+                </div>
                 <Icon name="arrow" />
               </div>
             </div>
@@ -239,14 +258,16 @@
       <button class="save-btn">保存</button>
     </div>
   </div>
+
   <Popup v-model:show="areaSelectPopupVisible" position="bottom" round>
     <div class="area-select-wrap">
       <div class="header">
         <div class="title">请选择地区</div>
         <Checkbox
           v-model="allAreaSelected"
-          label-position="left"
           @change="selectAllArea"
+          :disabled="allAreaSelectDisabled"
+          label-position="left"
           >全选</Checkbox
         >
       </div>
@@ -264,14 +285,30 @@
         </div>
         <div class="right">
           <div class="city-selection">
-            <Checkbox label-position="left">全选</Checkbox>
+            <Checkbox
+              v-model="regionOptions[activeProvinceIndex].allSelected"
+              @change="selectAllProvinceArea"
+              :disabled="
+                regionOptions[activeProvinceIndex].allSelected &&
+                !regionOptions[activeProvinceIndex].areaIndexs.includes(
+                  curAreaIndex
+                )
+              "
+              label-position="left"
+              >全选</Checkbox
+            >
           </div>
           <div
             class="city-selection"
             v-for="(item, index) in regionOptions[activeProvinceIndex].children"
             :key="index"
           >
-            <Checkbox label-position="left">{{ item.label }}</Checkbox>
+            <Checkbox
+              v-model="item.selected"
+              :disabled="item.selected && item.areaIndex !== curAreaIndex"
+              label-position="left"
+              >{{ item.label }}</Checkbox
+            >
           </div>
         </div>
       </div>
@@ -291,26 +328,165 @@ import {
   Popup,
   Checkbox,
 } from "vant";
-import { ref, reactive, onMounted } from "vue";
-import { RegionOption, getCityRegionOptions } from "@/utils/region-options";
+import { ref, reactive, onMounted, computed } from "vue";
+import {
+  RegionOption as Option,
+  getCityRegionOptions,
+} from "@/utils/region-options";
 
-const areaSelectPopupVisible = ref(true);
-const allAreaSelected = ref(false);
+interface RegionOption {
+  label: string;
+  value: string;
+  areaIndexs: number[];
+  allSelected: boolean;
+  children: {
+    label: string;
+    value: string;
+    areaIndex: number;
+    selected: boolean;
+  }[];
+}
+
+// -------------------------- 地区选择 --------------------------
+const areaList = reactive<
+  { pickedAreaCodes: string[]; pickedAreaDescs: string[]; fee: string }[]
+>([{ pickedAreaCodes: [], pickedAreaDescs: [], fee: "" }]);
+const addArea = () =>
+  areaList.push({ pickedAreaCodes: [], pickedAreaDescs: [], fee: "" });
+
+const areaSelectPopupVisible = ref(false);
+const curAreaIndex = ref(-1);
+const selectArea = (index: number) => {
+  curAreaIndex.value = index;
+  areaSelectPopupVisible.value = true;
+};
+
 const regionOptions = ref<RegionOption[]>([]);
 const activeProvinceIndex = ref(0);
-const selectAllArea = (e: any) => {
-  console.log(e);
+const allAreaSelected = ref(false); // 全国地区全选
+const allAreaSelectDisabled = computed(
+  () =>
+    allAreaSelected.value &&
+    regionOptions.value.findIndex((item) =>
+      item.areaIndexs.includes(curAreaIndex.value)
+    ) === -1
+);
+const selectAllArea = (value: boolean) => {
+  allAreaSelected.value = value;
+  regionOptions.value = regionOptions.value.map((item) => {
+    // 省份已全选的情况，
+    // 只执行取消全选逻辑，且仅在包含当前地区索引情况下执行
+    // 若为全选逻辑，则直接跳过
+    if (item.allSelected) {
+      if (!value && item.areaIndexs.includes(curAreaIndex.value)) {
+        const children = item.children.map((_item) => {
+          if (_item.areaIndex === curAreaIndex.value) {
+            areaList[curAreaIndex.value].pickedAreaCodes = areaList[
+              curAreaIndex.value
+            ].pickedAreaCodes.filter((code) => code !== _item.value);
+            areaList[curAreaIndex.value].pickedAreaDescs = areaList[
+              curAreaIndex.value
+            ].pickedAreaDescs.filter((desc) => desc !== _item.label);
+            return {
+              ..._item,
+              selected: false,
+              areaIndex: -1,
+            };
+          } else {
+            return _item;
+          }
+        });
+        return {
+          ...item,
+          allSelected: false,
+          areaIndexs: item.areaIndexs.filter(
+            (areaIndex) => areaIndex !== curAreaIndex.value
+          ),
+          children,
+        };
+      } else return item;
+    } else {
+      // 省份未全选的情况，分全选、取消全选，2个逻辑
+      let children;
+      if (value) {
+        children = item.children.map((_item) => {
+          if (!_item.selected) {
+            areaList[curAreaIndex.value].pickedAreaCodes = Array.from(
+              new Set([
+                ...areaList[curAreaIndex.value].pickedAreaCodes,
+                _item.value,
+              ])
+            );
+            areaList[curAreaIndex.value].pickedAreaDescs = Array.from(
+              new Set([
+                ...areaList[curAreaIndex.value].pickedAreaDescs,
+                _item.label,
+              ])
+            );
+            return {
+              ..._item,
+              selected: true,
+              areaIndex: curAreaIndex.value,
+            };
+          } else return _item;
+        });
+      } else {
+        children = item.children.map((_item) => {
+          if (_item.selected && _item.areaIndex === curAreaIndex.value) {
+            areaList[curAreaIndex.value].pickedAreaCodes = areaList[
+              curAreaIndex.value
+            ].pickedAreaCodes.filter((code) => code !== _item.value);
+            areaList[curAreaIndex.value].pickedAreaDescs = areaList[
+              curAreaIndex.value
+            ].pickedAreaDescs.filter((desc) => desc !== _item.label);
+            return {
+              ..._item,
+              selected: false,
+              areaIndex: -1,
+            };
+          } else return _item;
+        });
+      }
+
+      return {
+        ...item,
+        allSelected: value,
+        areaIndexs: value
+          ? Array.from(new Set([...item.areaIndexs, curAreaIndex.value]))
+          : item.areaIndexs.filter(
+              (areaIndex) => areaIndex !== curAreaIndex.value
+            ),
+        children,
+      };
+    }
+  });
+};
+
+const selectAllProvinceArea = (value: boolean) => {
+  console.log(value);
 };
 
 onMounted(() => {
-  regionOptions.value = getCityRegionOptions();
+  setRegionOptions();
 });
+
+const setRegionOptions = () => {
+  regionOptions.value = getCityRegionOptions().map((item: Option) => ({
+    ...item,
+    children: item.children?.map((_item) => ({
+      ..._item,
+      areaIndex: -1,
+      selected: false,
+    })),
+    areaIndexs: [],
+    allSelected: false,
+  }));
+  console.log("regionOptions", regionOptions.value);
+};
 
 const templateType = ref(0);
 const computeType = ref(1);
-const areaList = reactive([{ pickedAreaDesc: "", fee: "" }]);
 const expressList = reactive([{ pickedExpressDesc: "", fee: "" }]);
-const addArea = () => areaList.push({ pickedAreaDesc: "", fee: "" });
 const deleteArea = (res: any) => {
   if (res.position === "right") {
     showConfirmDialog({ title: "确定删除该配送地区配置吗？" })
@@ -455,10 +631,11 @@ const deleteExpress = (res: any) => {
     align-items: center;
     justify-content: space-between;
     padding: 0.32rem;
-    font-size: 0.32rem;
+    font-size: 0.28rem;
+    font-weight: 550;
     .title {
       color: #333;
-      font-weight: bold;
+      font-size: 0.32rem;
     }
   }
   .main {
