@@ -283,16 +283,18 @@
             {{ item.label }}
           </div>
         </div>
-        <div class="right">
+        <div
+          class="right"
+          v-for="(item, index) in regionOptions"
+          :key="index"
+          v-show="index === activeProvinceIndex"
+        >
           <div class="city-selection">
             <Checkbox
-              v-model="regionOptions[activeProvinceIndex].allSelected"
+              v-model="item.allSelected"
               @change="selectAllProvinceArea"
               :disabled="
-                regionOptions[activeProvinceIndex].allSelected &&
-                !regionOptions[activeProvinceIndex].areaIndexs.includes(
-                  curAreaIndex
-                )
+                item.allSelected && !item.areaIndexs.includes(curAreaIndex)
               "
               label-position="left"
               >全选</Checkbox
@@ -300,14 +302,14 @@
           </div>
           <div
             class="city-selection"
-            v-for="(item, index) in regionOptions[activeProvinceIndex].children"
+            v-for="(_item, index) in item.children"
             :key="index"
           >
             <Checkbox
-              v-model="item.selected"
-              :disabled="item.selected && item.areaIndex !== curAreaIndex"
+              v-model="_item.selected"
+              :disabled="_item.selected && _item.areaIndex !== curAreaIndex"
               label-position="left"
-              >{{ item.label }}</Checkbox
+              >{{ _item.label }}</Checkbox
             >
           </div>
         </div>
@@ -333,18 +335,20 @@ import {
   RegionOption as Option,
   getCityRegionOptions,
 } from "@/utils/region-options";
+import _ from "lodash";
 
+interface AreaRegion {
+  label: string;
+  value: string;
+  areaIndex: number;
+  selected: boolean;
+}
 interface RegionOption {
   label: string;
   value: string;
   areaIndexs: number[];
   allSelected: boolean;
-  children: {
-    label: string;
-    value: string;
-    areaIndex: number;
-    selected: boolean;
-  }[];
+  children: AreaRegion[];
 }
 
 // -------------------------- 地区选择 --------------------------
@@ -462,7 +466,58 @@ const selectAllArea = (value: boolean) => {
   });
 };
 const selectAllProvinceArea = (value: boolean) => {
-  console.log(value);
+  regionOptions.value[activeProvinceIndex.value].areaIndexs = value
+    ? Array.from(
+        new Set([
+          ...regionOptions.value[activeProvinceIndex.value].areaIndexs,
+          curAreaIndex.value,
+        ])
+      )
+    : regionOptions.value[activeProvinceIndex.value].areaIndexs.filter(
+        (areaIndex) => areaIndex !== curAreaIndex.value
+      );
+  if (value) {
+    regionOptions.value[activeProvinceIndex.value].children =
+      regionOptions.value[activeProvinceIndex.value].children.map((item) => {
+        if (!item.selected) {
+          areaList[curAreaIndex.value].pickedAreaCodes = Array.from(
+            new Set([
+              ...areaList[curAreaIndex.value].pickedAreaCodes,
+              item.value,
+            ])
+          );
+          areaList[curAreaIndex.value].pickedAreaDescs = Array.from(
+            new Set([
+              ...areaList[curAreaIndex.value].pickedAreaDescs,
+              item.label,
+            ])
+          );
+          return {
+            ...item,
+            selected: true,
+            areaIndex: curAreaIndex.value,
+          };
+        } else return item;
+      });
+  } else {
+    regionOptions.value[activeProvinceIndex.value].children =
+      regionOptions.value[activeProvinceIndex.value].children.map((item) => {
+        if (item.selected && item.areaIndex === curAreaIndex.value) {
+          areaList[curAreaIndex.value].pickedAreaCodes = areaList[
+            curAreaIndex.value
+          ].pickedAreaCodes.filter((code) => code !== item.value);
+          areaList[curAreaIndex.value].pickedAreaDescs = areaList[
+            curAreaIndex.value
+          ].pickedAreaDescs.filter((desc) => desc !== item.label);
+          return {
+            ...item,
+            selected: false,
+            areaIndex: -1,
+          };
+        } else return item;
+      });
+  }
+  console.log("regionOptions", regionOptions.value);
 };
 const deleteArea = (res: any) => {
   if (res.position === "right") {
