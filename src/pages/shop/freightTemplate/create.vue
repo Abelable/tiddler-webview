@@ -461,10 +461,22 @@ const selectAllArea = (value: boolean) => {
     }
   });
 };
-
 const selectAllProvinceArea = (value: boolean) => {
   console.log(value);
 };
+const deleteArea = (res: any) => {
+  if (res.position === "right") {
+    showConfirmDialog({ title: "确定删除该配送地区配置吗？" })
+      .then(() => {
+        areaList.splice(res.name, 1);
+        return true;
+      })
+      .catch(() => true);
+  } else {
+    return true;
+  }
+};
+// -------------------------------------------------------------
 
 onMounted(() => {
   setRegionOptions();
@@ -487,18 +499,7 @@ const setRegionOptions = () => {
 const templateType = ref(0);
 const computeType = ref(1);
 const expressList = reactive([{ pickedExpressDesc: "", fee: "" }]);
-const deleteArea = (res: any) => {
-  if (res.position === "right") {
-    showConfirmDialog({ title: "确定删除该配送地区配置吗？" })
-      .then(() => {
-        areaList.splice(res.name, 1);
-        return true;
-      })
-      .catch(() => true);
-  } else {
-    return true;
-  }
-};
+
 const addExpress = () => expressList.push({ pickedExpressDesc: "", fee: "" });
 const deleteExpress = (res: any) => {
   if (res.position === "right") {
