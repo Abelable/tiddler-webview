@@ -89,15 +89,14 @@
           <div class="form">
             <div class="form-item">
               <div class="label">地区</div>
-              <div
-                class="picker"
-                :class="{ active: item.pickedCityDescs.length }"
-                @click="showAreaselectPopup(index)"
-              >
-                <div>
+              <div class="picker" @click="showAreaselectPopup(index)">
+                <div
+                  class="content"
+                  :class="{ active: item.pickedCityDescs.length }"
+                >
                   {{
                     item.pickedCityDescs.length
-                      ? `${item.pickedCityDescs.join().slice(0, 20)}...`
+                      ? item.pickedCityDescs.join()
                       : "请选择地区"
                   }}
                 </div>
@@ -776,9 +775,18 @@ const save = () => {
           .picker {
             display: flex;
             align-items: center;
-            color: #777;
-            &.active {
-              color: #333;
+            .content {
+              color: #777;
+              &.active {
+                max-width: 3rem;
+                color: #333;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                line-height: 1;
+                display: -webkit-box;
+                -webkit-line-clamp: 1;
+                -webkit-box-orient: vertical;
+              }
             }
           }
         }
