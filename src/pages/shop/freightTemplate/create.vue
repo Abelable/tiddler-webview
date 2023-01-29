@@ -65,12 +65,7 @@
           size="mini"
         />
       </div>
-      <SwipeCell
-        :before-close="deleteArea"
-        v-for="(item, index) in areaList"
-        :key="index"
-        :name="index"
-      >
+      <SwipeCell v-for="(item, index) in areaList" :key="index" :name="index">
         <div class="card">
           <div class="form">
             <div class="form-item">
@@ -102,7 +97,13 @@
           </div>
         </div>
         <template #right>
-          <Button class="delete-btn" icon="delete" color="#EE0D23" plain />
+          <Button
+            class="delete-btn"
+            @click.stop="deleteArea(index)"
+            icon="delete"
+            color="#EE0D23"
+            plain
+          />
         </template>
       </SwipeCell>
       <div class="title">
@@ -586,17 +587,10 @@ const selectArea = (value: boolean) => {
       regionOptions.value.findIndex((item) => !item.allSelected) === -1;
   }
 };
-const deleteArea = (res: any) => {
-  if (res.position === "right") {
-    showConfirmDialog({ title: "确定删除该配送地区配置吗？" })
-      .then(() => {
-        areaList.splice(res.name, 1);
-        return true;
-      })
-      .catch(() => true);
-  } else {
-    return true;
-  }
+const deleteArea = (index: number) => {
+  showConfirmDialog({ title: "确定删除该配送地区配置吗？" })
+    .then(() => areaList.splice(index, 1))
+    .catch(() => true);
 };
 // -------------------------------------------------------------
 
@@ -615,7 +609,6 @@ const setRegionOptions = () => {
     areaIndexs: [],
     allSelected: false,
   }));
-  console.log("regionOptions", regionOptions.value);
 };
 
 const templateType = ref(0);
