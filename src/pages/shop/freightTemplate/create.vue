@@ -429,28 +429,18 @@ const freightTemplate = reactive<FreightTemplate>({
   expressTemplateLists: [],
 });
 
+onMounted(() => {
+  setRegionOptions();
+});
+
 // -------------------------- 地区选择 --------------------------
-const addArea = () =>
-  freightTemplate.areaList.push({
-    id: (freightTemplate.areaList as []).length
-      ? freightTemplate.areaList[freightTemplate.areaList.length - 1].id + 1
-      : 1,
-    pickedCityCodes: [],
-    pickedCityDescs: [],
-    fee: 0,
-  });
-
-const areaSelectPopupVisible = ref(false);
-const curAreaIndex = ref(-1);
-const showAreaselectPopup = (index: number) => {
-  curAreaIndex.value = index;
-  areaSelectPopupVisible.value = true;
-};
-
 const regionOptions = ref<RegionOption[]>([]);
-const activeProvinceIndex = ref(0);
-const pickedCityIndex = ref(-1);
+const curAreaIndex = ref(-1);
+const areaSelectPopupVisible = ref(false);
 const allAreaSelected = ref(false); // 全国地区全选
+const activeProvinceIndex = ref(0);
+const pickedCityIndex = ref(-3);
+
 const allAreaSelectDisabled = computed(
   () =>
     allAreaSelected.value &&
@@ -458,6 +448,24 @@ const allAreaSelectDisabled = computed(
       item.areaIds.includes(freightTemplate.areaList[curAreaIndex.value].id)
     ) === -1
 );
+
+const setRegionOptions = () => {
+  regionOptions.value = getCityRegionOptions().map((item: Option) => ({
+    ...item,
+    children: item.children?.map((_item) => ({
+      ..._item,
+      areaId: 0,
+      selected: false,
+    })),
+    areaIds: [],
+    allSelected: false,
+  }));
+};
+
+const showAreaselectPopup = (index: number) => {
+  curAreaIndex.value = index;
+  areaSelectPopupVisible.value = true;
+};
 const selectAllArea = (value: boolean) => {
   if (pickedCityIndex.value === -2) {
     allAreaSelected.value = value;
@@ -587,7 +595,11 @@ const selectAllProvinceArea = (value: boolean) => {
 };
 const setPickedCityIndex = (index: number) => (pickedCityIndex.value = index);
 const selectArea = (value: boolean) => {
-  if (pickedCityIndex.value !== -1 && pickedCityIndex.value !== -2) {
+  if (
+    pickedCityIndex.value !== -1 &&
+    pickedCityIndex.value !== -2 &&
+    pickedCityIndex.value !== -3
+  ) {
     const curRegionOption = regionOptions.value[activeProvinceIndex.value];
     const curCityOption = curRegionOption.children[pickedCityIndex.value];
     const curAreaItem = freightTemplate.areaList[curAreaIndex.value];
@@ -616,29 +628,49 @@ const selectArea = (value: boolean) => {
       regionOptions.value.findIndex((item) => !item.allSelected) === -1;
   }
 };
+
+const addArea = () =>
+  freightTemplate.areaList.push({
+    id: (freightTemplate.areaList as []).length
+      ? freightTemplate.areaList[freightTemplate.areaList.length - 1].id + 1
+      : 1,
+    pickedCityCodes: [],
+    pickedCityDescs: [],
+    fee: 0,
+  });
 const deleteArea = (index: number) => {
   showConfirmDialog({ title: "确定删除该配送地区配置吗？" })
-    .then(() => freightTemplate.areaList.splice(index, 1))
+    .then(() => {
+      curAreaIndex.value = index;
+      pickedCityIndex.value = -3;
+      const id = freightTemplate.areaList[index].id;
+      regionOptions.value = regionOptions.value.map((item) => {
+        if (item.areaIds.includes(id)) {
+          const children = item.children.map((_item) => {
+            if (_item.areaId === id) {
+              return {
+                ..._item,
+                areaId: 0,
+                selected: false,
+              };
+            } else return _item;
+          });
+          return {
+            ...item,
+            areaIds: item.areaIds.filter((areaId) => areaId !== id),
+            allSelected: false,
+            children,
+          };
+        } else return item;
+      });
+      allAreaSelected.value =
+        regionOptions.value.findIndex((item) => !item.allSelected) === -1;
+      freightTemplate.areaList.splice(index, 1);
+      return true;
+    })
     .catch(() => true);
 };
 // -------------------------------------------------------------
-
-onMounted(() => {
-  setRegionOptions();
-});
-
-const setRegionOptions = () => {
-  regionOptions.value = getCityRegionOptions().map((item: Option) => ({
-    ...item,
-    children: item.children?.map((_item) => ({
-      ..._item,
-      areaId: 0,
-      selected: false,
-    })),
-    areaIds: [],
-    allSelected: false,
-  }));
-};
 
 const expressList = reactive([{ pickedExpressDesc: "", fee: "" }]);
 
