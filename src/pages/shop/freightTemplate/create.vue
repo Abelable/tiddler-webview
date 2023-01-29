@@ -5,22 +5,27 @@
       <div class="type-options">
         <div
           class="option"
-          :class="{ selected: index === templateType }"
+          :class="{ selected: index === freightTemplate.mode - 1 }"
           v-for="(item, index) in ['自定义模板', '快递模板']"
           :key="index"
-          @click="templateType = index"
+          @click="freightTemplate.mode = index + 1"
         >
           {{ item }}
         </div>
       </div>
     </div>
-    <div class="main" v-if="templateType === 0">
+    <div class="main" v-if="freightTemplate.mode === 1">
       <div class="title">基础信息</div>
       <div class="card">
         <div class="form">
           <div class="form-item">
             <div class="label">模板名称</div>
-            <input class="input" type="text" placeholder="请输入模板名称" />
+            <input
+              class="input"
+              v-model="freightTemplate.name"
+              type="text"
+              placeholder="请输入模板名称"
+            />
           </div>
           <div class="form-item">
             <div class="label row">
@@ -34,23 +39,33 @@
                 </template>
               </Popover>
             </div>
-            <input class="input" type="text" placeholder="请输入运费标题" />
+            <input
+              class="input"
+              v-model="freightTemplate.title"
+              type="text"
+              placeholder="请输入运费标题"
+            />
           </div>
           <div class="form-item">
             <div class="label">计算方式</div>
             <RadioGroup
               class="selection"
-              v-model="computeType"
+              v-model="freightTemplate.computeMode"
               direction="horizontal"
               icon-size="0.32rem"
             >
-              <Radio name="1">不计重量和件数</Radio>
-              <Radio name="2">按商品件数</Radio>
+              <Radio :name="1">不计重量和件数</Radio>
+              <Radio :name="2">按商品件数</Radio>
             </RadioGroup>
           </div>
           <div class="form-item">
             <div class="label">免费额度</div>
-            <input class="input" type="number" placeholder="例：0.00" />
+            <input
+              class="input"
+              v-model="freightTemplate.freeQuota"
+              type="number"
+              placeholder="例：0.00"
+            />
           </div>
         </div>
       </div>
@@ -65,20 +80,24 @@
           size="mini"
         />
       </div>
-      <SwipeCell v-for="(item, index) in areaList" :key="index" :name="index">
+      <SwipeCell
+        v-for="(item, index) in freightTemplate.areaList"
+        :key="index"
+        :name="index"
+      >
         <div class="card">
           <div class="form">
             <div class="form-item">
               <div class="label">地区</div>
               <div
                 class="picker"
-                :class="{ active: item.pickedAreaDescs.length }"
+                :class="{ active: item.pickedCityDescs.length }"
                 @click="showAreaselectPopup(index)"
               >
                 <div>
                   {{
-                    item.pickedAreaDescs.length
-                      ? `${item.pickedAreaDescs.join().slice(0, 20)}...`
+                    item.pickedCityDescs.length
+                      ? `${item.pickedCityDescs.join().slice(0, 20)}...`
                       : "请选择地区"
                   }}
                 </div>
@@ -89,7 +108,7 @@
               <div class="label">运费</div>
               <input
                 class="input"
-                v-model="areaList[index].fee"
+                v-model="item.fee"
                 type="number"
                 placeholder="例：0.00"
               />
@@ -148,7 +167,7 @@
         </template>
       </SwipeCell>
     </div>
-    <div class="main" v-if="templateType === 1">
+    <div class="main" v-if="freightTemplate.mode === 2">
       <div class="title">
         <div>基础信息</div>
         <Button
@@ -195,7 +214,7 @@
       </div>
       <SwipeCell
         :before-close="deleteArea"
-        v-for="(item, index) in areaList"
+        v-for="(item, index) in freightTemplate.areaList"
         :key="index"
         :name="index"
       >
@@ -236,12 +255,12 @@
               <div class="label">目的地</div>
               <div
                 class="picker"
-                :class="{ active: item.pickedAreaDescs.length }"
+                :class="{ active: item.pickedCityDescs.length }"
               >
                 <div>
                   {{
-                    item.pickedAreaDescs.length
-                      ? `${item.pickedAreaDescs.join().slice(0, 20)}...`
+                    item.pickedCityDescs.length
+                      ? `${item.pickedCityDescs.join().slice(0, 20)}...`
                       : "请选择目的地"
                   }}
                 </div>
@@ -256,7 +275,7 @@
       </SwipeCell>
     </div>
     <div class="btns">
-      <button class="save-btn">保存</button>
+      <button class="save-btn" @click="save">保存</button>
     </div>
   </div>
 
@@ -267,6 +286,7 @@
         <Checkbox
           v-model="allAreaSelected"
           @change="selectAllArea"
+          @click="setPickedCityIndex(-2)"
           :disabled="allAreaSelectDisabled"
           label-position="left"
           >全选</Checkbox
@@ -296,7 +316,10 @@
               @change="selectAllProvinceArea"
               @click="setPickedCityIndex(-1)"
               :disabled="
-                item.allSelected && !item.areaIndexs.includes(curAreaIndex)
+                item.allSelected &&
+                !item.areaIds.includes(
+                  freightTemplate.areaList[curAreaIndex].id
+                )
               "
               label-position="left"
               >全选</Checkbox
@@ -309,7 +332,10 @@
           >
             <Checkbox
               v-model="_item.selected"
-              :disabled="_item.selected && _item.areaIndex !== curAreaIndex"
+              :disabled="
+                _item.selected &&
+                _item.areaId !== freightTemplate.areaList[curAreaIndex].id
+              "
               @change="selectArea"
               @click="setPickedCityIndex(_index)"
               label-position="left"
@@ -343,23 +369,76 @@ import {
 interface AreaRegion {
   label: string;
   value: string;
-  areaIndex: number;
+  areaId: number;
   selected: boolean;
 }
 interface RegionOption {
   label: string;
   value: string;
-  areaIndexs: number[];
+  areaIds: number[];
   allSelected: boolean;
   children: AreaRegion[];
 }
 
+interface AreaItem {
+  id: number;
+  pickedCityCodes: string[];
+  pickedCityDescs: string[];
+  fee: number;
+}
+interface ExpressItem {
+  id: number;
+  pickedExpressCodes: string[];
+  pickedExpressDescs: string[];
+  fee: number;
+}
+interface ExpressTemplate {
+  areaName: string;
+  computeMode: number;
+  baseFee?: number;
+  stepFee?: number;
+  singleFee?: number;
+  freeQuota: number;
+  pickedCityCodes: string[];
+  pickedCityDescs: string[];
+}
+interface ExpressTemplateList {
+  expressCode: string;
+  expressName: string;
+  list: ExpressTemplate[];
+}
+interface FreightTemplate {
+  mode: number;
+  name: string;
+  title: string;
+  computeMode: number;
+  freeQuota: number;
+  areaList: AreaItem[];
+  expressList: ExpressItem[];
+  expressTemplateLists: ExpressTemplateList[];
+}
+
+const freightTemplate = reactive<FreightTemplate>({
+  mode: 1,
+  name: "",
+  title: "",
+  computeMode: 1,
+  freeQuota: 0,
+  areaList: [{ id: 1, pickedCityCodes: [], pickedCityDescs: [], fee: 0 }],
+  expressList: [],
+  expressTemplateLists: [],
+});
+
 // -------------------------- 地区选择 --------------------------
-const areaList = reactive<
-  { pickedAreaCodes: string[]; pickedAreaDescs: string[]; fee: string }[]
->([{ pickedAreaCodes: [], pickedAreaDescs: [], fee: "" }]);
 const addArea = () =>
-  areaList.push({ pickedAreaCodes: [], pickedAreaDescs: [], fee: "" });
+  freightTemplate.areaList.push({
+    id: (freightTemplate.areaList as []).length
+      ? freightTemplate.areaList[freightTemplate.areaList.length - 1].id + 1
+      : 1,
+    pickedCityCodes: [],
+    pickedCityDescs: [],
+    fee: 0,
+  });
 
 const areaSelectPopupVisible = ref(false);
 const curAreaIndex = ref(-1);
@@ -376,151 +455,131 @@ const allAreaSelectDisabled = computed(
   () =>
     allAreaSelected.value &&
     regionOptions.value.findIndex((item) =>
-      item.areaIndexs.includes(curAreaIndex.value)
+      item.areaIds.includes(freightTemplate.areaList[curAreaIndex.value].id)
     ) === -1
 );
 const selectAllArea = (value: boolean) => {
-  allAreaSelected.value = value;
-  regionOptions.value = regionOptions.value.map((item) => {
-    // 省份已全选的情况，
-    // 只执行取消全选逻辑，且仅在包含当前地区索引情况下执行
-    // 若为全选逻辑，则直接跳过
-    if (item.allSelected) {
-      if (!value && item.areaIndexs.includes(curAreaIndex.value)) {
-        const children = item.children.map((_item) => {
-          if (_item.areaIndex === curAreaIndex.value) {
-            areaList[curAreaIndex.value].pickedAreaCodes = areaList[
-              curAreaIndex.value
-            ].pickedAreaCodes.filter((code) => code !== _item.value);
-            areaList[curAreaIndex.value].pickedAreaDescs = areaList[
-              curAreaIndex.value
-            ].pickedAreaDescs.filter((desc) => desc !== _item.label);
-            return {
-              ..._item,
-              selected: false,
-              areaIndex: -1,
-            };
-          } else {
-            return _item;
-          }
-        });
+  if (pickedCityIndex.value === -2) {
+    allAreaSelected.value = value;
+    regionOptions.value = regionOptions.value.map((item) => {
+      const curAreaItem = freightTemplate.areaList[curAreaIndex.value];
+      // 省份已全选的情况，
+      // 只执行取消全选逻辑，且仅在包含当前地区索引情况下执行
+      // 若为全选逻辑，则直接跳过
+      if (item.allSelected) {
+        if (!value && item.areaIds.includes(curAreaItem.id)) {
+          const children = item.children.map((_item) => {
+            if (_item.areaId === curAreaItem.id) {
+              curAreaItem.pickedCityCodes = curAreaItem.pickedCityCodes.filter(
+                (code) => code !== _item.value
+              );
+              curAreaItem.pickedCityDescs = curAreaItem.pickedCityDescs.filter(
+                (desc) => desc !== _item.label
+              );
+              return {
+                ..._item,
+                selected: false,
+                areaId: 0,
+              };
+            } else {
+              return _item;
+            }
+          });
+          return {
+            ...item,
+            allSelected: false,
+            areaIds: item.areaIds.filter((areaId) => areaId !== curAreaItem.id),
+            children,
+          };
+        } else return item;
+      } else {
+        // 省份未全选的情况，分全选、取消全选，2个逻辑
+        let children;
+        if (value) {
+          children = item.children.map((_item) => {
+            if (!_item.selected) {
+              curAreaItem.pickedCityCodes = Array.from(
+                new Set([...curAreaItem.pickedCityCodes, _item.value])
+              );
+              curAreaItem.pickedCityDescs = Array.from(
+                new Set([...curAreaItem.pickedCityDescs, _item.label])
+              );
+              return {
+                ..._item,
+                selected: true,
+                areaId: curAreaItem.id,
+              };
+            } else return _item;
+          });
+        } else {
+          children = item.children.map((_item) => {
+            if (_item.selected && _item.areaId === curAreaItem.id) {
+              curAreaItem.pickedCityCodes = curAreaItem.pickedCityCodes.filter(
+                (code) => code !== _item.value
+              );
+              curAreaItem.pickedCityDescs = curAreaItem.pickedCityDescs.filter(
+                (desc) => desc !== _item.label
+              );
+              return {
+                ..._item,
+                selected: false,
+                areaId: 0,
+              };
+            } else return _item;
+          });
+        }
+
         return {
           ...item,
-          allSelected: false,
-          areaIndexs: item.areaIndexs.filter(
-            (areaIndex) => areaIndex !== curAreaIndex.value
-          ),
+          allSelected: value,
+          areaIds: value
+            ? Array.from(new Set([...item.areaIds, curAreaItem.id]))
+            : item.areaIds.filter((areaId) => areaId !== curAreaItem.id),
           children,
         };
-      } else return item;
-    } else {
-      // 省份未全选的情况，分全选、取消全选，2个逻辑
-      let children;
-      if (value) {
-        children = item.children.map((_item) => {
-          if (!_item.selected) {
-            areaList[curAreaIndex.value].pickedAreaCodes = Array.from(
-              new Set([
-                ...areaList[curAreaIndex.value].pickedAreaCodes,
-                _item.value,
-              ])
-            );
-            areaList[curAreaIndex.value].pickedAreaDescs = Array.from(
-              new Set([
-                ...areaList[curAreaIndex.value].pickedAreaDescs,
-                _item.label,
-              ])
-            );
-            return {
-              ..._item,
-              selected: true,
-              areaIndex: curAreaIndex.value,
-            };
-          } else return _item;
-        });
-      } else {
-        children = item.children.map((_item) => {
-          if (_item.selected && _item.areaIndex === curAreaIndex.value) {
-            areaList[curAreaIndex.value].pickedAreaCodes = areaList[
-              curAreaIndex.value
-            ].pickedAreaCodes.filter((code) => code !== _item.value);
-            areaList[curAreaIndex.value].pickedAreaDescs = areaList[
-              curAreaIndex.value
-            ].pickedAreaDescs.filter((desc) => desc !== _item.label);
-            return {
-              ..._item,
-              selected: false,
-              areaIndex: -1,
-            };
-          } else return _item;
-        });
       }
-
-      return {
-        ...item,
-        allSelected: value,
-        areaIndexs: value
-          ? Array.from(new Set([...item.areaIndexs, curAreaIndex.value]))
-          : item.areaIndexs.filter(
-              (areaIndex) => areaIndex !== curAreaIndex.value
-            ),
-        children,
-      };
-    }
-  });
+    });
+  }
 };
 const selectAllProvinceArea = (value: boolean) => {
   if (pickedCityIndex.value === -1) {
-    regionOptions.value[activeProvinceIndex.value].areaIndexs = value
-      ? Array.from(
-          new Set([
-            ...regionOptions.value[activeProvinceIndex.value].areaIndexs,
-            curAreaIndex.value,
-          ])
-        )
-      : regionOptions.value[activeProvinceIndex.value].areaIndexs.filter(
-          (areaIndex) => areaIndex !== curAreaIndex.value
-        );
+    const curRegionOption = regionOptions.value[activeProvinceIndex.value];
+    const curAreaItem = freightTemplate.areaList[curAreaIndex.value];
+    curRegionOption.areaIds = value
+      ? Array.from(new Set([...curRegionOption.areaIds, curAreaItem.id]))
+      : curRegionOption.areaIds.filter((areaId) => areaId !== curAreaItem.id);
     if (value) {
-      regionOptions.value[activeProvinceIndex.value].children =
-        regionOptions.value[activeProvinceIndex.value].children.map((item) => {
-          if (!item.selected) {
-            areaList[curAreaIndex.value].pickedAreaCodes = Array.from(
-              new Set([
-                ...areaList[curAreaIndex.value].pickedAreaCodes,
-                item.value,
-              ])
-            );
-            areaList[curAreaIndex.value].pickedAreaDescs = Array.from(
-              new Set([
-                ...areaList[curAreaIndex.value].pickedAreaDescs,
-                item.label,
-              ])
-            );
-            return {
-              ...item,
-              selected: true,
-              areaIndex: curAreaIndex.value,
-            };
-          } else return item;
-        });
+      curRegionOption.children = curRegionOption.children.map((item) => {
+        if (!item.selected) {
+          curAreaItem.pickedCityCodes = Array.from(
+            new Set([...curAreaItem.pickedCityCodes, item.value])
+          );
+          curAreaItem.pickedCityDescs = Array.from(
+            new Set([...curAreaItem.pickedCityDescs, item.label])
+          );
+          return {
+            ...item,
+            selected: true,
+            areaId: curAreaItem.id,
+          };
+        } else return item;
+      });
     } else {
-      regionOptions.value[activeProvinceIndex.value].children =
-        regionOptions.value[activeProvinceIndex.value].children.map((item) => {
-          if (item.selected && item.areaIndex === curAreaIndex.value) {
-            areaList[curAreaIndex.value].pickedAreaCodes = areaList[
-              curAreaIndex.value
-            ].pickedAreaCodes.filter((code) => code !== item.value);
-            areaList[curAreaIndex.value].pickedAreaDescs = areaList[
-              curAreaIndex.value
-            ].pickedAreaDescs.filter((desc) => desc !== item.label);
-            return {
-              ...item,
-              selected: false,
-              areaIndex: -1,
-            };
-          } else return item;
-        });
+      curRegionOption.children = curRegionOption.children.map((item) => {
+        if (item.selected && item.areaId === curAreaItem.id) {
+          curAreaItem.pickedCityCodes = curAreaItem.pickedCityCodes.filter(
+            (code) => code !== item.value
+          );
+          curAreaItem.pickedCityDescs = curAreaItem.pickedCityDescs.filter(
+            (desc) => desc !== item.label
+          );
+          return {
+            ...item,
+            selected: false,
+            areaId: 0,
+          };
+        } else return item;
+      });
     }
     allAreaSelected.value =
       regionOptions.value.findIndex((item) => !item.allSelected) === -1;
@@ -528,68 +587,38 @@ const selectAllProvinceArea = (value: boolean) => {
 };
 const setPickedCityIndex = (index: number) => (pickedCityIndex.value = index);
 const selectArea = (value: boolean) => {
-  if (pickedCityIndex.value !== -1) {
+  if (pickedCityIndex.value !== -1 && pickedCityIndex.value !== -2) {
+    const curRegionOption = regionOptions.value[activeProvinceIndex.value];
+    const curCityOption = curRegionOption.children[pickedCityIndex.value];
+    const curAreaItem = freightTemplate.areaList[curAreaIndex.value];
     if (value) {
-      areaList[curAreaIndex.value].pickedAreaCodes = Array.from(
-        new Set([
-          ...areaList[curAreaIndex.value].pickedAreaCodes,
-          regionOptions.value[activeProvinceIndex.value].children[
-            pickedCityIndex.value
-          ].value,
-        ])
+      curAreaItem.pickedCityCodes = Array.from(
+        new Set([...curAreaItem.pickedCityCodes, curCityOption.value])
       );
-      areaList[curAreaIndex.value].pickedAreaDescs = Array.from(
-        new Set([
-          ...areaList[curAreaIndex.value].pickedAreaDescs,
-          regionOptions.value[activeProvinceIndex.value].children[
-            pickedCityIndex.value
-          ].label,
-        ])
+      curAreaItem.pickedCityDescs = Array.from(
+        new Set([...curAreaItem.pickedCityDescs, curCityOption.label])
       );
     } else {
-      areaList[curAreaIndex.value].pickedAreaCodes = areaList[
-        curAreaIndex.value
-      ].pickedAreaCodes.filter(
-        (code) =>
-          code !==
-          regionOptions.value[activeProvinceIndex.value].children[
-            pickedCityIndex.value
-          ].value
+      curAreaItem.pickedCityCodes = curAreaItem.pickedCityCodes.filter(
+        (code) => code !== curCityOption.value
       );
-      areaList[curAreaIndex.value].pickedAreaDescs = areaList[
-        curAreaIndex.value
-      ].pickedAreaDescs.filter(
-        (desc) =>
-          desc !==
-          regionOptions.value[activeProvinceIndex.value].children[
-            pickedCityIndex.value
-          ].label
+      curAreaItem.pickedCityDescs = curAreaItem.pickedCityDescs.filter(
+        (desc) => desc !== curCityOption.label
       );
     }
-    regionOptions.value[activeProvinceIndex.value].children[
-      pickedCityIndex.value
-    ].areaIndex = value ? curAreaIndex.value : -1;
-    regionOptions.value[activeProvinceIndex.value].areaIndexs = value
-      ? Array.from(
-          new Set([
-            ...regionOptions.value[activeProvinceIndex.value].areaIndexs,
-            curAreaIndex.value,
-          ])
-        )
-      : regionOptions.value[activeProvinceIndex.value].areaIndexs.filter(
-          (areaIndex) => areaIndex !== curAreaIndex.value
-        );
-    regionOptions.value[activeProvinceIndex.value].allSelected =
-      regionOptions.value[activeProvinceIndex.value].children.findIndex(
-        (item) => !item.selected
-      ) === -1;
+    curCityOption.areaId = value ? curAreaItem.id : 0;
+    curRegionOption.areaIds = value
+      ? Array.from(new Set([...curRegionOption.areaIds, curAreaItem.id]))
+      : curRegionOption.areaIds.filter((areaId) => areaId !== curAreaItem.id);
+    curRegionOption.allSelected =
+      curRegionOption.children.findIndex((item) => !item.selected) === -1;
     allAreaSelected.value =
       regionOptions.value.findIndex((item) => !item.allSelected) === -1;
   }
 };
 const deleteArea = (index: number) => {
   showConfirmDialog({ title: "确定删除该配送地区配置吗？" })
-    .then(() => areaList.splice(index, 1))
+    .then(() => freightTemplate.areaList.splice(index, 1))
     .catch(() => true);
 };
 // -------------------------------------------------------------
@@ -603,16 +632,14 @@ const setRegionOptions = () => {
     ...item,
     children: item.children?.map((_item) => ({
       ..._item,
-      areaIndex: -1,
+      areaId: 0,
       selected: false,
     })),
-    areaIndexs: [],
+    areaIds: [],
     allSelected: false,
   }));
 };
 
-const templateType = ref(0);
-const computeType = ref(1);
 const expressList = reactive([{ pickedExpressDesc: "", fee: "" }]);
 
 const addExpress = () => expressList.push({ pickedExpressDesc: "", fee: "" });
@@ -627,6 +654,10 @@ const deleteExpress = (res: any) => {
   } else {
     return true;
   }
+};
+const save = () => {
+  console.log("regionOptions", regionOptions.value);
+  console.log("freightTemplate", freightTemplate);
 };
 </script>
 
