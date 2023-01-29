@@ -80,11 +80,7 @@
           size="mini"
         />
       </div>
-      <SwipeCell
-        v-for="(item, index) in freightTemplate.areaList"
-        :key="index"
-        :name="index"
-      >
+      <SwipeCell v-for="(item, index) in freightTemplate.areaList" :key="index">
         <div class="card">
           <div class="form">
             <div class="form-item">
@@ -138,7 +134,6 @@
       <SwipeCell
         v-for="(item, index) in freightTemplate.expressList"
         :key="index"
-        :name="index"
       >
         <div class="card">
           <div class="form">
@@ -185,7 +180,7 @@
         <div>基础信息</div>
         <Button
           class="add-btn"
-          @click="addArea"
+          @click="expressTemplateSelectPopupVisible = true"
           icon="plus"
           text="添加快递模板"
           type="primary"
@@ -196,7 +191,12 @@
         <div class="form">
           <div class="form-item">
             <div class="label">模板名称</div>
-            <input class="input" type="text" placeholder="请输入模板名称" />
+            <input
+              class="input"
+              v-model="freightTemplate.name"
+              type="text"
+              placeholder="请输入模板名称"
+            />
           </div>
           <div class="form-item">
             <div class="label row">
@@ -210,82 +210,113 @@
                 </template>
               </Popover>
             </div>
-            <input class="input" type="text" placeholder="请输入运费标题" />
+            <input
+              class="input"
+              v-model="freightTemplate.title"
+              type="text"
+              placeholder="请输入运费标题"
+            />
           </div>
         </div>
       </div>
-      <div class="title">
-        <div>顺丰快递</div>
-        <Button
-          class="add-btn"
-          @click="addArea"
-          icon="plus"
-          text="添加"
-          type="primary"
-          size="mini"
-        />
-      </div>
-      <SwipeCell
-        :before-close="deleteArea"
-        v-for="(item, index) in freightTemplate.areaList"
+      <div
+        v-for="(item, index) in freightTemplate.expressTemplateLists"
         :key="index"
-        :name="index"
       >
-        <div class="card">
-          <div class="form">
-            <div class="form-item">
-              <div class="label">区域名称</div>
-              <input class="input" type="text" placeholder="请输入区域名称" />
-            </div>
-            <div class="form-item">
-              <div class="label">费用计算方式</div>
-              <RadioGroup
-                class="selection"
-                direction="horizontal"
-                icon-size="0.32rem"
-              >
-                <Radio name="1">按重量</Radio>
-                <Radio name="2">按商品件数</Radio>
-              </RadioGroup>
-            </div>
-            <div class="form-item">
-              <div class="label">首重1KG以内费用</div>
-              <input class="input" type="number" placeholder="例：0.00" />
-            </div>
-            <div class="form-item">
-              <div class="label">续重每1KG或其零数的费用</div>
-              <input class="input" type="number" placeholder="例：0.00" />
-            </div>
-            <div class="form-item">
-              <div class="label">单件商品费用</div>
-              <input class="input" type="number" placeholder="例：0.00" />
-            </div>
-            <div class="form-item">
-              <div class="label">免费额度</div>
-              <input class="input" type="number" placeholder="例：0.00" />
-            </div>
-            <div class="form-item">
-              <div class="label">目的地</div>
-              <div
-                class="picker"
-                :class="{ active: item.pickedCityDescs.length }"
-              >
-                <div>
-                  {{
-                    item.pickedCityDescs.length
-                      ? `${item.pickedCityDescs.join().slice(0, 20)}...`
-                      : "请选择目的地"
-                  }}
+        <div class="title">
+          <div>{{ item.expressName }}</div>
+          <Button
+            class="add-btn"
+            @click="addExpressTemplateList(index)"
+            icon="plus"
+            text="添加"
+            type="primary"
+            size="mini"
+          />
+        </div>
+        <SwipeCell v-for="(_item, _index) in item.list" :key="_index">
+          <div class="card">
+            <div class="form">
+              <div class="form-item">
+                <div class="label">区域名称</div>
+                <input
+                  class="input"
+                  v-model="_item.areaName"
+                  type="text"
+                  placeholder="请输入区域名称"
+                />
+              </div>
+              <div class="form-item">
+                <div class="label">费用计算方式</div>
+                <RadioGroup
+                  class="selection"
+                  v-model="_item.computeMode"
+                  direction="horizontal"
+                  icon-size="0.32rem"
+                >
+                  <Radio :name="1">按重量</Radio>
+                  <Radio :name="2">按商品件数</Radio>
+                </RadioGroup>
+              </div>
+              <div class="form-item" v-if="_item.computeMode === 1">
+                <div class="label">首重1KG以内费用</div>
+                <input
+                  class="input"
+                  v-model="_item.baseFee"
+                  type="number"
+                  placeholder="例：0.00"
+                />
+              </div>
+              <div class="form-item" v-if="_item.computeMode === 1">
+                <div class="label">续重每1KG或其零数的费用</div>
+                <input
+                  class="input"
+                  v-model="_item.stepFee"
+                  type="number"
+                  placeholder="例：0.00"
+                />
+              </div>
+              <div class="form-item" v-if="_item.computeMode === 2">
+                <div class="label">单件商品费用</div>
+                <input
+                  class="input"
+                  v-model="_item.singleFee"
+                  type="number"
+                  placeholder="例：0.00"
+                />
+              </div>
+              <div class="form-item">
+                <div class="label">免费额度</div>
+                <input
+                  class="input"
+                  v-model="_item.freeQuota"
+                  type="number"
+                  placeholder="例：0.00"
+                />
+              </div>
+              <div class="form-item">
+                <div class="label">目的地</div>
+                <div class="picker">
+                  <div
+                    class="content"
+                    :class="{ active: _item.pickedCityDescs.length }"
+                  >
+                    {{
+                      _item.pickedCityDescs.length
+                        ? _item.pickedCityDescs.join()
+                        : "请选择目的地"
+                    }}
+                  </div>
+                  <Icon name="arrow" />
                 </div>
-                <Icon name="arrow" />
               </div>
             </div>
           </div>
-        </div>
-        <template #right>
-          <Button class="delete-btn" icon="delete" color="#EE0D23" plain />
-        </template>
-      </SwipeCell>
+          <template #right>
+            <Button class="delete-btn" icon="delete" color="#EE0D23" plain />
+          </template>
+        </SwipeCell>
+      </div>
     </div>
     <div class="btns">
       <button class="save-btn" @click="save">保存</button>
@@ -403,6 +434,22 @@
       </div>
     </div>
   </Popup>
+  <Popup
+    v-model:show="expressTemplateSelectPopupVisible"
+    position="bottom"
+    round
+  >
+    <Picker
+      title="选择快递"
+      :columns="expressTemplateOptions"
+      @confirm="expressTemplateConfirm"
+      @cancel="expressTemplateSelectPopupVisible = false"
+      :columns-field-names="{
+        text: 'name',
+        value: 'code',
+      }"
+    />
+  </Popup>
 </template>
 
 <script setup lang="ts">
@@ -416,6 +463,7 @@ import {
   Popover,
   Popup,
   Checkbox,
+  Picker,
 } from "vant";
 import { ref, reactive, onMounted, computed } from "vue";
 import { getExpressOptions } from "./utils/api";
@@ -444,6 +492,13 @@ interface ExpressOption {
   name: string;
   expressId: number;
   selected: boolean;
+}
+
+interface ExpressTemplateOption {
+  id: number;
+  code: string;
+  name: string;
+  disabled: boolean;
 }
 
 interface AreaItem {
@@ -500,6 +555,7 @@ const freightTemplate = reactive<FreightTemplate>({
 onMounted(() => {
   setRegionOptions();
   setExpressOptions();
+  setExpressTemplateOptions();
 });
 
 // -------------------------- 地区选择 --------------------------
@@ -866,6 +922,35 @@ const deleteExpress = (index: number) => {
     })
     .catch(() => true);
 };
+// -------------------------------------------------------------
+
+// ------------------------ 快递模板选择 -------------------------
+const expressTemplateOptions = ref<ExpressTemplateOption[]>([]);
+const expressTemplateSelectPopupVisible = ref(false);
+
+const setExpressTemplateOptions = async () => {
+  const options = await getExpressOptions();
+  expressTemplateOptions.value = options.map((item) => ({
+    ...item,
+    disabled: false,
+  }));
+};
+
+const expressTemplateConfirm = ({
+  selectedValues,
+  selectedOptions,
+}: {
+  selectedValues: number[];
+  selectedOptions: ExpressTemplateOption[];
+}) => {
+  console.log(selectedValues);
+  console.log(selectedOptions);
+};
+
+const addExpressTemplateList = (index: number) => {
+  console.log(index);
+};
+
 // -------------------------------------------------------------
 
 const save = () => {
