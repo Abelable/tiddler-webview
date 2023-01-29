@@ -136,8 +136,7 @@
         />
       </div>
       <SwipeCell
-        :before-close="deleteExpress"
-        v-for="(item, index) in expressList"
+        v-for="(item, index) in freightTemplate.expressList"
         :key="index"
         :name="index"
       >
@@ -145,8 +144,17 @@
           <div class="form">
             <div class="form-item">
               <div class="label">快递名称</div>
-              <div class="picker" :class="{ active: item.pickedExpressDesc }">
-                <div>{{ item.pickedExpressDesc || "请选择快递" }}</div>
+              <div class="picker" @click="showExpressSelectPopup(index)">
+                <div
+                  class="content"
+                  :class="{ active: item.pickedExpressDescs.length }"
+                >
+                  {{
+                    item.pickedExpressDescs.length
+                      ? item.pickedExpressDescs.join()
+                      : "请选择快递"
+                  }}
+                </div>
                 <Icon name="arrow" />
               </div>
             </div>
@@ -154,7 +162,7 @@
               <div class="label">额外运费</div>
               <input
                 class="input"
-                v-model="expressList[index].fee"
+                v-model="item.fee"
                 type="number"
                 placeholder="例：0.00"
               />
@@ -162,7 +170,13 @@
           </div>
         </div>
         <template #right>
-          <Button class="delete-btn" icon="delete" color="#EE0D23" plain />
+          <Button
+            class="delete-btn"
+            @click.stop="deleteExpress(index)"
+            icon="delete"
+            color="#EE0D23"
+            plain
+          />
         </template>
       </SwipeCell>
     </div>
@@ -278,14 +292,19 @@
     </div>
   </div>
 
-  <Popup v-model:show="areaSelectPopupVisible" position="bottom" round>
+  <Popup
+    v-model:show="areaSelectPopupVisible"
+    position="bottom"
+    round
+    safe-area-inset-bottom
+  >
     <div class="area-select-wrap">
       <div class="header">
         <div class="title">请选择地区</div>
         <Checkbox
           v-model="allAreaSelected"
           @change="selectAllArea"
-          @click="setPickedCityIndex(-2)"
+          @click="pickedCityIndex = -2"
           :disabled="allAreaSelectDisabled"
           label-position="left"
           >全选</Checkbox
@@ -313,7 +332,7 @@
             <Checkbox
               v-model="item.allSelected"
               @change="selectAllProvinceArea"
-              @click="setPickedCityIndex(-1)"
+              @click="pickedCityIndex = -1"
               :disabled="
                 item.allSelected &&
                 !item.areaIds.includes(
@@ -336,11 +355,50 @@
                 _item.areaId !== freightTemplate.areaList[curAreaIndex].id
               "
               @change="selectArea"
-              @click="setPickedCityIndex(_index)"
+              @click="pickedCityIndex = _index"
               label-position="left"
               >{{ _item.label }}</Checkbox
             >
           </div>
+        </div>
+      </div>
+    </div>
+  </Popup>
+  <Popup
+    v-model:show="expressSelectPopupVisible"
+    position="bottom"
+    round
+    safe-area-inset-bottom
+  >
+    <div class="express-select-wrap">
+      <div class="header">
+        <div class="title">请选择快递</div>
+        <Checkbox
+          v-model="allExpressSelected"
+          :disabled="allExpressSelectDisabled"
+          @change="selectAllExpress"
+          @click="curExpressOptionIndex = -1"
+          label-position="left"
+          >全选</Checkbox
+        >
+      </div>
+      <div class="content">
+        <div
+          class="express-select"
+          v-for="(item, index) in expressOptions"
+          :key="index"
+        >
+          <Checkbox
+            v-model="item.selected"
+            :disabled="
+              item.selected &&
+              item.expressId !== freightTemplate.expressList[curExpressIndex].id
+            "
+            @change="selectExpress"
+            @click="curExpressOptionIndex = index"
+            label-position="left"
+            >{{ item.name }}</Checkbox
+          >
         </div>
       </div>
     </div>
@@ -360,6 +418,7 @@ import {
   Checkbox,
 } from "vant";
 import { ref, reactive, onMounted, computed } from "vue";
+import { getExpressOptions } from "./utils/api";
 import {
   RegionOption as Option,
   getCityRegionOptions,
@@ -377,6 +436,14 @@ interface RegionOption {
   areaIds: number[];
   allSelected: boolean;
   children: AreaRegion[];
+}
+
+interface ExpressOption {
+  id: number;
+  code: string;
+  name: string;
+  expressId: number;
+  selected: boolean;
 }
 
 interface AreaItem {
@@ -424,12 +491,15 @@ const freightTemplate = reactive<FreightTemplate>({
   computeMode: 1,
   freeQuota: 0,
   areaList: [{ id: 1, pickedCityCodes: [], pickedCityDescs: [], fee: 0 }],
-  expressList: [],
+  expressList: [
+    { id: 1, pickedExpressCodes: [], pickedExpressDescs: [], fee: 0 },
+  ],
   expressTemplateLists: [],
 });
 
 onMounted(() => {
   setRegionOptions();
+  setExpressOptions();
 });
 
 // -------------------------- 地区选择 --------------------------
@@ -467,7 +537,6 @@ const showAreaselectPopup = (index: number) => {
 };
 const selectAllArea = (value: boolean) => {
   if (pickedCityIndex.value === -2) {
-    allAreaSelected.value = value;
     regionOptions.value = regionOptions.value.map((item) => {
       const curAreaItem = freightTemplate.areaList[curAreaIndex.value];
       // 省份已全选的情况，
@@ -592,7 +661,6 @@ const selectAllProvinceArea = (value: boolean) => {
       regionOptions.value.findIndex((item) => !item.allSelected) === -1;
   }
 };
-const setPickedCityIndex = (index: number) => (pickedCityIndex.value = index);
 const selectArea = (value: boolean) => {
   if (
     pickedCityIndex.value !== -1 &&
@@ -671,23 +739,138 @@ const deleteArea = (index: number) => {
 };
 // -------------------------------------------------------------
 
-const expressList = reactive([{ pickedExpressDesc: "", fee: "" }]);
+// -------------------------- 快递选择 --------------------------
+const expressOptions = ref<ExpressOption[]>([]);
+const expressSelectPopupVisible = ref(false);
+const curExpressIndex = ref(-1);
+const curExpressOptionIndex = ref(-2);
+const allExpressSelected = ref(false);
 
-const addExpress = () => expressList.push({ pickedExpressDesc: "", fee: "" });
-const deleteExpress = (res: any) => {
-  if (res.position === "right") {
-    showConfirmDialog({ title: "确定删除该快递方式配置吗？" })
-      .then(() => {
-        expressList.splice(res.name, 1);
-        return true;
-      })
-      .catch(() => true);
-  } else {
-    return true;
+const allExpressSelectDisabled = computed(
+  () =>
+    allExpressSelected.value &&
+    expressOptions.value.findIndex(
+      (item) =>
+        item.expressId === freightTemplate.expressList[curExpressIndex.value].id
+    ) === -1
+);
+
+const setExpressOptions = async () => {
+  const options = await getExpressOptions();
+  expressOptions.value = options.map((item) => ({
+    ...item,
+    expressId: 0,
+    selected: false,
+  }));
+};
+
+const showExpressSelectPopup = (index: number) => {
+  expressSelectPopupVisible.value = true;
+  curExpressIndex.value = index;
+};
+const selectAllExpress = (value: boolean) => {
+  if (curExpressOptionIndex.value === -1) {
+    const curExpressItem = freightTemplate.expressList[curExpressIndex.value];
+    if (value) {
+      expressOptions.value = expressOptions.value.map((item) => {
+        if (!item.selected) {
+          curExpressItem.pickedExpressCodes = Array.from(
+            new Set([...curExpressItem.pickedExpressCodes, item.code])
+          );
+          curExpressItem.pickedExpressDescs = Array.from(
+            new Set([...curExpressItem.pickedExpressDescs, item.name])
+          );
+          return {
+            ...item,
+            expressId: curExpressItem.id,
+            selected: true,
+          };
+        } else return item;
+      });
+    } else {
+      expressOptions.value = expressOptions.value.map((item) => {
+        if (item.expressId === curExpressItem.id) {
+          curExpressItem.pickedExpressCodes =
+            curExpressItem.pickedExpressCodes.filter(
+              (code) => code !== item.code
+            );
+          curExpressItem.pickedExpressDescs =
+            curExpressItem.pickedExpressDescs.filter(
+              (desc) => desc !== item.name
+            );
+          return {
+            ...item,
+            expressId: 0,
+            selected: false,
+          };
+        } else return item;
+      });
+    }
   }
 };
+const selectExpress = (value: boolean) => {
+  if (
+    curExpressOptionIndex.value !== -1 &&
+    curExpressOptionIndex.value !== -2
+  ) {
+    const curExpressItem = freightTemplate.expressList[curExpressIndex.value];
+    const curExpressOption = expressOptions.value[curExpressOptionIndex.value];
+    curExpressOption.expressId = value ? curExpressItem.id : 0;
+    curExpressItem.pickedExpressCodes = value
+      ? Array.from(
+          new Set([...curExpressItem.pickedExpressCodes, curExpressOption.code])
+        )
+      : curExpressItem.pickedExpressCodes.filter(
+          (code) => code !== curExpressOption.code
+        );
+    curExpressItem.pickedExpressDescs = value
+      ? Array.from(
+          new Set([...curExpressItem.pickedExpressDescs, curExpressOption.name])
+        )
+      : curExpressItem.pickedExpressDescs.filter(
+          (desc) => desc !== curExpressOption.name
+        );
+    allExpressSelected.value =
+      expressOptions.value.findIndex((item) => !item.selected) === -1;
+  }
+};
+
+const addExpress = () =>
+  freightTemplate.expressList.push({
+    id: freightTemplate.expressList.length
+      ? freightTemplate.expressList[freightTemplate.expressList.length - 1].id +
+        1
+      : 1,
+    pickedExpressCodes: [],
+    pickedExpressDescs: [],
+    fee: 0,
+  });
+const deleteExpress = (index: number) => {
+  showConfirmDialog({ title: "确定删除该快递方式配置吗？" })
+    .then(() => {
+      curExpressIndex.value = index;
+      curExpressOptionIndex.value = -2;
+      const id = freightTemplate.expressList[index].id;
+      expressOptions.value = expressOptions.value.map((item) => {
+        if (item.expressId === id) {
+          return {
+            ...item,
+            expressId: 0,
+            selected: false,
+          };
+        } else return item;
+      });
+      allExpressSelected.value = false;
+      freightTemplate.expressList.splice(index, 1);
+      return true;
+    })
+    .catch(() => true);
+};
+// -------------------------------------------------------------
+
 const save = () => {
   console.log("regionOptions", regionOptions.value);
+  console.log("expressOptions", expressOptions.value);
   console.log("freightTemplate", freightTemplate);
 };
 </script>
@@ -872,6 +1055,41 @@ const save = () => {
           justify-content: space-between;
           width: 100%;
         }
+      }
+    }
+  }
+}
+.express-select-wrap {
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.32rem;
+    font-size: 0.28rem;
+    font-weight: 550;
+    .title {
+      color: #333;
+      font-size: 0.32rem;
+    }
+  }
+  .content {
+    padding: 0 0.32rem;
+    height: 8rem;
+    overflow-y: scroll;
+    .express-select {
+      display: flex;
+      align-items: center;
+      height: 1rem;
+      color: #333;
+      font-size: 0.28rem;
+      font-weight: 550;
+      border-bottom: 0.01rem solid #eee;
+      &:last-child {
+        border-bottom: none;
+      }
+      .van-checkbox {
+        justify-content: space-between;
+        width: 100%;
       }
     }
   }
