@@ -1,46 +1,55 @@
 <template>
   <div class="template-list">
-    <SwipeCell
-      v-for="(item, index) in templateList"
-      :key="index"
-      :name="index"
-      :before-close="beforeClose"
-    >
+    <SwipeCell v-for="(item, index) in templateList" :key="index">
       <div class="template">
-        <div class="name">{{ item }}</div>
+        <div class="name">{{ item.name }}</div>
         <Icon name="edit" size="0.3rem" />
       </div>
       <template #right>
-        <Button class="delete-btn" square text="删除" type="danger" />
+        <Button
+          class="delete-btn"
+          @click="deleteTempalte(index)"
+          square
+          text="删除"
+          type="danger"
+        />
       </template>
     </SwipeCell>
   </div>
-  <button class="add-btn">新增运费模板</button>
+  <Empty v-if="!templateList.length" description="暂无运费模板列表" />
+  <button class="add-btn" @click="addTemplate">新增运费模板</button>
 </template>
 
 <script setup lang="ts">
-import { SwipeCell, Button, Icon, showConfirmDialog } from "vant";
-import { reactive } from "vue";
+import { SwipeCell, Button, Icon, showConfirmDialog, Empty } from "vant";
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 
-const templateList = reactive([
-  "模板名称1",
-  "模板名称2",
-  "模板名称3",
-  "模板名称4",
-]);
+import { FreightTemplateListItem, getFreightTemplateList } from "./utils/api";
 
-const beforeClose = (res: any) => {
-  if (res.position === "right") {
-    showConfirmDialog({ title: "确定删除该模板吗？" })
-      .then(() => {
-        templateList.splice(res.name, 1);
-        return true;
-      })
-      .catch(() => true);
-  } else {
-    return true;
-  }
+const templateList = ref<FreightTemplateListItem[]>([]);
+const router = useRouter();
+
+onMounted(() => {
+  setTemplateList(true);
+});
+
+let page = 0;
+const setTemplateList = async (init = false) => {
+  if (init) page = 0;
+  const list = await getFreightTemplateList(++page);
+  templateList.value = init ? list : [...templateList.value, ...list];
 };
+
+const addTemplate = () => router.push("/shop/freight_template/create");
+
+const deleteTempalte = (index: number) =>
+  showConfirmDialog({ title: "确定删除该运费模板吗？" })
+    .then(() => {
+      templateList.value.splice(index, 1);
+      return true;
+    })
+    .catch(() => true);
 </script>
 
 <style lang="scss" scoped>

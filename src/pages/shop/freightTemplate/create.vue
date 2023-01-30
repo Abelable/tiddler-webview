@@ -64,6 +64,7 @@
               class="input"
               v-model="freightTemplate.freeQuota"
               type="number"
+              step="0.01"
               placeholder="例：0.00"
             />
           </div>
@@ -105,6 +106,7 @@
                 class="input"
                 v-model="item.fee"
                 type="number"
+                step="0.01"
                 placeholder="例：0.00"
               />
             </div>
@@ -159,6 +161,7 @@
                 class="input"
                 v-model="item.fee"
                 type="number"
+                step="0.01"
                 placeholder="例：0.00"
               />
             </div>
@@ -264,6 +267,7 @@
                   class="input"
                   v-model="_item.baseFee"
                   type="number"
+                  step="0.01"
                   placeholder="例：0.00"
                 />
               </div>
@@ -273,6 +277,7 @@
                   class="input"
                   v-model="_item.stepFee"
                   type="number"
+                  step="0.01"
                   placeholder="例：0.00"
                 />
               </div>
@@ -282,6 +287,7 @@
                   class="input"
                   v-model="_item.singleFee"
                   type="number"
+                  step="0.01"
                   placeholder="例：0.00"
                 />
               </div>
@@ -291,6 +297,7 @@
                   class="input"
                   v-model="_item.freeQuota"
                   type="number"
+                  step="0.01"
                   placeholder="例：0.00"
                 />
               </div>
@@ -565,9 +572,11 @@ import {
   Popup,
   Checkbox,
   Picker,
+  showToast,
 } from "vant";
 import { ref, reactive, onMounted, computed } from "vue";
-import { getExpressOptions } from "./utils/api";
+import { useRouter } from "vue-router";
+import { createFreightTemplate, getExpressOptions } from "./utils/api";
 import {
   RegionOption as Option,
   getCityRegionOptions,
@@ -640,6 +649,8 @@ interface FreightTemplate {
   expressList: ExpressItem[];
   expressTemplateLists: ExpressTemplateList[];
 }
+
+const router = useRouter();
 
 const freightTemplate = reactive<FreightTemplate>({
   mode: 1,
@@ -1337,12 +1348,35 @@ const deleteExpressTemplateList = (index: number, _index: number) =>
 
 // -------------------------------------------------------------
 
-const save = () => {
-  console.log("regionOptions", regionOptions.value);
-  console.log("expressOptions", expressOptions.value);
-  console.log("expressTemplateOptions", expressTemplateOptions.value);
-  console.log("regionOptionsList", regionOptionsList.value);
-  console.log("freightTemplate", freightTemplate);
+const save = async () => {
+  if (!freightTemplate.name) {
+    showToast("请输入模板名称");
+    return;
+  }
+  if (!freightTemplate.title) {
+    showToast("请输入模板标题");
+    return;
+  }
+  if (
+    freightTemplate.mode === 2 &&
+    !freightTemplate.expressTemplateLists.length
+  ) {
+    showToast("请添加快递模板");
+    return;
+  }
+  try {
+    await createFreightTemplate({
+      ...freightTemplate,
+      areaList: JSON.stringify(freightTemplate.areaList),
+      expressList: JSON.stringify(freightTemplate.expressList),
+      expressTemplateLists: JSON.stringify(
+        freightTemplate.expressTemplateLists
+      ),
+    });
+    router.back();
+  } catch (error) {
+    showToast("保存失败，请重试");
+  }
 };
 </script>
 

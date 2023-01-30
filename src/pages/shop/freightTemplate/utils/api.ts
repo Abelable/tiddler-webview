@@ -1,58 +1,43 @@
 import { http } from "@/utils/http";
 
-export interface MerchantInfo {
-  type: number;
-  companyName?: string;
-  businessLicensePhoto?: string;
-  regionDesc: string;
-  regionCodeList: string;
-  addressDetail: string;
-  name: string;
-  mobile: string;
-  email: string;
-  idCardNumber: string;
-  idCardFrontPhoto: string;
-  idCardBackPhoto: string;
-  holdIdCardPhoto: string;
-  bankCardOwnerName: string;
-  bankCardNumber: string;
-  bankName: string;
-  shopName: string;
-  shopCategoryId: number;
-}
-
 export interface ExpressOption {
   id: number;
   code: string;
   name: string;
 }
 
-export const uploadMerchantInfo = async (info: MerchantInfo) =>
-  await http("shop/merchant/settle_in", { method: "POST", data: info });
-
-export interface ShopCategoryOption {
+export interface FreightTemplateListItem {
   id: number;
   name: string;
+}
+
+interface FreightTemplateUpload {
+  mode: number;
+  name: string;
+  title: string;
+  computeMode: number;
+  freeQuota: number;
+  areaList: string;
+  expressList: string;
+  expressTemplateLists: string;
 }
 
 export const getExpressOptions = async (): Promise<ExpressOption[]> =>
   await http("shop/express_options");
 
-export interface MerchantStatusInfo {
-  id: number;
-  type: number;
-  status: number;
-  failureReason: string;
-}
+export const getFreightTemplateList = async (
+  page = 1,
+  limit = 10
+): Promise<FreightTemplateListItem[]> => {
+  const { list = [] } =
+    (await http("shop/freight_template/list", { data: { page, limit } })) || {};
+  return list;
+};
 
-export const getMerchantStatusInfo = async (): Promise<MerchantStatusInfo> =>
-  await http("shop/merchant/status");
-
-export const payMerchantDeposit = async (orderId: number) =>
-  await http("shop/merchant/pay_deposit", {
+export const createFreightTemplate = async (
+  freightTemplate: FreightTemplateUpload
+) =>
+  await http("shop/freight_template/add", {
     method: "POST",
-    data: { orderId },
+    data: freightTemplate,
   });
-
-export const deleteMerchant = async () =>
-  await http("shop/merchant/delete", { method: "POST" });
