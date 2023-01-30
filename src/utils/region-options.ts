@@ -58,9 +58,10 @@ export const getRegionOptions = () => {
 };
 
 export const getCityRegionOptions = () => {
+  const _provinces = _.cloneDeep(provinces);
   cities.forEach((city) => {
-    const matchProvince: MatchProvince = provinces.filter(
-      (province) => province.code === city.provinceCode
+    const matchProvince: MatchProvince = _provinces.filter(
+      (province: MatchProvince) => province.code === city.provinceCode
     )[0];
     if (matchProvince) {
       matchProvince.children = matchProvince.children || [];
@@ -71,10 +72,10 @@ export const getCityRegionOptions = () => {
     }
   });
 
-  const options = provinces.map((province) => ({
+  const options = _provinces.map((province: MatchProvince) => ({
     label: province.name,
     value: province.code,
-    children: (province as MatchProvince).children,
+    children: province.children,
   }));
 
   return _.cloneDeep(options);

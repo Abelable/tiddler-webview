@@ -375,6 +375,7 @@
               @click="pickedCityIndex = -1"
               :disabled="
                 item.allSelected &&
+                freightTemplate.areaList[curAreaIndex] &&
                 !item.areaIds.includes(
                   freightTemplate.areaList[curAreaIndex].id
                 )
@@ -392,6 +393,7 @@
               v-model="_item.selected"
               :disabled="
                 _item.selected &&
+                freightTemplate.areaList[curAreaIndex] &&
                 _item.areaId !== freightTemplate.areaList[curAreaIndex].id
               "
               @change="selectArea"
@@ -432,6 +434,7 @@
             v-model="item.selected"
             :disabled="
               item.selected &&
+              freightTemplate.expressList[curExpressIndex] &&
               item.expressId !== freightTemplate.expressList[curExpressIndex].id
             "
             @change="selectExpress"
@@ -508,6 +511,9 @@
               @click="expressPickedCityIndex = -1"
               :disabled="
                 item.allSelected &&
+                freightTemplate.expressTemplateLists[
+                  curExpressTemplateListIndex
+                ].list[curExpressTemplateIndex] &&
                 !item.areaIds.includes(
                   freightTemplate.expressTemplateLists[
                     curExpressTemplateListIndex
@@ -527,6 +533,9 @@
               v-model="_item.selected"
               :disabled="
                 _item.selected &&
+                freightTemplate.expressTemplateLists[
+                  curExpressTemplateListIndex
+                ].list[curExpressTemplateIndex] &&
                 _item.areaId !==
                   freightTemplate.expressTemplateLists[
                     curExpressTemplateListIndex
