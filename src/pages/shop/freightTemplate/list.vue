@@ -41,16 +41,9 @@ import {
 const templateList = ref<FreightTemplateListItem[]>([]);
 const router = useRouter();
 
-onMounted(() => {
-  setTemplateList(true);
+onMounted(async () => {
+  templateList.value = await getFreightTemplateList();
 });
-
-let page = 0;
-const setTemplateList = async (init = false) => {
-  if (init) page = 0;
-  const list = await getFreightTemplateList(++page);
-  templateList.value = init ? list : [...templateList.value, ...list];
-};
 
 const addTemplate = () => router.push("/shop/freight_template/create");
 const editTemplate = (id: number) =>

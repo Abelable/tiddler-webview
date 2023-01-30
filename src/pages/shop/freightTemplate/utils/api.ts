@@ -67,14 +67,9 @@ interface EditFreightTemplate extends AddFreightTemplate {
 export const getExpressOptions = async (): Promise<ExpressOption[]> =>
   await http("shop/express_options");
 
-export const getFreightTemplateList = async (
-  page = 1,
-  limit = 10
-): Promise<FreightTemplateListItem[]> => {
-  const { list = [] } =
-    (await http("shop/freight_template/list", { data: { page, limit } })) || {};
-  return list;
-};
+export const getFreightTemplateList = async (): Promise<
+  FreightTemplateListItem[]
+> => await http("shop/freight_template/list");
 
 export const getFreightTemplate = async (
   id: number
