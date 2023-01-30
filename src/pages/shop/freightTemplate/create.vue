@@ -1331,6 +1331,7 @@ const deleteExpressTemplateList = (index: number, _index: number) =>
 const save = () => {
   console.log("regionOptions", regionOptions.value);
   console.log("expressOptions", expressOptions.value);
+  console.log("expressTemplateOptions", expressTemplateOptions.value);
   console.log("regionOptionsList", regionOptionsList.value);
   console.log("freightTemplate", freightTemplate);
 };
