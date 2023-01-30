@@ -11,18 +11,6 @@ export interface FreightTemplateListItem {
   name: string;
 }
 
-export const getExpressOptions = async (): Promise<ExpressOption[]> =>
-  await http("shop/express_options");
-
-export const getFreightTemplateList = async (
-  page = 1,
-  limit = 10
-): Promise<FreightTemplateListItem[]> => {
-  const { list = [] } =
-    (await http("shop/freight_template/list", { data: { page, limit } })) || {};
-  return list;
-};
-
 interface AreaItem {
   id: number;
   pickedCityCodes: string[];
@@ -75,6 +63,18 @@ interface AddFreightTemplate
 interface EditFreightTemplate extends AddFreightTemplate {
   id: number;
 }
+
+export const getExpressOptions = async (): Promise<ExpressOption[]> =>
+  await http("shop/express_options");
+
+export const getFreightTemplateList = async (
+  page = 1,
+  limit = 10
+): Promise<FreightTemplateListItem[]> => {
+  const { list = [] } =
+    (await http("shop/freight_template/list", { data: { page, limit } })) || {};
+  return list;
+};
 
 export const getFreightTemplate = async (
   id: number
