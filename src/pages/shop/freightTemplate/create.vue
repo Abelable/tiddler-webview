@@ -85,7 +85,7 @@
           <div class="form">
             <div class="form-item">
               <div class="label">地区</div>
-              <div class="picker" @click="showAreaselectPopup(index)">
+              <div class="picker" @click="showAreaSelectPopup(index)">
                 <div
                   class="content"
                   :class="{ active: item.pickedCityDescs.length }"
@@ -296,7 +296,10 @@
               </div>
               <div class="form-item">
                 <div class="label">目的地</div>
-                <div class="picker">
+                <div
+                  class="picker"
+                  @click="showExpressAreaSelectPopup(index, _index)"
+                >
                   <div
                     class="content"
                     :class="{ active: _item.pickedCityDescs.length }"
@@ -313,7 +316,13 @@
             </div>
           </div>
           <template #right>
-            <Button class="delete-btn" icon="delete" color="#EE0D23" plain />
+            <Button
+              class="delete-btn"
+              @click.stop="deleteExpressTemplateList(index, _index)"
+              icon="delete"
+              color="#EE0D23"
+              plain
+            />
           </template>
         </SwipeCell>
       </div>
@@ -450,6 +459,89 @@
       }"
     />
   </Popup>
+  <Popup
+    v-model:show="expressAreaSelectPopupVisible"
+    position="bottom"
+    round
+    safe-area-inset-bottom
+  >
+    <div
+      class="area-select-wrap"
+      v-if="regionOptionsList[curExpressTemplateListIndex]"
+    >
+      <div class="header">
+        <div class="title">请选择地区</div>
+        <Checkbox
+          v-model="regionOptionsList[curExpressTemplateListIndex].allSelected"
+          @change="selectAllExpressArea"
+          @click="expressPickedCityIndex = -2"
+          :disabled="expressAllAreaSelectDisabled"
+          label-position="left"
+          >全选</Checkbox
+        >
+      </div>
+      <div class="main">
+        <div class="left">
+          <div
+            class="province-selection"
+            :class="{ active: expressActiveProvinceIndex === index }"
+            v-for="(item, index) in regionOptionsList[
+              curExpressTemplateListIndex
+            ].list"
+            :key="index"
+            @click="expressActiveProvinceIndex = index"
+          >
+            {{ item.label }}
+          </div>
+        </div>
+        <div
+          class="right"
+          v-for="(item, index) in regionOptionsList[curExpressTemplateListIndex]
+            .list"
+          :key="index"
+          v-show="index === expressActiveProvinceIndex"
+        >
+          <div class="city-selection">
+            <Checkbox
+              v-model="item.allSelected"
+              @change="selectAllExpressProvinceArea"
+              @click="expressPickedCityIndex = -1"
+              :disabled="
+                item.allSelected &&
+                !item.areaIds.includes(
+                  freightTemplate.expressTemplateLists[
+                    curExpressTemplateListIndex
+                  ].list[curExpressTemplateIndex].id
+                )
+              "
+              label-position="left"
+              >全选</Checkbox
+            >
+          </div>
+          <div
+            class="city-selection"
+            v-for="(_item, _index) in item.children"
+            :key="_index"
+          >
+            <Checkbox
+              v-model="_item.selected"
+              :disabled="
+                _item.selected &&
+                _item.areaId !==
+                  freightTemplate.expressTemplateLists[
+                    curExpressTemplateListIndex
+                  ].list[curExpressTemplateIndex].id
+              "
+              @change="selectExpressArea"
+              @click="expressPickedCityIndex = _index"
+              label-position="left"
+              >{{ _item.label }}</Checkbox
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </Popup>
 </template>
 
 <script setup lang="ts">
@@ -514,6 +606,7 @@ interface ExpressItem {
   fee: number;
 }
 interface ExpressTemplate {
+  id: number;
   areaName: string;
   computeMode: number;
   baseFee?: number;
@@ -587,7 +680,7 @@ const setRegionOptions = () => {
   }));
 };
 
-const showAreaselectPopup = (index: number) => {
+const showAreaSelectPopup = (index: number) => {
   curAreaIndex.value = index;
   areaSelectPopupVisible.value = true;
 };
@@ -786,8 +879,7 @@ const deleteArea = (index: number) => {
           };
         } else return item;
       });
-      allAreaSelected.value =
-        regionOptions.value.findIndex((item) => !item.allSelected) === -1;
+      allAreaSelected.value = false;
       freightTemplate.areaList.splice(index, 1);
       return true;
     })
@@ -925,8 +1017,32 @@ const deleteExpress = (index: number) => {
 // -------------------------------------------------------------
 
 // ------------------------ 快递模板选择 -------------------------
+const regionOptionsList = ref<
+  {
+    allSelected: boolean;
+    list: RegionOption[];
+  }[]
+>([]);
 const expressTemplateOptions = ref<ExpressTemplateOption[]>([]);
 const expressTemplateSelectPopupVisible = ref(false);
+const curExpressTemplateListIndex = ref(0);
+const curExpressTemplateIndex = ref(0);
+const expressActiveProvinceIndex = ref(0);
+const expressPickedCityIndex = ref(-3);
+const expressAreaSelectPopupVisible = ref(false);
+
+const expressAllAreaSelectDisabled = computed(
+  () =>
+    regionOptionsList.value[curExpressTemplateListIndex.value].allSelected &&
+    regionOptionsList.value[curExpressTemplateListIndex.value].list.findIndex(
+      (item) =>
+        item.areaIds.includes(
+          freightTemplate.expressTemplateLists[
+            curExpressTemplateListIndex.value
+          ].list[curExpressTemplateIndex.value].id
+        )
+    ) === -1
+);
 
 const setExpressTemplateOptions = async () => {
   const options = await getExpressOptions();
@@ -936,26 +1052,286 @@ const setExpressTemplateOptions = async () => {
   }));
 };
 
+const showExpressAreaSelectPopup = (index: number, _index: number) => {
+  curExpressTemplateListIndex.value = index;
+  curExpressTemplateIndex.value = _index;
+  expressAreaSelectPopupVisible.value = true;
+};
+const selectAllExpressArea = (value: boolean) => {
+  if (expressPickedCityIndex.value === -2) {
+    const curRegionOptionsItem =
+      regionOptionsList.value[curExpressTemplateListIndex.value];
+    curRegionOptionsItem.list = curRegionOptionsItem.list.map((item) => {
+      const curAreaItem =
+        freightTemplate.expressTemplateLists[curExpressTemplateListIndex.value]
+          .list[curExpressTemplateIndex.value];
+      // 省份已全选的情况，
+      // 只执行取消全选逻辑，且仅在包含当前地区索引情况下执行
+      // 若为全选逻辑，则直接跳过
+      if (item.allSelected) {
+        if (!value && item.areaIds.includes(curAreaItem.id)) {
+          const children = item.children.map((_item) => {
+            if (_item.areaId === curAreaItem.id) {
+              curAreaItem.pickedCityCodes = curAreaItem.pickedCityCodes.filter(
+                (code) => code !== _item.value
+              );
+              curAreaItem.pickedCityDescs = curAreaItem.pickedCityDescs.filter(
+                (desc) => desc !== _item.label
+              );
+              return {
+                ..._item,
+                selected: false,
+                areaId: 0,
+              };
+            } else {
+              return _item;
+            }
+          });
+          return {
+            ...item,
+            allSelected: false,
+            areaIds: item.areaIds.filter((areaId) => areaId !== curAreaItem.id),
+            children,
+          };
+        } else return item;
+      } else {
+        // 省份未全选的情况，分全选、取消全选，2个逻辑
+        let children;
+        if (value) {
+          children = item.children.map((_item) => {
+            if (!_item.selected) {
+              curAreaItem.pickedCityCodes = Array.from(
+                new Set([...curAreaItem.pickedCityCodes, _item.value])
+              );
+              curAreaItem.pickedCityDescs = Array.from(
+                new Set([...curAreaItem.pickedCityDescs, _item.label])
+              );
+              return {
+                ..._item,
+                selected: true,
+                areaId: curAreaItem.id,
+              };
+            } else return _item;
+          });
+        } else {
+          children = item.children.map((_item) => {
+            if (_item.selected && _item.areaId === curAreaItem.id) {
+              curAreaItem.pickedCityCodes = curAreaItem.pickedCityCodes.filter(
+                (code) => code !== _item.value
+              );
+              curAreaItem.pickedCityDescs = curAreaItem.pickedCityDescs.filter(
+                (desc) => desc !== _item.label
+              );
+              return {
+                ..._item,
+                selected: false,
+                areaId: 0,
+              };
+            } else return _item;
+          });
+        }
+
+        return {
+          ...item,
+          allSelected: value,
+          areaIds: value
+            ? Array.from(new Set([...item.areaIds, curAreaItem.id]))
+            : item.areaIds.filter((areaId) => areaId !== curAreaItem.id),
+          children,
+        };
+      }
+    });
+  }
+};
+const selectAllExpressProvinceArea = (value: boolean) => {
+  if (expressPickedCityIndex.value === -1) {
+    const curRegionOptionsItem =
+      regionOptionsList.value[curExpressTemplateListIndex.value];
+    const curRegionOption =
+      curRegionOptionsItem.list[expressActiveProvinceIndex.value];
+    const curAreaItem =
+      freightTemplate.expressTemplateLists[curExpressTemplateListIndex.value]
+        .list[curExpressTemplateIndex.value];
+    curRegionOption.areaIds = value
+      ? Array.from(new Set([...curRegionOption.areaIds, curAreaItem.id]))
+      : curRegionOption.areaIds.filter((areaId) => areaId !== curAreaItem.id);
+    if (value) {
+      curRegionOption.children = curRegionOption.children.map((item) => {
+        if (!item.selected) {
+          curAreaItem.pickedCityCodes = Array.from(
+            new Set([...curAreaItem.pickedCityCodes, item.value])
+          );
+          curAreaItem.pickedCityDescs = Array.from(
+            new Set([...curAreaItem.pickedCityDescs, item.label])
+          );
+          return {
+            ...item,
+            selected: true,
+            areaId: curAreaItem.id,
+          };
+        } else return item;
+      });
+    } else {
+      curRegionOption.children = curRegionOption.children.map((item) => {
+        if (item.selected && item.areaId === curAreaItem.id) {
+          curAreaItem.pickedCityCodes = curAreaItem.pickedCityCodes.filter(
+            (code) => code !== item.value
+          );
+          curAreaItem.pickedCityDescs = curAreaItem.pickedCityDescs.filter(
+            (desc) => desc !== item.label
+          );
+          return {
+            ...item,
+            selected: false,
+            areaId: 0,
+          };
+        } else return item;
+      });
+    }
+    curRegionOptionsItem.allSelected =
+      curRegionOptionsItem.list.findIndex((item) => !item.allSelected) === -1;
+  }
+};
+const selectExpressArea = (value: boolean) => {
+  if (
+    expressPickedCityIndex.value !== -1 &&
+    expressPickedCityIndex.value !== -2 &&
+    expressPickedCityIndex.value !== -3
+  ) {
+    const curRegionOptionsItem =
+      regionOptionsList.value[curExpressTemplateListIndex.value];
+    const curRegionOption =
+      curRegionOptionsItem.list[expressActiveProvinceIndex.value];
+    const curCityOption =
+      curRegionOption.children[expressPickedCityIndex.value];
+    const curAreaItem =
+      freightTemplate.expressTemplateLists[curExpressTemplateListIndex.value]
+        .list[curExpressTemplateIndex.value];
+    if (value) {
+      curAreaItem.pickedCityCodes = Array.from(
+        new Set([...curAreaItem.pickedCityCodes, curCityOption.value])
+      );
+      curAreaItem.pickedCityDescs = Array.from(
+        new Set([...curAreaItem.pickedCityDescs, curCityOption.label])
+      );
+    } else {
+      curAreaItem.pickedCityCodes = curAreaItem.pickedCityCodes.filter(
+        (code) => code !== curCityOption.value
+      );
+      curAreaItem.pickedCityDescs = curAreaItem.pickedCityDescs.filter(
+        (desc) => desc !== curCityOption.label
+      );
+    }
+    curCityOption.areaId = value ? curAreaItem.id : 0;
+    curRegionOption.areaIds = value
+      ? Array.from(new Set([...curRegionOption.areaIds, curAreaItem.id]))
+      : curRegionOption.areaIds.filter((areaId) => areaId !== curAreaItem.id);
+    curRegionOption.allSelected =
+      curRegionOption.children.findIndex((item) => !item.selected) === -1;
+    curRegionOptionsItem.allSelected =
+      curRegionOptionsItem.list.findIndex((item) => !item.allSelected) === -1;
+  }
+};
+
 const expressTemplateConfirm = ({
   selectedValues,
   selectedOptions,
 }: {
-  selectedValues: number[];
+  selectedValues: string[];
   selectedOptions: ExpressTemplateOption[];
 }) => {
-  console.log(selectedValues);
-  console.log(selectedOptions);
+  const index = expressTemplateOptions.value.findIndex(
+    (item) => item.code === selectedValues[0]
+  );
+  expressTemplateOptions.value[index].disabled = true;
+
+  regionOptionsList.value.push({
+    allSelected: false,
+    list: getCityRegionOptions().map((item: Option) => ({
+      ...item,
+      children: item.children?.map((_item) => ({
+        ..._item,
+        areaId: 0,
+        selected: false,
+      })),
+      areaIds: [],
+      allSelected: false,
+    })),
+  });
+  freightTemplate.expressTemplateLists.push({
+    expressCode: selectedOptions[0].code,
+    expressName: selectedOptions[0].name,
+    list: [
+      {
+        id: 1,
+        areaName: "",
+        computeMode: 1,
+        baseFee: 0,
+        stepFee: 0,
+        singleFee: 0,
+        freeQuota: 0,
+        pickedCityCodes: [],
+        pickedCityDescs: [],
+      },
+    ],
+  });
+
+  expressTemplateSelectPopupVisible.value = false;
 };
 
 const addExpressTemplateList = (index: number) => {
-  console.log(index);
+  const curList = freightTemplate.expressTemplateLists[index].list;
+  curList.push({
+    id: curList.length ? curList[curList.length - 1].id + 1 : 1,
+    areaName: "",
+    computeMode: 1,
+    baseFee: 0,
+    stepFee: 0,
+    singleFee: 0,
+    freeQuota: 0,
+    pickedCityCodes: [],
+    pickedCityDescs: [],
+  });
 };
+const deleteExpressTemplateList = (index: number, _index: number) =>
+  showConfirmDialog({ title: "确定删除该快递模版配置吗？" })
+    .then(() => {
+      curExpressTemplateListIndex.value = index;
+      curExpressTemplateIndex.value = _index;
+      expressPickedCityIndex.value = -3;
+      const id = freightTemplate.expressTemplateLists[index].list[_index].id;
+      const curRegionOptionsItem = regionOptionsList.value[index];
+      curRegionOptionsItem.list = curRegionOptionsItem.list.map((item) => {
+        if (item.areaIds.includes(id)) {
+          const children = item.children.map((_item) => {
+            if (_item.areaId === id) {
+              return {
+                ..._item,
+                areaId: 0,
+                selected: false,
+              };
+            } else return _item;
+          });
+          return {
+            ...item,
+            areaIds: item.areaIds.filter((areaId) => areaId !== id),
+            allSelected: false,
+            children,
+          };
+        } else return item;
+      });
+      curRegionOptionsItem.allSelected = false;
+      freightTemplate.expressTemplateLists[index].list.splice(_index, 1);
+      return true;
+    })
+    .catch(() => true);
 
 // -------------------------------------------------------------
 
 const save = () => {
   console.log("regionOptions", regionOptions.value);
   console.log("expressOptions", expressOptions.value);
+  console.log("regionOptionsList", regionOptionsList.value);
   console.log("freightTemplate", freightTemplate);
 };
 </script>
