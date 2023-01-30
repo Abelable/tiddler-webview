@@ -576,7 +576,11 @@ import {
 } from "vant";
 import { ref, reactive, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
-import { createFreightTemplate, getExpressOptions } from "./utils/api";
+import {
+  FreightTemplate,
+  createFreightTemplate,
+  getExpressOptions,
+} from "./utils/api";
 import {
   RegionOption as Option,
   getCityRegionOptions,
@@ -609,45 +613,6 @@ interface ExpressTemplateOption {
   code: string;
   name: string;
   disabled: boolean;
-}
-
-interface AreaItem {
-  id: number;
-  pickedCityCodes: string[];
-  pickedCityDescs: string[];
-  fee: number;
-}
-interface ExpressItem {
-  id: number;
-  pickedExpressCodes: string[];
-  pickedExpressDescs: string[];
-  fee: number;
-}
-interface ExpressTemplate {
-  id: number;
-  areaName: string;
-  computeMode: number;
-  baseFee?: number;
-  stepFee?: number;
-  singleFee?: number;
-  freeQuota: number;
-  pickedCityCodes: string[];
-  pickedCityDescs: string[];
-}
-interface ExpressTemplateList {
-  expressCode: string;
-  expressName: string;
-  list: ExpressTemplate[];
-}
-interface FreightTemplate {
-  mode: number;
-  name: string;
-  title: string;
-  computeMode: number;
-  freeQuota: number;
-  areaList: AreaItem[];
-  expressList: ExpressItem[];
-  expressTemplateLists: ExpressTemplateList[];
 }
 
 const router = useRouter();

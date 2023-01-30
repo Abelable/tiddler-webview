@@ -1,14 +1,14 @@
 <template>
   <div class="template-list">
     <SwipeCell v-for="(item, index) in templateList" :key="index">
-      <div class="template">
+      <div class="template" @click="editTemplate(item.id)">
         <div class="name">{{ item.name }}</div>
         <Icon name="edit" size="0.3rem" />
       </div>
       <template #right>
         <Button
           class="delete-btn"
-          @click="deleteTempalte(index)"
+          @click.stop="deleteTempalte(index)"
           square
           text="删除"
           type="danger"
@@ -21,11 +21,22 @@
 </template>
 
 <script setup lang="ts">
-import { SwipeCell, Button, Icon, showConfirmDialog, Empty } from "vant";
+import {
+  SwipeCell,
+  Button,
+  Icon,
+  showConfirmDialog,
+  Empty,
+  showToast,
+} from "vant";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 
-import { FreightTemplateListItem, getFreightTemplateList } from "./utils/api";
+import {
+  FreightTemplateListItem,
+  getFreightTemplateList,
+  deleteFreightTemplate,
+} from "./utils/api";
 
 const templateList = ref<FreightTemplateListItem[]>([]);
 const router = useRouter();
@@ -42,11 +53,21 @@ const setTemplateList = async (init = false) => {
 };
 
 const addTemplate = () => router.push("/shop/freight_template/create");
+const editTemplate = (id: number) =>
+  router.push({
+    path: "/shop/freight_template/edit",
+    query: { id },
+  });
 
 const deleteTempalte = (index: number) =>
   showConfirmDialog({ title: "确定删除该运费模板吗？" })
-    .then(() => {
-      templateList.value.splice(index, 1);
+    .then(async () => {
+      try {
+        await deleteFreightTemplate(templateList.value[index].id);
+        templateList.value.splice(index, 1);
+      } catch (error) {
+        showToast("删除失败，请重试");
+      }
       return true;
     })
     .catch(() => true);
