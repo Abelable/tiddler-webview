@@ -19,9 +19,6 @@ export interface SingleExpressOption {
 }
 
 export interface ExpressOption extends SingleExpressOption {
-  id: number;
-  code: string;
-  name: string;
   expressId: number;
   selected: boolean;
 }

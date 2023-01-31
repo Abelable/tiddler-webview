@@ -616,6 +616,108 @@ onMounted(async () => {
 
 const setTemplateInfo = async () => {
   freightTemplate.value = await getFreightTemplate(+(route.query.id as string));
+  if (freightTemplate.value.mode === 1) {
+    // 更新地区列表选项
+    freightTemplate.value.areaList.map((item) => {
+      regionOptions.value = regionOptions.value.map((province) => {
+        let isInclude = false;
+        const children = province.children.map((city) => {
+          if (item.pickedCityCodes.includes(city.value)) {
+            isInclude = true;
+            return {
+              ...city,
+              areaId: item.id,
+              selected: true,
+            };
+          } else return city;
+        });
+        return {
+          ...province,
+          areaIds: isInclude
+            ? Array.from(new Set([...province.areaIds, item.id]))
+            : province.areaIds,
+          allSelected: children.findIndex((city) => !city.selected) === -1,
+          children,
+        };
+      });
+    });
+    allAreaSelected.value =
+      regionOptions.value.findIndex((item) => !item.allSelected) === -1;
+
+    // 更新快递列表选项
+    freightTemplate.value.expressList.map((item) => {
+      expressOptions.value = expressOptions.value.map((option) => {
+        if (item.pickedExpressCodes.includes(option.code)) {
+          return {
+            ...option,
+            expressId: item.id,
+            selected: true,
+          };
+        } else return option;
+      });
+    });
+    allExpressSelected.value =
+      expressOptions.value.findIndex((item) => !item.selected) === -1;
+  } else {
+    // 更新快递模板列表选项
+    regionOptionsList.value = new Array(
+      freightTemplate.value.expressTemplateLists.length
+    ).fill({
+      allSelected: false,
+      list: getCityRegionOptions().map((item: Option) => ({
+        ...item,
+        children: item.children?.map((_item) => ({
+          ..._item,
+          areaId: 0,
+          selected: false,
+        })),
+        areaIds: [],
+        allSelected: false,
+      })),
+    });
+
+    freightTemplate.value.expressTemplateLists.map((item, index) => {
+      expressTemplateOptions.value = expressTemplateOptions.value.map(
+        (option) => {
+          if (option.code === item.expressCode) {
+            return {
+              ...option,
+              disabled: true,
+            };
+          } else return option;
+        }
+      );
+
+      const curRegionOptions = regionOptionsList.value[index];
+      item.list.map((_item) => {
+        curRegionOptions.list = curRegionOptions.list.map((province) => {
+          let isInclude = false;
+          const children = province.children.map((city) => {
+            if (_item.pickedCityCodes.includes(city.value)) {
+              isInclude = true;
+              return {
+                ...city,
+                areaId: _item.id,
+                selected: true,
+              };
+            } else return city;
+          });
+          return {
+            ...province,
+            areaIds: isInclude
+              ? Array.from(new Set([...province.areaIds, _item.id]))
+              : province.areaIds,
+            allSelected: children.findIndex((city) => !city.selected) === -1,
+            children,
+          };
+        });
+      });
+      curRegionOptions.allSelected =
+        curRegionOptions.list.findIndex((item) => !item.allSelected) === -1;
+    });
+
+    console.log("expressTemplateOptions", expressTemplateOptions.value);
+  }
 };
 
 // -------------------------- 地区选择 --------------------------

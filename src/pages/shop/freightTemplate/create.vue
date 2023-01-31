@@ -1305,10 +1305,14 @@ const save = async () => {
   try {
     await createFreightTemplate({
       ...freightTemplate,
-      areaList: JSON.stringify(freightTemplate.areaList),
-      expressList: JSON.stringify(freightTemplate.expressList),
+      areaList: JSON.stringify(
+        freightTemplate.mode === 1 ? freightTemplate.areaList : []
+      ),
+      expressList: JSON.stringify(
+        freightTemplate.mode === 1 ? freightTemplate.expressList : []
+      ),
       expressTemplateLists: JSON.stringify(
-        freightTemplate.expressTemplateLists
+        freightTemplate.mode === 2 ? freightTemplate.expressTemplateLists : []
       ),
     });
     router.back();
