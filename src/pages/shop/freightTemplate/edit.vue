@@ -1428,10 +1428,18 @@ const save = async () => {
   try {
     await editFreightTemplate({
       ...freightTemplate.value,
-      areaList: JSON.stringify(freightTemplate.value.areaList),
-      expressList: JSON.stringify(freightTemplate.value.expressList),
+      areaList: JSON.stringify(
+        freightTemplate.value.mode === 1 ? freightTemplate.value.areaList : []
+      ),
+      expressList: JSON.stringify(
+        freightTemplate.value.mode === 1
+          ? freightTemplate.value.expressList
+          : []
+      ),
       expressTemplateLists: JSON.stringify(
-        freightTemplate.value.expressTemplateLists
+        freightTemplate.value.mode === 2
+          ? freightTemplate.value.expressTemplateLists
+          : []
       ),
     });
     router.back();
