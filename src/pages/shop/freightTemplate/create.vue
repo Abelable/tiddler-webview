@@ -574,46 +574,19 @@ import {
   Picker,
   showToast,
 } from "vant";
+
 import { ref, reactive, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
-import {
+import { getCityRegionOptions } from "@/utils/region-options";
+import { getExpressOptions, createFreightTemplate } from "./utils/api";
+
+import type { Option } from "@/utils/region-options";
+import type {
+  RegionOption,
+  ExpressOption,
+  ExpressTemplateOption,
   FreightTemplate,
-  createFreightTemplate,
-  getExpressOptions,
-} from "./utils/api";
-import {
-  RegionOption as Option,
-  getCityRegionOptions,
-} from "@/utils/region-options";
-
-interface AreaRegion {
-  label: string;
-  value: string;
-  areaId: number;
-  selected: boolean;
-}
-interface RegionOption {
-  label: string;
-  value: string;
-  areaIds: number[];
-  allSelected: boolean;
-  children: AreaRegion[];
-}
-
-interface ExpressOption {
-  id: number;
-  code: string;
-  name: string;
-  expressId: number;
-  selected: boolean;
-}
-
-interface ExpressTemplateOption {
-  id: number;
-  code: string;
-  name: string;
-  disabled: boolean;
-}
+} from "./utils/type";
 
 const router = useRouter();
 
