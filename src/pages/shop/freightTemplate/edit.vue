@@ -660,21 +660,25 @@ const setTemplateInfo = async () => {
       expressOptions.value.findIndex((item) => !item.selected) === -1;
   } else {
     // 更新快递模板列表选项
-    regionOptionsList.value = new Array(
-      freightTemplate.value.expressTemplateLists.length
-    ).fill({
-      allSelected: false,
-      list: getCityRegionOptions().map((item: Option) => ({
-        ...item,
-        children: item.children?.map((_item) => ({
-          ..._item,
-          areaId: 0,
-          selected: false,
-        })),
-        areaIds: [],
+    for (
+      let i = 0;
+      i < freightTemplate.value.expressTemplateLists.length;
+      i++
+    ) {
+      regionOptionsList.value.push({
         allSelected: false,
-      })),
-    });
+        list: getCityRegionOptions().map((item: Option) => ({
+          ...item,
+          children: item.children?.map((_item) => ({
+            ..._item,
+            areaId: 0,
+            selected: false,
+          })),
+          areaIds: [],
+          allSelected: false,
+        })),
+      });
+    }
 
     freightTemplate.value.expressTemplateLists.map((item, index) => {
       expressTemplateOptions.value = expressTemplateOptions.value.map(
@@ -715,8 +719,6 @@ const setTemplateInfo = async () => {
       curRegionOptions.allSelected =
         curRegionOptions.list.findIndex((item) => !item.allSelected) === -1;
     });
-
-    console.log("expressTemplateOptions", expressTemplateOptions.value);
   }
 };
 
