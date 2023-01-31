@@ -50,6 +50,10 @@ export interface FreightTemplate {
   expressTemplateLists: ExpressTemplateList[];
 }
 
+export interface ExistFreightTemplate extends FreightTemplate {
+  id: number;
+}
+
 interface AddFreightTemplate
   extends Omit<
     FreightTemplate,
@@ -73,7 +77,7 @@ export const getFreightTemplateList = async (): Promise<
 
 export const getFreightTemplate = async (
   id: number
-): Promise<FreightTemplate> =>
+): Promise<ExistFreightTemplate> =>
   await http("shop/freight_template/detail", { data: { id } });
 
 export const createFreightTemplate = async (
