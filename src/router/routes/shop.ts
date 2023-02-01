@@ -50,12 +50,28 @@ const shop: Array<RouteRecordRaw> = [
     component: () => import("@/pages/shop/goodsReturnAddress/edit.vue"),
   },
   {
-    path: "/shop/upload_goods",
-    name: "upload_goods",
+    path: "/shop/goods/list",
+    name: "goods_list",
     meta: {
-      title: "上传商品",
+      title: "商品列表",
     },
-    component: () => import("@/pages/shop/uploadGoods.vue"),
+    component: () => import("@/pages/shop/goods/list.vue"),
+  },
+  {
+    path: "/shop/goods/create",
+    name: "goods_create",
+    meta: {
+      title: "新增商品",
+    },
+    component: () => import("@/pages/shop/goods/create.vue"),
+  },
+  {
+    path: "/shop/goods/edit",
+    name: "goods_edit",
+    meta: {
+      title: "编辑商品",
+    },
+    component: () => import("@/pages/shop/goods/edit.vue"),
   },
 ];
 

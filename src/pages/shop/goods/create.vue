@@ -257,17 +257,7 @@ import {
 } from "vant";
 import { ref, reactive, watch } from "vue";
 import _ from "lodash";
-
-interface SpecItem {
-  name: string;
-  options: string[];
-}
-interface SkuItem {
-  name: string;
-  image: string;
-  price: string;
-  stock: string;
-}
+import { SkuItem, SpecItem } from "./utils/type";
 
 const uploadVideoTipsVisible = ref(false);
 const uploadMainImgsTipsVisible = ref(false);
@@ -305,8 +295,8 @@ watch(specList, () => {
   skuList.value = nameList.map((item) => ({
     name: item.join(),
     image: "",
-    price: "",
-    stock: "",
+    price: 0,
+    stock: 0,
   }));
 });
 
