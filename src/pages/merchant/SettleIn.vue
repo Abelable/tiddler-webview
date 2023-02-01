@@ -1013,7 +1013,7 @@ const checkAgreement = () => router.push("/agreements/merchant_service");
           margin-right: 0.32rem;
           flex: 1;
           color: #333;
-          font-weight: 600;
+          font-weight: 550;
           border: 1px solid #ddd;
         }
         .next-step {

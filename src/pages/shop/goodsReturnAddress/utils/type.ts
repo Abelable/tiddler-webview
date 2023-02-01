@@ -13,3 +13,7 @@ export interface AddressDetail extends AddressListItem {
 export interface CreateAddress extends Omit<AddressListItem, "id"> {
   supplement?: string;
 }
+
+export interface EditAddress extends AddressListItem {
+  supplement?: string;
+}

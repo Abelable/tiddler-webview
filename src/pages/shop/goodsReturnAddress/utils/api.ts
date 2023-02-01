@@ -1,5 +1,10 @@
 import { http } from "@/utils/http";
-import type { AddressListItem, AddressDetail, CreateAddress } from "./type";
+import type {
+  AddressListItem,
+  AddressDetail,
+  CreateAddress,
+  EditAddress,
+} from "./type";
 
 export const getAddressList = async (): Promise<AddressListItem[]> =>
   await http("shop/goods_return_address/list");
@@ -13,7 +18,7 @@ export const createAddress = async (address: CreateAddress) =>
     data: address,
   });
 
-export const editAddress = async (address: AddressDetail) =>
+export const editAddress = async (address: EditAddress) =>
   await http("shop/goods_return_address/edit", {
     method: "POST",
     data: address,
