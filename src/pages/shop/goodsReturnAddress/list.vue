@@ -2,15 +2,15 @@
   <div class="address-list">
     <SwipeCell v-for="(item, index) in addressList" :key="index">
       <div class="address row" @click="editAddress(item.id)">
-        <Icon name="location-o" size="0.3rem" />
+        <Icon name="location-o" size="0.32rem" />
         <div class="content">
           <div class="row">
             <div class="name">{{ item.consigneeName }}</div>
             <div class="mobile">{{ item.mobile }}</div>
           </div>
-          <div class="address">{{ item.address }}</div>
+          <div class="detail limit">{{ item.address }}</div>
         </div>
-        <Icon name="edit" size="0.3rem" />
+        <Icon name="edit" size="0.32rem" />
       </div>
       <template #right>
         <Button
@@ -72,6 +72,14 @@ const deleteTempalte = (index: number) =>
 </script>
 
 <style lang="scss" scoped>
+.limit {
+  display: -webkit-box;
+  overflow: hidden;
+  line-height: 1;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
 .row {
   display: flex;
   align-items: center;
@@ -82,19 +90,26 @@ const deleteTempalte = (index: number) =>
   .address {
     margin-bottom: 1px;
     padding: 0 0.24rem;
-    height: 1.2rem;
+    height: 1.5rem;
     background: #fff;
-    .name,
-    .mobile,
-    .address {
-      color: #333;
-      font-size: 0.3rem;
-    }
-    .mobile {
-      margin-left: 0.2rem;
-    }
-    .address {
-      margin-top: 0.2rem;
+    .content {
+      position: relative;
+      padding: 0 0.2rem;
+      flex: 1;
+      .name,
+      .mobile {
+        color: #333;
+        font-size: 0.28rem;
+      }
+      .mobile {
+        margin-left: 0.2rem;
+      }
+      .detail {
+        margin-top: 0.2rem;
+        width: 100%;
+        color: #666;
+        font-size: 0.26rem;
+      }
     }
   }
   .delete-btn {

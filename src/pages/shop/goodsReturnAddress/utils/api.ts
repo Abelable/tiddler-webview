@@ -1,5 +1,5 @@
 import { http } from "@/utils/http";
-import type { AddressListItem, AddressDetail } from "./type";
+import type { AddressListItem, AddressDetail, CreateAddress } from "./type";
 
 export const getAddressList = async (): Promise<AddressListItem[]> =>
   await http("shop/goods_return_address/list");
@@ -7,7 +7,7 @@ export const getAddressList = async (): Promise<AddressListItem[]> =>
 export const getAddress = async (id: number): Promise<AddressDetail> =>
   await http("shop/goods_return_address/detail", { data: { id } });
 
-export const createAddress = async (address: Omit<AddressDetail, "id">) =>
+export const createAddress = async (address: CreateAddress) =>
   await http("shop/goods_return_address/add", {
     method: "POST",
     data: address,

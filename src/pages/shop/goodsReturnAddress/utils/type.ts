@@ -9,3 +9,7 @@ export interface AddressDetail extends AddressListItem {
   id: number;
   supplement: string;
 }
+
+export interface CreateAddress extends Omit<AddressListItem, "id"> {
+  supplement?: string;
+}
