@@ -26,6 +26,30 @@ const shop: Array<RouteRecordRaw> = [
     component: () => import("@/pages/shop/freightTemplate/edit.vue"),
   },
   {
+    path: "/shop/goods_return_address/list",
+    name: "goods_return_address_list",
+    meta: {
+      title: "退货地址列表",
+    },
+    component: () => import("@/pages/shop/goodsReturnAddress/list.vue"),
+  },
+  {
+    path: "/shop/goods_return_address/create",
+    name: "goods_return_address_create",
+    meta: {
+      title: "新增退货地址",
+    },
+    component: () => import("@/pages/shop/goodsReturnAddress/create.vue"),
+  },
+  {
+    path: "/shop/goods_return_address/edit",
+    name: "goods_return_address_edit",
+    meta: {
+      title: "编辑退货地址",
+    },
+    component: () => import("@/pages/shop/goodsReturnAddress/edit.vue"),
+  },
+  {
     path: "/shop/upload_goods",
     name: "upload_goods",
     meta: {

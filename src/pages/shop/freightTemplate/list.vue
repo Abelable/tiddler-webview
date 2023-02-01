@@ -32,14 +32,13 @@ import {
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 
-import {
-  FreightTemplateListItem,
-  getFreightTemplateList,
-  deleteFreightTemplate,
-} from "./utils/api";
+import { getFreightTemplateList, deleteFreightTemplate } from "./utils/api";
+
+import { FreightTemplateListItem } from "./utils/type";
+
+const router = useRouter();
 
 const templateList = ref<FreightTemplateListItem[]>([]);
-const router = useRouter();
 
 onMounted(async () => {
   templateList.value = await getFreightTemplateList();

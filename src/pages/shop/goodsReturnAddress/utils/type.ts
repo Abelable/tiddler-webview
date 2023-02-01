@@ -1,0 +1,11 @@
+export interface AddressListItem {
+  id: number;
+  consigneeName: string;
+  mobile: string;
+  address: string;
+}
+
+export interface AddressDetail extends AddressListItem {
+  id: number;
+  supplement: string;
+}
