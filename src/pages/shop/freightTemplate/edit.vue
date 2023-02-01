@@ -335,6 +335,7 @@
       </div>
     </div>
     <div class="btns">
+      <button class="delete-btn" @click="deleteTemplate">删除</button>
       <button class="save-btn" @click="save">保存</button>
     </div>
   </div>
@@ -582,6 +583,7 @@ import {
   getExpressOptions,
   getFreightTemplate,
   editFreightTemplate,
+  deleteFreightTemplate,
 } from "./utils/api";
 
 import type { Option } from "@/utils/region-options";
@@ -1449,6 +1451,17 @@ const save = async () => {
     showToast("保存失败，请重试");
   }
 };
+const deleteTemplate = async () =>
+  showConfirmDialog({ title: "确定删除该运费模板吗？" })
+    .then(async () => {
+      try {
+        await deleteFreightTemplate(freightTemplate.value.id);
+        router.back();
+      } catch (error) {
+        showToast("删除失败，请重试");
+      }
+    })
+    .catch(() => true);
 </script>
 
 <style lang="scss" scoped>
@@ -1557,16 +1570,26 @@ const save = async () => {
     }
   }
   .btns {
+    display: flex;
     padding: 0.32rem;
     background: #fff;
-    .save-btn {
-      width: 100%;
+    .save-btn,
+    .delete-btn {
+      flex: 1;
       height: 0.88rem;
-      color: #fff;
       font-size: 0.3rem;
       font-weight: 550;
       border-radius: 0.18rem;
+    }
+    .save-btn {
+      margin-left: 0.2rem;
+      color: #fff;
       background: #212121;
+    }
+    .delete-btn {
+      margin-right: 0.2rem;
+      color: #333;
+      border: 1px solid #ddd;
     }
   }
 }
