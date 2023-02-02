@@ -1,3 +1,9 @@
+import type { UploaderFileListItem } from "vant";
+
+export interface GoodsCategoryOption {
+  id: number;
+  name: string;
+}
 export interface GoodsListItem {
   id: number;
   image: string;
@@ -23,22 +29,27 @@ export interface SkuItem {
 
 export interface GoodsInfo {
   id: number;
-  video: string;
-  imageList: string[];
+  video: UploaderFileListItem[];
+  imageList: UploaderFileListItem[];
   name: string;
-  freightTemplateId: number;
-  categoryId: number;
-  returnAddressId: number;
-  price: number;
-  marketPrice: number;
-  stock: number;
-  commissionRate: number;
-  detailImageList: string[];
+  freightTemplateId: number | undefined;
+  categoryId: number | undefined;
+  returnAddressId: number | undefined;
+  price: number | undefined;
+  marketPrice: number | undefined;
+  stock: number | undefined;
+  commissionRate: number | undefined;
+  detailImageList: UploaderFileListItem[];
   specList: SpecItem[];
+  skuList: SkuItem[];
 }
 
 export interface CreateGoodsInfo
-  extends Omit<GoodsInfo, "id" | "imageList" | "detailImageList" | "specList"> {
+  extends Omit<
+    GoodsInfo,
+    "id" | "video" | "imageList" | "detailImageList" | "specList" | "skuList"
+  > {
+  video: string;
   imageList: string;
   detailImageList: string;
   specList: string;

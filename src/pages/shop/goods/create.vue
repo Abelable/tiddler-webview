@@ -24,6 +24,8 @@
             </Popover>
           </div>
           <Uploader
+            v-model="goodsInfo.video"
+            :after-read="uploadFile"
             style="margin-top: 0.32rem"
             max-count="1"
             accept="video/*"
@@ -43,44 +45,73 @@
               </template>
             </Popover>
           </div>
-          <Uploader style="margin-top: 0.32rem" max-count="10" />
+          <Uploader
+            v-model="goodsInfo.imageList"
+            :after-read="uploadFile"
+            style="margin-top: 0.32rem"
+            max-count="10"
+          />
         </li>
         <li class="form-item flex">
           <div class="name required">商品标题</div>
-          <input class="input" type="text" placeholder="请输入标题，最长30字" />
+          <input
+            class="input"
+            v-model="goodsInfo.name"
+            type="text"
+            placeholder="请输入标题，最长30字"
+          />
         </li>
         <li class="form-item flex">
           <div class="name required">运费模板</div>
-          <div class="picker" :class="{ active: selectedFreightTemplateDesc }">
-            <div>{{ selectedFreightTemplateDesc || "请选择运费模板" }}</div>
+          <div class="picker" :class="{ active: selectedFreightTemplateName }">
+            <div>
+              {{ selectedFreightTemplateName || "请选择运费模板" }}
+            </div>
             <Icon name="arrow" />
           </div>
         </li>
         <li class="form-item flex">
           <div class="name required">商品分类</div>
-          <div class="picker" :class="{ active: selectedFreightTemplateDesc }">
-            <div>{{ selectedFreightTemplateDesc || "请选择商品分类" }}</div>
+          <div class="picker" :class="{ active: selectedCategoryName }">
+            <div>{{ selectedCategoryName || "请选择商品分类" }}</div>
             <Icon name="arrow" />
           </div>
         </li>
         <li class="form-item flex">
           <div class="name required">退货地址</div>
-          <div class="picker" :class="{ active: selectedFreightTemplateDesc }">
-            <div>{{ selectedFreightTemplateDesc || "请选择退货地址" }}</div>
+          <div class="picker" :class="{ active: selectedReturnAddress }">
+            <div>{{ selectedReturnAddress || "请选择退货地址" }}</div>
             <Icon name="arrow" />
           </div>
         </li>
         <li class="form-item flex">
           <div class="name required">店铺价格</div>
-          <input class="input" type="number" placeholder="请输入店铺价格" />
+          <input
+            class="input"
+            v-model="goodsInfo.price"
+            type="number"
+            step="0.01"
+            placeholder="请输入店铺价格"
+          />
         </li>
         <li class="form-item flex">
           <div class="name">市场价格</div>
-          <input class="input" type="number" placeholder="请输入市场价格" />
+          <input
+            class="input"
+            v-model="goodsInfo.marketPrice"
+            type="number"
+            step="0.01"
+            placeholder="请输入市场价格"
+          />
         </li>
         <li class="form-item flex">
           <div class="name required">商品库存</div>
-          <input class="input" type="number" placeholder="请输入商品库存" />
+          <input
+            class="input"
+            v-model="goodsInfo.stock"
+            type="number"
+            placeholder="请输入商品库存"
+          />
         </li>
         <li class="form-item flex">
           <div class="name flex required">
@@ -96,7 +127,12 @@
               </template>
             </Popover>
           </div>
-          <input class="input" type="number" placeholder="请输入佣金比例" />
+          <input
+            class="input"
+            v-model="goodsInfo.commissionRate"
+            type="number"
+            placeholder="请输入佣金比例"
+          />
           <div class="unit">%</div>
         </li>
         <li class="form-item">
@@ -113,7 +149,11 @@
               </template>
             </Popover>
           </div>
-          <Uploader style="margin-top: 0.32rem" />
+          <Uploader
+            v-model="goodsInfo.detailImageList"
+            :after-read="uploadFile"
+            style="margin-top: 0.32rem"
+          />
         </li>
       </ul>
     </div>
@@ -188,14 +228,7 @@
           :title="item.name"
           :name="index"
         >
-          <ul
-            class="form"
-            style="
-              padding: 0 0.32rem;
-              border: 1px solid #eee;
-              border-radius: 0.24rem;
-            "
-          >
+          <ul class="form unit">
             <li class="form-item">
               <div class="name">图片</div>
               <Uploader style="margin-top: 0.32rem" max-count="1" />
@@ -224,7 +257,8 @@
     </div>
   </div>
 
-  <button class="upload-btn">点击上传</button>
+  <button class="upload-btn" @click="save">点击上传</button>
+
   <Dialog
     v-model:show="specOptionModalVisible"
     title="新增规格选项"
@@ -255,20 +289,78 @@ import {
   Collapse,
   CollapseItem,
 } from "vant";
-import { ref, reactive, watch } from "vue";
+import { ref, reactive, watch, computed } from "vue";
 import _ from "lodash";
-import { SkuItem, SpecItem } from "./utils/type";
+import { upload } from "@/utils/upload";
+
+import type { UploaderFileListItem } from "vant";
+import type { UploaderAfterRead } from "vant/lib/uploader/types";
+import type {
+  SkuItem,
+  SpecItem,
+  GoodsInfo,
+  GoodsCategoryOption,
+} from "./utils/type";
+import type { FreightTemplateListItem } from "../freightTemplate/utils/type";
+import type { AddressListItem } from "../goodsReturnAddress/utils/type";
+
+const freightTemplateOptions = ref<FreightTemplateListItem[]>([]);
+const categoryOptions = ref<GoodsCategoryOption[]>([]);
+const returnAddressOptions = ref<AddressListItem[]>([]);
+const goodsInfo = reactive<Omit<GoodsInfo, "id">>({
+  video: [],
+  imageList: [],
+  name: "",
+  freightTemplateId: undefined,
+  categoryId: undefined,
+  returnAddressId: undefined,
+  price: undefined,
+  marketPrice: undefined,
+  stock: undefined,
+  commissionRate: undefined,
+  detailImageList: [],
+  specList: [],
+  skuList: [],
+});
 
 const uploadVideoTipsVisible = ref(false);
 const uploadMainImgsTipsVisible = ref(false);
 const uploadDetailImgsTipsVisible = ref(false);
-const selectedFreightTemplateDesc = ref("");
 const specList = reactive<SpecItem[]>([]);
 const specOptionModalVisible = ref(false);
 const curSpecIndex = ref(0);
 const specOptionName = ref("");
 const skuList = ref<SkuItem[]>([]);
 const activeSkuNames = ref([0]);
+
+const selectedFreightTemplateName = computed(
+  () =>
+    freightTemplateOptions.value.find(
+      (item) => item.id === goodsInfo.freightTemplateId
+    )?.name
+);
+const selectedCategoryName = computed(
+  () =>
+    categoryOptions.value.find((item) => item.id === goodsInfo.categoryId)?.name
+);
+const selectedReturnAddress = computed(
+  () =>
+    returnAddressOptions.value.find(
+      (item) => item.id === goodsInfo.returnAddressId
+    )?.address
+);
+
+const uploadFile = (async (file: UploaderFileListItem) => {
+  file.status = "uploading";
+  file.message = "上传中...";
+  try {
+    file.url = await upload(file.file as File);
+    file.status = "done";
+  } catch (error) {
+    file.status = "failed";
+    file.message = "上传失败";
+  }
+}) as UploaderAfterRead;
 
 watch(specList, () => {
   let nameList: string[][] = [];
@@ -328,6 +420,10 @@ const addSpecOption = (action: string) => {
 const deleteSpecOption = (index: number, optionIndex: number) => {
   specList[index].options.splice(optionIndex, 1);
 };
+
+const save = () => {
+  console.log("goodsInfo", goodsInfo);
+};
 </script>
 
 <style>
@@ -361,6 +457,11 @@ const deleteSpecOption = (index: number, optionIndex: number) => {
     border-radius: 0.32rem;
     overflow: hidden;
     .form {
+      &.unit {
+        padding: 0 0.32rem;
+        border: 1px solid #eee;
+        border-radius: 0.24rem;
+      }
       .form-item {
         padding: 0.32rem 0;
         font-size: 0.26rem;
