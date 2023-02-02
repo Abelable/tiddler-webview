@@ -332,6 +332,11 @@ const addGoods = () => router.push("/shop/goods/create");
         }
       }
     }
+    .down-btn,
+    .up-btn,
+    .delete-btn {
+      height: 100%;
+    }
   }
 }
 .add-btn {
