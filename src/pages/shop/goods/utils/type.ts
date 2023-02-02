@@ -1,10 +1,12 @@
 export interface GoodsListItem {
   id: number;
-  status: number;
   image: string;
   name: string;
-  createdAt: string;
+  price: number;
+  salesVolume: number;
   failureReason?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface SpecItem {
