@@ -3,6 +3,8 @@ import type {
   GoodsCategoryOption,
   GoodsListItem,
   CreateGoodsInfo,
+  OriginalGoodsInfo,
+  EditGoodsInfo,
 } from "./type";
 
 export const getGoodsTotals = async (): Promise<number[]> =>
@@ -33,5 +35,11 @@ export const onShelfGoods = async (id: number) =>
 export const deleteGoods = async (id: number) =>
   await http("shop/goods/delete", { method: "POST", data: { id } });
 
+export const getGoodsInfo = async (id: number): Promise<OriginalGoodsInfo> =>
+  await http("shop/goods/info", { data: { id } });
+
 export const createGoods = async (goodsInfo: CreateGoodsInfo) =>
   await http("shop/goods/add", { method: "POST", data: goodsInfo });
+
+export const editGoods = async (goodsInfo: EditGoodsInfo) =>
+  await http("shop/goods/edit", { method: "POST", data: goodsInfo });

@@ -531,7 +531,7 @@ watch(goodsInfo.specList, () => {
     } else
       return {
         name: item.join(),
-        image: "",
+        image: [],
         price: 0,
         stock: 0,
       };
@@ -588,7 +588,7 @@ const save = async () => {
     showToast("请输入商品名称");
     return;
   }
-  if (!goodsInfo.freightTemplateId) {
+  if (goodsInfo.freightTemplateId === undefined) {
     showToast("请选择运费模板");
     return;
   }
@@ -621,37 +621,40 @@ const save = async () => {
     showToast("请完善商品规格信息");
     return;
   }
+  const {
+    image,
+    video,
+    imageList,
+    detailImageList,
+    defaultSpecImage,
+    marketPrice,
+    specList,
+    skuList,
+    commissionRate,
+    ...rest
+  } = goodsInfo;
+  const createGoodsInfo: CreateGoodsInfo = {
+    ...rest,
+    image: image[0].url as string,
+    imageList: JSON.stringify(imageList.map((item) => item.url)),
+    detailImageList: JSON.stringify(detailImageList.map((item) => item.url)),
+    defaultSpecImage: defaultSpecImage[0].url as string,
+    commissionRate: commissionRate / 100,
+    specList: JSON.stringify(specList),
+    skuList: JSON.stringify(
+      skuList.map((item) => ({
+        ...item,
+        image: item.image.length ? item.image[0].url : "",
+      }))
+    ),
+  };
+  if (video.length) createGoodsInfo.video = video[0].url;
+  if (marketPrice) createGoodsInfo.marketPrice = marketPrice;
   try {
-    const {
-      image,
-      video,
-      imageList,
-      detailImageList,
-      defaultSpecImage,
-      marketPrice,
-      specList,
-      skuList,
-      commissionRate,
-      ...rest
-    } = goodsInfo;
-    const createGoodsInfo: CreateGoodsInfo = {
-      ...rest,
-      image: image[0].url as string,
-      imageList: JSON.stringify(imageList.map((item) => item.url)),
-      detailImageList: JSON.stringify(detailImageList.map((item) => item.url)),
-      defaultSpecImage: defaultSpecImage[0].url as string,
-      commissionRate: commissionRate / 100,
-      specList: JSON.stringify(specList),
-      skuList: JSON.stringify(
-        skuList.map((item) => ({ ...item, image: item.image[0].url }))
-      ),
-    };
-    if (video.length) createGoodsInfo.video = video[0].url;
-    if (marketPrice) createGoodsInfo.marketPrice = marketPrice;
     await createGoods(createGoodsInfo);
     router.back();
   } catch (error) {
-    showToast("保存失败，请重试");
+    showToast("上传失败，请重试");
   }
 };
 </script>

@@ -20,6 +20,31 @@ export interface SpecItem {
   options: string[];
 }
 
+export interface OriginalSkuItem {
+  name: string;
+  image: string;
+  price: number;
+  stock: number;
+}
+export interface OriginalGoodsInfo {
+  id: number;
+  image: string;
+  video: string;
+  imageList: string[];
+  detailImageList: string[];
+  defaultSpecImage: string;
+  name: string;
+  freightTemplateId: number;
+  categoryId: number;
+  returnAddressId: number;
+  price: number;
+  marketPrice: number;
+  stock: number;
+  commissionRate: number;
+  specList: SpecItem[];
+  skuList: OriginalSkuItem[];
+}
+
 export interface SkuItem {
   name: string;
   image: UploaderFileListItem[];
