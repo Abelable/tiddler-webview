@@ -1,8 +1,29 @@
 <template>
   <div class="container">
-    <div class="title">填写基本信息</div>
+    <div class="title">上传视频及图片</div>
     <div class="card">
       <ul class="form">
+        <li class="form-item">
+          <div class="name flex required">
+            <div>列表图片</div>
+            <Popover
+              v-model:show="uploadVideoTipsVisible"
+              placement="bottom-start"
+              theme="dark"
+            >
+              <div class="warning">用于商品列表展示</div>
+              <template #reference>
+                <Icon style="margin-left: 0.06rem" name="question-o" />
+              </template>
+            </Popover>
+          </div>
+          <Uploader
+            v-model="goodsInfo.image"
+            :after-read="uploadFile"
+            style="margin-top: 0.32rem"
+            max-count="1"
+          />
+        </li>
         <li class="form-item">
           <div class="name flex">
             <div>主图视频</div>
@@ -33,7 +54,7 @@
         </li>
         <li class="form-item">
           <div class="name flex required">
-            <div>主图图片</div>
+            <div>主图图片列表</div>
             <Popover
               v-model:show="uploadMainImgsTipsVisible"
               placement="bottom-start"
@@ -52,6 +73,53 @@
             max-count="10"
           />
         </li>
+        <li class="form-item">
+          <div class="name flex required">
+            <div>详情图片列表</div>
+            <Popover
+              v-model:show="uploadDetailImgsTipsVisible"
+              placement="bottom-start"
+              theme="dark"
+            >
+              <div class="warning">注意图片顺序</div>
+              <template #reference>
+                <Icon style="margin-left: 0.06rem" name="question-o" />
+              </template>
+            </Popover>
+          </div>
+          <Uploader
+            v-model="goodsInfo.detailImageList"
+            :after-read="uploadFile"
+            style="margin-top: 0.32rem"
+          />
+        </li>
+        <li class="form-item">
+          <div class="name flex required">
+            <div>默认规格图片</div>
+            <Popover
+              v-model:show="uploadVideoTipsVisible"
+              placement="bottom-start"
+              theme="dark"
+            >
+              <div class="warning">未设置规格时，展示的规格图片</div>
+              <template #reference>
+                <Icon style="margin-left: 0.06rem" name="question-o" />
+              </template>
+            </Popover>
+          </div>
+          <Uploader
+            v-model="goodsInfo.defaultSpecImage"
+            :after-read="uploadFile"
+            style="margin-top: 0.32rem"
+            max-count="1"
+          />
+        </li>
+      </ul>
+    </div>
+
+    <div class="title">填写基本信息</div>
+    <div class="card">
+      <ul class="form">
         <li class="form-item flex">
           <div class="name required">商品名称</div>
           <input
@@ -141,26 +209,6 @@
             placeholder="请输入佣金比例"
           />
           <div class="unit">%</div>
-        </li>
-        <li class="form-item">
-          <div class="name flex">
-            <div>详情图片</div>
-            <Popover
-              v-model:show="uploadDetailImgsTipsVisible"
-              placement="bottom-start"
-              theme="dark"
-            >
-              <div class="warning">注意图片顺序</div>
-              <template #reference>
-                <Icon style="margin-left: 0.06rem" name="question-o" />
-              </template>
-            </Popover>
-          </div>
-          <Uploader
-            v-model="goodsInfo.detailImageList"
-            :after-read="uploadFile"
-            style="margin-top: 0.32rem"
-          />
         </li>
       </ul>
     </div>
@@ -351,8 +399,11 @@ const freightTemplateOptions = ref<FreightTemplateListItem[]>([]);
 const categoryOptions = ref<GoodsCategoryOption[]>([]);
 const returnAddressOptions = ref<AddressListItem[]>([]);
 const goodsInfo = reactive<Omit<GoodsInfo, "id">>({
+  image: [],
   video: [],
   imageList: [],
+  detailImageList: [],
+  defaultSpecImage: [],
   name: "",
   freightTemplateId: undefined,
   categoryId: undefined,
@@ -361,7 +412,6 @@ const goodsInfo = reactive<Omit<GoodsInfo, "id">>({
   marketPrice: undefined,
   stock: undefined,
   commissionRate: undefined,
-  detailImageList: [],
   specList: [],
   skuList: [],
 });
@@ -510,8 +560,20 @@ const deleteSpecOption = (index: number, optionIndex: number) => {
 };
 
 const save = async () => {
+  if (!goodsInfo.image.length) {
+    showToast("请上传列表图片");
+    return;
+  }
   if (!goodsInfo.imageList.length) {
     showToast("请上传至少一张主图图片");
+    return;
+  }
+  if (!goodsInfo.detailImageList.length) {
+    showToast("请上传至少一张详情图片");
+    return;
+  }
+  if (!goodsInfo.defaultSpecImage.length) {
+    showToast("请上传默认规格图片");
     return;
   }
   if (!goodsInfo.name) {
@@ -553,20 +615,22 @@ const save = async () => {
   }
   try {
     const {
+      image,
       video,
       imageList,
-      marketPrice,
       detailImageList,
+      defaultSpecImage,
+      marketPrice,
       specList,
       skuList,
       ...rest
     } = goodsInfo;
     const createGoodsInfo: CreateGoodsInfo = {
       ...rest,
+      image: image[0].url as string,
       imageList: JSON.stringify(imageList.map((item) => item.url)),
-      detailImageList: JSON.stringify(
-        detailImageList.length ? detailImageList.map((item) => item.url) : []
-      ),
+      detailImageList: JSON.stringify(detailImageList.map((item) => item.url)),
+      defaultSpecImage: defaultSpecImage[0].url as string,
       specList: JSON.stringify(specList),
       skuList: JSON.stringify(skuList),
     };
@@ -595,7 +659,7 @@ const save = async () => {
   .title {
     margin-bottom: 0.32rem;
     color: #333;
-    font-size: 0.28rem;
+    font-size: 0.3rem;
     font-weight: 550;
     line-height: 1;
     &.flex {

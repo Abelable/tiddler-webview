@@ -29,8 +29,11 @@ export interface SkuItem {
 
 export interface GoodsInfo {
   id: number;
+  image: UploaderFileListItem[];
   video: UploaderFileListItem[];
   imageList: UploaderFileListItem[];
+  detailImageList: UploaderFileListItem[];
+  defaultSpecImage: UploaderFileListItem[];
   name: string;
   freightTemplateId: number | undefined;
   categoryId: number | undefined;
@@ -39,7 +42,6 @@ export interface GoodsInfo {
   marketPrice: number | undefined;
   stock: number | undefined;
   commissionRate: number | undefined;
-  detailImageList: UploaderFileListItem[];
   specList: SpecItem[];
   skuList: SkuItem[];
 }
@@ -48,17 +50,21 @@ export interface CreateGoodsInfo
   extends Omit<
     GoodsInfo,
     | "id"
+    | "image"
     | "video"
-    | "marketPrice"
     | "imageList"
     | "detailImageList"
+    | "defaultSpecImage"
+    | "marketPrice"
     | "specList"
     | "skuList"
   > {
+  image: string;
   video?: string;
-  marketPrice?: number;
   imageList: string;
   detailImageList: string;
+  defaultSpecImage: string;
+  marketPrice?: number;
   specList: string;
   skuList: string;
 }
