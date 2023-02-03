@@ -286,7 +286,12 @@
           <ul class="form unit">
             <li class="form-item">
               <div class="name">图片</div>
-              <Uploader style="margin-top: 0.32rem" max-count="1" />
+              <Uploader
+                v-model="item.image"
+                :after-read="uploadFile"
+                style="margin-top: 0.32rem"
+                max-count="1"
+              />
             </li>
             <li class="form-item flex">
               <div class="name">价格</div>
@@ -637,7 +642,9 @@ const save = async () => {
       defaultSpecImage: defaultSpecImage[0].url as string,
       commissionRate: commissionRate / 100,
       specList: JSON.stringify(specList),
-      skuList: JSON.stringify(skuList),
+      skuList: JSON.stringify(
+        skuList.map((item) => ({ ...item, image: item.image[0].url }))
+      ),
     };
     if (video.length) createGoodsInfo.video = video[0].url;
     if (marketPrice) createGoodsInfo.marketPrice = marketPrice;

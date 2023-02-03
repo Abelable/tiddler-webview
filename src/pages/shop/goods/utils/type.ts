@@ -22,7 +22,7 @@ export interface SpecItem {
 
 export interface SkuItem {
   name: string;
-  image: string;
+  image: UploaderFileListItem[];
   price: number;
   stock: number;
 }
