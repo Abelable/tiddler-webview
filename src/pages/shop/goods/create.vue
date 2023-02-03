@@ -101,7 +101,7 @@
               placement="bottom-start"
               theme="dark"
             >
-              <div class="warning">未设置规格时，展示的规格图片</div>
+              <div class="warning">未设置或未选择规格时，展示的默认图片</div>
               <template #reference>
                 <Icon style="margin-left: 0.06rem" name="question-o" />
               </template>
@@ -626,6 +626,7 @@ const save = async () => {
       marketPrice,
       specList,
       skuList,
+      commissionRate,
       ...rest
     } = goodsInfo;
     const createGoodsInfo: CreateGoodsInfo = {
@@ -634,6 +635,7 @@ const save = async () => {
       imageList: JSON.stringify(imageList.map((item) => item.url)),
       detailImageList: JSON.stringify(detailImageList.map((item) => item.url)),
       defaultSpecImage: defaultSpecImage[0].url as string,
+      commissionRate: commissionRate / 100,
       specList: JSON.stringify(specList),
       skuList: JSON.stringify(skuList),
     };

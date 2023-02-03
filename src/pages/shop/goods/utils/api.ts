@@ -5,18 +5,24 @@ import type {
   CreateGoodsInfo,
 } from "./type";
 
-export const getGoodsCategoryOptions = async (): Promise<
-  GoodsCategoryOption[]
-> => await http("shop/goods/category_options");
+export const getGoodsTotals = async (): Promise<number[]> =>
+  await http("shop/goods/totals");
 
 export const getGoodsList = async (
   status: number,
   page: number,
   limit = 10
-): Promise<{ total: number; list: GoodsListItem[] }> =>
-  await http("shop/goods/list", {
-    data: { status, page, limit },
-  });
+): Promise<GoodsListItem[]> => {
+  const { list = [] } =
+    (await http("shop/goods/list", {
+      data: { status, page, limit },
+    })) || {};
+  return list;
+};
+
+export const getGoodsCategoryOptions = async (): Promise<
+  GoodsCategoryOption[]
+> => await http("shop/goods/category_options");
 
 export const offShelfGoods = async (id: number) =>
   await http("shop/goods/down", { method: "POST", data: { id } });

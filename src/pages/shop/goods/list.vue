@@ -24,17 +24,18 @@
       :finished-text="goodsLists[curMenuIndex].length ? '没有更多了' : ''"
     >
       <SwipeCell
+        class="goods-item"
         v-for="(item, index) in goodsLists[0]"
         :key="index"
         v-show="curMenuIndex === 0"
       >
-        <div class="goods-item">
+        <div class="inner">
           <img class="image" :src="item.image" alt="" />
           <div class="content">
             <div class="name">{{ item.name }}</div>
-            <div>
+            <div class="row">
               <div class="price">价格：¥{{ item.price }}</div>
-              <div class="sales-volume">销量：¥{{ item.salesVolume }}</div>
+              <div class="sales-volume">销量：{{ item.salesVolume }}</div>
             </div>
           </div>
         </div>
@@ -50,11 +51,12 @@
       </SwipeCell>
 
       <SwipeCell
+        class="goods-item"
         v-for="(item, index) in goodsLists[1]"
         :key="index"
         v-show="curMenuIndex === 1"
       >
-        <div class="goods-item">
+        <div class="inner">
           <img class="image" :src="item.image" alt="" />
           <div class="content">
             <div class="name omit">{{ item.name }}</div>
@@ -82,21 +84,26 @@
         :key="index"
         v-show="curMenuIndex === 2"
       >
-        <img class="image" :src="item.image" alt="" />
-        <div class="content">
-          <div class="name">{{ item.name }}</div>
-          <div class="time">
-            提交时间：{{ dayjs(item.createdAt).format("YYYY-MM-DD HH:mm:ss") }}
+        <div class="inner">
+          <img class="image" :src="item.image" alt="" />
+          <div class="content">
+            <div class="name">{{ item.name }}</div>
+            <div class="time">
+              提交时间：{{
+                dayjs(item.createdAt).format("YYYY-MM-DD HH:mm:ss")
+              }}
+            </div>
           </div>
         </div>
       </div>
 
       <SwipeCell
+        class="goods-item"
         v-for="(item, index) in goodsLists[3]"
         :key="index"
         v-show="curMenuIndex === 3"
       >
-        <div class="goods-item" @click="editGoods(item.id)">
+        <div class="inner" @click="editGoods(item.id)">
           <img class="image" :src="item.image" alt="" />
           <div class="content">
             <div class="name">{{ item.name }}</div>
@@ -124,9 +131,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
-import { useRouter } from "vue-router";
-import dayjs from "dayjs";
 import {
   PullRefresh,
   List,
@@ -136,13 +140,18 @@ import {
   showConfirmDialog,
   showToast,
 } from "vant";
-import { GoodsListItem } from "./utils/type";
+import { ref, reactive, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import dayjs from "dayjs";
 import {
+  getGoodsTotals,
   deleteGoods,
   offShelfGoods,
   onShelfGoods,
   getGoodsList,
 } from "./utils/api";
+
+import type { GoodsListItem } from "./utils/type";
 
 const router = useRouter();
 
@@ -175,6 +184,15 @@ const curMenuIndex = ref(0);
 const goodsLists = reactive<GoodsListItem[][]>([[], [], [], []]);
 const pageList = [0, 0, 0, 0];
 
+onMounted(() => {
+  setTotals();
+});
+
+const setTotals = async () => {
+  const totals = await getGoodsTotals();
+  totals.forEach((item, index) => (menuList.value[index].total = item));
+};
+
 const selectMenu = (index: number) => {
   curMenuIndex.value = index;
   setGoodsList(true);
@@ -188,13 +206,12 @@ const setGoodsList = async (init = false) => {
     pageList[curMenuIndex.value] = 0;
     finished.value = false;
   }
-  const { total = 0, list = [] } =
+  const list =
     (await getGoodsList(
       menuList.value[curMenuIndex.value].status,
       ++pageList[curMenuIndex.value]
     )) || {};
 
-  if (init) menuList.value[curMenuIndex.value].total = total;
   if (list.length) {
     goodsLists[curMenuIndex.value] = init
       ? list
@@ -210,6 +227,7 @@ const offShelf = (index: number) =>
       try {
         await offShelfGoods(goodsLists[curMenuIndex.value][index].id);
         goodsLists[curMenuIndex.value].splice(index, 1);
+        setTotals();
       } catch (error) {
         showToast("下架失败，请重试");
       }
@@ -223,6 +241,7 @@ const onShelf = (index: number) =>
       try {
         await onShelfGoods(goodsLists[curMenuIndex.value][index].id);
         goodsLists[curMenuIndex.value].splice(index, 1);
+        setTotals();
       } catch (error) {
         showToast("上架失败，请重试");
       }
@@ -236,6 +255,7 @@ const deleteCurGoods = (index: number) =>
       try {
         await deleteGoods(goodsLists[curMenuIndex.value][index].id);
         goodsLists[curMenuIndex.value].splice(index, 1);
+        setTotals();
       } catch (error) {
         showToast("删除失败，请重试");
       }
@@ -250,6 +270,11 @@ const addGoods = () => router.push("/shop/goods/create");
 </script>
 
 <style lang="scss" scoped>
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 .omit {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -309,26 +334,40 @@ const addGoods = () => router.push("/shop/goods/create");
   .goods-list {
     padding: 0.24rem;
     .goods-item {
-      display: flex;
       margin-bottom: 0.24rem;
-      padding: 0.24rem;
       border-radius: 0.24rem;
       background: #fff;
-      .image {
-        width: 3.4rem;
-        height: 3.4rem;
-        border-radius: 0.24rem;
-      }
-      .content {
+      .inner {
         display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        flex: 1;
-        margin-left: 0.2rem;
-        .name {
-          color: #333;
-          font-size: 0.28rem;
-          font-weight: 500;
+        padding: 0.24rem;
+
+        .image {
+          width: 1.8rem;
+          height: 1.8rem;
+          border-radius: 0.24rem;
+        }
+        .content {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          margin-left: 0.2rem;
+          flex: 1;
+          height: 1.8rem;
+          .name {
+            color: #333;
+            font-size: 0.28rem;
+            font-weight: 500;
+          }
+          .price,
+          .sales-volume,
+          .time {
+            color: #666;
+            font-size: 0.26rem;
+          }
+          .failure-reason {
+            color: #fd0b0a;
+            font-size: 0.26rem;
+          }
         }
       }
     }
