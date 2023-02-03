@@ -1,5 +1,13 @@
 import { http } from "@/utils/http";
-import type { GoodsListItem } from "./type";
+import type {
+  GoodsCategoryOption,
+  GoodsListItem,
+  CreateGoodsInfo,
+} from "./type";
+
+export const getGoodsCategoryOptions = async (): Promise<
+  GoodsCategoryOption[]
+> => await http("shop/goods/category_options");
 
 export const getGoodsList = async (
   status: number,
@@ -18,3 +26,6 @@ export const onShelfGoods = async (id: number) =>
 
 export const deleteGoods = async (id: number) =>
   await http("shop/goods/delete", { method: "POST", data: { id } });
+
+export const createGoods = async (goodsInfo: CreateGoodsInfo) =>
+  await http("shop/goods/add", { method: "POST", data: goodsInfo });

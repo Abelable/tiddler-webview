@@ -53,18 +53,21 @@
           />
         </li>
         <li class="form-item flex">
-          <div class="name required">商品标题</div>
+          <div class="name required">商品名称</div>
           <input
             class="input"
             v-model="goodsInfo.name"
             type="text"
-            placeholder="请输入标题，最长30字"
+            placeholder="请输入名称，最长30字"
           />
         </li>
         <li class="form-item flex">
           <div class="name required">运费模板</div>
-          <div class="picker" :class="{ active: selectedFreightTemplateName }">
-            <div>
+          <div class="picker" @click="freightTemplatePickerPopupVisible = true">
+            <div
+              class="content"
+              :class="{ active: selectedFreightTemplateName }"
+            >
               {{ selectedFreightTemplateName || "请选择运费模板" }}
             </div>
             <Icon name="arrow" />
@@ -72,15 +75,19 @@
         </li>
         <li class="form-item flex">
           <div class="name required">商品分类</div>
-          <div class="picker" :class="{ active: selectedCategoryName }">
-            <div>{{ selectedCategoryName || "请选择商品分类" }}</div>
+          <div class="picker" @click="categoryPickerPopupVisible = true">
+            <div class="content" :class="{ active: selectedCategoryName }">
+              {{ selectedCategoryName || "请选择商品分类" }}
+            </div>
             <Icon name="arrow" />
           </div>
         </li>
         <li class="form-item flex">
           <div class="name required">退货地址</div>
-          <div class="picker" :class="{ active: selectedReturnAddress }">
-            <div>{{ selectedReturnAddress || "请选择退货地址" }}</div>
+          <div class="picker" @click="returnAddressPickerPopupVisible = true">
+            <div class="content" :class="{ active: selectedReturnAddress }">
+              {{ selectedReturnAddress || "请选择退货地址" }}
+            </div>
             <Icon name="arrow" />
           </div>
         </li>
@@ -105,12 +112,12 @@
           />
         </li>
         <li class="form-item flex">
-          <div class="name required">商品库存</div>
+          <div class="name required">商品总库存</div>
           <input
             class="input"
             v-model="goodsInfo.stock"
             type="number"
-            placeholder="请输入商品库存"
+            placeholder="请输入商品总库存"
           />
         </li>
         <li class="form-item flex">
@@ -136,7 +143,7 @@
           <div class="unit">%</div>
         </li>
         <li class="form-item">
-          <div class="name flex required">
+          <div class="name flex">
             <div>详情图片</div>
             <Popover
               v-model:show="uploadDetailImgsTipsVisible"
@@ -168,7 +175,7 @@
         size="mini"
       />
     </div>
-    <SwipeCell v-for="(item, index) in specList" :key="index">
+    <SwipeCell v-for="(item, index) in goodsInfo.specList" :key="index">
       <div class="card">
         <ul class="form">
           <li class="form-item flex">
@@ -215,15 +222,15 @@
         />
       </template>
     </SwipeCell>
-    <div class="card" v-if="!specList.length">
+    <div class="card" v-if="!goodsInfo.specList.length">
       <Empty image-size="1.8rem" description="暂无规格" />
     </div>
 
-    <div class="title" v-if="skuList.length">补充规格信息</div>
-    <div class="card" v-if="skuList.length" style="padding: 0">
+    <div class="title" v-if="goodsInfo.skuList.length">补充规格信息</div>
+    <div class="card" v-if="goodsInfo.skuList.length" style="padding: 0">
       <Collapse v-model="activeSkuNames">
         <CollapseItem
-          v-for="(item, index) in skuList"
+          v-for="(item, index) in goodsInfo.skuList"
           :key="index"
           :title="item.name"
           :name="index"
@@ -259,6 +266,35 @@
 
   <button class="upload-btn" @click="save">点击上传</button>
 
+  <Popup
+    v-model:show="freightTemplatePickerPopupVisible"
+    position="bottom"
+    round
+  >
+    <Picker
+      :columns="freightTemplateOptions"
+      @confirm="selectFreightTemplate"
+      @cancel="freightTemplatePickerPopupVisible = false"
+      :columns-field-names="{ text: 'name', value: 'id' }"
+    />
+  </Popup>
+  <Popup v-model:show="categoryPickerPopupVisible" position="bottom" round>
+    <Picker
+      :columns="categoryOptions"
+      @confirm="selectCategory"
+      @cancel="categoryPickerPopupVisible = false"
+      :columns-field-names="{ text: 'name', value: 'id' }"
+    />
+  </Popup>
+  <Popup v-model:show="returnAddressPickerPopupVisible" position="bottom" round>
+    <Picker
+      :columns="returnAddressOptions"
+      @confirm="selectReturnAddress"
+      @cancel="returnAddressPickerPopupVisible = false"
+      :columns-field-names="{ text: 'address', value: 'id' }"
+    />
+  </Popup>
+
   <Dialog
     v-model:show="specOptionModalVisible"
     title="新增规格选项"
@@ -288,21 +324,28 @@ import {
   showToast,
   Collapse,
   CollapseItem,
+  Popup,
+  Picker,
 } from "vant";
-import { ref, reactive, watch, computed } from "vue";
+import { ref, reactive, watch, computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import _ from "lodash";
 import { upload } from "@/utils/upload";
+import { createGoods, getGoodsCategoryOptions } from "./utils/api";
+import { getFreightTemplateList } from "../freightTemplate/utils/api";
+import { getAddressList } from "../goodsReturnAddress/utils/api";
 
 import type { UploaderFileListItem } from "vant";
 import type { UploaderAfterRead } from "vant/lib/uploader/types";
 import type {
-  SkuItem,
-  SpecItem,
   GoodsInfo,
   GoodsCategoryOption,
+  CreateGoodsInfo,
 } from "./utils/type";
 import type { FreightTemplateListItem } from "../freightTemplate/utils/type";
 import type { AddressListItem } from "../goodsReturnAddress/utils/type";
+
+const router = useRouter();
 
 const freightTemplateOptions = ref<FreightTemplateListItem[]>([]);
 const categoryOptions = ref<GoodsCategoryOption[]>([]);
@@ -322,17 +365,18 @@ const goodsInfo = reactive<Omit<GoodsInfo, "id">>({
   specList: [],
   skuList: [],
 });
-
-const uploadVideoTipsVisible = ref(false);
-const uploadMainImgsTipsVisible = ref(false);
-const uploadDetailImgsTipsVisible = ref(false);
-const specList = reactive<SpecItem[]>([]);
 const specOptionModalVisible = ref(false);
 const curSpecIndex = ref(0);
 const specOptionName = ref("");
-const skuList = ref<SkuItem[]>([]);
+const freightTemplatePickerPopupVisible = ref(false);
+const categoryPickerPopupVisible = ref(false);
+const returnAddressPickerPopupVisible = ref(false);
+const uploadVideoTipsVisible = ref(false);
+const uploadMainImgsTipsVisible = ref(false);
+const uploadDetailImgsTipsVisible = ref(false);
 const activeSkuNames = ref([0]);
 
+// 计算属性
 const selectedFreightTemplateName = computed(
   () =>
     freightTemplateOptions.value.find(
@@ -350,6 +394,42 @@ const selectedReturnAddress = computed(
     )?.address
 );
 
+onMounted(() => {
+  setFreightTemplateOptions();
+  setCategoryOptions();
+  setReturnAddressOptions();
+});
+
+const setFreightTemplateOptions = async () =>
+  (freightTemplateOptions.value = [
+    { id: 0, name: "包邮" },
+    ...(await getFreightTemplateList()),
+  ]);
+const setCategoryOptions = async () =>
+  (categoryOptions.value = await getGoodsCategoryOptions());
+const setReturnAddressOptions = async () =>
+  (returnAddressOptions.value = await getAddressList());
+const selectFreightTemplate = ({
+  selectedValues,
+}: {
+  selectedValues: number[];
+}) => {
+  goodsInfo.freightTemplateId = selectedValues[0];
+  freightTemplatePickerPopupVisible.value = false;
+};
+const selectCategory = ({ selectedValues }: { selectedValues: number[] }) => {
+  goodsInfo.categoryId = selectedValues[0];
+  categoryPickerPopupVisible.value = false;
+};
+const selectReturnAddress = ({
+  selectedValues,
+}: {
+  selectedValues: number[];
+}) => {
+  goodsInfo.returnAddressId = selectedValues[0];
+  returnAddressPickerPopupVisible.value = false;
+};
+
 const uploadFile = (async (file: UploaderFileListItem) => {
   file.status = "uploading";
   file.message = "上传中...";
@@ -362,9 +442,9 @@ const uploadFile = (async (file: UploaderFileListItem) => {
   }
 }) as UploaderAfterRead;
 
-watch(specList, () => {
+watch(goodsInfo.specList, () => {
   let nameList: string[][] = [];
-  specList.forEach((item, index) => {
+  goodsInfo.specList.forEach((item, index) => {
     const nameListUnit = _.cloneDeep(nameList);
     for (let i = 0; i < item.options.length - 1; i++) {
       nameList = [...nameList, ..._.cloneDeep(nameListUnit)];
@@ -384,20 +464,28 @@ watch(specList, () => {
       }
     });
   });
-  skuList.value = nameList.map((item) => ({
-    name: item.join(),
-    image: "",
-    price: 0,
-    stock: 0,
-  }));
+  goodsInfo.skuList = nameList.map((item, index) => {
+    if (
+      goodsInfo.skuList[index] &&
+      goodsInfo.skuList[index].name === item.join()
+    ) {
+      return _.cloneDeep(goodsInfo.skuList[index]);
+    } else
+      return {
+        name: item.join(),
+        image: "",
+        price: 0,
+        stock: 0,
+      };
+  });
 });
 
 const addSpec = () => {
-  specList.push({ name: "", options: [] });
+  goodsInfo.specList.push({ name: "", options: [] });
 };
 const deleteSpec = (index: number) => {
   showConfirmDialog({ title: "确定删除该商品规格吗？" })
-    .then(() => specList.splice(index, 1))
+    .then(() => goodsInfo.specList.splice(index, 1))
     .catch(() => true);
 };
 const showSpecOptionModalVisible = (index: number) => {
@@ -412,17 +500,83 @@ const addSpecOption = (action: string) => {
     showToast("名称不能为空");
     return false;
   }
-  specList[curSpecIndex.value].options.push(specOptionName.value);
+  goodsInfo.specList[curSpecIndex.value].options.push(specOptionName.value);
   specOptionName.value = "";
   specOptionModalVisible.value = false;
   return true;
 };
 const deleteSpecOption = (index: number, optionIndex: number) => {
-  specList[index].options.splice(optionIndex, 1);
+  goodsInfo.specList[index].options.splice(optionIndex, 1);
 };
 
-const save = () => {
-  console.log("goodsInfo", goodsInfo);
+const save = async () => {
+  if (!goodsInfo.imageList.length) {
+    showToast("请上传至少一张主图图片");
+    return;
+  }
+  if (!goodsInfo.name) {
+    showToast("请输入商品名称");
+    return;
+  }
+  if (!goodsInfo.freightTemplateId) {
+    showToast("请选择运费模板");
+    return;
+  }
+  if (!goodsInfo.categoryId) {
+    showToast("请选择商品分类");
+    return;
+  }
+  if (!goodsInfo.returnAddressId) {
+    showToast("请选择退货地址");
+    return;
+  }
+  if (!goodsInfo.price) {
+    showToast("请输入商品店铺价格");
+    return;
+  }
+  if (!goodsInfo.stock) {
+    showToast("请输入商品总库存");
+    return;
+  }
+  if (!goodsInfo.commissionRate) {
+    showToast("请输入佣金比例");
+    return;
+  }
+  if (
+    goodsInfo.specList.length &&
+    goodsInfo.specList.findIndex(
+      (item) => !item.name || !item.options.length
+    ) !== -1
+  ) {
+    showToast("请完善商品规格信息");
+    return;
+  }
+  try {
+    const {
+      video,
+      imageList,
+      marketPrice,
+      detailImageList,
+      specList,
+      skuList,
+      ...rest
+    } = goodsInfo;
+    const createGoodsInfo: CreateGoodsInfo = {
+      ...rest,
+      imageList: JSON.stringify(imageList.map((item) => item.url)),
+      detailImageList: JSON.stringify(
+        detailImageList.length ? detailImageList.map((item) => item.url) : []
+      ),
+      specList: JSON.stringify(specList),
+      skuList: JSON.stringify(skuList),
+    };
+    if (video.length) createGoodsInfo.video = video[0].url;
+    if (marketPrice) createGoodsInfo.marketPrice = marketPrice;
+    await createGoods(createGoodsInfo);
+    router.back();
+  } catch (error) {
+    showToast("保存失败，请重试");
+  }
 };
 </script>
 
@@ -505,9 +659,18 @@ const save = () => {
         .picker {
           display: flex;
           align-items: center;
-          color: #777;
-          &.active {
-            color: #333;
+          .content {
+            color: #777;
+            &.active {
+              max-width: 3rem;
+              color: #333;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              line-height: 1;
+              display: -webkit-box;
+              -webkit-line-clamp: 1;
+              -webkit-box-orient: vertical;
+            }
           }
         }
         .sku-options {

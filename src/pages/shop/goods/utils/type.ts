@@ -47,9 +47,16 @@ export interface GoodsInfo {
 export interface CreateGoodsInfo
   extends Omit<
     GoodsInfo,
-    "id" | "video" | "imageList" | "detailImageList" | "specList" | "skuList"
+    | "id"
+    | "video"
+    | "marketPrice"
+    | "imageList"
+    | "detailImageList"
+    | "specList"
+    | "skuList"
   > {
-  video: string;
+  video?: string;
+  marketPrice?: number;
   imageList: string;
   detailImageList: string;
   specList: string;
