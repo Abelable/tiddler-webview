@@ -7,7 +7,7 @@
           <div class="name flex required">
             <div>列表图片</div>
             <Popover
-              v-model:show="uploadVideoTipsVisible"
+              v-model:show="imageTipsVisible"
               placement="bottom-start"
               theme="dark"
             >
@@ -28,7 +28,7 @@
           <div class="name flex">
             <div>主图视频</div>
             <Popover
-              v-model:show="uploadVideoTipsVisible"
+              v-model:show="videoTipsVisible"
               placement="bottom-start"
               theme="dark"
             >
@@ -56,7 +56,7 @@
           <div class="name flex required">
             <div>主图图片列表</div>
             <Popover
-              v-model:show="uploadMainImgsTipsVisible"
+              v-model:show="imageListTipsVisible"
               placement="bottom-start"
               theme="dark"
             >
@@ -77,7 +77,7 @@
           <div class="name flex required">
             <div>详情图片列表</div>
             <Popover
-              v-model:show="uploadDetailImgsTipsVisible"
+              v-model:show="detailImageListTipsVisible"
               placement="bottom-start"
               theme="dark"
             >
@@ -97,7 +97,7 @@
           <div class="name flex required">
             <div>默认规格图片</div>
             <Popover
-              v-model:show="uploadVideoTipsVisible"
+              v-model:show="defaultSpecImageTipsVisible"
               placement="bottom-start"
               theme="dark"
             >
@@ -192,7 +192,7 @@
           <div class="name flex required">
             <div>推广佣金比例</div>
             <Popover
-              v-model:show="uploadVideoTipsVisible"
+              v-model:show="commissionRateTipsVisible"
               placement="bottom-start"
               theme="dark"
             >
@@ -421,9 +421,12 @@ const specOptionName = ref("");
 const freightTemplatePickerPopupVisible = ref(false);
 const categoryPickerPopupVisible = ref(false);
 const returnAddressPickerPopupVisible = ref(false);
-const uploadVideoTipsVisible = ref(false);
-const uploadMainImgsTipsVisible = ref(false);
-const uploadDetailImgsTipsVisible = ref(false);
+const imageTipsVisible = ref(false);
+const videoTipsVisible = ref(false);
+const imageListTipsVisible = ref(false);
+const detailImageListTipsVisible = ref(false);
+const defaultSpecImageTipsVisible = ref(false);
+const commissionRateTipsVisible = ref(false);
 const activeSkuNames = ref([0]);
 
 // 计算属性
