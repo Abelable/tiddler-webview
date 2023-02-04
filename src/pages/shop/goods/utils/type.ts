@@ -48,8 +48,8 @@ export interface OriginalGoodsInfo {
 export interface SkuItem {
   name: string;
   image: UploaderFileListItem[];
-  price: number;
-  stock: number;
+  price: number | undefined;
+  stock: number | undefined;
 }
 
 export interface GoodsInfo {

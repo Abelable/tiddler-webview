@@ -70,6 +70,7 @@
             v-model="goodsInfo.imageList"
             :after-read="uploadFile"
             style="margin-top: 0.32rem"
+            multiple
             max-count="10"
           />
         </li>
@@ -91,6 +92,7 @@
             v-model="goodsInfo.detailImageList"
             :after-read="uploadFile"
             style="margin-top: 0.32rem"
+            multiple
           />
         </li>
         <li class="form-item">
@@ -294,16 +296,17 @@
               />
             </li>
             <li class="form-item flex">
-              <div class="name">价格</div>
+              <div class="name required">价格</div>
               <input
                 class="input"
                 v-model="item.price"
                 type="number"
+                step="0.01"
                 placeholder="请输入价格"
               />
             </li>
             <li class="form-item flex">
-              <div class="name">库存</div>
+              <div class="name required">库存</div>
               <input
                 class="input"
                 v-model="item.stock"
@@ -344,7 +347,7 @@
       :columns="returnAddressOptions"
       @confirm="selectReturnAddress"
       @cancel="returnAddressPickerPopupVisible = false"
-      :columns-field-names="{ text: 'address', value: 'id' }"
+      :columns-field-names="{ text: 'addressDetail', value: 'id' }"
     />
   </Popup>
 
@@ -529,8 +532,8 @@ watch(goodsInfo.specList, () => {
       sku || {
         name: item.join(),
         image: [],
-        price: 0,
-        stock: 0,
+        price: undefined,
+        stock: undefined,
       }
     );
   });
@@ -619,16 +622,23 @@ const save = async () => {
     showToast("请完善商品规格信息");
     return;
   }
-  if (
-    goodsInfo.skuList.length &&
-    goodsInfo.stock <
-      goodsInfo.skuList.reduce((stock, sku) => stock + sku.stock, 0)
-  ) {
-    showDialog({
-      title: "请核对库存设置",
-      message: "商品总库存，小于商品各规格库存总和",
-    });
-    return;
+  if (goodsInfo.skuList.length) {
+    if (
+      goodsInfo.skuList.findIndex((item) => !item.price || !item.stock) !== -1
+    ) {
+      showToast("部分商品规格未填写价格或库存");
+      return;
+    }
+    if (
+      goodsInfo.stock <
+      goodsInfo.skuList.reduce((stock, sku) => stock + (sku.stock as number), 0)
+    ) {
+      showDialog({
+        title: "请核对库存设置",
+        message: "商品总库存，小于商品各规格库存总和",
+      });
+      return;
+    }
   }
   const {
     image,
@@ -740,6 +750,7 @@ const save = async () => {
           }
         }
         .input {
+          margin-left: 0.2rem;
           color: #333;
           flex: 1;
           text-align: right;
