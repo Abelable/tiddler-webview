@@ -379,6 +379,7 @@ import {
   CollapseItem,
   Popup,
   Picker,
+  showDialog,
 } from "vant";
 import { ref, watch, computed, onMounted, reactive } from "vue";
 import { useRouter, useRoute } from "vue-router";
@@ -503,7 +504,7 @@ const setGoodsInfo = async () => {
   goodsInfo.price = price;
   goodsInfo.marketPrice = marketPrice || undefined;
   goodsInfo.stock = stock;
-  goodsInfo.commissionRate = commissionRate / 100;
+  goodsInfo.commissionRate = commissionRate * 100;
   goodsInfo.skuList = skuList.map((item) => ({
     ...item,
     image: item.image ? [{ url: item.image }] : [],
@@ -544,47 +545,40 @@ const uploadFile = (async (file: UploaderFileListItem) => {
   }
 }) as UploaderAfterRead;
 
-watch(
-  goodsInfo.specList,
-  () => {
-    let nameList: string[][] = [];
-    goodsInfo.specList.forEach((item, index) => {
-      const nameListUnit = _.cloneDeep(nameList);
-      for (let i = 0; i < item.options.length - 1; i++) {
-        nameList = [...nameList, ..._.cloneDeep(nameListUnit)];
-      }
-      item.options.forEach((_item, _index) => {
-        if (index === 0) {
-          if (!nameList[_index]) nameList[_index] = [];
-          nameList[_index][index] = _item;
-        } else {
-          const unitLength = nameList.length / item.options.length;
-          for (let j = 0; j < unitLength; j++) {
-            if (!nameList[j + _index * unitLength]) {
-              nameList[j + _index * unitLength] = [];
-            }
-            nameList[j + _index * unitLength][index] = _item;
+watch(goodsInfo.specList, () => {
+  let nameList: string[][] = [];
+  goodsInfo.specList.forEach((item, index) => {
+    const nameListUnit = _.cloneDeep(nameList);
+    for (let i = 0; i < item.options.length - 1; i++) {
+      nameList = [...nameList, ..._.cloneDeep(nameListUnit)];
+    }
+    item.options.forEach((_item, _index) => {
+      if (index === 0) {
+        if (!nameList[_index]) nameList[_index] = [];
+        nameList[_index][index] = _item;
+      } else {
+        const unitLength = nameList.length / item.options.length;
+        for (let j = 0; j < unitLength; j++) {
+          if (!nameList[j + _index * unitLength]) {
+            nameList[j + _index * unitLength] = [];
           }
+          nameList[j + _index * unitLength][index] = _item;
         }
-      });
+      }
     });
-    goodsInfo.skuList = nameList.map((item, index) => {
-      if (
-        goodsInfo.skuList[index] &&
-        goodsInfo.skuList[index].name === item.join()
-      ) {
-        return _.cloneDeep(goodsInfo.skuList[index]);
-      } else
-        return {
-          name: item.join(),
-          image: [],
-          price: 0,
-          stock: 0,
-        };
-    });
-  },
-  { deep: true }
-);
+  });
+  goodsInfo.skuList = nameList.map((item) => {
+    const sku = goodsInfo.skuList.find((sku) => sku.name === item.join());
+    return (
+      sku || {
+        name: item.join(),
+        image: [],
+        price: 0,
+        stock: 0,
+      }
+    );
+  });
+});
 
 const addSpec = () => {
   goodsInfo.specList.push({ name: "", options: [] });
@@ -667,6 +661,16 @@ const save = async () => {
     ) !== -1
   ) {
     showToast("请完善商品规格信息");
+    return;
+  }
+  if (
+    goodsInfo.skuList.length &&
+    goodsInfo.stock <
+      goodsInfo.skuList.reduce((stock, sku) => stock + sku.stock, 0)
+  ) {
+    showDialog({
+      message: "商品总库存，小于商品各规格库存总和，请核对库存设置",
+    });
     return;
   }
   const {

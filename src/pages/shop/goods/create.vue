@@ -379,6 +379,7 @@ import {
   CollapseItem,
   Popup,
   Picker,
+  showDialog,
 } from "vant";
 import { ref, reactive, watch, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
@@ -522,19 +523,16 @@ watch(goodsInfo.specList, () => {
       }
     });
   });
-  goodsInfo.skuList = nameList.map((item, index) => {
-    if (
-      goodsInfo.skuList[index] &&
-      goodsInfo.skuList[index].name === item.join()
-    ) {
-      return _.cloneDeep(goodsInfo.skuList[index]);
-    } else
-      return {
+  goodsInfo.skuList = nameList.map((item) => {
+    const sku = goodsInfo.skuList.find((sku) => sku.name === item.join());
+    return (
+      sku || {
         name: item.join(),
         image: [],
         price: 0,
         stock: 0,
-      };
+      }
+    );
   });
 });
 
@@ -619,6 +617,16 @@ const save = async () => {
     ) !== -1
   ) {
     showToast("请完善商品规格信息");
+    return;
+  }
+  if (
+    goodsInfo.skuList.length &&
+    goodsInfo.stock <
+      goodsInfo.skuList.reduce((stock, sku) => stock + sku.stock, 0)
+  ) {
+    showDialog({
+      message: "商品总库存，小于商品各规格库存总和，请核对库存设置",
+    });
     return;
   }
   const {
