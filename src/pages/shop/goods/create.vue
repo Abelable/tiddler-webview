@@ -625,7 +625,8 @@ const save = async () => {
       goodsInfo.skuList.reduce((stock, sku) => stock + sku.stock, 0)
   ) {
     showDialog({
-      message: "商品总库存，小于商品各规格库存总和，请核对库存设置",
+      title: "请核对库存设置",
+      message: "商品总库存，小于商品各规格库存总和",
     });
     return;
   }
