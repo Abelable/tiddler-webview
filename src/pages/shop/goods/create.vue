@@ -606,7 +606,7 @@ const save = async () => {
     showToast("请输入商品总库存");
     return;
   }
-  if (!goodsInfo.commissionRate) {
+  if (goodsInfo.commissionRate === undefined) {
     showToast("请输入佣金比例");
     return;
   }
