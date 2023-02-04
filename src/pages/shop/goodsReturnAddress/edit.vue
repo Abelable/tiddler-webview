@@ -24,7 +24,7 @@
           <div class="name required">收货地址</div>
           <input
             class="input"
-            v-model="addressInfo.address"
+            v-model="addressInfo.addressDetail"
             type="text"
             placeholder="请输入收货地址"
           />
@@ -61,7 +61,7 @@ const addressInfo = ref<AddressDetail>({
   id: 0,
   consigneeName: "",
   mobile: "",
-  address: "",
+  addressDetail: "",
   supplement: "",
 });
 
@@ -81,7 +81,7 @@ const save = async () => {
     showToast("请输入正确手机号");
     return;
   }
-  if (!addressInfo.value.address) {
+  if (!addressInfo.value.addressDetail) {
     showToast("请输入收货地址");
     return;
   }

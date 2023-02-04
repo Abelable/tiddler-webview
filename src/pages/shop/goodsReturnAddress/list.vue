@@ -8,7 +8,7 @@
             <div class="name">{{ item.consigneeName }}</div>
             <div class="mobile">{{ item.mobile }}</div>
           </div>
-          <div class="detail limit">{{ item.address }}</div>
+          <div class="detail limit">{{ item.addressDetail }}</div>
         </div>
         <Icon name="edit" size="0.32rem" />
       </div>

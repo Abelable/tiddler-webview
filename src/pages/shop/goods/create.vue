@@ -450,7 +450,7 @@ const selectedReturnAddress = computed(
   () =>
     returnAddressOptions.value.find(
       (item) => item.id === goodsInfo.returnAddressId
-    )?.address
+    )?.addressDetail
 );
 
 onMounted(() => {

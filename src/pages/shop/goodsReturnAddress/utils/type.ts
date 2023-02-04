@@ -2,7 +2,7 @@ export interface AddressListItem {
   id: number;
   consigneeName: string;
   mobile: string;
-  address: string;
+  addressDetail: string;
 }
 
 export interface AddressDetail extends AddressListItem {
