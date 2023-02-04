@@ -70,7 +70,6 @@
             v-model="goodsInfo.imageList"
             :after-read="uploadFile"
             style="margin-top: 0.32rem"
-            multiple
             max-count="10"
           />
         </li>
@@ -92,7 +91,6 @@
             v-model="goodsInfo.detailImageList"
             :after-read="uploadFile"
             style="margin-top: 0.32rem"
-            multiple
           />
         </li>
         <li class="form-item">
