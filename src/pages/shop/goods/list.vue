@@ -175,7 +175,7 @@ const menuList = ref([
     total: 0,
   },
   {
-    name: "未通过",
+    name: "未过审",
     status: 2,
     total: 0,
   },
