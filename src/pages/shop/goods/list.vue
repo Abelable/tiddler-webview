@@ -198,7 +198,10 @@ const selectMenu = (index: number) => {
   setGoodsList(true);
 };
 
-const onRefresh = () => setGoodsList(true);
+const onRefresh = () => {
+  setTotals();
+  setGoodsList(true);
+};
 const onLoadMore = () => setGoodsList();
 
 const setGoodsList = async (init = false) => {
