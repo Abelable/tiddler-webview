@@ -215,11 +215,10 @@ const setGoodsList = async (init = false) => {
       ++pageList[curMenuIndex.value]
     )) || {};
 
-  if (list.length) {
-    goodsLists[curMenuIndex.value] = init
-      ? list
-      : [...goodsLists[curMenuIndex.value], ...list];
-  } else finished.value = true;
+  goodsLists[curMenuIndex.value] = init
+    ? list
+    : [...goodsLists[curMenuIndex.value], ...list];
+  if (!list.length) finished.value = true;
   loading.value = false;
   refreshing.value = false;
 };
