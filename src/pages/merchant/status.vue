@@ -131,7 +131,7 @@ const reApply = async () => {
 };
 
 const back = () => {
-  console.log("back");
+  window.wx.miniProgram.navigateBack();
 };
 </script>
 
