@@ -2,6 +2,22 @@ import { RouteRecordRaw } from "vue-router";
 
 const shop: Array<RouteRecordRaw> = [
   {
+    path: "shop/agreements/merchant_service",
+    name: "shop_merchant_service",
+    meta: {
+      title: "商家服务协议",
+    },
+    component: () => import("@/pages/shop/agreements/merchantService.vue"),
+  },
+  {
+    path: "/shop/merchant/settle_in",
+    name: "shop_merchant_settle_in",
+    meta: {
+      title: "商家入驻",
+    },
+    component: () => import("@/pages/shop/merchant/settleIn.vue"),
+  },
+  {
     path: "/shop/freight_template/list",
     name: "freight_template_list",
     meta: {
