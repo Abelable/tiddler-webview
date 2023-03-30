@@ -2,7 +2,7 @@ import { RouteRecordRaw } from "vue-router";
 
 const shop: Array<RouteRecordRaw> = [
   {
-    path: "shop/agreements/merchant_service",
+    path: "/shop/agreements/merchant_service",
     name: "shop_merchant_service",
     meta: {
       title: "商家服务协议",
