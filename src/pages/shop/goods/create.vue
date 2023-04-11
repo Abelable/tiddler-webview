@@ -190,13 +190,13 @@
         </li>
         <li class="form-item flex">
           <div class="name flex required">
-            <div>推广佣金比例</div>
+            <div>销售佣金比例</div>
             <Popover
-              v-model:show="commissionRateTipsVisible"
+              v-model:show="salesCommissionRateTipsVisible"
               placement="bottom-start"
               theme="dark"
             >
-              <div class="warning">范围：0～70%</div>
+              <div class="warning">范围：10%～70%</div>
               <template #reference>
                 <Icon style="margin-left: 0.06rem" name="question-o" />
               </template>
@@ -204,9 +204,31 @@
           </div>
           <input
             class="input"
-            v-model="goodsInfo.commissionRate"
+            v-model="goodsInfo.salesCommissionRate"
             type="number"
-            placeholder="请输入佣金比例"
+            placeholder="请输入销售佣金比例"
+          />
+          <div class="unit">%</div>
+        </li>
+        <li class="form-item flex">
+          <div class="name flex required">
+            <div>推广佣金比例</div>
+            <Popover
+              v-model:show="promotionCommissionRateTipsVisible"
+              placement="bottom-start"
+              theme="dark"
+            >
+              <div class="warning">范围：2%～70%</div>
+              <template #reference>
+                <Icon style="margin-left: 0.06rem" name="question-o" />
+              </template>
+            </Popover>
+          </div>
+          <input
+            class="input"
+            v-model="goodsInfo.promotionCommissionRate"
+            type="number"
+            placeholder="请输入推广佣金比例"
           />
           <div class="unit">%</div>
         </li>
@@ -418,7 +440,8 @@ const goodsInfo = reactive<Omit<GoodsInfo, "id">>({
   price: undefined,
   marketPrice: undefined,
   stock: undefined,
-  commissionRate: undefined,
+  salesCommissionRate: undefined,
+  promotionCommissionRate: undefined,
   specList: [],
   skuList: [],
 });
@@ -433,7 +456,8 @@ const videoTipsVisible = ref(false);
 const imageListTipsVisible = ref(false);
 const detailImageListTipsVisible = ref(false);
 const defaultSpecImageTipsVisible = ref(false);
-const commissionRateTipsVisible = ref(false);
+const salesCommissionRateTipsVisible = ref(false);
+const promotionCommissionRateTipsVisible = ref(false);
 const activeSkuNames = ref([0]);
 
 // 计算属性
@@ -607,8 +631,12 @@ const save = async () => {
     showToast("请输入商品总库存");
     return;
   }
-  if (goodsInfo.commissionRate === undefined) {
-    showToast("请输入佣金比例");
+  if (goodsInfo.salesCommissionRate === undefined) {
+    showToast("请输入销售佣金比例");
+    return;
+  }
+  if (goodsInfo.promotionCommissionRate === undefined) {
+    showToast("请输入推广佣金比例");
     return;
   }
   if (
@@ -647,7 +675,8 @@ const save = async () => {
     marketPrice,
     specList,
     skuList,
-    commissionRate,
+    salesCommissionRate,
+    promotionCommissionRate,
     ...rest
   } = goodsInfo;
   const createGoodsInfo: CreateGoodsInfo = {
@@ -656,7 +685,8 @@ const save = async () => {
     imageList: JSON.stringify(imageList.map((item) => item.url)),
     detailImageList: JSON.stringify(detailImageList.map((item) => item.url)),
     defaultSpecImage: defaultSpecImage[0].url as string,
-    commissionRate: commissionRate / 100,
+    salesCommissionRate: salesCommissionRate / 100,
+    promotionCommissionRate: promotionCommissionRate / 100,
     specList: JSON.stringify(specList),
     skuList: JSON.stringify(
       skuList.map((item) => ({

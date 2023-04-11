@@ -66,7 +66,8 @@ export interface GoodsInfo {
   price: number | undefined;
   marketPrice: number | undefined;
   stock: number | undefined;
-  commissionRate: number | undefined;
+  salesCommissionRate: number | undefined;
+  promotionCommissionRate: number | undefined;
   specList: SpecItem[];
   skuList: SkuItem[];
 }
