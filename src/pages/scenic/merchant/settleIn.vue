@@ -293,6 +293,15 @@
               />
             </div>
             <div class="form-item">
+              <div class="form-title">店铺封面</div>
+              <Uploader
+                v-model="providerInfo.shopCover"
+                :after-read="uploadFile"
+                style="margin-top: 0.32rem"
+                max-count="1"
+              />
+            </div>
+            <div class="form-item">
               <div class="form-title">店铺名称</div>
               <input
                 class="input"
