@@ -2,21 +2,24 @@
   <div class="container">
     <div class="settle-in" v-if="!statusInfo">
       <div class="home" v-if="step === 0">
-        <div class="title">景区服务商入驻</div>
-        <div
-          class="btn confirm"
-          :class="{ active: agreementsChecked }"
-          @click="nextStep"
-        >
-          下一步
-        </div>
-        <div class="agreements">
-          <Checkbox v-model="agreementsChecked" icon-size="16px" />
-          <div style="margin-left: 0.1rem">
-            我已阅读并同意
-            <span style="color: #1b89fa" @click="checkAgreement"
-              >《小鱼游景区服务商服务协议》</span
-            >
+        <div class="main">
+          <div class="title">景区服务商入驻</div>
+          <div class="sub-title">欢迎加入小鱼游</div>
+          <div
+            class="btn confirm"
+            :class="{ active: agreementsChecked }"
+            @click="nextStep"
+          >
+            下一步
+          </div>
+          <div class="agreements">
+            <Checkbox v-model="agreementsChecked" icon-size="16px" />
+            <div style="margin-left: 0.1rem">
+              我已阅读并同意
+              <span style="color: #1b89fa" @click="checkAgreement"
+                >《小鱼游景区服务商服务协议》</span
+              >
+            </div>
           </div>
         </div>
       </div>
@@ -638,7 +641,7 @@ const nextStep = () => {
   switch (step.value) {
     case 0:
       if (!agreementsChecked.value) {
-        showToast("请阅读并同意商家协议");
+        showToast("请阅读并同意服务商协议");
         return;
       }
       step.value = 1;
@@ -895,37 +898,47 @@ const back = () => {
   }
   .settle-in {
     .home {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      position: relative;
       height: 100vh;
-      font-size: 0;
-      background-color: #fff;
-      .title {
-        color: #333;
-        font-size: 0.5rem;
-        font-weight: 550;
-      }
-      .home-illus {
-        margin-top: 0.36rem;
-        width: 6.86rem;
-        border-radius: 0.2rem;
-      }
-      .confirm {
-        margin-top: 0.68rem;
-        width: 6.86rem;
-        color: #fff;
-        background: #e6e6e6;
-        &.active {
-          background: #212121;
+      background-image: url("./images/bg.jpeg");
+      background-repeat: no-repeat;
+      background-size: auto 100%;
+      .main {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        padding: 0.64rem 0.32rem;
+        width: 100%;
+        background: linear-gradient(
+          rgba(0, 0, 0, 0) 0%,
+          rgba(0, 0, 0, 100) 100%
+        );
+        .title {
+          color: #fff;
+          font-size: 0.5rem;
+          font-weight: 550;
         }
-      }
-      .agreements {
-        display: flex;
-        justify-content: center;
-        margin-top: 0.24rem;
-        font-size: 0.24rem;
+        .sub-title {
+          margin-top: 0.1rem;
+          padding-left: 0.04rem;
+          color: #fff;
+          font-size: 0.28rem;
+        }
+        .confirm {
+          margin-top: 0.68rem;
+          color: #fff;
+          background: #e6e6e6;
+          &.active {
+            background: #212121;
+          }
+        }
+        .agreements {
+          display: flex;
+          justify-content: center;
+          margin-top: 0.24rem;
+          color: #fff;
+          font-size: 0.24rem;
+        }
       }
     }
     .information-filling {
