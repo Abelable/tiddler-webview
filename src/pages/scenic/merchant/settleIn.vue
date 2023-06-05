@@ -293,13 +293,13 @@
               />
             </div>
             <div class="form-item">
-              <div class="form-title">店铺分类</div>
+              <div class="form-title">店铺类型</div>
               <div
                 class="picker"
                 :class="{ active: pickedCategoryDesc }"
                 @click="categoryPickerPopupVisible = true"
               >
-                {{ pickedCategoryDesc || "请选择店铺分类" }}
+                {{ pickedCategoryDesc || "请选择店铺类型" }}
               </div>
               <Popup
                 v-model:show="categoryPickerPopupVisible"
@@ -421,19 +421,15 @@ import { useRouter } from "vue-router";
 import { areaList } from "@vant/area-data";
 import { upload } from "@/utils/upload";
 import {
-  getShopCategoryOptions,
-  uploadMerchantInfo,
-  getMerchantStatusInfo,
-  deleteMerchant,
-  payMerchantDeposit,
+  uploadProviderInfo,
+  getProviderStatusInfo,
+  deleteProvider,
+  payProviderDeposit,
 } from "./utils/api";
 
 import type { UploaderAfterRead } from "vant/lib/uploader/types";
-import type {
-  MerchantInfo,
-  ShopCategoryOption,
-  MerchantStatusInfo,
-} from "./utils/api";
+import type { ProviderInfo, ProviderStatusInfo } from "./utils/type";
+import { ShopTypeOption } from "./utils/type";
 interface RegionOption {
   text: string;
   value: string;
@@ -444,8 +440,7 @@ const router = useRouter();
 
 const step = ref(0);
 const agreementsChecked = ref(false);
-const merchantInfo = reactive<MerchantInfo>({
-  type: 1,
+const merchantInfo = reactive<ProviderInfo>({
   companyName: "",
   businessLicensePhoto: "",
   regionDesc: "",
@@ -461,24 +456,26 @@ const merchantInfo = reactive<MerchantInfo>({
   bankCardOwnerName: "",
   bankCardNumber: "",
   bankName: "",
+  shopAvatar: "",
   shopName: "",
-  shopCategoryId: 0,
+  shopType: 0,
+  shopCover: "",
 });
 const areaPickerPopupVisible = ref(false);
 const uploadIdCardFrontPhotoLoading = ref(false);
 const uploadIdCardBackPhotoLoading = ref(false);
 const uploadHoldIdCardPhotoLoading = ref(false);
 const uploadBusinessLicensePhotoLoading = ref(false);
-const categoryOptions = ref<ShopCategoryOption[]>([]);
+const categoryOptions = [
+  { id: 1, name: "景区官方" },
+  { id: 2, name: "旅行社" },
+];
 const categoryPickerPopupVisible = ref(false);
 const pickedCategoryDesc = ref("");
-const statusInfo = ref<MerchantStatusInfo | undefined>();
+const statusInfo = ref<ProviderStatusInfo | undefined>();
 
 onMounted(async () => {
   await setStatusInfo();
-  if (!statusInfo.value) {
-    setCategoryOptions();
-  }
 });
 
 const nextStep = () => {
@@ -575,8 +572,8 @@ const nextStep = () => {
         showToast("请输入店铺名称");
         return;
       }
-      if (!merchantInfo.shopCategoryId) {
-        showToast("请选择店铺分类");
+      if (!merchantInfo.shopType) {
+        showToast("请选择店铺类型");
         return;
       }
       submit();
@@ -584,18 +581,14 @@ const nextStep = () => {
   }
 };
 
-const setCategoryOptions = async () => {
-  categoryOptions.value = await getShopCategoryOptions();
-};
-
 const setStatusInfo = async () => {
-  statusInfo.value = await getMerchantStatusInfo();
+  statusInfo.value = await getProviderStatusInfo();
   statusInfo.value = undefined;
 };
 
 const submit = async () => {
   try {
-    await uploadMerchantInfo(merchantInfo);
+    await uploadProviderInfo(merchantInfo);
     setStatusInfo();
   } catch (error) {
     showToast("审核提交失败，请重试");
@@ -640,9 +633,9 @@ const categoryConfirm = ({
   selectedOptions,
 }: {
   selectedValues: number[];
-  selectedOptions: ShopCategoryOption[];
+  selectedOptions: ShopTypeOption[];
 }) => {
-  merchantInfo.shopCategoryId = selectedValues[0];
+  merchantInfo.shopType = selectedValues[0];
   pickedCategoryDesc.value = selectedOptions[0].name;
   categoryPickerPopupVisible.value = false;
 };
@@ -651,7 +644,7 @@ const checkAgreement = () => router.push("/scenic/agreements/merchant_service");
 
 const pay = async () => {
   if (statusInfo.value) {
-    const payParams = await payMerchantDeposit(statusInfo.value.id);
+    const payParams = await payProviderDeposit(statusInfo.value.id);
     Object.keys(payParams).forEach(
       (key) => (payParams[key] = encodeURIComponent(payParams[key]))
     );
@@ -665,7 +658,7 @@ const pay = async () => {
 
 const reApply = async () => {
   try {
-    await deleteMerchant();
+    await deleteProvider();
     setStatusInfo();
   } catch (error) {
     showToast("操作失败请重试");

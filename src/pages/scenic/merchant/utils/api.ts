@@ -1,52 +1,17 @@
 import { http } from "@/utils/http";
+import { ProviderInfo, ProviderStatusInfo } from "./type";
 
-export interface MerchantInfo {
-  type: number;
-  companyName?: string;
-  businessLicensePhoto?: string;
-  regionDesc: string;
-  regionCodeList: string;
-  addressDetail: string;
-  name: string;
-  mobile: string;
-  email: string;
-  idCardNumber: string;
-  idCardFrontPhoto: string;
-  idCardBackPhoto: string;
-  holdIdCardPhoto: string;
-  bankCardOwnerName: string;
-  bankCardNumber: string;
-  bankName: string;
-  shopName: string;
-  shopCategoryId: number;
-}
+export const uploadProviderInfo = async (info: ProviderInfo) =>
+  await http("scenic/provider/settle_in", { method: "POST", data: info });
 
-export const uploadMerchantInfo = async (info: MerchantInfo) =>
-  await http("shop/merchant/settle_in", { method: "POST", data: info });
+export const getProviderStatusInfo = async (): Promise<ProviderStatusInfo> =>
+  await http("scenic/provider/status");
 
-export interface ShopCategoryOption {
-  id: number;
-  name: string;
-}
-
-export const getShopCategoryOptions = async (): Promise<ShopCategoryOption[]> =>
-  await http("shop/category_options");
-
-export interface MerchantStatusInfo {
-  id: number;
-  type: number;
-  status: number;
-  failureReason: string;
-}
-
-export const getMerchantStatusInfo = async (): Promise<MerchantStatusInfo> =>
-  await http("shop/merchant/status");
-
-export const payMerchantDeposit = async (orderId: number) =>
-  await http("shop/merchant/pay_deposit", {
+export const payProviderDeposit = async (orderId: number) =>
+  await http("scenic/provider/pay_deposit", {
     method: "POST",
     data: { orderId },
   });
 
-export const deleteMerchant = async () =>
-  await http("shop/merchant/delete", { method: "POST" });
+export const deleteProvider = async () =>
+  await http("scenic/provider/delete", { method: "POST" });
