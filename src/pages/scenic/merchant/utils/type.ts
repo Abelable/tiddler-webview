@@ -22,6 +22,12 @@ export interface ProviderInfo {
   shopCover: UploaderFileListItem[];
 }
 
+export interface CreateProviderInfo
+  extends Omit<ProviderInfo, "shopAvatar" | "shopCover"> {
+  shopAvatar: string;
+  shopCover?: string;
+}
+
 export interface ShopTypeOption {
   id: number;
   name: string;

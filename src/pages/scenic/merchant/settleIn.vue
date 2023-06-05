@@ -457,7 +457,7 @@ interface RegionOption {
 
 const router = useRouter();
 
-const step = ref(3);
+const step = ref(0);
 const agreementsChecked = ref(false);
 const providerInfo = reactive<ProviderInfo>({
   companyName: "",
@@ -588,6 +588,10 @@ const nextStep = () => {
       break;
 
     case 3:
+      if (!providerInfo.shopAvatar.length) {
+        showToast("请上传店铺头像");
+        return;
+      }
       if (!providerInfo.shopName) {
         showToast("请输入店铺名称");
         return;
@@ -608,7 +612,12 @@ const setStatusInfo = async () => {
 
 const submit = async () => {
   try {
-    await uploadProviderInfo(providerInfo);
+    const { shopAvatar, shopCover, ...rest } = providerInfo;
+    await uploadProviderInfo({
+      shopAvatar: shopAvatar[0].url as string,
+      shopCover: shopCover.length ? (shopCover[0].url as string) : "",
+      ...rest,
+    });
     setStatusInfo();
   } catch (error) {
     showToast("审核提交失败，请重试");

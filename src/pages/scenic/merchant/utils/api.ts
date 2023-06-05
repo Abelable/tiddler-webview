@@ -1,7 +1,7 @@
 import { http } from "@/utils/http";
-import { ProviderInfo, ProviderStatusInfo } from "./type";
+import { CreateProviderInfo, ProviderStatusInfo } from "./type";
 
-export const uploadProviderInfo = async (info: ProviderInfo) =>
+export const uploadProviderInfo = async (info: CreateProviderInfo) =>
   await http("scenic/provider/settle_in", { method: "POST", data: info });
 
 export const getProviderStatusInfo = async (): Promise<ProviderStatusInfo> =>
