@@ -3,8 +3,8 @@
     <div class="settle-in" v-if="!statusInfo">
       <div class="home" v-if="step === 0">
         <div class="main">
-          <div class="title">景区服务商入驻</div>
-          <div class="sub-title">欢迎加入小鱼游</div>
+          <div class="title">欢迎加入小鱼游</div>
+          <div class="sub-title">- 景区服务商入驻 -</div>
           <div
             class="btn confirm"
             :class="{ active: agreementsChecked }"
@@ -902,7 +902,7 @@ const back = () => {
       height: 100vh;
       background-image: url("./images/bg.jpeg");
       background-repeat: no-repeat;
-      background-size: auto 100%;
+      background-size: cover;
       .main {
         position: absolute;
         left: 0;
@@ -911,7 +911,7 @@ const back = () => {
         width: 100%;
         background: linear-gradient(
           rgba(0, 0, 0, 0) 0%,
-          rgba(0, 0, 0, 100) 100%
+          rgba(0, 0, 0, 68) 100%
         );
         .title {
           color: #fff;
@@ -919,17 +919,16 @@ const back = () => {
           font-weight: 550;
         }
         .sub-title {
-          margin-top: 0.1rem;
-          padding-left: 0.04rem;
+          margin-top: 0.06rem;
           color: #fff;
           font-size: 0.28rem;
         }
         .confirm {
-          margin-top: 0.68rem;
+          margin-top: 0.88rem;
           color: #fff;
           background: #e6e6e6;
           &.active {
-            background: #212121;
+            background: #1b89fa;
           }
         }
         .agreements {
