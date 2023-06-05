@@ -726,7 +726,7 @@ const back = () => {
         .agreements {
           display: flex;
           justify-content: center;
-          margin-top: 0.24rem;
+          margin-top: 0.36rem;
           color: #fff;
           font-size: 0.24rem;
         }
