@@ -1,6 +1,9 @@
-import { getOssConfig } from "./api";
-import type { OssConfig } from "./api";
 import { showToast } from "vant";
+import { getOssConfig } from "./api";
+
+import type { UploaderFileListItem } from "vant";
+import type { UploaderAfterRead } from "vant/lib/uploader/types";
+import type { OssConfig } from "./api";
 
 export const upload = async (file: File) => {
   let ossConfig: OssConfig;
@@ -39,3 +42,15 @@ const setOssConfig = async () => {
   localStorage.setItem("ossConfig", JSON.stringify(config));
   return config;
 };
+
+export const uploadFile = (async (file: UploaderFileListItem) => {
+  file.status = "uploading";
+  file.message = "上传中...";
+  try {
+    file.url = await upload(file.file as File);
+    file.status = "done";
+  } catch (error) {
+    file.status = "failed";
+    file.message = "上传失败";
+  }
+}) as UploaderAfterRead;

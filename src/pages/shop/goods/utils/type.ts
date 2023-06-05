@@ -40,7 +40,8 @@ export interface OriginalGoodsInfo {
   price: number;
   marketPrice: number;
   stock: number;
-  commissionRate: number;
+  salesCommissionRate: number;
+  promotionCommissionRate: number;
   specList: SpecItem[];
   skuList: OriginalSkuItem[];
 }

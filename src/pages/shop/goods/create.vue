@@ -407,13 +407,11 @@ import {
 import { ref, reactive, watch, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import _ from "lodash";
-import { upload } from "@/utils/upload";
+import { uploadFile } from "@/utils/upload";
 import { createGoods, getGoodsCategoryOptions } from "./utils/api";
 import { getFreightTemplateList } from "../freightTemplate/utils/api";
 import { getAddressList } from "../goodsReturnAddress/utils/api";
 
-import type { UploaderFileListItem } from "vant";
-import type { UploaderAfterRead } from "vant/lib/uploader/types";
 import type {
   GoodsInfo,
   GoodsCategoryOption,
@@ -513,18 +511,6 @@ const selectReturnAddress = ({
   goodsInfo.returnAddressId = selectedValues[0];
   returnAddressPickerPopupVisible.value = false;
 };
-
-const uploadFile = (async (file: UploaderFileListItem) => {
-  file.status = "uploading";
-  file.message = "上传中...";
-  try {
-    file.url = await upload(file.file as File);
-    file.status = "done";
-  } catch (error) {
-    file.status = "failed";
-    file.message = "上传失败";
-  }
-}) as UploaderAfterRead;
 
 watch(goodsInfo.specList, () => {
   let nameList: string[][] = [];

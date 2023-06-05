@@ -437,7 +437,7 @@ import {
 import { ref, onMounted, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { areaList } from "@vant/area-data";
-import { upload } from "@/utils/upload";
+import { upload, uploadFile } from "@/utils/upload";
 import {
   uploadProviderInfo,
   getProviderStatusInfo,
@@ -445,7 +445,6 @@ import {
   payProviderDeposit,
 } from "./utils/api";
 
-import type { UploaderFileListItem } from "vant";
 import type { UploaderAfterRead } from "vant/lib/uploader/types";
 import type { ProviderInfo, ProviderStatusInfo } from "./utils/type";
 import { ShopTypeOption } from "./utils/type";
@@ -655,18 +654,6 @@ const uploadBusinessLicensePhoto = (async ({ file }: { file: File }) => {
   uploadBusinessLicensePhotoLoading.value = true;
   providerInfo.businessLicensePhoto = await upload(file);
   uploadBusinessLicensePhotoLoading.value = false;
-}) as UploaderAfterRead;
-
-const uploadFile = (async (file: UploaderFileListItem) => {
-  file.status = "uploading";
-  file.message = "上传中...";
-  try {
-    file.url = await upload(file.file as File);
-    file.status = "done";
-  } catch (error) {
-    file.status = "failed";
-    file.message = "上传失败";
-  }
 }) as UploaderAfterRead;
 
 const categoryConfirm = ({

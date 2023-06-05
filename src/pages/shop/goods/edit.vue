@@ -190,6 +190,28 @@
         </li>
         <li class="form-item flex">
           <div class="name flex required">
+            <div>销售佣金比例</div>
+            <Popover
+              v-model:show="commissionRateTipsVisible"
+              placement="bottom-start"
+              theme="dark"
+            >
+              <div class="warning">范围：0～70%</div>
+              <template #reference>
+                <Icon style="margin-left: 0.06rem" name="question-o" />
+              </template>
+            </Popover>
+          </div>
+          <input
+            class="input"
+            v-model="goodsInfo.salesCommissionRate"
+            type="number"
+            placeholder="请输入佣金比例"
+          />
+          <div class="unit">%</div>
+        </li>
+        <li class="form-item flex">
+          <div class="name flex required">
             <div>推广佣金比例</div>
             <Popover
               v-model:show="commissionRateTipsVisible"
@@ -204,7 +226,7 @@
           </div>
           <input
             class="input"
-            v-model="goodsInfo.commissionRate"
+            v-model="goodsInfo.promotionCommissionRate"
             type="number"
             placeholder="请输入佣金比例"
           />
@@ -385,13 +407,11 @@ import {
 import { ref, watch, computed, onMounted, reactive } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import _ from "lodash";
-import { upload } from "@/utils/upload";
+import { uploadFile } from "@/utils/upload";
 import { editGoods, getGoodsCategoryOptions, getGoodsInfo } from "./utils/api";
 import { getFreightTemplateList } from "../freightTemplate/utils/api";
 import { getAddressList } from "../goodsReturnAddress/utils/api";
 
-import type { UploaderFileListItem } from "vant";
-import type { UploaderAfterRead } from "vant/lib/uploader/types";
 import type {
   GoodsInfo,
   GoodsCategoryOption,
@@ -420,7 +440,8 @@ const goodsInfo = reactive<GoodsInfo>({
   price: undefined,
   marketPrice: undefined,
   stock: undefined,
-  commissionRate: undefined,
+  salesCommissionRate: undefined,
+  promotionCommissionRate: undefined,
   specList: [],
   skuList: [],
 });
@@ -488,7 +509,8 @@ const setGoodsInfo = async () => {
     price,
     marketPrice,
     stock,
-    commissionRate,
+    salesCommissionRate,
+    promotionCommissionRate,
     specList,
     skuList,
   } = await getGoodsInfo(+(route.query.id as string));
@@ -505,7 +527,8 @@ const setGoodsInfo = async () => {
   goodsInfo.price = price;
   goodsInfo.marketPrice = marketPrice || undefined;
   goodsInfo.stock = stock;
-  goodsInfo.commissionRate = commissionRate * 100;
+  goodsInfo.salesCommissionRate = salesCommissionRate * 100;
+  goodsInfo.promotionCommissionRate = promotionCommissionRate * 100;
   goodsInfo.skuList = skuList.map((item) => ({
     ...item,
     image: item.image ? [{ url: item.image }] : [],
@@ -533,18 +556,6 @@ const selectReturnAddress = ({
   goodsInfo.returnAddressId = selectedValues[0];
   returnAddressPickerPopupVisible.value = false;
 };
-
-const uploadFile = (async (file: UploaderFileListItem) => {
-  file.status = "uploading";
-  file.message = "上传中...";
-  try {
-    file.url = await upload(file.file as File);
-    file.status = "done";
-  } catch (error) {
-    file.status = "failed";
-    file.message = "上传失败";
-  }
-}) as UploaderAfterRead;
 
 watch(goodsInfo.specList, () => {
   let nameList: string[][] = [];
@@ -651,8 +662,12 @@ const save = async () => {
     showToast("请输入商品总库存");
     return;
   }
-  if (goodsInfo.commissionRate === undefined) {
-    showToast("请输入佣金比例");
+  if (goodsInfo.salesCommissionRate === undefined) {
+    showToast("请输入销售佣金比例");
+    return;
+  }
+  if (goodsInfo.promotionCommissionRate === undefined) {
+    showToast("请输入推广佣金比例");
     return;
   }
   if (
@@ -691,7 +706,8 @@ const save = async () => {
     marketPrice,
     specList,
     skuList,
-    commissionRate,
+    salesCommissionRate,
+    promotionCommissionRate,
     ...rest
   } = goodsInfo;
   const editGoodsInfo: EditGoodsInfo = {
@@ -700,7 +716,8 @@ const save = async () => {
     imageList: JSON.stringify(imageList.map((item) => item.url)),
     detailImageList: JSON.stringify(detailImageList.map((item) => item.url)),
     defaultSpecImage: defaultSpecImage[0].url as string,
-    commissionRate: commissionRate / 100,
+    salesCommissionRate: salesCommissionRate / 100,
+    promotionCommissionRate: promotionCommissionRate / 100,
     specList: JSON.stringify(specList),
     skuList: JSON.stringify(
       skuList.map((item) => ({

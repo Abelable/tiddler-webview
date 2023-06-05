@@ -456,6 +456,24 @@
           <div class="form-wrap" v-show="step === 3">
             <div class="title">店铺信息</div>
             <div class="form-item">
+              <div class="form-title">店铺头像</div>
+              <Uploader
+                v-model="merchantInfo.shopAvatar"
+                :after-read="uploadFile"
+                style="margin-top: 0.32rem"
+                max-count="1"
+              />
+            </div>
+            <div class="form-item">
+              <div class="form-title">店铺封面</div>
+              <Uploader
+                v-model="merchantInfo.shopCover"
+                :after-read="uploadFile"
+                style="margin-top: 0.32rem"
+                max-count="1"
+              />
+            </div>
+            <div class="form-item">
               <div class="form-title">店铺名称</div>
               <input
                 class="input"
@@ -591,7 +609,7 @@ import {
 import { ref, onMounted, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { areaList } from "@vant/area-data";
-import { upload } from "@/utils/upload";
+import { upload, uploadFile } from "@/utils/upload";
 import {
   getShopCategoryOptions,
   uploadMerchantInfo,
@@ -602,15 +620,11 @@ import {
 
 import type { UploaderAfterRead } from "vant/lib/uploader/types";
 import type {
+  RegionOption,
   MerchantInfo,
   ShopCategoryOption,
   MerchantStatusInfo,
-} from "./utils/api";
-interface RegionOption {
-  text: string;
-  value: string;
-  children?: RegionOption[];
-}
+} from "./utils/type";
 
 const router = useRouter();
 
@@ -633,8 +647,10 @@ const merchantInfo = reactive<MerchantInfo>({
   bankCardOwnerName: "",
   bankCardNumber: "",
   bankName: "",
+  shopAvatar: [],
   shopName: "",
   shopCategoryId: 0,
+  shopCover: [],
 });
 const areaPickerPopupVisible = ref(false);
 const uploadIdCardFrontPhotoLoading = ref(false);
