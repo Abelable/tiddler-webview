@@ -31,7 +31,7 @@
             <div
               class="step"
               v-for="(item, index) in [
-                '填写企业信息',
+                '填写公司信息',
                 '填写银行信息',
                 '填写店铺信息',
               ]"
@@ -55,18 +55,18 @@
         </div>
         <div class="main">
           <div class="form-wrap" v-show="step === 1">
-            <div class="title">企业信息</div>
+            <div class="title">公司信息</div>
             <div class="form-item">
-              <div class="form-title">企业名称</div>
+              <div class="form-title">公司名称</div>
               <input
                 class="input"
                 v-model="merchantInfo.companyName"
                 type="text"
-                placeholder="请输入企业名称"
+                placeholder="请输入公司名称"
               />
             </div>
             <div class="form-item">
-              <div class="form-title">企业经营地址</div>
+              <div class="form-title">公司经营地址</div>
               <div
                 class="picker"
                 :class="{ active: merchantInfo.regionDesc }"
@@ -87,7 +87,7 @@
               </Popup>
             </div>
             <div class="form-item">
-              <div class="form-title">企业地址详情</div>
+              <div class="form-title">公司地址详情</div>
               <input
                 class="input"
                 v-model="merchantInfo.addressDetail"
@@ -96,7 +96,7 @@
               />
             </div>
             <div class="form-item">
-              <div class="form-title">请点击上传企业营业执照照片</div>
+              <div class="form-title">请点击上传公司营业执照照片</div>
               <div class="uploader-wrap">
                 <Uploader
                   max-count="1"
@@ -385,7 +385,7 @@
           </p>
           <p>
             4.
-            商家缴纳的保证金将冻结在商家的小鱼游企业账户中，在冻结期内保证金不产生利息，小鱼游不开具发票。
+            商家缴纳的保证金将冻结在商家的小鱼游公司账户中，在冻结期内保证金不产生利息，小鱼游不开具发票。
           </p>
           <p>
             5.
@@ -492,7 +492,7 @@ const nextStep = () => {
       break;
     case 1:
       if (!merchantInfo.companyName) {
-        showToast("请输入企业名称");
+        showToast("请输入公司名称");
         return;
       }
       if (!merchantInfo.regionCodeList) {
