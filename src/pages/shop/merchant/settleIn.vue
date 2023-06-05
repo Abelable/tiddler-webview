@@ -811,6 +811,10 @@ const nextStep = () => {
       break;
 
     case 3:
+      if (!merchantInfo.shopAvatar.length) {
+        showToast("请上传店铺头像");
+        return;
+      }
       if (!merchantInfo.shopName) {
         showToast("请输入店铺名称");
         return;
@@ -834,7 +838,12 @@ const setStatusInfo = async () => {
 
 const submit = async () => {
   try {
-    await uploadMerchantInfo(merchantInfo);
+    const { shopAvatar, shopCover, ...rest } = merchantInfo;
+    await uploadMerchantInfo({
+      shopAvatar: shopAvatar[0].url as string,
+      shopCover: shopCover.length ? (shopCover[0].url as string) : "",
+      ...rest,
+    });
     setStatusInfo();
   } catch (error) {
     showToast("审核提交失败，请重试");

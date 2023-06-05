@@ -1,7 +1,11 @@
 import { http } from "@/utils/http";
-import { MerchantInfo, MerchantStatusInfo, ShopCategoryOption } from "./type";
+import {
+  CreateMerchantInfo,
+  MerchantStatusInfo,
+  ShopCategoryOption,
+} from "./type";
 
-export const uploadMerchantInfo = async (info: MerchantInfo) =>
+export const uploadMerchantInfo = async (info: CreateMerchantInfo) =>
   await http("shop/merchant/settle_in", { method: "POST", data: info });
 
 export const getShopCategoryOptions = async (): Promise<ShopCategoryOption[]> =>

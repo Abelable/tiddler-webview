@@ -29,6 +29,12 @@ export interface MerchantInfo {
   shopCover: UploaderFileListItem[];
 }
 
+export interface CreateMerchantInfo
+  extends Omit<MerchantInfo, "shopAvatar" | "shopCover"> {
+  shopAvatar: string;
+  shopCover?: string;
+}
+
 export interface ShopCategoryOption {
   id: number;
   name: string;
