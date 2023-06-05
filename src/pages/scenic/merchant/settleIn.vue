@@ -2,40 +2,21 @@
   <div class="container">
     <div class="settle-in" v-if="!statusInfo">
       <div class="home" v-if="step === 0">
-        <div class="main">
-          <div class="title">商家入驻</div>
-          <div class="sub-title">请选择店铺类型:</div>
-          <div class="selection">
-            <div
-              class="option"
-              :class="{ selected: merchantInfo.type === index + 1 }"
-              v-for="(item, index) in ['personal', 'enterprise']"
-              :key="index"
-              @click="merchantInfo.type = index + 1"
+        <div class="title">景区服务商入驻</div>
+        <div
+          class="btn confirm"
+          :class="{ active: agreementsChecked }"
+          @click="nextStep"
+        >
+          下一步
+        </div>
+        <div class="agreements">
+          <Checkbox v-model="agreementsChecked" icon-size="16px" />
+          <div style="margin-left: 0.1rem">
+            我已阅读并同意
+            <span style="color: #1b89fa" @click="checkAgreement"
+              >《小鱼游景区服务商服务协议》</span
             >
-              <img class="icon" :src="require(`./images/${item}.png`)" alt="" />
-              <div class="name">
-                {{ item === "enterprise" ? "企业店铺" : "个人店铺" }}
-              </div>
-            </div>
-          </div>
-          <div class="btn-wrap">
-            <div
-              class="btn confirm"
-              :class="{ active: agreementsChecked }"
-              @click="nextStep"
-            >
-              下一步
-            </div>
-            <div class="agreements">
-              <Checkbox v-model="agreementsChecked" icon-size="16px" />
-              <div style="margin-left: 0.1rem">
-                我已阅读并同意
-                <span style="color: #1b89fa" @click="checkAgreement"
-                  >《小鱼游商家服务协议》</span
-                >
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -814,6 +795,7 @@ const setCategoryOptions = async () => {
 
 const setStatusInfo = async () => {
   statusInfo.value = await getMerchantStatusInfo();
+  statusInfo.value = undefined;
 };
 
 const submit = async () => {
@@ -915,80 +897,35 @@ const back = () => {
     .home {
       display: flex;
       flex-direction: column;
-      padding-top: 3.5rem;
+      align-items: center;
+      justify-content: center;
       height: 100vh;
+      font-size: 0;
       background-color: #fff;
-      background-image: url("./images/bg.jpeg");
-      background-size: 100% 5.62rem;
-      background-position-y: -1rem;
-      background-repeat: no-repeat;
-      .main {
-        position: relative;
-        padding: 0.32rem;
-        flex: 1;
-        background: #fff;
-        border-radius: 0.24rem 0.24rem 0 0;
-        .title {
-          color: #333;
-          font-size: 0.5rem;
-          font-weight: 550;
+      .title {
+        color: #333;
+        font-size: 0.5rem;
+        font-weight: 550;
+      }
+      .home-illus {
+        margin-top: 0.36rem;
+        width: 6.86rem;
+        border-radius: 0.2rem;
+      }
+      .confirm {
+        margin-top: 0.68rem;
+        width: 6.86rem;
+        color: #fff;
+        background: #e6e6e6;
+        &.active {
+          background: #212121;
         }
-        .sub-title {
-          margin-top: 0.1rem;
-          color: #666;
-          font-size: 0.28rem;
-          font-weight: 500;
-        }
-        .selection {
-          display: flex;
-          justify-content: space-between;
-          margin-top: 0.8rem;
-          .option {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 0.24rem;
-            width: 3.3rem;
-            border-radius: 0.24rem;
-            border: 1px solid #eee;
-            &.selected {
-              border: 1px solid #1b89fa;
-            }
-            .icon {
-              margin: 1rem 0;
-              width: 1.2rem;
-              height: 1.2rem;
-              opacity: 0.8;
-            }
-            .name {
-              margin-top: 0.24rem;
-              color: #333;
-              font-size: 0.28rem;
-              font-weight: 550;
-            }
-          }
-        }
-        .btn-wrap {
-          position: absolute;
-          left: 0;
-          bottom: 0;
-          padding: 0 0.32rem 0.48rem;
-          width: 100%;
-          .confirm {
-            margin-top: 1.6rem;
-            color: #fff;
-            background: #e6e6e6;
-            &.active {
-              background: #212121;
-            }
-          }
-          .agreements {
-            display: flex;
-            justify-content: center;
-            margin-top: 0.24rem;
-            font-size: 0.24rem;
-          }
-        }
+      }
+      .agreements {
+        display: flex;
+        justify-content: center;
+        margin-top: 0.24rem;
+        font-size: 0.24rem;
       }
     }
     .information-filling {
