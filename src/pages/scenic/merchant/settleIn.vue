@@ -438,7 +438,7 @@ interface RegionOption {
 
 const router = useRouter();
 
-const step = ref(0);
+const step = ref(3);
 const agreementsChecked = ref(false);
 const merchantInfo = reactive<ProviderInfo>({
   companyName: "",
@@ -469,6 +469,7 @@ const uploadBusinessLicensePhotoLoading = ref(false);
 const categoryOptions = [
   { id: 1, name: "景区官方" },
   { id: 2, name: "旅行社" },
+  { id: 3, name: "平台自营" },
 ];
 const categoryPickerPopupVisible = ref(false);
 const pickedCategoryDesc = ref("");
