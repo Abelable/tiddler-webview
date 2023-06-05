@@ -606,7 +606,6 @@ const nextStep = () => {
 
 const setStatusInfo = async () => {
   statusInfo.value = await getProviderStatusInfo();
-  statusInfo.value = undefined;
 };
 
 const submit = async () => {
