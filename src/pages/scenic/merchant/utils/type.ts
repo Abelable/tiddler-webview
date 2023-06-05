@@ -1,3 +1,5 @@
+import { UploaderFileListItem } from "vant";
+
 export interface ProviderInfo {
   companyName: string;
   businessLicensePhoto: string;
@@ -14,10 +16,10 @@ export interface ProviderInfo {
   bankCardOwnerName: string;
   bankCardNumber: string;
   bankName: string;
-  shopAvatar: string;
+  shopAvatar: UploaderFileListItem[];
   shopName: string;
   shopType: number;
-  shopCover: string;
+  shopCover: UploaderFileListItem[];
 }
 
 export interface ShopTypeOption {

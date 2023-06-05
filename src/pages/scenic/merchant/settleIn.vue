@@ -60,7 +60,7 @@
               <div class="form-title">公司名称</div>
               <input
                 class="input"
-                v-model="merchantInfo.companyName"
+                v-model="providerInfo.companyName"
                 type="text"
                 placeholder="请输入公司名称"
               />
@@ -69,10 +69,10 @@
               <div class="form-title">公司经营地址</div>
               <div
                 class="picker"
-                :class="{ active: merchantInfo.regionDesc }"
+                :class="{ active: providerInfo.regionDesc }"
                 @click="areaPickerPopupVisible = true"
               >
-                {{ merchantInfo.regionDesc || "请选择省、市、区" }}
+                {{ providerInfo.regionDesc || "请选择省、市、区" }}
               </div>
               <Popup
                 v-model:show="areaPickerPopupVisible"
@@ -90,7 +90,7 @@
               <div class="form-title">公司地址详情</div>
               <input
                 class="input"
-                v-model="merchantInfo.addressDetail"
+                v-model="providerInfo.addressDetail"
                 type="text"
                 placeholder="请输入详细地址"
               />
@@ -106,16 +106,16 @@
                     class="photo"
                     v-if="
                       !uploadBusinessLicensePhotoLoading &&
-                      merchantInfo.businessLicensePhoto
+                      providerInfo.businessLicensePhoto
                     "
-                    :src="merchantInfo.businessLicensePhoto"
+                    :src="providerInfo.businessLicensePhoto"
                     alt=""
                   />
                   <div
                     class="default-img"
                     v-if="
                       !uploadBusinessLicensePhotoLoading &&
-                      !merchantInfo.businessLicensePhoto
+                      !providerInfo.businessLicensePhoto
                     "
                   >
                     <div class="img-wrap">
@@ -146,7 +146,7 @@
               <div class="form-title">姓名</div>
               <input
                 class="input"
-                v-model="merchantInfo.name"
+                v-model="providerInfo.name"
                 type="text"
                 placeholder="例：小明"
               />
@@ -155,7 +155,7 @@
               <div class="form-title">手机号</div>
               <input
                 class="input"
-                v-model="merchantInfo.mobile"
+                v-model="providerInfo.mobile"
                 type="tel"
                 placeholder="请输入手机号"
               />
@@ -164,7 +164,7 @@
               <div class="form-title">电子邮箱</div>
               <input
                 class="input"
-                v-model="merchantInfo.email"
+                v-model="providerInfo.email"
                 type="email"
                 placeholder="请输入电子邮箱"
               />
@@ -173,7 +173,7 @@
               <div class="form-title">身份证号</div>
               <input
                 class="input"
-                v-model="merchantInfo.idCardNumber"
+                v-model="providerInfo.idCardNumber"
                 type="text"
                 placeholder="请输入18位身份证号"
               />
@@ -186,7 +186,7 @@
                     class="photo"
                     v-if="!uploadIdCardFrontPhotoLoading"
                     :src="
-                      merchantInfo.idCardFrontPhoto ||
+                      providerInfo.idCardFrontPhoto ||
                       require('./images/front.png')
                     "
                     alt=""
@@ -203,7 +203,7 @@
                     class="photo"
                     v-if="!uploadIdCardBackPhotoLoading"
                     :src="
-                      merchantInfo.idCardBackPhoto ||
+                      providerInfo.idCardBackPhoto ||
                       require('./images/behind.png')
                     "
                     alt=""
@@ -222,16 +222,16 @@
                     class="photo"
                     v-if="
                       !uploadHoldIdCardPhotoLoading &&
-                      merchantInfo.holdIdCardPhoto
+                      providerInfo.holdIdCardPhoto
                     "
-                    :src="merchantInfo.holdIdCardPhoto"
+                    :src="providerInfo.holdIdCardPhoto"
                     alt=""
                   />
                   <div
                     class="default-img"
                     v-if="
                       !uploadHoldIdCardPhotoLoading &&
-                      !merchantInfo.holdIdCardPhoto
+                      !providerInfo.holdIdCardPhoto
                     "
                   >
                     <div class="img-wrap">
@@ -257,7 +257,7 @@
               <div class="form-title">持卡人姓名</div>
               <input
                 class="input"
-                v-model="merchantInfo.bankCardOwnerName"
+                v-model="providerInfo.bankCardOwnerName"
                 type="text"
                 placeholder="例：小明"
               />
@@ -266,7 +266,7 @@
               <div class="form-title">银行账号</div>
               <input
                 class="input"
-                v-model="merchantInfo.bankCardNumber"
+                v-model="providerInfo.bankCardNumber"
                 type="tel"
                 placeholder="例：622123456789012345"
               />
@@ -275,7 +275,7 @@
               <div class="form-title">开户银行及支行名称</div>
               <input
                 class="input"
-                v-model="merchantInfo.bankName"
+                v-model="providerInfo.bankName"
                 type="text"
                 placeholder="例：中国招商银行城西支行"
               />
@@ -284,10 +284,19 @@
           <div class="form-wrap" v-show="step === 3">
             <div class="title">店铺信息</div>
             <div class="form-item">
+              <div class="form-title">店铺头像</div>
+              <Uploader
+                v-model="providerInfo.shopAvatar"
+                :after-read="uploadFile"
+                style="margin-top: 0.32rem"
+                max-count="1"
+              />
+            </div>
+            <div class="form-item">
               <div class="form-title">店铺名称</div>
               <input
                 class="input"
-                v-model="merchantInfo.shopName"
+                v-model="providerInfo.shopName"
                 type="text"
                 placeholder="例：小明的店"
               />
@@ -427,6 +436,7 @@ import {
   payProviderDeposit,
 } from "./utils/api";
 
+import type { UploaderFileListItem } from "vant";
 import type { UploaderAfterRead } from "vant/lib/uploader/types";
 import type { ProviderInfo, ProviderStatusInfo } from "./utils/type";
 import { ShopTypeOption } from "./utils/type";
@@ -440,7 +450,7 @@ const router = useRouter();
 
 const step = ref(3);
 const agreementsChecked = ref(false);
-const merchantInfo = reactive<ProviderInfo>({
+const providerInfo = reactive<ProviderInfo>({
   companyName: "",
   businessLicensePhoto: "",
   regionDesc: "",
@@ -456,10 +466,10 @@ const merchantInfo = reactive<ProviderInfo>({
   bankCardOwnerName: "",
   bankCardNumber: "",
   bankName: "",
-  shopAvatar: "",
+  shopAvatar: [],
   shopName: "",
   shopType: 0,
-  shopCover: "",
+  shopCover: [],
 });
 const areaPickerPopupVisible = ref(false);
 const uploadIdCardFrontPhotoLoading = ref(false);
@@ -489,60 +499,60 @@ const nextStep = () => {
       step.value = 1;
       break;
     case 1:
-      if (!merchantInfo.companyName) {
+      if (!providerInfo.companyName) {
         showToast("请输入公司名称");
         return;
       }
-      if (!merchantInfo.regionCodeList) {
+      if (!providerInfo.regionCodeList) {
         showToast("请选择省市区");
         return;
       }
-      if (!merchantInfo.addressDetail) {
+      if (!providerInfo.addressDetail) {
         showToast("请输入详细地址");
         return;
       }
-      if (!merchantInfo.businessLicensePhoto) {
+      if (!providerInfo.businessLicensePhoto) {
         showToast("请上传营业执照照片");
         return;
       }
-      if (!merchantInfo.name) {
+      if (!providerInfo.name) {
         showToast("请输入法人姓名");
         return;
       }
       if (
-        !merchantInfo.mobile ||
-        !/^1[345789][0-9]{9}$/.test(merchantInfo.mobile)
+        !providerInfo.mobile ||
+        !/^1[345789][0-9]{9}$/.test(providerInfo.mobile)
       ) {
         showToast("请输入正确手机号");
         return;
       }
       if (
-        !merchantInfo.email ||
+        !providerInfo.email ||
         !/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(
-          merchantInfo.email
+          providerInfo.email
         )
       ) {
         showToast("请输入正确电子邮箱");
         return;
       }
       if (
-        !merchantInfo.idCardNumber ||
+        !providerInfo.idCardNumber ||
         !/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(
-          merchantInfo.idCardNumber
+          providerInfo.idCardNumber
         )
       ) {
         showToast("请输入正确身份证号");
         return;
       }
-      if (!merchantInfo.idCardFrontPhoto) {
+      if (!providerInfo.idCardFrontPhoto) {
         showToast("请上传身份证正面照片");
         return;
       }
-      if (!merchantInfo.idCardBackPhoto) {
+      if (!providerInfo.idCardBackPhoto) {
         showToast("请上传身份证反面照片");
         return;
       }
-      if (!merchantInfo.holdIdCardPhoto) {
+      if (!providerInfo.holdIdCardPhoto) {
         showToast("请上传手持身份证照片");
         return;
       }
@@ -550,18 +560,18 @@ const nextStep = () => {
       break;
 
     case 2:
-      if (!merchantInfo.bankCardOwnerName) {
+      if (!providerInfo.bankCardOwnerName) {
         showToast("请输入持卡人姓名");
         return;
       }
       if (
-        !merchantInfo.bankCardNumber ||
-        !/^([1-9]{1})(\d{15}|\d{16}|\d{18})$/.test(merchantInfo.bankCardNumber)
+        !providerInfo.bankCardNumber ||
+        !/^([1-9]{1})(\d{15}|\d{16}|\d{18})$/.test(providerInfo.bankCardNumber)
       ) {
         showToast("请输入正确银行卡号");
         return;
       }
-      if (!merchantInfo.bankName) {
+      if (!providerInfo.bankName) {
         showToast("请输入开户银行及支行名称");
         return;
       }
@@ -569,11 +579,11 @@ const nextStep = () => {
       break;
 
     case 3:
-      if (!merchantInfo.shopName) {
+      if (!providerInfo.shopName) {
         showToast("请输入店铺名称");
         return;
       }
-      if (!merchantInfo.shopType) {
+      if (!providerInfo.shopType) {
         showToast("请选择店铺类型");
         return;
       }
@@ -589,7 +599,7 @@ const setStatusInfo = async () => {
 
 const submit = async () => {
   try {
-    await uploadProviderInfo(merchantInfo);
+    await uploadProviderInfo(providerInfo);
     setStatusInfo();
   } catch (error) {
     showToast("审核提交失败，请重试");
@@ -603,30 +613,42 @@ const areaConfirm = ({
   selectedValues: string[];
   selectedOptions: RegionOption[];
 }) => {
-  merchantInfo.regionCodeList = JSON.stringify(selectedValues);
-  merchantInfo.regionDesc = `${selectedOptions[0].text} ${selectedOptions[1].text} ${selectedOptions[2].text}`;
+  providerInfo.regionCodeList = JSON.stringify(selectedValues);
+  providerInfo.regionDesc = `${selectedOptions[0].text} ${selectedOptions[1].text} ${selectedOptions[2].text}`;
   areaPickerPopupVisible.value = false;
 };
 
 const uploadIdCardFrontPhoto = (async ({ file }: { file: File }) => {
   uploadIdCardFrontPhotoLoading.value = true;
-  merchantInfo.idCardFrontPhoto = await upload(file);
+  providerInfo.idCardFrontPhoto = await upload(file);
   uploadIdCardFrontPhotoLoading.value = false;
 }) as UploaderAfterRead;
 const uploadIdCardBackPhoto = (async ({ file }: { file: File }) => {
   uploadIdCardBackPhotoLoading.value = true;
-  merchantInfo.idCardBackPhoto = await upload(file);
+  providerInfo.idCardBackPhoto = await upload(file);
   uploadIdCardBackPhotoLoading.value = false;
 }) as UploaderAfterRead;
 const uploadHoldIdCardPhoto = (async ({ file }: { file: File }) => {
   uploadHoldIdCardPhotoLoading.value = true;
-  merchantInfo.holdIdCardPhoto = await upload(file);
+  providerInfo.holdIdCardPhoto = await upload(file);
   uploadHoldIdCardPhotoLoading.value = false;
 }) as UploaderAfterRead;
 const uploadBusinessLicensePhoto = (async ({ file }: { file: File }) => {
   uploadBusinessLicensePhotoLoading.value = true;
-  merchantInfo.businessLicensePhoto = await upload(file);
+  providerInfo.businessLicensePhoto = await upload(file);
   uploadBusinessLicensePhotoLoading.value = false;
+}) as UploaderAfterRead;
+
+const uploadFile = (async (file: UploaderFileListItem) => {
+  file.status = "uploading";
+  file.message = "上传中...";
+  try {
+    file.url = await upload(file.file as File);
+    file.status = "done";
+  } catch (error) {
+    file.status = "failed";
+    file.message = "上传失败";
+  }
 }) as UploaderAfterRead;
 
 const categoryConfirm = ({
@@ -636,7 +658,7 @@ const categoryConfirm = ({
   selectedValues: number[];
   selectedOptions: ShopTypeOption[];
 }) => {
-  merchantInfo.shopType = selectedValues[0];
+  providerInfo.shopType = selectedValues[0];
   pickedCategoryDesc.value = selectedOptions[0].name;
   categoryPickerPopupVisible.value = false;
 };
