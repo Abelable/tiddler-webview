@@ -672,7 +672,7 @@ const checkAgreement = () => router.push("/scenic/agreements/merchant_service");
 
 const pay = async () => {
   if (statusInfo.value) {
-    const payParams = await payProviderDeposit(statusInfo.value.id);
+    const payParams = await payProviderDeposit(statusInfo.value.orderId);
     Object.keys(payParams).forEach(
       (key) => (payParams[key] = encodeURIComponent(payParams[key]))
     );

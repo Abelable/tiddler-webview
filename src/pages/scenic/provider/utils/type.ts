@@ -35,7 +35,7 @@ export interface ShopTypeOption {
 
 export interface ProviderStatusInfo {
   id: number;
-  type: number;
   status: number;
   failureReason: string;
+  orderId: number;
 }

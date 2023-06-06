@@ -45,4 +45,5 @@ export interface MerchantStatusInfo {
   type: number;
   status: number;
   failureReason: string;
+  orderId: number;
 }
