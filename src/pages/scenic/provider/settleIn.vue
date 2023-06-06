@@ -383,9 +383,7 @@
       <div class="payment" v-else>
         <div class="title">审核通过</div>
         <div class="pay-amount">
-          缴纳保证金：<span style="color: #eaab63"
-            >{{ statusInfo.type === 1 ? 1000 : 10000 }}元</span
-          >
+          缴纳保证金：<span style="color: #eaab63">10000元</span>
         </div>
         <div class="agreement">
           <p>缴纳保证金默认接受以下条款:</p>
