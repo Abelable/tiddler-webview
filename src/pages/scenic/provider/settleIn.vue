@@ -447,7 +447,7 @@ import {
 
 import type { UploaderAfterRead } from "vant/lib/uploader/types";
 import type { ProviderInfo, ProviderStatusInfo } from "./utils/type";
-import { ShopTypeOption } from "./utils/type";
+import { CreateProviderInfo, ShopTypeOption } from "./utils/type";
 interface RegionOption {
   text: string;
   value: string;
@@ -611,11 +611,14 @@ const setStatusInfo = async () => {
 const submit = async () => {
   try {
     const { shopAvatar, shopCover, ...rest } = providerInfo;
-    await uploadProviderInfo({
+    const createProviderInfo: CreateProviderInfo = {
       shopAvatar: shopAvatar[0].url as string,
-      shopCover: shopCover.length ? (shopCover[0].url as string) : "",
       ...rest,
-    });
+    };
+    if (shopCover.length) {
+      createProviderInfo.shopCover = shopCover[0].url;
+    }
+    await uploadProviderInfo(createProviderInfo);
     setStatusInfo();
   } catch (error) {
     showToast("审核提交失败，请重试");
