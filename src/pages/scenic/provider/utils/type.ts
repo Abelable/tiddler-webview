@@ -39,3 +39,12 @@ export interface ProviderStatusInfo {
   failureReason: string;
   orderId: number;
 }
+
+export interface ProviderScenicSpot {
+  id: number;
+  status: number;
+  failureReason: string;
+  scenicId: number;
+  scenicImage: string;
+  scenicName: string;
+}
