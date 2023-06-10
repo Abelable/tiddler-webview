@@ -111,6 +111,12 @@
           />
         </template>
       </SwipeCell>
+
+      <Empty
+        v-if="!spotLists[curMenuIndex].length"
+        style="margin-top: 1rem"
+        description="暂无景点列表"
+      />
     </List>
   </PullRefresh>
 
@@ -123,7 +129,6 @@
     />
   </Popup>
 
-  <Empty v-if="!spotLists[curMenuIndex].length" description="暂无景点列表" />
   <button class="add-btn" @click="scenicPickerPopupVisible = true">
     添加景点
   </button>
