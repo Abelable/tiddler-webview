@@ -214,8 +214,16 @@ const setSpotLists = async (init = false) => {
   refreshing.value = false;
 };
 
-const selectScenic = ({ selectedValues }: { selectedValues: number[] }) => {
-  applyScenicSpot(selectedValues[0]);
+const selectScenic = async ({
+  selectedValues,
+}: {
+  selectedValues: number[];
+}) => {
+  try {
+    await applyScenicSpot(selectedValues[0]);
+  } catch (error) {
+    showToast((error as { code: number; message: string }).message);
+  }
   scenicPickerPopupVisible.value = false;
 };
 
