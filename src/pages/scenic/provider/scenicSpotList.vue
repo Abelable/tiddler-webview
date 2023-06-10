@@ -1,32 +1,127 @@
 <template>
-  <div class="address-list">
-    <SwipeCell v-for="(item, index) in spotList" :key="index">
-      <div class="address row" @click="editAddress(item.id)">
-        <Icon name="location-o" size="0.32rem" />
-        <div class="content">
-          <div class="row">
-            <div class="name">{{ item.scenicName }}</div>
+  <ul class="menu-list">
+    <li
+      class="menu-item"
+      :class="{ selected: curMenuIndex === index }"
+      v-for="(item, index) in menuList"
+      :key="index"
+      @click="selectMenu(index)"
+    >
+      {{ item.name }}
+    </li>
+  </ul>
+
+  <PullRefresh class="container" v-model="refreshing" @refresh="onRefresh">
+    <div class="warning-tips" v-show="curMenuIndex === 1">
+      温馨提示：审核时间是3个工作日
+    </div>
+    <List
+      class="address-list"
+      v-model="loading"
+      :finished="finished"
+      @load="onLoadMore"
+      :finished-text="spotLists[curMenuIndex].length ? '没有更多了' : ''"
+    >
+      <SwipeCell
+        class="address-item"
+        v-for="(item, index) in spotLists[0]"
+        :key="index"
+        v-show="curMenuIndex === 0"
+      >
+        <div class="inner">
+          <img class="image" :src="item.scenicImage" alt="" />
+          <div class="content">
+            <div class="name-wrap">
+              <div class="name">{{ item.scenicName }}</div>
+              <div class="level">{{ item.scenicLevel }}</div>
+            </div>
+            <div class="address row">
+              <Icon name="location-o" size="0.24rem" />
+              <div>{{ item.scenicAddress }}</div>
+            </div>
           </div>
         </div>
-        <Icon name="edit" size="0.32rem" />
-      </div>
-      <template #right>
-        <Button
-          class="delete-btn"
-          @click.stop="deleteTempalte(index)"
-          square
-          text="删除"
-          type="danger"
-        />
-      </template>
-    </SwipeCell>
-  </div>
-  <Empty v-if="!spotList.length" description="暂无景点列表" />
-  <button class="add-btn" @click="addAddress">新增退货地址</button>
+        <template #right>
+          <Button
+            class="delete-btn"
+            @click.stop="deleteSpot(index)"
+            square
+            text="删除"
+            type="danger"
+          />
+        </template>
+      </SwipeCell>
+
+      <SwipeCell
+        class="address-item"
+        v-for="(item, index) in spotLists[0]"
+        :key="index"
+        v-show="curMenuIndex === 1"
+      >
+        <div class="inner">
+          <img class="image" :src="item.scenicImage" alt="" />
+          <div class="content">
+            <div class="name-wrap">
+              <div class="name">{{ item.scenicName }}</div>
+              <div class="level">{{ item.scenicLevel }}</div>
+            </div>
+            <div class="time">
+              提交时间：{{
+                dayjs(item.createdAt).format("YYYY-MM-DD HH:mm:ss")
+              }}
+            </div>
+          </div>
+        </div>
+        <template #right>
+          <Button
+            class="delete-btn"
+            @click.stop="deleteSpot(index)"
+            square
+            text="删除"
+            type="danger"
+          />
+        </template>
+      </SwipeCell>
+
+      <SwipeCell
+        class="address-item"
+        v-for="(item, index) in spotLists[0]"
+        :key="index"
+        v-show="curMenuIndex === 2"
+      >
+        <div class="inner">
+          <img class="image" :src="item.scenicImage" alt="" />
+          <div class="content">
+            <div class="name-wrap">
+              <div class="name">{{ item.scenicName }}</div>
+              <div class="level">{{ item.scenicLevel }}</div>
+            </div>
+            <div class="failure-reason">
+              未通过原因：{{ item.failureReason }}
+            </div>
+          </div>
+        </div>
+        <template #right>
+          <Button
+            class="delete-btn"
+            @click.stop="deleteSpot(index)"
+            square
+            text="删除"
+            type="danger"
+          />
+        </template>
+      </SwipeCell>
+    </List>
+  </PullRefresh>
+
+  <Empty v-if="!spotLists[curMenuIndex].length" description="暂无景点列表" />
+  <button class="add-btn" @click="addAddress">添加景点</button>
 </template>
 
 <script setup lang="ts">
 import {
+  PullRefresh,
+  List,
   SwipeCell,
   Button,
   Icon,
@@ -34,8 +129,9 @@ import {
   Empty,
   showToast,
 } from "vant";
-import { ref, onMounted } from "vue";
+import { ref, reactive } from "vue";
 import { useRouter } from "vue-router";
+import dayjs from "dayjs";
 import {
   getProviderScenicSpotList,
   deleteProviderScenicSpot,
@@ -45,25 +141,67 @@ import type { ProviderScenicSpot } from "./utils/type";
 
 const router = useRouter();
 
-const spotList = ref<ProviderScenicSpot[]>([]);
+const loading = ref(false);
+const finished = ref(false);
+const refreshing = ref(false);
+const menuList = ref([
+  {
+    name: "已过审",
+    status: 1,
+    total: 0,
+  },
+  {
+    name: "审核中",
+    status: 0,
+    total: 0,
+  },
+  {
+    name: "未过审",
+    status: 2,
+    total: 0,
+  },
+]);
+const curMenuIndex = ref(0);
+const spotLists = reactive<ProviderScenicSpot[][]>([[], [], []]);
+const pageList = [0, 0, 0];
 
-onMounted(async () => {
-  spotList.value = await getProviderScenicSpotList();
-});
+const onRefresh = () => {
+  setSpotLists(true);
+};
 
-const addAddress = () => router.push("/shop/goods_return_address/create");
-const editAddress = (id: number) =>
-  router.push({
-    path: "/shop/goods_return_address/edit",
-    query: { id },
-  });
+const onLoadMore = () => setSpotLists();
 
-const deleteTempalte = (index: number) =>
-  showConfirmDialog({ title: "确定删除该退货地址吗？" })
+const selectMenu = (index: number) => {
+  curMenuIndex.value = index;
+};
+
+const setSpotLists = async (init = false) => {
+  if (init) {
+    pageList[curMenuIndex.value] = 0;
+    finished.value = false;
+  }
+  const list =
+    (await getProviderScenicSpotList(
+      menuList.value[curMenuIndex.value].status,
+      ++pageList[curMenuIndex.value]
+    )) || {};
+
+  spotLists[curMenuIndex.value] = init
+    ? list
+    : [...spotLists[curMenuIndex.value], ...list];
+  if (!list.length) finished.value = true;
+  loading.value = false;
+  refreshing.value = false;
+};
+
+const addAddress = () => router.push("/shop/spot_return_address/create");
+
+const deleteSpot = (index: number) =>
+  showConfirmDialog({ title: "确定删除景点吗？" })
     .then(async () => {
       try {
-        await deleteProviderScenicSpot(spotList.value[index].id);
-        spotList.value.splice(index, 1);
+        await deleteProviderScenicSpot(spotLists[curMenuIndex.value][index].id);
+        spotLists[curMenuIndex.value].splice(index, 1);
       } catch (error) {
         showToast("删除失败，请重试");
       }
@@ -85,36 +223,94 @@ const deleteTempalte = (index: number) =>
   display: flex;
   align-items: center;
 }
-.address-list {
-  padding-bottom: 1.52rem;
-  font-size: 0;
-  .address {
-    margin-bottom: 1px;
-    padding: 0 0.24rem;
-    height: 1.5rem;
-    background: #fff;
-    .content {
+.menu-list {
+  position: fixed;
+  width: 100%;
+  display: flex;
+  height: 0.88rem;
+  background: #fff;
+  z-index: 100;
+  .menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    height: 0.88rem;
+    color: #999;
+    font-size: 0.28rem;
+    text-align: center;
+    &.selected {
       position: relative;
-      padding: 0 0.2rem;
-      flex: 1;
-      .name,
-      .mobile {
-        color: #333;
-        font-size: 0.28rem;
-      }
-      .mobile {
-        margin-left: 0.2rem;
-      }
-      .detail {
-        margin-top: 0.2rem;
+      color: #333;
+      font-weight: 550;
+      &::after {
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        transform: translateX(-50%);
         width: 100%;
-        color: #666;
-        font-size: 0.26rem;
+        height: 0.05rem;
+        content: "";
+        background: #1b89fa;
       }
     }
   }
-  .delete-btn {
-    height: 100%;
+}
+.container {
+  padding: 0.88rem 0 1.52rem;
+  .warning-tips {
+    display: flex;
+    padding: 0.24rem;
+    color: #b97a01;
+    font-size: 0.24rem;
+    line-height: 1;
+    background: #fffaed;
+  }
+  .spot-list {
+    padding: 0.24rem;
+    .spot-item {
+      margin-bottom: 0.24rem;
+      border-radius: 0.24rem;
+      background: #fff;
+      .inner {
+        display: flex;
+        padding: 0.24rem;
+
+        .image {
+          width: 1.8rem;
+          height: 1.8rem;
+          border-radius: 0.24rem;
+        }
+        .content {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          margin-left: 0.2rem;
+          flex: 1;
+          height: 1.8rem;
+          .name {
+            color: #333;
+            font-size: 0.28rem;
+            font-weight: 500;
+          }
+          .price,
+          .sales-volume,
+          .time {
+            color: #666;
+            font-size: 0.26rem;
+          }
+          .failure-reason {
+            color: #fd0b0a;
+            font-size: 0.26rem;
+          }
+        }
+      }
+    }
+    .down-btn,
+    .up-btn,
+    .delete-btn {
+      height: 100%;
+    }
   }
 }
 .add-btn {

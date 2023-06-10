@@ -47,4 +47,8 @@ export interface ProviderScenicSpot {
   scenicId: number;
   scenicImage: string;
   scenicName: string;
+  scenicLevel: string;
+  scenicAddress: string;
+  createdAt: string;
+  updatedAt: string;
 }

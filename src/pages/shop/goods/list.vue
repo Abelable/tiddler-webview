@@ -188,21 +188,22 @@ onMounted(() => {
   setTotals();
 });
 
-const setTotals = async () => {
-  const totals = await getGoodsTotals();
-  totals.forEach((item, index) => (menuList.value[index].total = item));
+const onRefresh = () => {
+  setTotals();
+  setGoodsList(true);
 };
+
+const onLoadMore = () => setGoodsList();
 
 const selectMenu = (index: number) => {
   curMenuIndex.value = index;
   setGoodsList(true);
 };
 
-const onRefresh = () => {
-  setTotals();
-  setGoodsList(true);
+const setTotals = async () => {
+  const totals = await getGoodsTotals();
+  totals.forEach((item, index) => (menuList.value[index].total = item));
 };
-const onLoadMore = () => setGoodsList();
 
 const setGoodsList = async (init = false) => {
   if (init) {

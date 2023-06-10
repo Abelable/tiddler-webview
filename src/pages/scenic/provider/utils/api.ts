@@ -20,9 +20,17 @@ export const payProviderDeposit = async (orderId: number) =>
 export const deleteProvider = async () =>
   await http("scenic/provider/delete", { method: "POST" });
 
-export const getProviderScenicSpotList = async (): Promise<
-  ProviderScenicSpot[]
-> => await http("scenic/provider/scenic_list");
+export const getProviderScenicSpotList = async (
+  status: number,
+  page: number,
+  limit = 10
+): Promise<ProviderScenicSpot[]> => {
+  const { list = [] } =
+    (await http("scenic/provider/scenic_list", {
+      data: { status, page, limit },
+    })) || {};
+  return list;
+};
 
 export const deleteProviderScenicSpot = async (id: number) =>
   await http("scenic/provider/delete_scenic", { method: "POST", data: { id } });

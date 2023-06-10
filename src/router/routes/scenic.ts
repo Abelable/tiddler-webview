@@ -17,6 +17,14 @@ const scenic: Array<RouteRecordRaw> = [
     },
     component: () => import("@/pages/scenic/provider/settleIn.vue"),
   },
+  {
+    path: "/scenic/provider/scenic_spot_list",
+    name: "scenic_provider_settle_spot_list",
+    meta: {
+      title: "景点列表",
+    },
+    component: () => import("@/pages/scenic/provider/scenicSpotList.vue"),
+  },
 ];
 
 export default scenic;
