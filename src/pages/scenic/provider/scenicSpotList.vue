@@ -16,14 +16,14 @@
       温馨提示：审核时间是3个工作日
     </div>
     <List
-      class="address-list"
+      class="spot-list"
       v-model="loading"
       :finished="finished"
       @load="onLoadMore"
       :finished-text="spotLists[curMenuIndex].length ? '没有更多了' : ''"
     >
       <SwipeCell
-        class="address-item"
+        class="spot-item"
         v-for="(item, index) in spotLists[0]"
         :key="index"
         v-show="curMenuIndex === 0"
@@ -31,9 +31,9 @@
         <div class="inner">
           <img class="image" :src="item.scenicImage" alt="" />
           <div class="content">
-            <div class="name-wrap">
+            <div class="row">
               <div class="name">{{ item.scenicName }}</div>
-              <div class="level">{{ item.scenicLevel }}</div>
+              <div class="level row">{{ item.scenicLevel }}</div>
             </div>
             <div class="address row">
               <Icon name="location-o" size="0.24rem" />
@@ -53,7 +53,7 @@
       </SwipeCell>
 
       <SwipeCell
-        class="address-item"
+        class="spot-item"
         v-for="(item, index) in spotLists[1]"
         :key="index"
         v-show="curMenuIndex === 1"
@@ -61,9 +61,9 @@
         <div class="inner">
           <img class="image" :src="item.scenicImage" alt="" />
           <div class="content">
-            <div class="name-wrap">
+            <div class="row">
               <div class="name">{{ item.scenicName }}</div>
-              <div class="level">{{ item.scenicLevel }}</div>
+              <div class="level row">{{ item.scenicLevel }}</div>
             </div>
             <div class="time">
               提交时间：{{
@@ -84,7 +84,7 @@
       </SwipeCell>
 
       <SwipeCell
-        class="address-item"
+        class="spot-item"
         v-for="(item, index) in spotLists[2]"
         :key="index"
         v-show="curMenuIndex === 2"
@@ -92,9 +92,9 @@
         <div class="inner">
           <img class="image" :src="item.scenicImage" alt="" />
           <div class="content">
-            <div class="name-wrap">
+            <div class="row">
               <div class="name">{{ item.scenicName }}</div>
-              <div class="level">{{ item.scenicLevel }}</div>
+              <div class="level row">{{ item.scenicLevel }}</div>
             </div>
             <div class="failure-reason">
               未通过原因：{{ item.failureReason }}
@@ -316,8 +316,18 @@ const deleteSpot = (index: number) =>
             font-size: 0.28rem;
             font-weight: 500;
           }
-          .price,
-          .sales-volume,
+          .level {
+            margin-left: 0.08rem;
+            padding: 0 0.12rem;
+            height: 0.32rem;
+            color: #5dce86;
+            font-size: 0.2rem;
+            font-weight: bold;
+            line-height: 1;
+            border-radius: 0.08rem;
+            background: #d1f7e5;
+          }
+          .address,
           .time {
             color: #666;
             font-size: 0.26rem;
