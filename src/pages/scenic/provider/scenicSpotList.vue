@@ -7,7 +7,8 @@
       :key="index"
       @click="selectMenu(index)"
     >
-      {{ item.name }}
+      <div class="name">{{ item.name }}</div>
+      <div class="total">（{{ item.total }}）</div>
     </li>
   </ul>
 
@@ -129,9 +130,7 @@
     />
   </Popup>
 
-  <button class="add-btn" @click="scenicPickerPopupVisible = true">
-    添加景点
-  </button>
+  <button class="add-btn" @click="showScenicPickerPopup">添加景点</button>
 </template>
 
 <script setup lang="ts">
@@ -154,6 +153,7 @@ import {
   getProviderScenicSpotList,
   deleteProviderScenicSpot,
   applyScenicSpot,
+  getScenicListTotals,
 } from "./utils/api";
 
 import type { ProviderScenicSpot, ScenicOption } from "./utils/type";
@@ -165,14 +165,17 @@ const menuList = ref([
   {
     name: "已过审",
     status: 1,
+    total: 0,
   },
   {
     name: "审核中",
     status: 0,
+    total: 0,
   },
   {
     name: "未过审",
     status: 2,
+    total: 0,
   },
 ]);
 const curMenuIndex = ref(0);
@@ -182,10 +185,11 @@ const scenicOptions = ref<ScenicOption[]>([]);
 const scenicPickerPopupVisible = ref(false);
 
 onMounted(() => {
-  setScenicOptions();
+  setTotals();
 });
 
 const onRefresh = () => {
+  setTotals();
   setSpotLists(true);
 };
 
@@ -198,6 +202,11 @@ const selectMenu = (index: number) => {
 
 const setScenicOptions = async () => {
   scenicOptions.value = await getScenicOptions();
+};
+
+const setTotals = async () => {
+  const totals = await getScenicListTotals();
+  totals.forEach((item, index) => (menuList.value[index].total = item));
 };
 
 const setSpotLists = async (init = false) => {
@@ -219,6 +228,11 @@ const setSpotLists = async (init = false) => {
   refreshing.value = false;
 };
 
+const showScenicPickerPopup = async () => {
+  await setScenicOptions();
+  scenicPickerPopupVisible.value = true;
+};
+
 const selectScenic = async ({
   selectedValues,
 }: {
@@ -226,6 +240,7 @@ const selectScenic = async ({
 }) => {
   try {
     await applyScenicSpot(selectedValues[0]);
+    setTotals();
   } catch (error) {
     showToast((error as { code: number; message: string }).message);
   }
@@ -238,6 +253,7 @@ const deleteSpot = (index: number) =>
       try {
         await deleteProviderScenicSpot(spotLists[curMenuIndex.value][index].id);
         spotLists[curMenuIndex.value].splice(index, 1);
+        setTotals();
       } catch (error) {
         showToast("删除失败，请重试");
       }
@@ -275,10 +291,13 @@ const deleteSpot = (index: number) =>
     color: #999;
     font-size: 0.28rem;
     text-align: center;
+    .total {
+      margin-left: -0.1rem;
+      margin-right: -0.2rem;
+    }
     &.selected {
       position: relative;
       color: #333;
-      font-weight: 550;
       &::after {
         position: absolute;
         left: 50%;
@@ -288,6 +307,9 @@ const deleteSpot = (index: number) =>
         height: 0.05rem;
         content: "";
         background: #1b89fa;
+      }
+      .name {
+        font-weight: 550;
       }
     }
   }
