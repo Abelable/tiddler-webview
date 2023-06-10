@@ -40,6 +40,11 @@ export interface ProviderStatusInfo {
   orderId: number;
 }
 
+export interface ScenicOption {
+  id: number;
+  name: string;
+}
+
 export interface ProviderScenicSpot {
   id: number;
   status: number;

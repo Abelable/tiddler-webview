@@ -54,7 +54,7 @@
 
       <SwipeCell
         class="address-item"
-        v-for="(item, index) in spotLists[0]"
+        v-for="(item, index) in spotLists[1]"
         :key="index"
         v-show="curMenuIndex === 1"
       >
@@ -85,7 +85,7 @@
 
       <SwipeCell
         class="address-item"
-        v-for="(item, index) in spotLists[0]"
+        v-for="(item, index) in spotLists[2]"
         :key="index"
         v-show="curMenuIndex === 2"
       >
@@ -114,8 +114,19 @@
     </List>
   </PullRefresh>
 
+  <Popup v-model:show="scenicPickerPopupVisible" position="bottom" round>
+    <Picker
+      :columns="scenicOptions"
+      @confirm="selectScenic"
+      @cancel="scenicPickerPopupVisible = false"
+      :columns-field-names="{ text: 'name', value: 'id' }"
+    />
+  </Popup>
+
   <Empty v-if="!spotLists[curMenuIndex].length" description="暂无景点列表" />
-  <button class="add-btn" @click="addAddress">添加景点</button>
+  <button class="add-btn" @click="scenicPickerPopupVisible = true">
+    添加景点
+  </button>
 </template>
 
 <script setup lang="ts">
@@ -123,23 +134,24 @@ import {
   PullRefresh,
   List,
   SwipeCell,
+  Popup,
+  Picker,
   Button,
   Icon,
   showConfirmDialog,
   Empty,
   showToast,
 } from "vant";
-import { ref, reactive } from "vue";
-import { useRouter } from "vue-router";
+import { ref, reactive, onMounted } from "vue";
 import dayjs from "dayjs";
 import {
+  getScenicOptions,
   getProviderScenicSpotList,
   deleteProviderScenicSpot,
+  applyScenicSpot,
 } from "./utils/api";
 
-import type { ProviderScenicSpot } from "./utils/type";
-
-const router = useRouter();
+import type { ProviderScenicSpot, ScenicOption } from "./utils/type";
 
 const loading = ref(false);
 const finished = ref(false);
@@ -148,22 +160,25 @@ const menuList = ref([
   {
     name: "已过审",
     status: 1,
-    total: 0,
   },
   {
     name: "审核中",
     status: 0,
-    total: 0,
   },
   {
     name: "未过审",
     status: 2,
-    total: 0,
   },
 ]);
 const curMenuIndex = ref(0);
 const spotLists = reactive<ProviderScenicSpot[][]>([[], [], []]);
 const pageList = [0, 0, 0];
+const scenicOptions = ref<ScenicOption[]>([]);
+const scenicPickerPopupVisible = ref(false);
+
+onMounted(() => {
+  setScenicOptions();
+});
 
 const onRefresh = () => {
   setSpotLists(true);
@@ -173,6 +188,11 @@ const onLoadMore = () => setSpotLists();
 
 const selectMenu = (index: number) => {
   curMenuIndex.value = index;
+  setSpotLists(true);
+};
+
+const setScenicOptions = async () => {
+  scenicOptions.value = await getScenicOptions();
 };
 
 const setSpotLists = async (init = false) => {
@@ -194,7 +214,10 @@ const setSpotLists = async (init = false) => {
   refreshing.value = false;
 };
 
-const addAddress = () => router.push("/shop/spot_return_address/create");
+const selectScenic = ({ selectedValues }: { selectedValues: number[] }) => {
+  applyScenicSpot(selectedValues[0]);
+  scenicPickerPopupVisible.value = false;
+};
 
 const deleteSpot = (index: number) =>
   showConfirmDialog({ title: "确定删除景点吗？" })

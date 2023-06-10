@@ -3,6 +3,7 @@ import {
   CreateProviderInfo,
   ProviderStatusInfo,
   ProviderScenicSpot,
+  ScenicOption,
 } from "./type";
 
 export const uploadProviderInfo = async (info: CreateProviderInfo) =>
@@ -20,6 +21,9 @@ export const payProviderDeposit = async (orderId: number) =>
 export const deleteProvider = async () =>
   await http("scenic/provider/delete", { method: "POST" });
 
+export const getScenicOptions = async (): Promise<ScenicOption[]> =>
+  await http("scenic/options");
+
 export const getProviderScenicSpotList = async (
   status: number,
   page: number,
@@ -31,6 +35,12 @@ export const getProviderScenicSpotList = async (
     })) || {};
   return list;
 };
+
+export const applyScenicSpot = async (scenicId: number) =>
+  await http("scenic/provider/apply_scenic", {
+    method: "POST",
+    data: { scenicId },
+  });
 
 export const deleteProviderScenicSpot = async (id: number) =>
   await http("scenic/provider/delete_scenic", { method: "POST", data: { id } });
