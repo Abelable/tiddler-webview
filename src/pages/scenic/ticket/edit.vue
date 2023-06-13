@@ -210,6 +210,7 @@ const router = useRouter();
 const categoryOptions = ref<TicketCategoryOption[]>([]);
 const ticketInfo = reactive<TicketInfo>({
   id: 0,
+  type: undefined,
   name: "",
   price: undefined,
   marketPrice: undefined,
@@ -220,9 +221,7 @@ const ticketInfo = reactive<TicketInfo>({
 const specOptionModalVisible = ref(false);
 const curSpecIndex = ref(0);
 const specOptionName = ref("");
-const freightTemplatePickerPopupVisible = ref(false);
 const categoryPickerPopupVisible = ref(false);
-const returnAddressPickerPopupVisible = ref(false);
 const commissionRateTipsVisible = ref(false);
 const activeSkuNames = ref([0]);
 

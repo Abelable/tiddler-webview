@@ -4,6 +4,15 @@
     <div class="card">
       <ul class="form">
         <li class="form-item flex">
+          <div class="name required">门票类型</div>
+          <div class="picker" @click="typePickerPopupVisible = true">
+            <div class="content" :class="{ active: selectedTypeName }">
+              {{ selectedTypeName || "请选择门票类型" }}
+            </div>
+            <Icon name="arrow" />
+          </div>
+        </li>
+        <li class="form-item flex">
           <div class="name required">门票名称</div>
           <input
             class="input"
@@ -22,13 +31,13 @@
           </div>
         </li> -->
         <li class="form-item flex">
-          <div class="name required">店铺价格</div>
+          <div class="name required">起始价格</div>
           <input
             class="input"
             v-model="ticketInfo.price"
             type="number"
             step="0.01"
-            placeholder="请输入店铺价格"
+            placeholder="请输入起始价格"
           />
         </li>
         <li class="form-item flex">
@@ -152,6 +161,14 @@
 
   <button class="upload-btn" @click="save">点击上传</button>
 
+  <Popup v-model:show="typePickerPopupVisible" position="bottom" round>
+    <Picker
+      :columns="typeOptions"
+      @confirm="selectType"
+      @cancel="typePickerPopupVisible = false"
+    />
+  </Popup>
+
   <!-- <Popup v-model:show="categoryPickerPopupVisible" position="bottom" round>
     <Picker
       :columns="categoryOptions"
@@ -191,19 +208,25 @@ import {
 } from "vant";
 import { ref, reactive, watch, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import _ from "lodash";
+import _, { values } from "lodash";
 import { createTicket, getTicketCategoryOptions } from "./utils/api";
 
 import type {
-  TicketInfo,
+  TicketTypeOption,
   TicketCategoryOption,
+  TicketInfo,
   CreateTicketInfo,
 } from "./utils/type";
 
 const router = useRouter();
 
+const typeOptions = [
+  { text: "单景点门票", value: 1 },
+  { text: "多景点联票", value: 2 },
+];
 const categoryOptions = ref<TicketCategoryOption[]>([]);
 const ticketInfo = reactive<Omit<TicketInfo, "id">>({
+  type: undefined,
   name: "",
   price: undefined,
   marketPrice: undefined,
@@ -214,13 +237,15 @@ const ticketInfo = reactive<Omit<TicketInfo, "id">>({
 const specOptionModalVisible = ref(false);
 const curSpecIndex = ref(0);
 const specOptionName = ref("");
-const freightTemplatePickerPopupVisible = ref(false);
 const categoryPickerPopupVisible = ref(false);
-const returnAddressPickerPopupVisible = ref(false);
+const typePickerPopupVisible = ref(false);
 const salesCommissionRateTipsVisible = ref(false);
 const promotionCommissionRateTipsVisible = ref(false);
 
 // 计算属性
+const selectedTypeName = computed(
+  () => typeOptions.find((item) => item.value === ticketInfo.type)?.text
+);
 // const selectedCategoryName = computed(
 //   () =>
 //     categoryOptions.value.find((item) => item.id === ticketInfo.categoryId)
@@ -234,6 +259,10 @@ onMounted(() => {
 const setCategoryOptions = async () =>
   (categoryOptions.value = await getTicketCategoryOptions());
 
+const selectType = ({ selectedValues }: { selectedValues: number[] }) => {
+  ticketInfo.type = selectedValues[0];
+  typePickerPopupVisible.value = false;
+};
 // const selectCategory = ({ selectedValues }: { selectedValues: number[] }) => {
 //   ticketInfo.categoryId = selectedValues[0];
 //   categoryPickerPopupVisible.value = false;

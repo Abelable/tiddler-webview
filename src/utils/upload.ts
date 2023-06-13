@@ -3,7 +3,7 @@ import { getOssConfig } from "./api";
 
 import type { UploaderFileListItem } from "vant";
 import type { UploaderAfterRead } from "vant/lib/uploader/types";
-import type { OssConfig } from "./api";
+import type { OssConfig } from "./type";
 
 export const upload = async (file: File) => {
   let ossConfig: OssConfig;

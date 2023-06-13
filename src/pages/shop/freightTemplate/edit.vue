@@ -586,7 +586,7 @@ import {
   deleteFreightTemplate,
 } from "./utils/api";
 
-import type { Option } from "@/utils/region-options";
+import type { RegionOption as Option } from "@/utils/type";
 import type {
   RegionOption,
   ExpressOption,

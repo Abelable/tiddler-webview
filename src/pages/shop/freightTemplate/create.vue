@@ -580,7 +580,7 @@ import { useRouter } from "vue-router";
 import { getCityRegionOptions } from "@/utils/region-options";
 import { getExpressOptions, createFreightTemplate } from "./utils/api";
 
-import type { Option } from "@/utils/region-options";
+import type { RegionOption as Option } from "@/utils/type";
 import type {
   RegionOption,
   ExpressOption,

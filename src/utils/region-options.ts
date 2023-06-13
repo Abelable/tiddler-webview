@@ -2,22 +2,18 @@ import provinces from "china-division/dist/provinces.json";
 import cities from "china-division/dist/cities.json";
 import areas from "china-division/dist/areas.json";
 import _ from "lodash";
+import type { RegionOption } from "./type";
 
-export interface Option {
-  label: string;
-  value: string;
-  children?: Option[];
-}
 interface MatchCity {
   code: string;
   name: string;
   provinceCode: string;
-  children?: Option[];
+  children?: RegionOption[];
 }
 interface MatchProvince {
   code: string;
   name: string;
-  children?: Option[];
+  children?: RegionOption[];
 }
 
 export const getRegionOptions = () => {

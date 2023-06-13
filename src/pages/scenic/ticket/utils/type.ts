@@ -1,3 +1,8 @@
+export interface TicketTypeOption {
+  name: string;
+  value: number;
+}
+
 export interface TicketCategoryOption {
   id: number;
   name: string;
@@ -25,6 +30,7 @@ export interface SpecItem {
 }
 export interface OriginalTicketInfo {
   id: number;
+  type: number;
   name: string;
   price: number;
   marketPrice: number;
@@ -35,6 +41,7 @@ export interface OriginalTicketInfo {
 
 export interface TicketInfo {
   id: number;
+  type: number | undefined;
   name: string;
   price: number | undefined;
   marketPrice: number | undefined;
