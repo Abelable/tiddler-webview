@@ -121,9 +121,9 @@
     </List>
   </PullRefresh>
 
-  <Empty v-if="!ticketLists[curMenuIndex].length" description="暂无商品列表" />
+  <Empty v-if="!ticketLists[curMenuIndex].length" description="暂无门票列表" />
 
-  <button class="add-btn" @click="addTicket">添加商品</button>
+  <button class="add-btn" @click="addTicket">添加门票</button>
 </template>
 
 <script setup lang="ts">
@@ -221,7 +221,7 @@ const setTicketList = async (init = false) => {
 };
 
 const offShelf = (index: number) =>
-  showConfirmDialog({ title: "确定下架该商品吗？" })
+  showConfirmDialog({ title: "确定下架该门票吗？" })
     .then(async () => {
       try {
         await offShelfTicket(ticketLists[curMenuIndex.value][index].id);
@@ -235,7 +235,7 @@ const offShelf = (index: number) =>
     .catch(() => true);
 
 const onShelf = (index: number) =>
-  showConfirmDialog({ title: "确定上架该商品吗？" })
+  showConfirmDialog({ title: "确定上架该门票吗？" })
     .then(async () => {
       try {
         await onShelfTicket(ticketLists[curMenuIndex.value][index].id);
@@ -249,7 +249,7 @@ const onShelf = (index: number) =>
     .catch(() => true);
 
 const deleteCurTicket = (index: number) =>
-  showConfirmDialog({ title: "确定删除该商品吗？" })
+  showConfirmDialog({ title: "确定删除该门票吗？" })
     .then(async () => {
       try {
         await deleteTicket(ticketLists[curMenuIndex.value][index].id);

@@ -25,6 +25,30 @@ const scenic: Array<RouteRecordRaw> = [
     },
     component: () => import("@/pages/scenic/scenicSpot/list.vue"),
   },
+  {
+    path: "/scenic/ticket/list",
+    name: "ticket_list",
+    meta: {
+      title: "门票列表",
+    },
+    component: () => import("@/pages/scenic/ticket/list.vue"),
+  },
+  {
+    path: "/scenic/ticket/create",
+    name: "ticket_create",
+    meta: {
+      title: "新增门票",
+    },
+    component: () => import("@/pages/scenic/ticket/create.vue"),
+  },
+  {
+    path: "/scenic/ticket/edit",
+    name: "ticket_edit",
+    meta: {
+      title: "编辑门票",
+    },
+    component: () => import("@/pages/scenic/ticket/edit.vue"),
+  },
 ];
 
 export default scenic;
