@@ -198,16 +198,13 @@ import {
   getTicketInfo,
 } from "./utils/api";
 
-import type {
-  TicketInfo,
-  TicketCategoryOption,
-  EditTicketInfo,
-} from "./utils/type";
+import type { Option } from "@/utils/type";
+import type { TicketInfo, EditTicketInfo } from "./utils/type";
 
 const route = useRoute();
 const router = useRouter();
 
-const categoryOptions = ref<TicketCategoryOption[]>([]);
+const categoryOptions = ref<Option[]>([]);
 const ticketInfo = reactive<TicketInfo>({
   id: 0,
   type: undefined,

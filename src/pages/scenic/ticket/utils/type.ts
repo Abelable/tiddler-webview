@@ -1,13 +1,3 @@
-export interface TicketTypeOption {
-  name: string;
-  value: number;
-}
-
-export interface TicketCategoryOption {
-  id: number;
-  name: string;
-}
-
 export interface TicketListItem {
   id: number;
   name: string;

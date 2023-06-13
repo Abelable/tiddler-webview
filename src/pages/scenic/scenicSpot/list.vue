@@ -148,15 +148,16 @@ import {
 } from "vant";
 import { ref, reactive, onMounted } from "vue";
 import dayjs from "dayjs";
+import { getScenicOptions } from "@/utils/api";
 import {
-  getScenicOptions,
   getProviderScenicSpotList,
   deleteProviderScenicSpot,
   applyScenicSpot,
   getScenicListTotals,
 } from "./utils/api";
 
-import type { ProviderScenicSpot, ScenicOption } from "./utils/type";
+import type { Option as ScenicOption } from "@/utils/type";
+import type { ProviderScenicSpot } from "./utils/type";
 
 const loading = ref(false);
 const finished = ref(false);

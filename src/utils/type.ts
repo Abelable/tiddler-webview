@@ -13,3 +13,8 @@ export interface RegionOption {
   value: string;
   children?: RegionOption[];
 }
+
+export interface Option {
+  id: number;
+  name: string;
+}

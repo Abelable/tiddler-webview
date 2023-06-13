@@ -1,8 +1,5 @@
 import { http } from "@/utils/http";
-import { ProviderScenicSpot, ScenicOption } from "./type";
-
-export const getScenicOptions = async (): Promise<ScenicOption[]> =>
-  await http("scenic/options");
+import type { ProviderScenicSpot } from "./type";
 
 export const getScenicListTotals = async (): Promise<number[]> =>
   await http("scenic/provider/scenic_list_totals");

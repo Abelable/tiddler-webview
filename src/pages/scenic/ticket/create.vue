@@ -208,15 +208,11 @@ import {
 } from "vant";
 import { ref, reactive, watch, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import _, { values } from "lodash";
+import _ from "lodash";
 import { createTicket, getTicketCategoryOptions } from "./utils/api";
 
-import type {
-  TicketTypeOption,
-  TicketCategoryOption,
-  TicketInfo,
-  CreateTicketInfo,
-} from "./utils/type";
+import type { Option } from "@/utils/type";
+import type { TicketInfo, CreateTicketInfo } from "./utils/type";
 
 const router = useRouter();
 
@@ -224,7 +220,7 @@ const typeOptions = [
   { text: "单景点门票", value: 1 },
   { text: "多景点联票", value: 2 },
 ];
-const categoryOptions = ref<TicketCategoryOption[]>([]);
+const categoryOptions = ref<Option[]>([]);
 const ticketInfo = reactive<Omit<TicketInfo, "id">>({
   type: undefined,
   name: "",
@@ -237,8 +233,8 @@ const ticketInfo = reactive<Omit<TicketInfo, "id">>({
 const specOptionModalVisible = ref(false);
 const curSpecIndex = ref(0);
 const specOptionName = ref("");
-const categoryPickerPopupVisible = ref(false);
 const typePickerPopupVisible = ref(false);
+const categoryPickerPopupVisible = ref(false);
 const salesCommissionRateTipsVisible = ref(false);
 const promotionCommissionRateTipsVisible = ref(false);
 
