@@ -263,9 +263,9 @@ const deleteCurTicket = (index: number) =>
     .catch(() => true);
 
 const editTicket = (id: number) =>
-  router.push({ path: "/shop/ticket/edit", query: { id } });
+  router.push({ path: "/scenic/ticket/edit", query: { id } });
 
-const addTicket = () => router.push("/shop/ticket/create");
+const addTicket = () => router.push("/scenic/ticket/create");
 </script>
 
 <style lang="scss" scoped>
