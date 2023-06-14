@@ -365,7 +365,10 @@ const save = async () => {
     ...rest,
     salesCommissionRate: salesCommissionRate / 100,
     promotionCommissionRate: promotionCommissionRate / 100,
-    specList: JSON.stringify(specList),
+    specList: specList.map((item) => ({
+      ...item,
+      priceList: JSON.stringify(item.priceList),
+    })),
   };
   if (marketPrice) editTicketInfo.marketPrice = marketPrice;
   try {

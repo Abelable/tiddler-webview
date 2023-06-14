@@ -1,3 +1,9 @@
+export interface TicketCategoryOption {
+  id: number;
+  name: string;
+  disabled: boolean;
+}
+
 export interface TicketListItem {
   id: number;
   name: string;
@@ -9,10 +15,10 @@ export interface TicketListItem {
 }
 
 export interface PriceItem {
-  startDate: string;
-  endDate: string;
-  price: number;
-  stock: number;
+  startDate: number | undefined;
+  endDate: number | undefined;
+  price: number | undefined;
+  stock: number | undefined;
 }
 export interface SpecItem {
   categoryId: number;
@@ -54,10 +60,46 @@ export interface TicketInfo {
   otherTips: string;
 }
 
+interface CreateSpecItem {
+  categoryId: number;
+  priceList: string;
+}
+
 export interface CreateTicketInfo
-  extends Omit<TicketInfo, "id" | "marketPrice" | "specList"> {
+  extends Omit<
+    TicketInfo,
+    | "id"
+    | "marketPrice"
+    | "specList"
+    | "feeIncludeTips"
+    | "feeNotIncludeTips"
+    | "bookingTime"
+    | "effectiveTime"
+    | "validityTime"
+    | "limitNumber"
+    | "refundStatus"
+    | "refundTips"
+    | "needExchange"
+    | "exchangeTips"
+    | "exchangeTime"
+    | "exchangeLocation"
+    | "otherTips"
+  > {
   marketPrice?: number;
-  specList: string;
+  specList: CreateSpecItem[];
+  feeIncludeTips?: string;
+  feeNotIncludeTips?: string;
+  bookingTime?: string;
+  effectiveTime?: number;
+  validityTime?: number;
+  limitNumber?: number;
+  refundStatus: number;
+  refundTips?: string;
+  needExchange: 0 | 1;
+  exchangeTips?: string;
+  exchangeTime?: string;
+  exchangeLocation?: string;
+  otherTips?: string;
 }
 
 export interface EditTicketInfo extends CreateTicketInfo {

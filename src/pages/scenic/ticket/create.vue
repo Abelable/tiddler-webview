@@ -97,6 +97,107 @@
       </ul>
     </div>
 
+    <div class="title flex">
+      <div>编辑门票规格</div>
+      <Button
+        @click="categoryPickerPopupVisible = true"
+        icon="plus"
+        text="新增规格"
+        type="primary"
+        size="mini"
+      />
+    </div>
+    <SwipeCell v-for="(item, index) in ticketInfo.specList" :key="index">
+      <div class="card">
+        <div class="title flex" style="margin-top: 0.32rem">
+          <div>
+            {{
+              categoryOptions.find(
+                (categoryOption) => categoryOption.id === item.categoryId
+              )?.name
+            }}
+          </div>
+          <Button
+            @click="addPriceItem(index)"
+            icon="plus"
+            text="新增价格列表"
+            type="primary"
+            size="mini"
+          />
+        </div>
+        <SwipeCell
+          v-for="(_item, _index) in item.priceList"
+          :key="_index"
+          stop-propagation
+        >
+          <ul class="form unit">
+            <li class="form-item flex">
+              <div class="name required">日期范围</div>
+              <div
+                class="picker"
+                @click="showDateRangePickerPopup(index, _index)"
+              >
+                <div class="content" :class="{ active: _item.startDate }">
+                  {{
+                    _item.startDate
+                      ? `${dayjs(_item.startDate).format(
+                          "YYYY-MM-DD"
+                        )}至${dayjs(_item.endDate).format("YYYY-MM-DD")}`
+                      : "请选择日期范围"
+                  }}
+                </div>
+                <Icon name="arrow" />
+              </div>
+            </li>
+            <li class="form-item flex">
+              <div class="name required">价格</div>
+              <input
+                class="input"
+                v-model="_item.price"
+                type="number"
+                step="0.01"
+                placeholder="请输入价格"
+              />
+            </li>
+            <li class="form-item flex">
+              <div class="name">库存</div>
+              <input
+                class="input"
+                v-model="_item.stock"
+                type="number"
+                placeholder="请输入库存"
+              />
+            </li>
+          </ul>
+
+          <template #right>
+            <Button
+              class="delete-btn"
+              @click.stop="deletePriceItem(index, _index)"
+              icon="delete"
+              color="#EE0D23"
+              plain
+            />
+          </template>
+        </SwipeCell>
+        <div class="card" v-if="!item.priceList.length">
+          <Empty image-size="1.8rem" description="暂无价格列表" />
+        </div>
+      </div>
+      <template #right>
+        <Button
+          class="delete-btn"
+          @click.stop="deleteSpec(index)"
+          icon="delete"
+          color="#EE0D23"
+          plain
+        />
+      </template>
+    </SwipeCell>
+    <div class="card" v-if="!ticketInfo.specList.length">
+      <Empty image-size="1.8rem" description="暂无规格" />
+    </div>
+
     <div class="title">信息补充及说明</div>
     <div class="card">
       <ul class="form">
@@ -216,67 +317,6 @@
         </li>
       </ul>
     </div>
-
-    <!-- <div class="title flex">
-      <div>编辑门票规格</div>
-      <Button
-        @click="addSpec"
-        icon="plus"
-        text="新增规格"
-        type="primary"
-        size="mini"
-      />
-    </div> -->
-    <!-- <SwipeCell v-for="(item, index) in ticketInfo.specList" :key="index">
-      <div class="card">
-        <ul class="form">
-          <li class="form-item flex">
-            <div class="name required">规格名称</div>
-            <input
-              class="input"
-              v-model="item.name"
-              type="text"
-              placeholder="请输入规格名称"
-            />
-          </li>
-          <li class="form-item">
-            <div class="name required">规格选项</div>
-            <div class="sku-options">
-              <Tag
-                v-for="(option, optionIndex) in item.options"
-                :key="optionIndex"
-                @close="deleteSpecOption(index, optionIndex)"
-                class="sku-option"
-                color="#DBEFFD"
-                text-color="#2A3664"
-                closeable
-                size="medium"
-                >{{ option }}</Tag
-              >
-              <Tag
-                class="sku-option"
-                @click="showSpecOptionModalVisible(index)"
-                type="primary"
-                size="medium"
-                >+ 新增选项</Tag
-              >
-            </div>
-          </li>
-        </ul>
-      </div>
-      <template #right>
-        <Button
-          class="delete-btn"
-          @click.stop="deleteSpec(index)"
-          icon="delete"
-          color="#EE0D23"
-          plain
-        />
-      </template>
-    </SwipeCell> -->
-    <div class="card" v-if="!ticketInfo.specList.length">
-      <Empty image-size="1.8rem" description="暂无规格" />
-    </div>
   </div>
 
   <button class="upload-btn" @click="save">点击提交</button>
@@ -368,11 +408,17 @@
   <Popup v-model:show="categoryPickerPopupVisible" position="bottom" round>
     <Picker
       :columns="categoryOptions"
-      @confirm="selectCategory"
+      @confirm="addSpec"
       @cancel="categoryPickerPopupVisible = false"
       :columns-field-names="{ text: 'name', value: 'id' }"
     />
   </Popup>
+
+  <Calendar
+    v-model:show="dateRangePickerPopupVisible"
+    type="range"
+    @confirm="dateRangeConfirm"
+  />
 </template>
 
 <script setup lang="ts">
@@ -381,7 +427,6 @@ import {
   Empty,
   Popover,
   Button,
-  Dialog,
   showConfirmDialog,
   showToast,
   Popup,
@@ -394,16 +439,23 @@ import {
   PickerGroup,
   TimePicker,
   Switch,
+  SwipeCell,
+  Calendar,
 } from "vant";
-import { ref, reactive, watch, computed, onMounted } from "vue";
+import { ref, reactive, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import _ from "lodash";
+import dayjs from "dayjs";
 import { getScenicOptions } from "@/utils/api";
 import { createTicket, getTicketCategoryOptions } from "./utils/api";
 
 import type { CheckboxInstance } from "vant";
 import type { Option } from "@/utils/type";
-import type { TicketInfo, CreateTicketInfo } from "./utils/type";
+import type {
+  TicketCategoryOption,
+  TicketInfo,
+  CreateTicketInfo,
+} from "./utils/type";
 
 const router = useRouter();
 
@@ -439,12 +491,12 @@ const refundStatusOptions = [
   { text: "有条件退", value: 2 },
   { text: "不可退", value: 3 },
 ];
-const categoryOptions = ref<Option[]>([]);
-const specOptionModalVisible = ref(false);
+const categoryOptions = ref<TicketCategoryOption[]>([]);
 const curSpecIndex = ref(0);
-const specOptionName = ref("");
+const curPriceItemIndex = ref(0);
 const typePickerPopupVisible = ref(false);
 const categoryPickerPopupVisible = ref(false);
+const dateRangePickerPopupVisible = ref(false);
 
 const startBookTime = ref([]);
 const endBookTime = ref([]);
@@ -477,11 +529,6 @@ const selectedRefundStatusName = computed(
     refundStatusOptions.find((item) => item.value === ticketInfo.refundStatus)
       ?.text
 );
-// const selectedCategoryName = computed(
-//   () =>
-//     categoryOptions.value.find((item) => item.id === ticketInfo.categoryId)
-//       ?.name
-// );
 
 onMounted(() => {
   setScenicOptions();
@@ -490,8 +537,13 @@ onMounted(() => {
 
 const setScenicOptions = async () =>
   (scenicOptions.value = await getScenicOptions());
-const setCategoryOptions = async () =>
-  (categoryOptions.value = await getTicketCategoryOptions());
+const setCategoryOptions = async () => {
+  const options = await getTicketCategoryOptions();
+  categoryOptions.value = options.map((item) => ({
+    ...item,
+    disabled: false,
+  }));
+};
 
 const selectType = ({ selectedValues }: { selectedValues: number[] }) => {
   ticketInfo.type = selectedValues[0];
@@ -536,104 +588,139 @@ const exchangeTimeConfirm = () => {
   )}-${endExchangeTime.value.join(":")}`;
   exchangeTimePickerPopupVisible.value = false;
 };
-const selectCategory = ({ selectedValues }: { selectedValues: number[] }) => {
-  // ticketInfo.categoryId = selectedValues[0];
+
+const addSpec = ({ selectedValues }: { selectedValues: number[] }) => {
+  categoryOptions.value = categoryOptions.value.map((item) =>
+    item.id === selectedValues[0]
+      ? {
+          ...item,
+          disabled: true,
+        }
+      : item
+  );
+
+  ticketInfo.specList.push({ categoryId: selectedValues[0], priceList: [] });
   categoryPickerPopupVisible.value = false;
 };
+const deleteSpec = (index: number) =>
+  showConfirmDialog({ title: "确定删除该门票规格吗？" })
+    .then(() => {
+      categoryOptions.value = categoryOptions.value.map((item) =>
+        item.id === ticketInfo.specList[index].categoryId
+          ? { ...item, disabled: false }
+          : item
+      );
+      ticketInfo.specList.splice(index, 1);
+    })
+    .catch(() => true);
 
-watch(ticketInfo.specList, () => {
-  let nameList: string[][] = [];
-  // ticketInfo.specList.forEach((item, index) => {
-  //   const nameListUnit = _.cloneDeep(nameList);
-  //   for (let i = 0; i < item.options.length - 1; i++) {
-  //     nameList = [...nameList, ..._.cloneDeep(nameListUnit)];
-  //   }
-  //   item.options.forEach((_item, _index) => {
-  //     if (index === 0) {
-  //       if (!nameList[_index]) nameList[_index] = [];
-  //       nameList[_index][index] = _item;
-  //     } else {
-  //       const unitLength = nameList.length / item.options.length;
-  //       for (let j = 0; j < unitLength; j++) {
-  //         if (!nameList[j + _index * unitLength]) {
-  //           nameList[j + _index * unitLength] = [];
-  //         }
-  //         nameList[j + _index * unitLength][index] = _item;
-  //       }
-  //     }
-  //   });
-  // });
-});
-
-// const addSpec = () => {
-//   ticketInfo.specList.push({ name: "", options: [] });
-// };
-// const deleteSpec = (index: number) => {
-//   showConfirmDialog({ title: "确定删除该门票规格吗？" })
-//     .then(() => ticketInfo.specList.splice(index, 1))
-//     .catch(() => true);
-// };
-// const showSpecOptionModalVisible = (index: number) => {
-//   curSpecIndex.value = index;
-//   specOptionModalVisible.value = true;
-// };
-// const addSpecOption = (action: string) => {
-//   if (action === "cancel") {
-//     return true;
-//   }
-//   if (!specOptionName.value) {
-//     showToast("名称不能为空");
-//     return false;
-//   }
-//   ticketInfo.specList[curSpecIndex.value].options.push(specOptionName.value);
-//   specOptionName.value = "";
-//   specOptionModalVisible.value = false;
-//   return true;
-// };
-// const deleteSpecOption = (index: number, optionIndex: number) => {
-//   ticketInfo.specList[index].options.splice(optionIndex, 1);
-// };
+const addPriceItem = (index: number) => {
+  curSpecIndex.value = index;
+  ticketInfo.specList[curSpecIndex.value].priceList.push({
+    startDate: undefined,
+    endDate: undefined,
+    price: undefined,
+    stock: undefined,
+  });
+  dateRangePickerPopupVisible.value = false;
+};
+const showDateRangePickerPopup = (
+  specIndex: number,
+  priceItemIndex: number
+) => {
+  curSpecIndex.value = specIndex;
+  curPriceItemIndex.value = priceItemIndex;
+  dateRangePickerPopupVisible.value = true;
+};
+const deletePriceItem = (index: number, priceItemIndex: number) =>
+  showConfirmDialog({ title: "确定删除该门票规格吗？" })
+    .then(() => ticketInfo.specList[index].priceList.splice(priceItemIndex, 1))
+    .catch(() => true);
+const dateRangeConfirm = (dateList: Date[]) => {
+  const priceItem = _.cloneDeep(
+    ticketInfo.specList[curSpecIndex.value].priceList[curPriceItemIndex.value]
+  );
+  ticketInfo.specList[curSpecIndex.value].priceList[curPriceItemIndex.value] = {
+    ...priceItem,
+    startDate: new Date(dateList[0]).getTime(),
+    endDate: new Date(dateList[0]).getTime(),
+  };
+  dateRangePickerPopupVisible.value = false;
+};
 
 const save = async () => {
+  console.log("ticketInfo", ticketInfo.specList);
+  if (!ticketInfo.type) {
+    showToast("请选择门票类型");
+    return;
+  }
+  if (!ticketInfo.scenicIds.length) {
+    showToast("请选择关联景点");
+    return;
+  }
   if (!ticketInfo.name) {
     showToast("请输入门票名称");
     return;
   }
   if (!ticketInfo.price) {
-    showToast("请输入门票店铺价格");
+    showToast("请输入门票起始价格");
     return;
   }
-  if (ticketInfo.salesCommissionRate === undefined) {
-    showToast("请输入销售佣金比例");
+  if (
+    !ticketInfo.salesCommissionRate ||
+    ticketInfo.salesCommissionRate < 10 ||
+    ticketInfo.salesCommissionRate > 70
+  ) {
+    showToast("请输入范围为10%~70%的销售佣金比例");
     return;
   }
-  if (ticketInfo.promotionCommissionRate === undefined) {
-    showToast("请输入推广佣金比例");
+  if (
+    !ticketInfo.promotionCommissionRate ||
+    ticketInfo.promotionCommissionRate < 10 ||
+    ticketInfo.promotionCommissionRate > 70
+  ) {
+    showToast("请输入范围为2%~70%的推广佣金比例");
     return;
   }
-  // if (
-  //   ticketInfo.specList.length &&
-  //   ticketInfo.specList.findIndex(
-  //     (item) => !item.name || !item.options.length
-  //   ) !== -1
-  // ) {
-  //   showToast("请完善门票规格信息");
-  //   return;
-  // }
+  if (
+    !ticketInfo.specList.length ||
+    ticketInfo.specList.findIndex((item) => !item.priceList.length) !== -1
+  ) {
+    showToast("请完善门票规格信息");
+    return;
+  }
+  let incompletePriceItemIndex = -1;
+  ticketInfo.specList.forEach((item) => {
+    incompletePriceItemIndex = item.priceList.findIndex(
+      (_item) => !_item.startDate || !_item.endDate || !_item.price
+    );
+  });
+  if (incompletePriceItemIndex !== -1) {
+    showToast("请完善门票规格信息");
+    return;
+  }
+  if (!ticketInfo.refundStatus) {
+    showToast("请选择退票条件");
+    return;
+  }
+
   const {
-    marketPrice,
     specList,
     salesCommissionRate,
     promotionCommissionRate,
+    needExchange,
     ...rest
   } = ticketInfo;
   const createTicketInfo: CreateTicketInfo = {
     ...rest,
     salesCommissionRate: salesCommissionRate / 100,
     promotionCommissionRate: promotionCommissionRate / 100,
-    specList: JSON.stringify(specList),
+    specList: specList.map((item) => ({
+      ...item,
+      priceList: JSON.stringify(item.priceList),
+    })),
+    needExchange: needExchange ? 1 : 0,
   };
-  if (marketPrice) createTicketInfo.marketPrice = marketPrice;
   try {
     await createTicket(createTicketInfo);
     router.back();
@@ -675,6 +762,7 @@ const save = async () => {
     overflow: hidden;
     .form {
       &.unit {
+        margin-bottom: 0.32rem;
         padding: 0 0.32rem;
         border: 1px solid #eee;
         border-radius: 0.24rem;
@@ -726,7 +814,7 @@ const save = async () => {
           .content {
             color: #777;
             &.active {
-              max-width: 3rem;
+              max-width: 3.6rem;
               color: #333;
               overflow: hidden;
               text-overflow: ellipsis;
