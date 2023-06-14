@@ -199,14 +199,25 @@
     round
   >
     <div class="tool-bar">
-      <button class="cancel-btn">取消</button>
-      <button class="confirm-btn">确认</button>
+      <button class="cancel-btn" @click="scenicPickerPopupVisible = false">
+        取消
+      </button>
+      <button class="confirm-btn" @click="selectScenicList">确认</button>
     </div>
-    <CheckboxGroup class="scenic-options">
+    <CheckboxGroup class="scenic-options" v-model="selectedScenicIds">
       <CellGroup>
-        <Cell v-for="item in scenicOptions" :key="item.id" :title="item.name">
+        <Cell
+          v-for="(item, index) in scenicOptions"
+          :key="item.id"
+          :title="item.name"
+          @click="toggleScenicOptionSelected(index)"
+        >
           <template #right-icon>
-            <Checkbox :name="item.name" />
+            <Checkbox
+              :name="item.id"
+              :ref="(el: CheckboxInstance) => (scenicOptionRefs[index] = el)"
+              @click.stop
+            />
           </template>
         </Cell>
       </CellGroup>
@@ -260,17 +271,12 @@ import _ from "lodash";
 import { getScenicOptions } from "@/utils/api";
 import { createTicket, getTicketCategoryOptions } from "./utils/api";
 
+import type { CheckboxInstance } from "vant";
 import type { Option } from "@/utils/type";
 import type { TicketInfo, CreateTicketInfo } from "./utils/type";
 
 const router = useRouter();
 
-const typeOptions = [
-  { text: "单景点门票", value: 1 },
-  { text: "多景点联票", value: 2 },
-];
-const scenicOptions = ref<Option[]>([]);
-const categoryOptions = ref<Option[]>([]);
 const ticketInfo = reactive<Omit<TicketInfo, "id">>({
   type: undefined,
   scenicIds: [],
@@ -279,14 +285,36 @@ const ticketInfo = reactive<Omit<TicketInfo, "id">>({
   marketPrice: undefined,
   salesCommissionRate: undefined,
   promotionCommissionRate: undefined,
+  feeIncludeTips: "",
+  feeNotIncludeTips: "",
+  bookingTime: "",
+  effectiveTime: "",
+  validityTime: "",
+  limitNumber: 0,
+  refundStatus: undefined,
+  refundTips: "",
+  needExchange: 0,
+  exchangeTips: "",
+  exchangeTime: "",
+  exchangeLocation: "",
+  otherTips: "",
   specList: [],
 });
+const typeOptions = [
+  { text: "单景点门票", value: 1 },
+  { text: "多景点联票", value: 2 },
+];
+const categoryOptions = ref<Option[]>([]);
 const specOptionModalVisible = ref(false);
 const curSpecIndex = ref(0);
 const specOptionName = ref("");
 const typePickerPopupVisible = ref(false);
-const scenicPickerPopupVisible = ref(false);
 const categoryPickerPopupVisible = ref(false);
+
+const scenicOptions = ref<Option[]>([]);
+const scenicPickerPopupVisible = ref(false);
+const selectedScenicIds = ref([]);
+const scenicOptionRefs = ref<CheckboxInstance[]>([]);
 const salesCommissionRateTipsVisible = ref(false);
 const promotionCommissionRateTipsVisible = ref(false);
 
@@ -310,27 +338,8 @@ onMounted(() => {
   setCategoryOptions();
 });
 
-const setScenicOptions = async () => {
-  const options = await getScenicOptions();
-  scenicOptions.value = [
-    ...options,
-    ...options,
-    ...options,
-    ...options,
-    ...options,
-    ...options,
-    ...options,
-    ...options,
-    ...options,
-    ...options,
-    ...options,
-    ...options,
-    ...options,
-    ...options,
-    ...options,
-    ...options,
-  ];
-};
+const setScenicOptions = async () =>
+  (scenicOptions.value = await getScenicOptions());
 const setCategoryOptions = async () =>
   (categoryOptions.value = await getTicketCategoryOptions());
 
@@ -348,6 +357,13 @@ const showScenicPickerPopup = () => {
 };
 const selectScenic = ({ selectedValues }: { selectedValues: number[] }) => {
   ticketInfo.scenicIds = selectedValues;
+  scenicPickerPopupVisible.value = false;
+};
+const toggleScenicOptionSelected = (index: number) => {
+  scenicOptionRefs.value[index].toggle();
+};
+const selectScenicList = () => {
+  ticketInfo.scenicIds = selectedScenicIds.value;
   scenicPickerPopupVisible.value = false;
 };
 // const selectCategory = ({ selectedValues }: { selectedValues: number[] }) => {

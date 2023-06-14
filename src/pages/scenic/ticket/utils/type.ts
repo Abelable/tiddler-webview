@@ -38,6 +38,19 @@ export interface TicketInfo {
   marketPrice: number | undefined;
   salesCommissionRate: number | undefined;
   promotionCommissionRate: number | undefined;
+  feeIncludeTips: string;
+  feeNotIncludeTips: string;
+  bookingTime: string;
+  effectiveTime: string;
+  validityTime: string;
+  limitNumber: number;
+  refundStatus: number | undefined;
+  refundTips: string;
+  needExchange: number;
+  exchangeTips: string;
+  exchangeTime: string;
+  exchangeLocation: string;
+  otherTips: string;
   specList: SpecItem[];
 }
 
