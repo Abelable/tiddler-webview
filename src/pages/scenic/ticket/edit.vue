@@ -222,7 +222,7 @@ const ticketInfo = reactive<TicketInfo>({
   limitNumber: 0,
   refundStatus: undefined,
   refundTips: "",
-  needExchange: 0,
+  needExchange: false,
   exchangeTips: "",
   exchangeTime: "",
   exchangeLocation: "",

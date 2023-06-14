@@ -340,7 +340,7 @@
     </div>
   </div>
 
-  <button class="upload-btn" @click="save">点击上传</button>
+  <button class="upload-btn" @click="save">点击提交</button>
 
   <Popup
     v-model:show="freightTemplatePickerPopupVisible"

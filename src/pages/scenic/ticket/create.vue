@@ -119,68 +119,100 @@
           />
         </li>
         <li class="form-item flex">
-          <div class="name required">起始价格</div>
-          <input
-            class="input"
-            v-model="ticketInfo.price"
-            type="number"
-            step="0.01"
-            placeholder="请输入起始价格"
-          />
-        </li>
-        <li class="form-item flex">
-          <div class="name">市场价格</div>
-          <input
-            class="input"
-            v-model="ticketInfo.marketPrice"
-            type="number"
-            step="0.01"
-            placeholder="请输入市场价格"
-          />
-        </li>
-        <li class="form-item flex">
-          <div class="name flex required">
-            <div>销售佣金比例</div>
-            <Popover
-              v-model:show="salesCommissionRateTipsVisible"
-              placement="bottom-start"
-              theme="dark"
-            >
-              <div class="warning">范围：10%～70%</div>
-              <template #reference>
-                <Icon style="margin-left: 0.06rem" name="question-o" />
-              </template>
-            </Popover>
+          <div class="name">预定时间</div>
+          <div class="picker" @click="bookingTimePickerPopupVisible = true">
+            <div class="content" :class="{ active: ticketInfo.bookingTime }">
+              {{ ticketInfo.bookingTime || "请选择预定时间" }}
+            </div>
+            <Icon name="arrow" />
           </div>
-          <input
-            class="input"
-            v-model="ticketInfo.salesCommissionRate"
-            type="number"
-            placeholder="请输入销售佣金比例"
-          />
-          <div class="unit">%</div>
         </li>
         <li class="form-item flex">
-          <div class="name flex required">
-            <div>推广佣金比例</div>
-            <Popover
-              v-model:show="promotionCommissionRateTipsVisible"
-              placement="bottom-start"
-              theme="dark"
-            >
-              <div class="warning">范围：2%～70%</div>
-              <template #reference>
-                <Icon style="margin-left: 0.06rem" name="question-o" />
-              </template>
-            </Popover>
-          </div>
+          <div class="name">生效时间</div>
           <input
             class="input"
-            v-model="ticketInfo.promotionCommissionRate"
+            v-model="ticketInfo.effectiveTime"
             type="number"
-            placeholder="请输入推广佣金比例"
+            placeholder="请输入生效时间"
           />
-          <div class="unit">%</div>
+          <div class="unit">小时</div>
+        </li>
+        <li class="form-item flex">
+          <div class="name">有效期</div>
+          <input
+            class="input"
+            v-model="ticketInfo.validityTime"
+            type="number"
+            placeholder="请输入有效期"
+          />
+          <div class="unit">天</div>
+        </li>
+        <li class="form-item flex">
+          <div class="name">限购数量</div>
+          <input
+            class="input"
+            v-model="ticketInfo.limitNumber"
+            type="number"
+            placeholder="请输入限购数量"
+          />
+        </li>
+        <li class="form-item flex">
+          <div class="name required">退票条件</div>
+          <div class="picker" @click="refundStatusPickerPopupVisible = true">
+            <div class="content" :class="{ active: selectedRefundStatusName }">
+              {{ selectedRefundStatusName || "请选择退票条件" }}
+            </div>
+            <Icon name="arrow" />
+          </div>
+        </li>
+        <li class="form-item flex">
+          <div class="name">退票说明</div>
+          <input
+            class="input"
+            v-model="ticketInfo.refundTips"
+            type="text"
+            placeholder="请输入退票说明"
+          />
+        </li>
+        <li class="form-item flex">
+          <div class="name">是否需要换票</div>
+          <Switch v-model="ticketInfo.needExchange" size="18px" />
+        </li>
+        <li class="form-item flex">
+          <div class="name">换票说明</div>
+          <input
+            class="input"
+            v-model="ticketInfo.exchangeTips"
+            type="text"
+            placeholder="请输入换票说明"
+          />
+        </li>
+        <li class="form-item flex">
+          <div class="name">换票时间</div>
+          <div class="picker" @click="exchangeTimePickerPopupVisible = true">
+            <div class="content" :class="{ active: ticketInfo.exchangeTime }">
+              {{ ticketInfo.exchangeTime || "请选择换票时间" }}
+            </div>
+            <Icon name="arrow" />
+          </div>
+        </li>
+        <li class="form-item flex">
+          <div class="name">换票地点</div>
+          <input
+            class="input"
+            v-model="ticketInfo.exchangeLocation"
+            type="text"
+            placeholder="请输入换票地点"
+          />
+        </li>
+        <li class="form-item flex">
+          <div class="name">其他说明</div>
+          <input
+            class="input"
+            v-model="ticketInfo.otherTips"
+            type="text"
+            placeholder="请输入其他说明"
+          />
         </li>
       </ul>
     </div>
@@ -247,7 +279,7 @@
     </div>
   </div>
 
-  <button class="upload-btn" @click="save">点击上传</button>
+  <button class="upload-btn" @click="save">点击提交</button>
 
   <Popup v-model:show="typePickerPopupVisible" position="bottom" round>
     <Picker
@@ -303,6 +335,36 @@
     </CheckboxGroup>
   </Popup>
 
+  <Popup v-model:show="bookingTimePickerPopupVisible" position="bottom" round>
+    <PickerGroup
+      :tabs="['开始时间', '结束时间']"
+      @confirm="bookTimeConfirm"
+      @cancel="bookingTimePickerPopupVisible = false"
+    >
+      <TimePicker v-model="startBookTime" />
+      <TimePicker v-model="endBookTime" />
+    </PickerGroup>
+  </Popup>
+
+  <Popup v-model:show="refundStatusPickerPopupVisible" position="bottom" round>
+    <Picker
+      :columns="refundStatusOptions"
+      @confirm="selectRefundStatus"
+      @cancel="refundStatusPickerPopupVisible = false"
+    />
+  </Popup>
+
+  <Popup v-model:show="exchangeTimePickerPopupVisible" position="bottom" round>
+    <PickerGroup
+      :tabs="['开始时间', '结束时间']"
+      @confirm="exchangeTimeConfirm"
+      @cancel="exchangeTimePickerPopupVisible = false"
+    >
+      <TimePicker v-model="startExchangeTime" />
+      <TimePicker v-model="endExchangeTime" />
+    </PickerGroup>
+  </Popup>
+
   <!-- <Popup v-model:show="categoryPickerPopupVisible" position="bottom" round>
     <Picker
       :columns="categoryOptions"
@@ -343,6 +405,9 @@ import {
   Checkbox,
   CellGroup,
   Cell,
+  PickerGroup,
+  TimePicker,
+  Switch,
 } from "vant";
 import { ref, reactive, watch, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
@@ -367,12 +432,12 @@ const ticketInfo = reactive<Omit<TicketInfo, "id">>({
   feeIncludeTips: "",
   feeNotIncludeTips: "",
   bookingTime: "",
-  effectiveTime: 0,
-  validityTime: 0,
-  limitNumber: 0,
+  effectiveTime: undefined,
+  validityTime: undefined,
+  limitNumber: undefined,
   refundStatus: undefined,
   refundTips: "",
-  needExchange: 0,
+  needExchange: false,
   exchangeTips: "",
   exchangeTime: "",
   exchangeLocation: "",
@@ -383,12 +448,27 @@ const typeOptions = [
   { text: "单景点门票", value: 1 },
   { text: "多景点联票", value: 2 },
 ];
+const refundStatusOptions = [
+  { text: "随时可退", value: 1 },
+  { text: "有条件退", value: 2 },
+  { text: "不可退", value: 3 },
+];
 const categoryOptions = ref<Option[]>([]);
 const specOptionModalVisible = ref(false);
 const curSpecIndex = ref(0);
 const specOptionName = ref("");
 const typePickerPopupVisible = ref(false);
 const categoryPickerPopupVisible = ref(false);
+
+const startBookTime = ref([]);
+const endBookTime = ref([]);
+const bookingTimePickerPopupVisible = ref(false);
+
+const refundStatusPickerPopupVisible = ref(false);
+
+const startExchangeTime = ref([]);
+const endExchangeTime = ref([]);
+const exchangeTimePickerPopupVisible = ref(false);
 
 const scenicOptions = ref<Option[]>([]);
 const scenicPickerPopupVisible = ref(false);
@@ -405,6 +485,11 @@ const selectedScenicNames = computed(() =>
   ticketInfo.scenicIds
     .map((id) => scenicOptions.value.find((item) => item.id === id)?.name)
     .join()
+);
+const selectedRefundStatusName = computed(
+  () =>
+    refundStatusOptions.find((item) => item.value === ticketInfo.refundStatus)
+      ?.text
 );
 // const selectedCategoryName = computed(
 //   () =>
@@ -444,6 +529,26 @@ const toggleScenicOptionSelected = (index: number) => {
 const selectScenicList = () => {
   ticketInfo.scenicIds = selectedScenicIds.value;
   scenicPickerPopupVisible.value = false;
+};
+const bookTimeConfirm = () => {
+  ticketInfo.bookingTime = `${startBookTime.value.join(
+    ":"
+  )}-${endBookTime.value.join(":")}`;
+  bookingTimePickerPopupVisible.value = false;
+};
+const selectRefundStatus = ({
+  selectedValues,
+}: {
+  selectedValues: number[];
+}) => {
+  ticketInfo.refundStatus = selectedValues[0];
+  refundStatusPickerPopupVisible.value = false;
+};
+const exchangeTimeConfirm = () => {
+  ticketInfo.exchangeTime = `${startExchangeTime.value.join(
+    ":"
+  )}-${endExchangeTime.value.join(":")}`;
+  exchangeTimePickerPopupVisible.value = false;
 };
 // const selectCategory = ({ selectedValues }: { selectedValues: number[] }) => {
 //   ticketInfo.categoryId = selectedValues[0];
@@ -651,6 +756,11 @@ const save = async () => {
             margin-top: 0.32rem;
             margin-right: 0.32rem;
           }
+        }
+        .unit {
+          margin-left: 0.06rem;
+          font-weight: 500;
+          line-height: 1;
         }
       }
     }
