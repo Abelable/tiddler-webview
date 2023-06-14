@@ -431,7 +431,6 @@ import {
   showToast,
   Popup,
   Picker,
-  showDialog,
   CheckboxGroup,
   Checkbox,
   CellGroup,
@@ -446,6 +445,7 @@ import { ref, reactive, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import _ from "lodash";
 import dayjs from "dayjs";
+import { cleanObject } from "@/utils/index";
 import { getScenicOptions } from "@/utils/api";
 import { createTicket, getTicketCategoryOptions } from "./utils/api";
 
@@ -696,7 +696,7 @@ const save = async () => {
     );
   });
   if (incompletePriceItemIndex !== -1) {
-    showToast("请完善门票规格信息");
+    showToast("部分门票规格未选择日期范围或未填写价格");
     return;
   }
   if (!ticketInfo.refundStatus) {
@@ -711,8 +711,8 @@ const save = async () => {
     needExchange,
     ...rest
   } = ticketInfo;
-  const createTicketInfo: CreateTicketInfo = {
-    ...rest,
+  const createTicketInfo = {
+    ...cleanObject(rest),
     salesCommissionRate: salesCommissionRate / 100,
     promotionCommissionRate: promotionCommissionRate / 100,
     specList: specList.map((item) => ({
@@ -722,7 +722,7 @@ const save = async () => {
     needExchange: needExchange ? 1 : 0,
   };
   try {
-    await createTicket(createTicketInfo);
+    await createTicket(createTicketInfo as CreateTicketInfo);
     router.back();
   } catch (error) {
     showToast("上传失败，请重试");

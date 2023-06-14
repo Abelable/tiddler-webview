@@ -192,6 +192,7 @@ import {
 import { ref, watch, computed, onMounted, reactive } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import _ from "lodash";
+import { cleanObject } from "@/utils";
 import {
   editTicket,
   getTicketCategoryOptions,
@@ -355,24 +356,24 @@ const save = async () => {
   // }
 
   const {
-    marketPrice,
     specList,
     salesCommissionRate,
     promotionCommissionRate,
+    needExchange,
     ...rest
   } = ticketInfo;
-  const editTicketInfo: EditTicketInfo = {
-    ...rest,
+  const editTicketInfo = {
+    ...cleanObject(rest),
     salesCommissionRate: salesCommissionRate / 100,
     promotionCommissionRate: promotionCommissionRate / 100,
     specList: specList.map((item) => ({
       ...item,
       priceList: JSON.stringify(item.priceList),
     })),
+    needExchange: needExchange ? 1 : 0,
   };
-  if (marketPrice) editTicketInfo.marketPrice = marketPrice;
   try {
-    await editTicket(editTicketInfo);
+    await editTicket(editTicketInfo as EditTicketInfo);
     router.back();
   } catch (error) {
     showToast("上传失败，请重试");
