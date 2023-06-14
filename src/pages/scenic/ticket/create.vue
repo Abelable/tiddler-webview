@@ -30,15 +30,94 @@
             placeholder="请输入名称，最长30字"
           />
         </li>
-        <!-- <li class="form-item flex">
-          <div class="name required">门票分类</div>
-          <div class="picker" @click="categoryPickerPopupVisible = true">
-            <div class="content" :class="{ active: selectedCategoryName }">
-              {{ selectedCategoryName || "请选择门票分类" }}
-            </div>
-            <Icon name="arrow" />
+        <li class="form-item flex">
+          <div class="name required">起始价格</div>
+          <input
+            class="input"
+            v-model="ticketInfo.price"
+            type="number"
+            step="0.01"
+            placeholder="请输入起始价格"
+          />
+        </li>
+        <li class="form-item flex">
+          <div class="name">市场价格</div>
+          <input
+            class="input"
+            v-model="ticketInfo.marketPrice"
+            type="number"
+            step="0.01"
+            placeholder="请输入市场价格"
+          />
+        </li>
+        <li class="form-item flex">
+          <div class="name flex required">
+            <div>销售佣金比例</div>
+            <Popover
+              v-model:show="salesCommissionRateTipsVisible"
+              placement="bottom-start"
+              theme="dark"
+            >
+              <div class="warning">范围：10%～70%</div>
+              <template #reference>
+                <Icon style="margin-left: 0.06rem" name="question-o" />
+              </template>
+            </Popover>
           </div>
-        </li> -->
+          <input
+            class="input"
+            v-model="ticketInfo.salesCommissionRate"
+            type="number"
+            placeholder="请输入销售佣金比例"
+          />
+          <div class="unit">%</div>
+        </li>
+        <li class="form-item flex">
+          <div class="name flex required">
+            <div>推广佣金比例</div>
+            <Popover
+              v-model:show="promotionCommissionRateTipsVisible"
+              placement="bottom-start"
+              theme="dark"
+            >
+              <div class="warning">范围：2%～70%</div>
+              <template #reference>
+                <Icon style="margin-left: 0.06rem" name="question-o" />
+              </template>
+            </Popover>
+          </div>
+          <input
+            class="input"
+            v-model="ticketInfo.promotionCommissionRate"
+            type="number"
+            placeholder="请输入推广佣金比例"
+          />
+          <div class="unit">%</div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="title">信息补充及说明</div>
+    <div class="card">
+      <ul class="form">
+        <li class="form-item flex">
+          <div class="name">费用包含说明</div>
+          <input
+            class="input"
+            v-model="ticketInfo.feeIncludeTips"
+            type="text"
+            placeholder="请输入费用包含说明"
+          />
+        </li>
+        <li class="form-item flex">
+          <div class="name">费用不含说明</div>
+          <input
+            class="input"
+            v-model="ticketInfo.feeNotIncludeTips"
+            type="text"
+            placeholder="请输入费用不含说明"
+          />
+        </li>
         <li class="form-item flex">
           <div class="name required">起始价格</div>
           <input
@@ -288,8 +367,8 @@ const ticketInfo = reactive<Omit<TicketInfo, "id">>({
   feeIncludeTips: "",
   feeNotIncludeTips: "",
   bookingTime: "",
-  effectiveTime: "",
-  validityTime: "",
+  effectiveTime: 0,
+  validityTime: 0,
   limitNumber: 0,
   refundStatus: undefined,
   refundTips: "",

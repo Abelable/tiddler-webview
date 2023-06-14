@@ -41,8 +41,8 @@ export interface TicketInfo {
   feeIncludeTips: string;
   feeNotIncludeTips: string;
   bookingTime: string;
-  effectiveTime: string;
-  validityTime: string;
+  effectiveTime: number;
+  validityTime: number;
   limitNumber: number;
   refundStatus: number | undefined;
   refundTips: string;
