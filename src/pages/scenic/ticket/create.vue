@@ -13,6 +13,15 @@
           </div>
         </li>
         <li class="form-item flex">
+          <div class="name required">关联景点</div>
+          <div class="picker" @click="showScenicPickerPopup">
+            <div class="content" :class="{ active: selectedScenicNames }">
+              {{ selectedScenicNames || "请选择关联景点" }}
+            </div>
+            <Icon name="arrow" />
+          </div>
+        </li>
+        <li class="form-item flex">
           <div class="name required">门票名称</div>
           <input
             class="input"
@@ -169,6 +178,41 @@
     />
   </Popup>
 
+  <Popup
+    v-if="ticketInfo.type === 1"
+    v-model:show="scenicPickerPopupVisible"
+    position="bottom"
+    round
+  >
+    <Picker
+      :columns="scenicOptions"
+      @confirm="selectScenic"
+      @cancel="scenicPickerPopupVisible = false"
+      :columns-field-names="{ text: 'name', value: 'id' }"
+    />
+  </Popup>
+
+  <Popup
+    v-if="ticketInfo.type === 2"
+    v-model:show="scenicPickerPopupVisible"
+    position="bottom"
+    round
+  >
+    <div class="tool-bar">
+      <button class="cancel-btn">取消</button>
+      <button class="confirm-btn">确认</button>
+    </div>
+    <CheckboxGroup class="scenic-options">
+      <CellGroup>
+        <Cell v-for="item in scenicOptions" :key="item.id" :title="item.name">
+          <template #right-icon>
+            <Checkbox :name="item.name" />
+          </template>
+        </Cell>
+      </CellGroup>
+    </CheckboxGroup>
+  </Popup>
+
   <!-- <Popup v-model:show="categoryPickerPopupVisible" position="bottom" round>
     <Picker
       :columns="categoryOptions"
@@ -205,10 +249,15 @@ import {
   Popup,
   Picker,
   showDialog,
+  CheckboxGroup,
+  Checkbox,
+  CellGroup,
+  Cell,
 } from "vant";
 import { ref, reactive, watch, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import _ from "lodash";
+import { getScenicOptions } from "@/utils/api";
 import { createTicket, getTicketCategoryOptions } from "./utils/api";
 
 import type { Option } from "@/utils/type";
@@ -220,9 +269,11 @@ const typeOptions = [
   { text: "单景点门票", value: 1 },
   { text: "多景点联票", value: 2 },
 ];
+const scenicOptions = ref<Option[]>([]);
 const categoryOptions = ref<Option[]>([]);
 const ticketInfo = reactive<Omit<TicketInfo, "id">>({
   type: undefined,
+  scenicIds: [],
   name: "",
   price: undefined,
   marketPrice: undefined,
@@ -234,6 +285,7 @@ const specOptionModalVisible = ref(false);
 const curSpecIndex = ref(0);
 const specOptionName = ref("");
 const typePickerPopupVisible = ref(false);
+const scenicPickerPopupVisible = ref(false);
 const categoryPickerPopupVisible = ref(false);
 const salesCommissionRateTipsVisible = ref(false);
 const promotionCommissionRateTipsVisible = ref(false);
@@ -242,6 +294,11 @@ const promotionCommissionRateTipsVisible = ref(false);
 const selectedTypeName = computed(
   () => typeOptions.find((item) => item.value === ticketInfo.type)?.text
 );
+const selectedScenicNames = computed(() =>
+  ticketInfo.scenicIds
+    .map((id) => scenicOptions.value.find((item) => item.id === id)?.name)
+    .join()
+);
 // const selectedCategoryName = computed(
 //   () =>
 //     categoryOptions.value.find((item) => item.id === ticketInfo.categoryId)
@@ -249,15 +306,49 @@ const selectedTypeName = computed(
 // );
 
 onMounted(() => {
+  setScenicOptions();
   setCategoryOptions();
 });
 
+const setScenicOptions = async () => {
+  const options = await getScenicOptions();
+  scenicOptions.value = [
+    ...options,
+    ...options,
+    ...options,
+    ...options,
+    ...options,
+    ...options,
+    ...options,
+    ...options,
+    ...options,
+    ...options,
+    ...options,
+    ...options,
+    ...options,
+    ...options,
+    ...options,
+    ...options,
+  ];
+};
 const setCategoryOptions = async () =>
   (categoryOptions.value = await getTicketCategoryOptions());
 
 const selectType = ({ selectedValues }: { selectedValues: number[] }) => {
   ticketInfo.type = selectedValues[0];
   typePickerPopupVisible.value = false;
+};
+
+const showScenicPickerPopup = () => {
+  if (!ticketInfo.type) {
+    showToast("请先选择门票类型");
+    return;
+  }
+  scenicPickerPopupVisible.value = true;
+};
+const selectScenic = ({ selectedValues }: { selectedValues: number[] }) => {
+  ticketInfo.scenicIds = selectedValues;
+  scenicPickerPopupVisible.value = false;
 };
 // const selectCategory = ({ selectedValues }: { selectedValues: number[] }) => {
 //   ticketInfo.categoryId = selectedValues[0];
@@ -502,5 +593,31 @@ const save = async () => {
   font-size: 0.26rem;
   border: 1px solid #ddd;
   border-radius: 0.12rem;
+}
+.tool-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  .cancel-btn,
+  .confirm-btn {
+    width: 1.2rem;
+    height: 0.88rem;
+    font-size: 0.28rem;
+  }
+  .cancel-btn {
+    color: #969799;
+  }
+  .confirm-btn {
+    color: #576b95;
+  }
+}
+.scenic-options {
+  margin-top: 0.88rem;
+  padding-bottom: 0.36rem;
+  height: 8rem;
+  overflow-y: scroll;
 }
 </style>

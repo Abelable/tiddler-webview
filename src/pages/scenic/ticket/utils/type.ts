@@ -32,6 +32,7 @@ export interface OriginalTicketInfo {
 export interface TicketInfo {
   id: number;
   type: number | undefined;
+  scenicIds: number[];
   name: string;
   price: number | undefined;
   marketPrice: number | undefined;
