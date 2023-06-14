@@ -365,7 +365,7 @@
     </PickerGroup>
   </Popup>
 
-  <!-- <Popup v-model:show="categoryPickerPopupVisible" position="bottom" round>
+  <Popup v-model:show="categoryPickerPopupVisible" position="bottom" round>
     <Picker
       :columns="categoryOptions"
       @confirm="selectCategory"
@@ -373,20 +373,6 @@
       :columns-field-names="{ text: 'name', value: 'id' }"
     />
   </Popup>
-
-  <Dialog
-    v-model:show="specOptionModalVisible"
-    title="新增规格选项"
-    show-cancel-button
-    :before-close="addSpecOption"
-  >
-    <input
-      class="sku-option-input"
-      v-model="specOptionName"
-      type="text"
-      placeholder="请输入规格选项名称"
-    />
-  </Dialog> -->
 </template>
 
 <script setup lang="ts">
@@ -550,10 +536,10 @@ const exchangeTimeConfirm = () => {
   )}-${endExchangeTime.value.join(":")}`;
   exchangeTimePickerPopupVisible.value = false;
 };
-// const selectCategory = ({ selectedValues }: { selectedValues: number[] }) => {
-//   ticketInfo.categoryId = selectedValues[0];
-//   categoryPickerPopupVisible.value = false;
-// };
+const selectCategory = ({ selectedValues }: { selectedValues: number[] }) => {
+  // ticketInfo.categoryId = selectedValues[0];
+  categoryPickerPopupVisible.value = false;
+};
 
 watch(ticketInfo.specList, () => {
   let nameList: string[][] = [];
