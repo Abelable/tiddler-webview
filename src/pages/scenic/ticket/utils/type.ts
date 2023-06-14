@@ -65,27 +65,14 @@ interface CreateSpecItem {
   priceList: string;
 }
 
-export interface CreateTicketInfo
-  extends Omit<
-    TicketInfo,
-    | "id"
-    | "marketPrice"
-    | "specList"
-    | "feeIncludeTips"
-    | "feeNotIncludeTips"
-    | "bookingTime"
-    | "effectiveTime"
-    | "validityTime"
-    | "limitNumber"
-    | "refundStatus"
-    | "refundTips"
-    | "needExchange"
-    | "exchangeTips"
-    | "exchangeTime"
-    | "exchangeLocation"
-    | "otherTips"
-  > {
+export interface CreateTicketInfo {
+  type: number;
+  scenicIds: number[];
+  name: string;
+  price: number;
   marketPrice?: number;
+  salesCommissionRate: number;
+  promotionCommissionRate: number;
   specList: CreateSpecItem[];
   feeIncludeTips?: string;
   feeNotIncludeTips?: string;
