@@ -24,15 +24,34 @@ export interface SpecItem {
   categoryId: number;
   priceList: PriceItem[];
 }
+
+export interface OriginalSkuItem {
+  categoryId: number;
+  priceList: string;
+}
 export interface OriginalTicketInfo {
   id: number;
   type: number;
+  scenicIds: number[];
   name: string;
   price: number;
   marketPrice: number;
   salesCommissionRate: number;
   promotionCommissionRate: number;
-  specList: SpecItem[];
+  specList: OriginalSkuItem[];
+  feeIncludeTips: string;
+  feeNotIncludeTips: string;
+  bookingTime: string;
+  effectiveTime: number;
+  validityTime: number;
+  limitNumber: number;
+  refundStatus: number;
+  refundTips: string;
+  needExchange: boolean;
+  exchangeTips: string;
+  exchangeTime: string;
+  exchangeLocation: string;
+  otherTips: string;
 }
 
 export interface TicketInfo {
