@@ -326,52 +326,20 @@
     @confirm="setType"
     @cancel="typePickerPopupVisible = false"
   />
-
-  <Popup
+  <ScenicPickerPopup
     v-if="ticketInfo.type === 1"
-    v-model:show="scenicPickerPopupVisible"
-    position="bottom"
-    round
-  >
-    <Picker
-      :columns="scenicOptions"
-      @confirm="selectScenic"
-      @cancel="scenicPickerPopupVisible = false"
-      :columns-field-names="{ text: 'name', value: 'id' }"
-    />
-  </Popup>
-
-  <Popup
+    :visible="scenicPickerPopupVisible"
+    :scenic-options="scenicOptions"
+    @confirm="setScenicIds"
+    @cancel="scenicPickerPopupVisible = false"
+  />
+  <MultiScenicPickerPopup
     v-if="ticketInfo.type === 2"
-    v-model:show="scenicPickerPopupVisible"
-    position="bottom"
-    round
-  >
-    <div class="tool-bar">
-      <button class="cancel-btn" @click="scenicPickerPopupVisible = false">
-        取消
-      </button>
-      <button class="confirm-btn" @click="selectScenicList">确认</button>
-    </div>
-    <CheckboxGroup class="scenic-options" v-model="selectedScenicIds">
-      <CellGroup>
-        <Cell
-          v-for="(item, index) in scenicOptions"
-          :key="item.id"
-          :title="item.name"
-          @click="toggleScenicOptionSelected(index)"
-        >
-          <template #right-icon>
-            <Checkbox
-              :name="item.id"
-              :ref="(el: CheckboxInstance) => (scenicOptionRefs[index] = el)"
-              @click.stop
-            />
-          </template>
-        </Cell>
-      </CellGroup>
-    </CheckboxGroup>
-  </Popup>
+    :visible="scenicPickerPopupVisible"
+    :scenic-options="scenicOptions"
+    @confirm="setScenicIds"
+    @cancel="scenicPickerPopupVisible = false"
+  />
 
   <Popup v-model:show="bookingTimePickerPopupVisible" position="bottom" round>
     <PickerGroup
@@ -429,10 +397,6 @@ import {
   showToast,
   Popup,
   Picker,
-  CheckboxGroup,
-  Checkbox,
-  CellGroup,
-  Cell,
   PickerGroup,
   TimePicker,
   Switch,
@@ -440,6 +404,8 @@ import {
   Calendar,
 } from "vant";
 import TypePickerPopup from "./components/typePickerPopup.vue";
+import ScenicPickerPopup from "./components/scenicPickerPopup.vue";
+import MultiScenicPickerPopup from "./components/multiScenicPickerPopup.vue";
 
 import { ref, reactive, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
@@ -449,7 +415,6 @@ import { cleanObject } from "@/utils/index";
 import { getScenicOptions } from "@/utils/api";
 import { createTicket, getTicketCategoryOptions } from "./utils/api";
 
-import type { CheckboxInstance } from "vant";
 import type { Option } from "@/utils/type";
 import type {
   TicketCategoryOption,
@@ -508,8 +473,6 @@ const exchangeTimePickerPopupVisible = ref(false);
 
 const scenicOptions = ref<Option[]>([]);
 const scenicPickerPopupVisible = ref(false);
-const selectedScenicIds = ref([]);
-const scenicOptionRefs = ref<CheckboxInstance[]>([]);
 const salesCommissionRateTipsVisible = ref(false);
 const promotionCommissionRateTipsVisible = ref(false);
 
@@ -530,8 +493,6 @@ onMounted(() => {
   setCategoryOptions();
 });
 
-const setScenicOptions = async () =>
-  (scenicOptions.value = await getScenicOptions());
 const setCategoryOptions = async () => {
   const options = await getTicketCategoryOptions();
   categoryOptions.value = options.map((item) => ({
@@ -541,11 +502,16 @@ const setCategoryOptions = async () => {
 };
 
 const setType = ({ type, name }: { type: number; name: string }) => {
+  if (ticketInfo.type !== type) {
+    ticketInfo.scenicIds = [];
+  }
   ticketInfo.type = type;
   typeName.value = name;
   typePickerPopupVisible.value = false;
 };
 
+const setScenicOptions = async () =>
+  (scenicOptions.value = await getScenicOptions());
 const showScenicPickerPopup = () => {
   if (!ticketInfo.type) {
     showToast("请先选择门票类型");
@@ -553,17 +519,11 @@ const showScenicPickerPopup = () => {
   }
   scenicPickerPopupVisible.value = true;
 };
-const selectScenic = ({ selectedValues }: { selectedValues: number[] }) => {
-  ticketInfo.scenicIds = selectedValues;
+const setScenicIds = (scenicIds: number[]) => {
+  ticketInfo.scenicIds = scenicIds;
   scenicPickerPopupVisible.value = false;
 };
-const toggleScenicOptionSelected = (index: number) => {
-  scenicOptionRefs.value[index].toggle();
-};
-const selectScenicList = () => {
-  ticketInfo.scenicIds = selectedScenicIds.value;
-  scenicPickerPopupVisible.value = false;
-};
+
 const bookTimeConfirm = () => {
   ticketInfo.bookingTime = `${startBookTime.value.join(
     ":"
@@ -845,31 +805,5 @@ const save = async () => {
   font-size: 0.24rem;
   line-height: 1.5;
   white-space: wrap;
-}
-.tool-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  .cancel-btn,
-  .confirm-btn {
-    width: 1.2rem;
-    height: 0.88rem;
-    font-size: 0.28rem;
-  }
-  .cancel-btn {
-    color: #969799;
-  }
-  .confirm-btn {
-    color: #576b95;
-  }
-}
-.scenic-options {
-  margin-top: 0.88rem;
-  padding-bottom: 0.36rem;
-  height: 8rem;
-  overflow-y: scroll;
 }
 </style>
