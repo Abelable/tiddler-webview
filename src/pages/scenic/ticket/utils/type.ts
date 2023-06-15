@@ -26,6 +26,11 @@ export interface SpecItem {
   priceList: PriceItem[];
 }
 
+export interface OriginalSpecItem {
+  categoryId: number;
+  priceList: string;
+}
+
 export interface OriginalTicketInfo {
   id: number;
   type: number;
@@ -35,7 +40,7 @@ export interface OriginalTicketInfo {
   marketPrice: number;
   salesCommissionRate: number;
   promotionCommissionRate: number;
-  specList: SpecItem[];
+  specList: OriginalSpecItem[];
   feeIncludeTips: string;
   feeNotIncludeTips: string;
   bookingTime: string;
