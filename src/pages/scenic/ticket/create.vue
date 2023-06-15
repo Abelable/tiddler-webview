@@ -649,7 +649,6 @@ const dateRangeConfirm = (dateList: Date[]) => {
 };
 
 const save = async () => {
-  console.log("ticketInfo", ticketInfo.specList);
   if (!ticketInfo.type) {
     showToast("请选择门票类型");
     return;
