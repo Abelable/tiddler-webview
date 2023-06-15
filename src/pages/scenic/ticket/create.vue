@@ -260,8 +260,8 @@
         <li class="form-item flex">
           <div class="name required">退票条件</div>
           <div class="picker" @click="refundStatusPickerPopupVisible = true">
-            <div class="content" :class="{ active: selectedRefundStatusName }">
-              {{ selectedRefundStatusName || "请选择退票条件" }}
+            <div class="content" :class="{ active: refundStatusName }">
+              {{ refundStatusName || "请选择退票条件" }}
             </div>
             <Icon name="arrow" />
           </div>
@@ -345,15 +345,11 @@
     @confirm="setBookTime"
     @cancel="bookingTimePickerPopupVisible = false"
   />
-
-  <Popup v-model:show="refundStatusPickerPopupVisible" position="bottom" round>
-    <Picker
-      :columns="refundStatusOptions"
-      @confirm="selectRefundStatus"
-      @cancel="refundStatusPickerPopupVisible = false"
-    />
-  </Popup>
-
+  <RefundStatusPickerPopup
+    :visible="refundStatusPickerPopupVisible"
+    @confirm="setRefundStatus"
+    @cancel="refundStatusPickerPopupVisible = false"
+  />
   <TimeRangePickerPopup
     :visible="exchangeTimePickerPopupVisible"
     @confirm="setExchangeTime"
@@ -394,6 +390,7 @@ import TypePickerPopup from "./components/typePickerPopup.vue";
 import ScenicPickerPopup from "./components/scenicPickerPopup.vue";
 import MultiScenicPickerPopup from "./components/multiScenicPickerPopup.vue";
 import TimeRangePickerPopup from "./components/timeRangePickerPopup.vue";
+import RefundStatusPickerPopup from "./components/refundStatusPickerPopup.vue";
 
 import { ref, reactive, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
@@ -411,12 +408,6 @@ import type {
 } from "./utils/type";
 
 const router = useRouter();
-
-const refundStatusOptions = [
-  { text: "随时可退", value: 1 },
-  { text: "有条件退", value: 2 },
-  { text: "不可退", value: 3 },
-];
 
 const scenicOptions = ref<Option[]>([]);
 const categoryOptions = ref<TicketCategoryOption[]>([]);
@@ -444,6 +435,7 @@ const ticketInfo = reactive<Omit<TicketInfo, "id">>({
   specList: [],
 });
 const typeName = ref("");
+const refundStatusName = ref("");
 const curSpecIndex = ref(0);
 const curPriceItemIndex = ref(0);
 const typePickerPopupVisible = ref(false);
@@ -461,11 +453,6 @@ const selectedScenicNames = computed(() =>
   ticketInfo.scenicIds
     .map((id) => scenicOptions.value.find((item) => item.id === id)?.name)
     .join()
-);
-const selectedRefundStatusName = computed(
-  () =>
-    refundStatusOptions.find((item) => item.value === ticketInfo.refundStatus)
-      ?.text
 );
 
 onMounted(() => {
@@ -508,14 +495,19 @@ const setBookTime = (bookingTime: string) => {
   ticketInfo.bookingTime = bookingTime;
   bookingTimePickerPopupVisible.value = false;
 };
-const selectRefundStatus = ({
-  selectedValues,
+
+const setRefundStatus = ({
+  status,
+  name,
 }: {
-  selectedValues: number[];
+  status: number;
+  name: string;
 }) => {
-  ticketInfo.refundStatus = selectedValues[0];
+  ticketInfo.refundStatus = status;
+  refundStatusName.value = name;
   refundStatusPickerPopupVisible.value = false;
 };
+
 const setExchangeTime = (exchangeTime: string) => {
   ticketInfo.exchangeTime = exchangeTime;
   exchangeTimePickerPopupVisible.value = false;
