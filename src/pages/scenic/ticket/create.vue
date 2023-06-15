@@ -418,6 +418,8 @@ const refundStatusOptions = [
   { text: "不可退", value: 3 },
 ];
 
+const scenicOptions = ref<Option[]>([]);
+const categoryOptions = ref<TicketCategoryOption[]>([]);
 const ticketInfo = reactive<Omit<TicketInfo, "id">>({
   type: undefined,
   scenicIds: [],
@@ -442,7 +444,6 @@ const ticketInfo = reactive<Omit<TicketInfo, "id">>({
   specList: [],
 });
 const typeName = ref("");
-const categoryOptions = ref<TicketCategoryOption[]>([]);
 const curSpecIndex = ref(0);
 const curPriceItemIndex = ref(0);
 const typePickerPopupVisible = ref(false);
@@ -451,8 +452,6 @@ const dateRangePickerPopupVisible = ref(false);
 const bookingTimePickerPopupVisible = ref(false);
 const refundStatusPickerPopupVisible = ref(false);
 const exchangeTimePickerPopupVisible = ref(false);
-
-const scenicOptions = ref<Option[]>([]);
 const scenicPickerPopupVisible = ref(false);
 const salesCommissionRateTipsVisible = ref(false);
 const promotionCommissionRateTipsVisible = ref(false);
@@ -531,7 +530,6 @@ const addSpec = ({ selectedValues }: { selectedValues: number[] }) => {
         }
       : item
   );
-
   ticketInfo.specList.push({ categoryId: selectedValues[0], priceList: [] });
   categoryPickerPopupVisible.value = false;
 };
