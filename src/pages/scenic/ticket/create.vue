@@ -355,16 +355,12 @@
     @confirm="setExchangeTime"
     @cancel="exchangeTimePickerPopupVisible = false"
   />
-
-  <Popup v-model:show="categoryPickerPopupVisible" position="bottom" round>
-    <Picker
-      :columns="categoryOptions"
-      @confirm="addSpec"
-      @cancel="categoryPickerPopupVisible = false"
-      :columns-field-names="{ text: 'name', value: 'id' }"
-    />
-  </Popup>
-
+  <CategoryPickerPopup
+    :visible="categoryPickerPopupVisible"
+    :category-options="categoryOptions"
+    @confirm="addSpec"
+    @cancel="categoryPickerPopupVisible = false"
+  />
   <Calendar
     v-model:show="dateRangePickerPopupVisible"
     type="range"
@@ -380,8 +376,6 @@ import {
   Button,
   showConfirmDialog,
   showToast,
-  Popup,
-  Picker,
   Switch,
   SwipeCell,
   Calendar,
@@ -391,6 +385,7 @@ import ScenicPickerPopup from "./components/scenicPickerPopup.vue";
 import MultiScenicPickerPopup from "./components/multiScenicPickerPopup.vue";
 import TimeRangePickerPopup from "./components/timeRangePickerPopup.vue";
 import RefundStatusPickerPopup from "./components/refundStatusPickerPopup.vue";
+import CategoryPickerPopup from "./components/categoryPickerPopup.vue";
 
 import { ref, reactive, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
@@ -513,16 +508,16 @@ const setExchangeTime = (exchangeTime: string) => {
   exchangeTimePickerPopupVisible.value = false;
 };
 
-const addSpec = ({ selectedValues }: { selectedValues: number[] }) => {
+const addSpec = (categoryId: number) => {
   categoryOptions.value = categoryOptions.value.map((item) =>
-    item.id === selectedValues[0]
+    item.id === categoryId
       ? {
           ...item,
           disabled: true,
         }
       : item
   );
-  ticketInfo.specList.push({ categoryId: selectedValues[0], priceList: [] });
+  ticketInfo.specList.push({ categoryId, priceList: [] });
   categoryPickerPopupVisible.value = false;
 };
 const deleteSpec = (index: number) =>
