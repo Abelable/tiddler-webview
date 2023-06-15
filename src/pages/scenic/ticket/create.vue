@@ -392,20 +392,18 @@ import { useRouter } from "vue-router";
 import _ from "lodash";
 import dayjs from "dayjs";
 import { cleanObject } from "@/utils/index";
-import { getScenicOptions } from "@/utils/api";
-import { createTicket, getTicketCategoryOptions } from "./utils/api";
+import { createTicket } from "./utils/api";
+import {
+  scenicOptions,
+  setScenicOptions,
+  categoryOptions,
+  setCategoryOptions,
+} from "./utils/index";
 
-import type { Option } from "@/utils/type";
-import type {
-  TicketCategoryOption,
-  TicketInfo,
-  CreateTicketInfo,
-} from "./utils/type";
+import type { TicketInfo, CreateTicketInfo } from "./utils/type";
 
 const router = useRouter();
 
-const scenicOptions = ref<Option[]>([]);
-const categoryOptions = ref<TicketCategoryOption[]>([]);
 const ticketInfo = reactive<Omit<TicketInfo, "id">>({
   type: undefined,
   scenicIds: [],
@@ -455,14 +453,6 @@ onMounted(() => {
   setCategoryOptions();
 });
 
-const setCategoryOptions = async () => {
-  const options = await getTicketCategoryOptions();
-  categoryOptions.value = options.map((item) => ({
-    ...item,
-    disabled: false,
-  }));
-};
-
 const setType = ({ type, name }: { type: number; name: string }) => {
   if (ticketInfo.type !== type) {
     ticketInfo.scenicIds = [];
@@ -472,8 +462,6 @@ const setType = ({ type, name }: { type: number; name: string }) => {
   typePickerPopupVisible.value = false;
 };
 
-const setScenicOptions = async () =>
-  (scenicOptions.value = await getScenicOptions());
 const showScenicPickerPopup = () => {
   if (!ticketInfo.type) {
     showToast("请先选择门票类型");
