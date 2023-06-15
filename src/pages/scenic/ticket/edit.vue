@@ -400,7 +400,6 @@ import {
 } from "./utils/index";
 
 import type { TicketInfo, EditTicketInfo } from "./utils/type";
-import { uniqueId } from "lodash";
 
 const route = useRoute();
 const router = useRouter();
