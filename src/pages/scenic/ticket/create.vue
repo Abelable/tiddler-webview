@@ -786,9 +786,6 @@ const save = async () => {
           &.flex {
             display: flex;
             align-items: center;
-            &.between {
-              justify-content: space-between;
-            }
           }
           &.required {
             position: relative;
@@ -825,12 +822,6 @@ const save = async () => {
             }
           }
         }
-        .sku-options {
-          .sku-option {
-            margin-top: 0.32rem;
-            margin-right: 0.32rem;
-          }
-        }
         .unit {
           margin-left: 0.06rem;
           font-weight: 500;
@@ -863,15 +854,6 @@ const save = async () => {
   font-size: 0.24rem;
   line-height: 1.5;
   white-space: wrap;
-}
-.sku-option-input {
-  margin: 0.32rem 0.32rem 0.5rem;
-  padding: 0.24rem;
-  width: calc(100% - 0.64rem);
-  height: 0.88rem;
-  font-size: 0.26rem;
-  border: 1px solid #ddd;
-  border-radius: 0.12rem;
 }
 .tool-bar {
   position: absolute;
