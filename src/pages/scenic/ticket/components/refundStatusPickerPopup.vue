@@ -10,22 +10,13 @@
 
 <script setup lang="ts">
 import { Popup, Picker } from "vant";
-
-const refundStatusOptions = [
-  { text: "随时可退", value: 1 },
-  { text: "有条件退", value: 2 },
-  { text: "不可退", value: 3 },
-];
+import { refundStatusOptions } from "../utils/index";
 
 defineProps<{ visible: boolean }>();
 const emit = defineEmits(["confirm", "cancel"]);
 
 const confirm = ({ selectedValues }: { selectedValues: number[] }) =>
-  emit("confirm", {
-    status: selectedValues[0],
-    name: refundStatusOptions.find((item) => item.value === selectedValues[0])
-      ?.text,
-  });
+  emit("confirm", selectedValues[0]);
 const cancel = () => emit("cancel");
 </script>
 

@@ -6,19 +6,13 @@
 
 <script setup lang="ts">
 import { Popup, Picker } from "vant";
+import { typeOptions } from "../utils/index";
 
-const typeOptions = [
-  { text: "单景点门票", value: 1 },
-  { text: "多景点联票", value: 2 },
-];
 defineProps<{ visible: boolean }>();
 const emit = defineEmits(["confirm", "cancel"]);
 
 const confirm = ({ selectedValues }: { selectedValues: number[] }) =>
-  emit("confirm", {
-    type: selectedValues[0],
-    name: typeOptions.find((item) => item.value === selectedValues[0])?.text,
-  });
+  emit("confirm", selectedValues[0]);
 const cancel = () => emit("cancel");
 </script>
 

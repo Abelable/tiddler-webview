@@ -15,8 +15,8 @@
         <li class="form-item flex">
           <div class="name required">关联景点</div>
           <div class="picker" @click="showScenicPickerPopup">
-            <div class="content" :class="{ active: selectedScenicNames }">
-              {{ selectedScenicNames || "请选择关联景点" }}
+            <div class="content" :class="{ active: scenicNames }">
+              {{ scenicNames || "请选择关联景点" }}
             </div>
             <Icon name="arrow" />
           </div>
@@ -393,6 +393,8 @@ import dayjs from "dayjs";
 import { cleanObject } from "@/utils/index";
 import { getTicketInfo, editTicket } from "./utils/api";
 import {
+  typeOptions,
+  refundStatusOptions,
   scenicOptions,
   setScenicOptions,
   categoryOptions,
@@ -428,8 +430,6 @@ const ticketInfo = reactive<TicketInfo>({
   otherTips: "",
   specList: [],
 });
-const typeName = ref("");
-const refundStatusName = ref("");
 const curSpecIndex = ref(0);
 const curPriceItemIndex = ref(0);
 const typePickerPopupVisible = ref(false);
@@ -443,10 +443,18 @@ const salesCommissionRateTipsVisible = ref(false);
 const promotionCommissionRateTipsVisible = ref(false);
 
 // 计算属性
-const selectedScenicNames = computed(() =>
+const scenicNames = computed(() =>
   ticketInfo.scenicIds
     .map((id) => scenicOptions.value.find((item) => item.id === id)?.name)
     .join()
+);
+const typeName = computed(
+  () => typeOptions.find((item) => item.value === ticketInfo.type)?.text
+);
+const refundStatusName = computed(
+  () =>
+    refundStatusOptions.find((item) => item.value === ticketInfo.refundStatus)
+      ?.text
 );
 
 onMounted(async () => {
@@ -508,12 +516,11 @@ const setTicketInfo = async () => {
   ticketInfo.otherTips = otherTips;
 };
 
-const setType = ({ type, name }: { type: number; name: string }) => {
+const setType = (type: number) => {
   if (ticketInfo.type !== type) {
     ticketInfo.scenicIds = [];
   }
   ticketInfo.type = type;
-  typeName.value = name;
   typePickerPopupVisible.value = false;
 };
 
@@ -534,15 +541,8 @@ const setBookTime = (bookingTime: string) => {
   bookingTimePickerPopupVisible.value = false;
 };
 
-const setRefundStatus = ({
-  status,
-  name,
-}: {
-  status: number;
-  name: string;
-}) => {
+const setRefundStatus = (status: number) => {
   ticketInfo.refundStatus = status;
-  refundStatusName.value = name;
   refundStatusPickerPopupVisible.value = false;
 };
 
