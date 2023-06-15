@@ -6,8 +6,8 @@
         <li class="form-item flex">
           <div class="name required">门票类型</div>
           <div class="picker" @click="typePickerPopupVisible = true">
-            <div class="content" :class="{ active: selectedTypeName }">
-              {{ selectedTypeName || "请选择门票类型" }}
+            <div class="content" :class="{ active: typeName }">
+              {{ typeName || "请选择门票类型" }}
             </div>
             <Icon name="arrow" />
           </div>
@@ -321,13 +321,11 @@
 
   <button class="upload-btn" @click="save">点击提交</button>
 
-  <Popup v-model:show="typePickerPopupVisible" position="bottom" round>
-    <Picker
-      :columns="typeOptions"
-      @confirm="selectType"
-      @cancel="typePickerPopupVisible = false"
-    />
-  </Popup>
+  <TypePickerPopup
+    :visible="typePickerPopupVisible"
+    @confirm="setType"
+    @cancel="typePickerPopupVisible = false"
+  />
 
   <Popup
     v-if="ticketInfo.type === 1"
@@ -441,6 +439,8 @@ import {
   SwipeCell,
   Calendar,
 } from "vant";
+import TypePickerPopup from "./components/typePickerPopup.vue";
+
 import { ref, reactive, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import _ from "lodash";
@@ -458,6 +458,12 @@ import type {
 } from "./utils/type";
 
 const router = useRouter();
+
+const refundStatusOptions = [
+  { text: "随时可退", value: 1 },
+  { text: "有条件退", value: 2 },
+  { text: "不可退", value: 3 },
+];
 
 const ticketInfo = reactive<Omit<TicketInfo, "id">>({
   type: undefined,
@@ -482,15 +488,7 @@ const ticketInfo = reactive<Omit<TicketInfo, "id">>({
   otherTips: "",
   specList: [],
 });
-const typeOptions = [
-  { text: "单景点门票", value: 1 },
-  { text: "多景点联票", value: 2 },
-];
-const refundStatusOptions = [
-  { text: "随时可退", value: 1 },
-  { text: "有条件退", value: 2 },
-  { text: "不可退", value: 3 },
-];
+const typeName = ref("");
 const categoryOptions = ref<TicketCategoryOption[]>([]);
 const curSpecIndex = ref(0);
 const curPriceItemIndex = ref(0);
@@ -516,9 +514,6 @@ const salesCommissionRateTipsVisible = ref(false);
 const promotionCommissionRateTipsVisible = ref(false);
 
 // 计算属性
-const selectedTypeName = computed(
-  () => typeOptions.find((item) => item.value === ticketInfo.type)?.text
-);
 const selectedScenicNames = computed(() =>
   ticketInfo.scenicIds
     .map((id) => scenicOptions.value.find((item) => item.id === id)?.name)
@@ -545,8 +540,9 @@ const setCategoryOptions = async () => {
   }));
 };
 
-const selectType = ({ selectedValues }: { selectedValues: number[] }) => {
-  ticketInfo.type = selectedValues[0];
+const setType = ({ type, name }: { type: number; name: string }) => {
+  ticketInfo.type = type;
+  typeName.value = name;
   typePickerPopupVisible.value = false;
 };
 
@@ -732,10 +728,6 @@ const save = async () => {
 <style>
 .van-empty__description {
   font-size: 0.24rem;
-}
-.van-collapse-item__title {
-  font-size: 0.26rem;
-  font-weight: 500;
 }
 </style>
 <style lang="scss" scoped>
