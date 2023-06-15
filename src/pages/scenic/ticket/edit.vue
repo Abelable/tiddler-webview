@@ -488,11 +488,7 @@ const setTicketInfo = async () => {
   ticketInfo.marketPrice = marketPrice || undefined;
   ticketInfo.salesCommissionRate = salesCommissionRate * 100;
   ticketInfo.promotionCommissionRate = promotionCommissionRate * 100;
-  specList.forEach((item) =>
-    ticketInfo.specList.push(
-      _.cloneDeep({ ...item, priceList: JSON.parse(item.priceList) })
-    )
-  );
+  specList.forEach((item) => ticketInfo.specList.push(_.cloneDeep(item)));
   ticketInfo.feeIncludeTips = feeIncludeTips;
   ticketInfo.feeNotIncludeTips = feeNotIncludeTips;
   ticketInfo.bookingTime = bookingTime;

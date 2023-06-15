@@ -20,15 +20,12 @@ export interface PriceItem {
   price: number | undefined;
   stock: number | undefined;
 }
+
 export interface SpecItem {
   categoryId: number;
   priceList: PriceItem[];
 }
 
-export interface OriginalSkuItem {
-  categoryId: number;
-  priceList: string;
-}
 export interface OriginalTicketInfo {
   id: number;
   type: number;
@@ -38,7 +35,7 @@ export interface OriginalTicketInfo {
   marketPrice: number;
   salesCommissionRate: number;
   promotionCommissionRate: number;
-  specList: OriginalSkuItem[];
+  specList: SpecItem[];
   feeIncludeTips: string;
   feeNotIncludeTips: string;
   bookingTime: string;
