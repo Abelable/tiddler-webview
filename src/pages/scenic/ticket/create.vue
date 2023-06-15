@@ -169,7 +169,6 @@
               />
             </li>
           </ul>
-
           <template #right>
             <Button
               class="delete-btn"
