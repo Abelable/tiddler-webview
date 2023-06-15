@@ -340,17 +340,11 @@
     @confirm="setScenicIds"
     @cancel="scenicPickerPopupVisible = false"
   />
-
-  <Popup v-model:show="bookingTimePickerPopupVisible" position="bottom" round>
-    <PickerGroup
-      :tabs="['开始时间', '结束时间']"
-      @confirm="bookTimeConfirm"
-      @cancel="bookingTimePickerPopupVisible = false"
-    >
-      <TimePicker v-model="startBookTime" />
-      <TimePicker v-model="endBookTime" />
-    </PickerGroup>
-  </Popup>
+  <TimeRangePickerPopup
+    :visible="bookingTimePickerPopupVisible"
+    @confirm="setBookTime"
+    @cancel="bookingTimePickerPopupVisible = false"
+  />
 
   <Popup v-model:show="refundStatusPickerPopupVisible" position="bottom" round>
     <Picker
@@ -360,16 +354,11 @@
     />
   </Popup>
 
-  <Popup v-model:show="exchangeTimePickerPopupVisible" position="bottom" round>
-    <PickerGroup
-      :tabs="['开始时间', '结束时间']"
-      @confirm="exchangeTimeConfirm"
-      @cancel="exchangeTimePickerPopupVisible = false"
-    >
-      <TimePicker v-model="startExchangeTime" />
-      <TimePicker v-model="endExchangeTime" />
-    </PickerGroup>
-  </Popup>
+  <TimeRangePickerPopup
+    :visible="exchangeTimePickerPopupVisible"
+    @confirm="setExchangeTime"
+    @cancel="exchangeTimePickerPopupVisible = false"
+  />
 
   <Popup v-model:show="categoryPickerPopupVisible" position="bottom" round>
     <Picker
@@ -397,8 +386,6 @@ import {
   showToast,
   Popup,
   Picker,
-  PickerGroup,
-  TimePicker,
   Switch,
   SwipeCell,
   Calendar,
@@ -406,6 +393,7 @@ import {
 import TypePickerPopup from "./components/typePickerPopup.vue";
 import ScenicPickerPopup from "./components/scenicPickerPopup.vue";
 import MultiScenicPickerPopup from "./components/multiScenicPickerPopup.vue";
+import TimeRangePickerPopup from "./components/timeRangePickerPopup.vue";
 
 import { ref, reactive, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
@@ -460,15 +448,8 @@ const curPriceItemIndex = ref(0);
 const typePickerPopupVisible = ref(false);
 const categoryPickerPopupVisible = ref(false);
 const dateRangePickerPopupVisible = ref(false);
-
-const startBookTime = ref([]);
-const endBookTime = ref([]);
 const bookingTimePickerPopupVisible = ref(false);
-
 const refundStatusPickerPopupVisible = ref(false);
-
-const startExchangeTime = ref([]);
-const endExchangeTime = ref([]);
 const exchangeTimePickerPopupVisible = ref(false);
 
 const scenicOptions = ref<Option[]>([]);
@@ -524,10 +505,8 @@ const setScenicIds = (scenicIds: number[]) => {
   scenicPickerPopupVisible.value = false;
 };
 
-const bookTimeConfirm = () => {
-  ticketInfo.bookingTime = `${startBookTime.value.join(
-    ":"
-  )}-${endBookTime.value.join(":")}`;
+const setBookTime = (bookingTime: string) => {
+  ticketInfo.bookingTime = bookingTime;
   bookingTimePickerPopupVisible.value = false;
 };
 const selectRefundStatus = ({
@@ -538,10 +517,8 @@ const selectRefundStatus = ({
   ticketInfo.refundStatus = selectedValues[0];
   refundStatusPickerPopupVisible.value = false;
 };
-const exchangeTimeConfirm = () => {
-  ticketInfo.exchangeTime = `${startExchangeTime.value.join(
-    ":"
-  )}-${endExchangeTime.value.join(":")}`;
+const setExchangeTime = (exchangeTime: string) => {
+  ticketInfo.exchangeTime = exchangeTime;
   exchangeTimePickerPopupVisible.value = false;
 };
 
