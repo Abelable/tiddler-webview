@@ -148,8 +148,8 @@ import {
 } from "vant";
 import { ref, reactive, onMounted } from "vue";
 import dayjs from "dayjs";
-import { getScenicOptions } from "@/utils/api";
 import {
+  getScenicOptions,
   getProviderScenicSpotList,
   deleteProviderScenicSpot,
   applyScenicSpot,

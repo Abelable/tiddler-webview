@@ -1,6 +1,5 @@
 import { ref } from "vue";
-import { getScenicOptions } from "@/utils/api";
-import { getTicketCategoryOptions } from "./api";
+import { getScenicOptions, getTicketCategoryOptions } from "./api";
 
 import type { Option } from "@/utils/type";
 import type { TicketCategoryOption } from "./type";

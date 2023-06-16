@@ -8,6 +8,9 @@ import type {
   EditTicketInfo,
 } from "./type";
 
+export const getScenicOptions = async (): Promise<Option[]> =>
+  await http("scenic/provider/scenic_options");
+
 export const getTicketTotals = async (): Promise<number[]> =>
   await http("scenic/provider/ticket/totals");
 
