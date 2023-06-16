@@ -7,6 +7,7 @@ export interface TicketCategoryOption {
 export interface TicketListItem {
   id: number;
   type: number;
+  scenicIds: number[];
   name: string;
   price: number;
   salesVolume: number;

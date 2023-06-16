@@ -23,129 +23,32 @@
       @load="onLoadMore"
       :finished-text="ticketLists[curMenuIndex].length ? '没有更多了' : ''"
     >
-      <SwipeCell
-        class="ticket-item"
-        v-for="(item, index) in ticketLists[0]"
-        :key="index"
-        v-show="curMenuIndex === 0"
-      >
-        <div class="inner">
-          <div class="content">
-            <div class="name">{{ item.name }}</div>
-            <div class="row">
-              <div class="price">价格：¥{{ item.price }}</div>
-              <div class="sales-volume">销量：{{ item.salesVolume }}</div>
-            </div>
-          </div>
-        </div>
-        <template #right>
-          <Button
-            class="down-btn"
-            @click.stop="offShelf(index)"
-            square
-            text="下架"
-            type="danger"
-          />
-        </template>
-      </SwipeCell>
-
-      <SwipeCell
-        class="ticket-item"
-        v-for="(item, index) in ticketLists[1]"
-        :key="index"
-        v-show="curMenuIndex === 1"
-      >
-        <div class="inner">
-          <div class="content">
-            <div class="name omit">{{ item.name }}</div>
-            <div class="time">
-              下架时间：{{
-                dayjs(item.updatedAt).format("YYYY-MM-DD HH:mm:ss")
-              }}
-            </div>
-          </div>
-        </div>
-        <template #right>
-          <Button
-            class="up-btn"
-            @click.stop="onShelf(index)"
-            square
-            text="上架"
-            type="danger"
-          />
-        </template>
-      </SwipeCell>
-
-      <div
-        class="ticket-item"
-        v-for="(item, index) in ticketLists[2]"
-        :key="index"
-        v-show="curMenuIndex === 2"
-      >
-        <div class="inner">
-          <div class="content">
-            <div class="name">{{ item.name }}</div>
-            <div class="time">
-              提交时间：{{
-                dayjs(item.createdAt).format("YYYY-MM-DD HH:mm:ss")
-              }}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <SwipeCell
-        class="ticket-item"
-        v-for="(item, index) in ticketLists[3]"
-        :key="index"
-        v-show="curMenuIndex === 3"
-      >
-        <div class="inner" @click="editTicket(item.id)">
-          <div class="content">
-            <div class="name">{{ item.name }}</div>
-            <div class="failure-reason">
-              未通过原因：{{ item.failureReason }}
-            </div>
-          </div>
-        </div>
-        <template #right>
-          <Button
-            class="delete-btn"
-            @click.stop="deleteCurTicket(index)"
-            square
-            text="删除"
-            type="danger"
-          />
-        </template>
-      </SwipeCell>
+      <TicketItem
+        v-for="item in ticketLists[curMenuIndex]"
+        :key="item.id"
+        :item="item"
+        :status="menuList[curMenuIndex].status"
+        :scenic-options="scenicOptions"
+        @refresh="onRefresh"
+      />
     </List>
+    <Empty
+      v-if="!ticketLists[curMenuIndex].length"
+      description="暂无门票列表"
+    />
   </PullRefresh>
-
-  <Empty v-if="!ticketLists[curMenuIndex].length" description="暂无门票列表" />
 
   <button class="add-btn" @click="addTicket">添加门票</button>
 </template>
 
 <script setup lang="ts">
-import {
-  PullRefresh,
-  List,
-  SwipeCell,
-  Empty,
-  Button,
-  showConfirmDialog,
-  showToast,
-} from "vant";
+import { PullRefresh, List, Empty } from "vant";
+import TicketItem from "./components/ticketItem.vue";
+
 import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import dayjs from "dayjs";
-import {
-  getTicketTotals,
-  getTicketList,
-  deleteTicket,
-  offShelfTicket,
-  onShelfTicket,
-} from "./utils/api";
+import { getTicketTotals, getTicketList } from "./utils/api";
+import { scenicOptions, setScenicOptions } from "./utils/index";
 
 import type { TicketListItem } from "./utils/type";
 
@@ -180,8 +83,10 @@ const curMenuIndex = ref(0);
 const ticketLists = reactive<TicketListItem[][]>([[], [], [], []]);
 const pageList = [0, 0, 0, 0];
 
-onMounted(() => {
+onMounted(async () => {
+  setScenicOptions();
   setTotals();
+  setTicketList(true);
 });
 
 const onRefresh = () => {
@@ -219,51 +124,6 @@ const setTicketList = async (init = false) => {
   loading.value = false;
   refreshing.value = false;
 };
-
-const offShelf = (index: number) =>
-  showConfirmDialog({ title: "确定下架该门票吗？" })
-    .then(async () => {
-      try {
-        await offShelfTicket(ticketLists[curMenuIndex.value][index].id);
-        ticketLists[curMenuIndex.value].splice(index, 1);
-        setTotals();
-      } catch (error) {
-        showToast("下架失败，请重试");
-      }
-      return true;
-    })
-    .catch(() => true);
-
-const onShelf = (index: number) =>
-  showConfirmDialog({ title: "确定上架该门票吗？" })
-    .then(async () => {
-      try {
-        await onShelfTicket(ticketLists[curMenuIndex.value][index].id);
-        ticketLists[curMenuIndex.value].splice(index, 1);
-        setTotals();
-      } catch (error) {
-        showToast("上架失败，请重试");
-      }
-      return true;
-    })
-    .catch(() => true);
-
-const deleteCurTicket = (index: number) =>
-  showConfirmDialog({ title: "确定删除该门票吗？" })
-    .then(async () => {
-      try {
-        await deleteTicket(ticketLists[curMenuIndex.value][index].id);
-        ticketLists[curMenuIndex.value].splice(index, 1);
-        setTotals();
-      } catch (error) {
-        showToast("删除失败，请重试");
-      }
-      return true;
-    })
-    .catch(() => true);
-
-const editTicket = (id: number) =>
-  router.push({ path: "/scenic/ticket/edit", query: { id } });
 
 const addTicket = () => router.push("/scenic/ticket/create");
 </script>
