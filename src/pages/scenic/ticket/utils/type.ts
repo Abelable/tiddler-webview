@@ -54,7 +54,10 @@ export interface OriginalTicketInfo {
   exchangeTips: string;
   exchangeTime: string;
   exchangeLocation: string;
-  otherTips: string;
+  enterTime: string;
+  enterLocation: string;
+  invoiceTips: string;
+  reminderTips: string;
 }
 
 export interface TicketInfo {
@@ -79,7 +82,10 @@ export interface TicketInfo {
   exchangeTips: string;
   exchangeTime: string;
   exchangeLocation: string;
-  otherTips: string;
+  enterTime: string;
+  enterLocation: string;
+  invoiceTips: string;
+  reminderTips: string;
 }
 
 interface CreateSpecItem {
@@ -98,7 +104,7 @@ export interface CreateTicketInfo {
   specList: CreateSpecItem[];
   feeIncludeTips?: string;
   feeNotIncludeTips?: string;
-  bookingTime?: string;
+  bookingTime: string;
   effectiveTime?: number;
   validityTime?: number;
   limitNumber?: number;
@@ -108,7 +114,10 @@ export interface CreateTicketInfo {
   exchangeTips?: string;
   exchangeTime?: string;
   exchangeLocation?: string;
-  otherTips?: string;
+  enterTime?: string;
+  enterLocation?: string;
+  invoiceTips?: string;
+  reminderTips?: string;
 }
 
 export interface EditTicketInfo extends CreateTicketInfo {

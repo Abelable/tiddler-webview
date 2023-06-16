@@ -225,7 +225,7 @@
     <div class="card">
       <ul class="form">
         <li class="form-item flex">
-          <div class="name">当天预定最晚时间</div>
+          <div class="name required">当天预定最晚时间</div>
           <div class="picker" @click="bookingTimePickerPopupVisible = true">
             <div class="content" :class="{ active: ticketInfo.bookingTime }">
               {{ ticketInfo.bookingTime || "请选择最晚预定时间" }}
@@ -299,7 +299,7 @@
             placeholder="请输入换票说明"
           />
         </li>
-        <li class="form-item flex">
+        <li class="form-item flex" v-show="ticketInfo.needExchange">
           <div class="name">换票时间</div>
           <div class="picker" @click="exchangeTimePickerPopupVisible = true">
             <div class="content" :class="{ active: ticketInfo.exchangeTime }">
@@ -308,7 +308,7 @@
             <Icon name="arrow" />
           </div>
         </li>
-        <li class="form-item flex">
+        <li class="form-item flex" v-show="ticketInfo.needExchange">
           <div class="name">换票地点</div>
           <input
             class="input"
@@ -319,9 +319,9 @@
         </li>
         <li class="form-item flex">
           <div class="name">入园时间</div>
-          <div class="picker" @click="exchangeTimePickerPopupVisible = true">
-            <div class="content" :class="{ active: ticketInfo.exchangeTime }">
-              {{ ticketInfo.exchangeTime || "请选择换票时间" }}
+          <div class="picker" @click="enterTimePickerPopupVisible = true">
+            <div class="content" :class="{ active: ticketInfo.enterTime }">
+              {{ ticketInfo.enterTime || "请选择入园时间" }}
             </div>
             <Icon name="arrow" />
           </div>
@@ -330,9 +330,9 @@
           <div class="name">入园地点</div>
           <input
             class="input"
-            v-model="ticketInfo.exchangeLocation"
+            v-model="ticketInfo.enterLocation"
             type="text"
-            placeholder="请输入换票地点"
+            placeholder="请输入入园地点"
           />
         </li>
       </ul>
@@ -345,7 +345,7 @@
           <div class="name">发票说明</div>
           <input
             class="input"
-            v-model="ticketInfo.exchangeTips"
+            v-model="ticketInfo.invoiceTips"
             type="text"
             placeholder="请输入发票说明"
           />
@@ -354,7 +354,7 @@
           <div class="name">特别提醒</div>
           <input
             class="input"
-            v-model="ticketInfo.exchangeTips"
+            v-model="ticketInfo.reminderTips"
             type="text"
             placeholder="请输入特别提醒"
           />
@@ -384,7 +384,7 @@
     @confirm="setScenicIds"
     @cancel="scenicPickerPopupVisible = false"
   />
-  <TimeRangePickerPopup
+  <TimePickerPopup
     :visible="bookingTimePickerPopupVisible"
     @confirm="setBookTime"
     @cancel="bookingTimePickerPopupVisible = false"
@@ -398,6 +398,11 @@
     :visible="exchangeTimePickerPopupVisible"
     @confirm="setExchangeTime"
     @cancel="exchangeTimePickerPopupVisible = false"
+  />
+  <TimeRangePickerPopup
+    :visible="enterTimePickerPopupVisible"
+    @confirm="setEnterTime"
+    @cancel="enterTimePickerPopupVisible = false"
   />
   <CategoryPickerPopup
     :visible="categoryPickerPopupVisible"
@@ -427,6 +432,7 @@ import {
 import TypePickerPopup from "./components/typePickerPopup.vue";
 import ScenicPickerPopup from "./components/scenicPickerPopup.vue";
 import MultiScenicPickerPopup from "./components/multiScenicPickerPopup.vue";
+import TimePickerPopup from "./components/timePickerPopup.vue";
 import TimeRangePickerPopup from "./components/timeRangePickerPopup.vue";
 import RefundStatusPickerPopup from "./components/refundStatusPickerPopup.vue";
 import CategoryPickerPopup from "./components/categoryPickerPopup.vue";
@@ -458,6 +464,7 @@ const ticketInfo = reactive<Omit<TicketInfo, "id">>({
   marketPrice: undefined,
   salesCommissionRate: undefined,
   promotionCommissionRate: undefined,
+  specList: [],
   feeIncludeTips: "",
   feeNotIncludeTips: "",
   bookingTime: "",
@@ -470,8 +477,10 @@ const ticketInfo = reactive<Omit<TicketInfo, "id">>({
   exchangeTips: "",
   exchangeTime: "",
   exchangeLocation: "",
-  otherTips: "",
-  specList: [],
+  enterTime: "",
+  enterLocation: "",
+  invoiceTips: "",
+  reminderTips: "",
 });
 
 const curSpecIndex = ref(0);
@@ -482,6 +491,7 @@ const dateRangePickerPopupVisible = ref(false);
 const bookingTimePickerPopupVisible = ref(false);
 const refundStatusPickerPopupVisible = ref(false);
 const exchangeTimePickerPopupVisible = ref(false);
+const enterTimePickerPopupVisible = ref(false);
 const scenicPickerPopupVisible = ref(false);
 const salesCommissionRateTipsVisible = ref(false);
 const promotionCommissionRateTipsVisible = ref(false);
@@ -539,6 +549,11 @@ const setRefundStatus = (status: number) => {
 const setExchangeTime = (exchangeTime: string) => {
   ticketInfo.exchangeTime = exchangeTime;
   exchangeTimePickerPopupVisible.value = false;
+};
+
+const setEnterTime = (enterTime: string) => {
+  ticketInfo.enterTime = enterTime;
+  enterTimePickerPopupVisible.value = false;
 };
 
 const addSpec = (categoryId: number) => {
@@ -647,6 +662,10 @@ const save = async () => {
   });
   if (incompletePriceItemIndex !== -1) {
     showToast("部分门票规格未选择日期范围或未填写价格");
+    return;
+  }
+  if (!ticketInfo.bookingTime) {
+    showToast("请选择当前预定最晚时间");
     return;
   }
   if (!ticketInfo.refundStatus) {
