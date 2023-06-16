@@ -141,10 +141,10 @@ import { useRouter } from "vue-router";
 import dayjs from "dayjs";
 import {
   getTicketTotals,
+  getTicketList,
   deleteTicket,
   offShelfTicket,
   onShelfTicket,
-  getTicketList,
 } from "./utils/api";
 
 import type { TicketListItem } from "./utils/type";
@@ -339,17 +339,10 @@ const addTicket = () => router.push("/scenic/ticket/create");
       .inner {
         display: flex;
         padding: 0.24rem;
-
-        .image {
-          width: 1.8rem;
-          height: 1.8rem;
-          border-radius: 0.24rem;
-        }
         .content {
           display: flex;
           flex-direction: column;
           justify-content: space-between;
-          margin-left: 0.2rem;
           flex: 1;
           height: 1.8rem;
           .name {

@@ -6,6 +6,7 @@ export interface TicketCategoryOption {
 
 export interface TicketListItem {
   id: number;
+  type: number;
   name: string;
   price: number;
   salesVolume: number;
