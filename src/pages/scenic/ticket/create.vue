@@ -197,32 +197,38 @@
       <Empty image-size="1.8rem" description="暂无规格" />
     </div>
 
-    <div class="title">信息补充及说明</div>
+    <div class="title">填写费用说明</div>
     <div class="card">
       <ul class="form">
         <li class="form-item flex">
-          <div class="name">费用包含说明</div>
+          <div class="name">费用包含</div>
           <input
             class="input"
             v-model="ticketInfo.feeIncludeTips"
             type="text"
-            placeholder="请输入费用包含说明"
+            placeholder="请输入费用包含内容"
           />
         </li>
         <li class="form-item flex">
-          <div class="name">费用不含说明</div>
+          <div class="name">费用不含</div>
           <input
             class="input"
             v-model="ticketInfo.feeNotIncludeTips"
             type="text"
-            placeholder="请输入费用不含说明"
+            placeholder="请输入费用不含内容"
           />
         </li>
+      </ul>
+    </div>
+
+    <div class="title">填写预定说明</div>
+    <div class="card">
+      <ul class="form">
         <li class="form-item flex">
-          <div class="name">预定时间</div>
+          <div class="name">当天预定最晚时间</div>
           <div class="picker" @click="bookingTimePickerPopupVisible = true">
             <div class="content" :class="{ active: ticketInfo.bookingTime }">
-              {{ ticketInfo.bookingTime || "请选择预定时间" }}
+              {{ ticketInfo.bookingTime || "请选择最晚预定时间" }}
             </div>
             <Icon name="arrow" />
           </div>
@@ -274,6 +280,12 @@
             placeholder="请输入退票说明"
           />
         </li>
+      </ul>
+    </div>
+
+    <div class="title">填写使用说明</div>
+    <div class="card">
+      <ul class="form">
         <li class="form-item flex">
           <div class="name">是否需要换票</div>
           <Switch v-model="ticketInfo.needExchange" size="18px" />
@@ -306,12 +318,45 @@
           />
         </li>
         <li class="form-item flex">
-          <div class="name">其他说明</div>
+          <div class="name">入园时间</div>
+          <div class="picker" @click="exchangeTimePickerPopupVisible = true">
+            <div class="content" :class="{ active: ticketInfo.exchangeTime }">
+              {{ ticketInfo.exchangeTime || "请选择换票时间" }}
+            </div>
+            <Icon name="arrow" />
+          </div>
+        </li>
+        <li class="form-item flex">
+          <div class="name">入园地点</div>
           <input
             class="input"
-            v-model="ticketInfo.otherTips"
+            v-model="ticketInfo.exchangeLocation"
             type="text"
-            placeholder="请输入其他说明"
+            placeholder="请输入换票地点"
+          />
+        </li>
+      </ul>
+    </div>
+
+    <div class="title">填写其他说明</div>
+    <div class="card">
+      <ul class="form">
+        <li class="form-item flex">
+          <div class="name">发票说明</div>
+          <input
+            class="input"
+            v-model="ticketInfo.exchangeTips"
+            type="text"
+            placeholder="请输入发票说明"
+          />
+        </li>
+        <li class="form-item flex">
+          <div class="name">特别提醒</div>
+          <input
+            class="input"
+            v-model="ticketInfo.exchangeTips"
+            type="text"
+            placeholder="请输入特别提醒"
           />
         </li>
       </ul>
