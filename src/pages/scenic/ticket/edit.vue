@@ -670,7 +670,7 @@ const dateRangeConfirm = (dateList: Date[]) => {
   ticketInfo.specList[curSpecIndex.value].priceList[curPriceItemIndex.value] = {
     ...priceItem,
     startDate: new Date(dateList[0]).getTime(),
-    endDate: new Date(dateList[0]).getTime(),
+    endDate: new Date(dateList[1]).getTime(),
   };
   dateRangePickerPopupVisible.value = false;
 };
