@@ -155,7 +155,7 @@ const editTicket = () => {
       height: 0.32rem;
       color: #4e92df;
       font-size: 0.2rem;
-      line-height: 1;
+      line-height: 0.32rem;
       border-radius: 0.04rem;
       background: #e2edf9;
     }
@@ -168,7 +168,7 @@ const editTicket = () => {
         height: 0.26rem;
         color: #5dce86;
         font-size: 0.18rem;
-        line-height: 1;
+        line-height: 0.26rem;
         border-radius: 0.04rem;
         background: #d1f7e5;
       }
