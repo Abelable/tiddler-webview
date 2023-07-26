@@ -38,6 +38,7 @@ export interface OriginalTicketInfo {
   type: number;
   scenicIds: number[];
   name: string;
+  briefName: string;
   price: number;
   marketPrice: number;
   salesCommissionRate: number;

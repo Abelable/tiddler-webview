@@ -535,6 +535,7 @@ const setTicketInfo = async () => {
     type,
     scenicIds,
     name,
+    briefName,
     price,
     marketPrice,
     salesCommissionRate,
@@ -561,6 +562,7 @@ const setTicketInfo = async () => {
   ticketInfo.type = type;
   ticketInfo.scenicIds = scenicIds;
   ticketInfo.name = name;
+  ticketInfo.briefName = briefName;
   ticketInfo.price = price;
   ticketInfo.marketPrice = marketPrice || undefined;
   ticketInfo.salesCommissionRate = salesCommissionRate * 100;
