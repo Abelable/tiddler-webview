@@ -31,6 +31,15 @@
           />
         </li>
         <li class="form-item flex">
+          <div class="name required">门票简称</div>
+          <input
+            class="input"
+            v-model="ticketInfo.briefName"
+            type="text"
+            placeholder="请输入简称，最长30字"
+          />
+        </li>
+        <li class="form-item flex">
           <div class="name required">起始价格</div>
           <input
             class="input"
@@ -461,6 +470,7 @@ const ticketInfo = reactive<Omit<TicketInfo, "id">>({
   type: undefined,
   scenicIds: [],
   name: "",
+  briefName: "",
   price: undefined,
   marketPrice: undefined,
   salesCommissionRate: undefined,

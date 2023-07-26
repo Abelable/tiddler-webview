@@ -66,6 +66,7 @@ export interface TicketInfo {
   type: number | undefined;
   scenicIds: number[];
   name: string;
+  briefName: string;
   price: number | undefined;
   marketPrice: number | undefined;
   salesCommissionRate: number | undefined;

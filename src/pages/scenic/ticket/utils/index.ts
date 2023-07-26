@@ -43,6 +43,10 @@ export const checkTicketInfo = (
     showToast("请输入门票名称");
     return false;
   }
+  if (!ticketInfo.briefName) {
+    showToast("请输入门票简称");
+    return false;
+  }
   if (!ticketInfo.price) {
     showToast("请输入门票起始价格");
     return false;
