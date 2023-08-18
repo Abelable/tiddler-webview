@@ -2,50 +2,50 @@ import { http } from "@/utils/http";
 
 import type { Option } from "@/utils/type";
 import type {
-  TicketListItem,
-  CreateTicketInfo,
-  OriginalTicketInfo,
-  EditTicketInfo,
+  RoomListItem,
+  CreateRoomInfo,
+  OriginalRoomInfo,
+  EditRoomInfo,
 } from "./type";
 
-export const getScenicOptions = async (): Promise<Option[]> =>
-  await http("scenic/provider/scenic_options");
+export const getHotelOptions = async (): Promise<Option[]> =>
+  await http("hotel/provider/hotel_options");
 
-export const getTicketTotals = async (): Promise<number[]> =>
-  await http("scenic/provider/ticket/totals");
+export const getRoomTotals = async (): Promise<number[]> =>
+  await http("hotel/provider/room/totals");
 
-export const getTicketList = async (
+export const getRoomList = async (
   status: number,
   page: number,
   limit = 10
-): Promise<TicketListItem[]> => {
+): Promise<RoomListItem[]> => {
   const { list = [] } =
-    (await http("scenic/provider/ticket/list", {
+    (await http("hotel/provider/room/list", {
       data: { status, page, limit },
     })) || {};
   return list;
 };
 
-export const getTicketCategoryOptions = async (): Promise<Option[]> =>
-  await http("scenic/ticket/category_options");
+export const getRoomTypeOptions = async (): Promise<Option[]> =>
+  await http("hotel/room/type_options");
 
-export const offShelfTicket = async (id: number) =>
-  await http("scenic/provider/ticket/down", { method: "POST", data: { id } });
+export const offShelfRoom = async (id: number) =>
+  await http("hotel/provider/room/down", { method: "POST", data: { id } });
 
-export const onShelfTicket = async (id: number) =>
-  await http("scenic/provider/ticket/up", { method: "POST", data: { id } });
+export const onShelfRoom = async (id: number) =>
+  await http("hotel/provider/room/up", { method: "POST", data: { id } });
 
-export const deleteTicket = async (id: number) =>
-  await http("scenic/provider/ticket/delete", { method: "POST", data: { id } });
+export const deleteRoom = async (id: number) =>
+  await http("hotel/provider/room/delete", { method: "POST", data: { id } });
 
-export const getTicketInfo = async (id: number): Promise<OriginalTicketInfo> =>
-  await http("scenic/provider/ticket/detail", { data: { id } });
+export const getRoomInfo = async (id: number): Promise<OriginalRoomInfo> =>
+  await http("hotel/provider/room/detail", { data: { id } });
 
-export const createTicket = async (goodsInfo: CreateTicketInfo) =>
-  await http("scenic/provider/ticket/add", { method: "POST", data: goodsInfo });
+export const createRoom = async (goodsInfo: CreateRoomInfo) =>
+  await http("hotel/provider/room/add", { method: "POST", data: goodsInfo });
 
-export const editTicket = async (goodsInfo: EditTicketInfo) =>
-  await http("scenic/provider/ticket/edit", {
+export const editRoom = async (goodsInfo: EditRoomInfo) =>
+  await http("hotel/provider/room/edit", {
     method: "POST",
     data: goodsInfo,
   });

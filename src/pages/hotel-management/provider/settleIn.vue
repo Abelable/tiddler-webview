@@ -4,7 +4,7 @@
       <div class="home" v-if="step === 0">
         <div class="main">
           <div class="title">欢迎加入小鱼游</div>
-          <div class="sub-title">- 景区服务商入驻 -</div>
+          <div class="sub-title">- 酒店服务商入驻 -</div>
           <div
             class="btn confirm"
             :class="{ active: agreementsChecked }"

@@ -1,41 +1,35 @@
 import { ref } from "vue";
 import { showToast } from "vant";
-import { getScenicOptions, getTicketCategoryOptions } from "./api";
+import { getHotelOptions, getRoomTypeOptions } from "./api";
 
 import type { Option } from "@/utils/type";
-import type { TicketCategoryOption, TicketInfo } from "./type";
+import type { RoomTypeOption, RoomInfo } from "./type";
 
-export const typeOptions = [
-  { text: "单景点门票", value: 1 },
-  { text: "多景点联票", value: 2 },
-];
 export const refundStatusOptions = [
   { text: "随时可退", value: 1 },
   { text: "有条件退", value: 2 },
   { text: "不可退", value: 3 },
 ];
 
-export const scenicOptions = ref<Option[]>([]);
-export const categoryOptions = ref<TicketCategoryOption[]>([]);
+export const hotelOptions = ref<Option[]>([]);
+export const typeOptions = ref<RoomTypeOption[]>([]);
 
 export const setCategoryOptions = async () => {
-  const options = await getTicketCategoryOptions();
-  categoryOptions.value = options.map((item) => ({
+  const options = await getRoomTypeOptions();
+  typeOptions.value = options.map((item) => ({
     ...item,
     disabled: false,
   }));
 };
-export const setScenicOptions = async () =>
-  (scenicOptions.value = await getScenicOptions());
+export const setHotelOptions = async () =>
+  (hotelOptions.value = await getHotelOptions());
 
-export const checkTicketInfo = (
-  ticketInfo: TicketInfo | Omit<TicketInfo, "id">
-) => {
+export const checkRoomInfo = (ticketInfo: RoomInfo | Omit<RoomInfo, "id">) => {
   if (!ticketInfo.type) {
     showToast("请选择门票类型");
     return false;
   }
-  if (!ticketInfo.scenicIds.length) {
+  if (!ticketInfo.hotelIds.length) {
     showToast("请选择关联景点");
     return false;
   }

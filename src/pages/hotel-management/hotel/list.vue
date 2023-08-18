@@ -30,15 +30,15 @@
         v-show="curMenuIndex === 0"
       >
         <div class="inner">
-          <img class="image" :src="item.scenicImage" alt="" />
+          <img class="image" :src="item.hotelImage" alt="" />
           <div class="content">
             <div class="row">
-              <div class="name">{{ item.scenicName }}</div>
-              <div class="level row">{{ item.scenicLevel }}</div>
+              <div class="name">{{ item.hotelName }}</div>
+              <div class="level row">{{ item.hotelLevel }}</div>
             </div>
             <div class="address row">
               <Icon name="location-o" size="0.24rem" />
-              <div>{{ item.scenicAddress }}</div>
+              <div>{{ item.hotelAddress }}</div>
             </div>
           </div>
         </div>
@@ -60,11 +60,11 @@
         v-show="curMenuIndex === 1"
       >
         <div class="inner">
-          <img class="image" :src="item.scenicImage" alt="" />
+          <img class="image" :src="item.hotelImage" alt="" />
           <div class="content">
             <div class="row">
-              <div class="name">{{ item.scenicName }}</div>
-              <div class="level row">{{ item.scenicLevel }}</div>
+              <div class="name">{{ item.hotelName }}</div>
+              <div class="level row">{{ item.hotelLevel }}</div>
             </div>
             <div class="time">
               提交时间：{{
@@ -91,11 +91,11 @@
         v-show="curMenuIndex === 2"
       >
         <div class="inner">
-          <img class="image" :src="item.scenicImage" alt="" />
+          <img class="image" :src="item.hotelImage" alt="" />
           <div class="content">
             <div class="row">
-              <div class="name">{{ item.scenicName }}</div>
-              <div class="level row">{{ item.scenicLevel }}</div>
+              <div class="name">{{ item.hotelName }}</div>
+              <div class="level row">{{ item.hotelLevel }}</div>
             </div>
             <div class="failure-reason">
               未通过原因：{{ item.failureReason }}
@@ -121,11 +121,11 @@
     </List>
   </PullRefresh>
 
-  <Popup v-model:show="scenicPickerPopupVisible" position="bottom" round>
+  <Popup v-model:show="hotelPickerPopupVisible" position="bottom" round>
     <Picker
-      :columns="scenicOptions"
+      :columns="hotelOptions"
       @confirm="selectHotel"
-      @cancel="scenicPickerPopupVisible = false"
+      @cancel="hotelPickerPopupVisible = false"
       :columns-field-names="{ text: 'name', value: 'id' }"
     />
   </Popup>
@@ -156,7 +156,7 @@ import {
   getHotelListTotals,
 } from "./utils/api";
 
-import type { Option as HotelOption } from "@/utils/type.ts";
+import type { Option as HotelOption } from "@/utils/type";
 import type { ProviderHotel } from "./utils/type";
 
 const loading = ref(false);
@@ -182,8 +182,8 @@ const menuList = ref([
 const curMenuIndex = ref(0);
 const spotLists = reactive<ProviderHotel[][]>([[], [], []]);
 const pageList = [0, 0, 0];
-const scenicOptions = ref<HotelOption[]>([]);
-const scenicPickerPopupVisible = ref(false);
+const hotelOptions = ref<HotelOption[]>([]);
+const hotelPickerPopupVisible = ref(false);
 
 onMounted(() => {
   setTotals();
@@ -202,7 +202,7 @@ const selectMenu = (index: number) => {
 };
 
 const setHotelOptions = async () => {
-  scenicOptions.value = await getHotelOptions();
+  hotelOptions.value = await getHotelOptions();
 };
 
 const setTotals = async () => {
@@ -231,7 +231,7 @@ const setSpotLists = async (init = false) => {
 
 const showHotelPickerPopup = async () => {
   await setHotelOptions();
-  scenicPickerPopupVisible.value = true;
+  hotelPickerPopupVisible.value = true;
 };
 
 const selectHotel = async ({
@@ -245,7 +245,7 @@ const selectHotel = async ({
   } catch (error) {
     showToast((error as { code: number; message: string }).message);
   }
-  scenicPickerPopupVisible.value = false;
+  hotelPickerPopupVisible.value = false;
 };
 
 const deleteSpot = (index: number) =>

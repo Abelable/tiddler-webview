@@ -1,13 +1,13 @@
-export interface TicketCategoryOption {
+export interface RoomTypeOption {
   id: number;
   name: string;
   disabled: boolean;
 }
 
-export interface TicketListItem {
+export interface RoomListItem {
   id: number;
   type: number;
-  scenicIds: number[];
+  hotelIds: number[];
   name: string;
   price: number;
   salesVolume: number;
@@ -33,10 +33,10 @@ export interface OriginalSpecItem {
   priceList: string;
 }
 
-export interface OriginalTicketInfo {
+export interface OriginalRoomInfo {
   id: number;
   type: number;
-  scenicIds: number[];
+  hotelIds: number[];
   name: string;
   briefName: string;
   price: number;
@@ -62,10 +62,10 @@ export interface OriginalTicketInfo {
   reminderTips: string;
 }
 
-export interface TicketInfo {
+export interface RoomInfo {
   id: number;
   type: number | undefined;
-  scenicIds: number[];
+  hotelIds: number[];
   name: string;
   briefName: string;
   price: number | undefined;
@@ -96,9 +96,9 @@ interface CreateSpecItem {
   priceList: string;
 }
 
-export interface CreateTicketInfo {
+export interface CreateRoomInfo {
   type: number;
-  scenicIds: number[];
+  hotelIds: number[];
   name: string;
   price: number;
   marketPrice?: number;
@@ -123,6 +123,6 @@ export interface CreateTicketInfo {
   reminderTips?: string;
 }
 
-export interface EditTicketInfo extends CreateTicketInfo {
+export interface EditRoomInfo extends CreateRoomInfo {
   id: number;
 }
