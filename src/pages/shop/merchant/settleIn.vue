@@ -904,7 +904,7 @@ const pay = async () => {
       (key) => (payParams[key] = encodeURIComponent(payParams[key]))
     );
     window.wx.miniProgram.navigateTo({
-      url: `/pages/common/pay/index?pay_params=${encodeURIComponent(
+      url: `pages/subpages/common/pay/index?pay_params=${encodeURIComponent(
         JSON.stringify(payParams)
       )}`,
     });
