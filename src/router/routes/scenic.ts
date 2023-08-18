@@ -7,7 +7,8 @@ const scenic: Array<RouteRecordRaw> = [
     meta: {
       title: "景区服务商服务协议",
     },
-    component: () => import("@/pages/scenic/agreements/providerService.vue"),
+    component: () =>
+      import("@/pages/scenic-management/agreements/providerService.vue"),
   },
   {
     path: "/scenic/provider/settle_in",
@@ -15,7 +16,7 @@ const scenic: Array<RouteRecordRaw> = [
     meta: {
       title: "景区服务商入驻",
     },
-    component: () => import("@/pages/scenic/provider/settleIn.vue"),
+    component: () => import("@/pages/scenic-management/provider/settleIn.vue"),
   },
   {
     path: "/scenic/spot_list",
@@ -23,7 +24,7 @@ const scenic: Array<RouteRecordRaw> = [
     meta: {
       title: "景点列表",
     },
-    component: () => import("@/pages/scenic/scenicSpot/list.vue"),
+    component: () => import("@/pages/scenic-management/scenicSpot/list.vue"),
   },
   {
     path: "/scenic/ticket/list",
@@ -31,7 +32,7 @@ const scenic: Array<RouteRecordRaw> = [
     meta: {
       title: "门票列表",
     },
-    component: () => import("@/pages/scenic/ticket/list.vue"),
+    component: () => import("@/pages/scenic-management/ticket/list.vue"),
   },
   {
     path: "/scenic/ticket/create",
@@ -39,7 +40,7 @@ const scenic: Array<RouteRecordRaw> = [
     meta: {
       title: "新增门票",
     },
-    component: () => import("@/pages/scenic/ticket/create.vue"),
+    component: () => import("@/pages/scenic-management/ticket/create.vue"),
   },
   {
     path: "/scenic/ticket/edit",
@@ -47,7 +48,7 @@ const scenic: Array<RouteRecordRaw> = [
     meta: {
       title: "编辑门票",
     },
-    component: () => import("@/pages/scenic/ticket/edit.vue"),
+    component: () => import("@/pages/scenic-management/ticket/edit.vue"),
   },
 ];
 
