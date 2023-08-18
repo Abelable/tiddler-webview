@@ -17,7 +17,7 @@
             <div style="margin-left: 0.1rem">
               我已阅读并同意
               <span style="color: #1b89fa" @click="checkAgreement"
-                >《小鱼游景区服务商服务协议》</span
+                >《小鱼游酒店服务商服务协议》</span
               >
             </div>
           </div>
@@ -483,8 +483,8 @@ const uploadIdCardBackPhotoLoading = ref(false);
 const uploadHoldIdCardPhotoLoading = ref(false);
 const uploadBusinessLicensePhotoLoading = ref(false);
 const categoryOptions = [
-  { id: 1, name: "景区官方" },
-  { id: 2, name: "旅行社" },
+  { id: 1, name: "酒店官方" },
+  { id: 2, name: "专营店" },
   { id: 3, name: "平台自营" },
 ];
 const categoryPickerPopupVisible = ref(false);
