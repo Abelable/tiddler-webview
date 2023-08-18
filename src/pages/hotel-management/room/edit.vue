@@ -386,13 +386,6 @@
     @confirm="setHotelIds"
     @cancel="hotelPickerPopupVisible = false"
   />
-  <MultiHotelPickerPopup
-    v-if="ticketInfo.type === 2"
-    :visible="hotelPickerPopupVisible"
-    :hotel-options="hotelOptions"
-    @confirm="setHotelIds"
-    @cancel="hotelPickerPopupVisible = false"
-  />
   <TimePickerPopup
     :visible="bookingTimePickerPopupVisible"
     @confirm="setBookTime"
@@ -440,7 +433,6 @@ import {
 } from "vant";
 import TypePickerPopup from "./components/typePickerPopup.vue";
 import HotelPickerPopup from "./components/hotelPickerPopup.vue";
-import MultiHotelPickerPopup from "./components/multiHotelPickerPopup.vue";
 import TimePickerPopup from "./components/timePickerPopup.vue";
 import TimeRangePickerPopup from "./components/timeRangePickerPopup.vue";
 import RefundStatusPickerPopup from "./components/refundStatusPickerPopup.vue";
