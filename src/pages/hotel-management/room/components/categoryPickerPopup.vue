@@ -11,9 +11,9 @@
 
 <script setup lang="ts">
 import { Popup, Picker } from "vant";
-import { TicketCategoryOption } from "../utils/type";
+import { RoomTypeOption } from "../utils/type";
 
-defineProps<{ visible: boolean; categoryOptions: TicketCategoryOption[] }>();
+defineProps<{ visible: boolean; categoryOptions: RoomTypeOption[] }>();
 const emit = defineEmits(["confirm", "cancel"]);
 
 const confirm = ({ selectedValues }: { selectedValues: number[] }) =>

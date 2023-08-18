@@ -14,7 +14,7 @@ export const refundStatusOptions = [
 export const hotelOptions = ref<Option[]>([]);
 export const typeOptions = ref<RoomTypeOption[]>([]);
 
-export const setCategoryOptions = async () => {
+export const setTypeOptions = async () => {
   const options = await getRoomTypeOptions();
   typeOptions.value = options.map((item) => ({
     ...item,

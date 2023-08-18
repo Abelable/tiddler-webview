@@ -1,7 +1,7 @@
 <template>
   <Popup :show="visible" @click-overlay="cancel" position="bottom" round>
     <Picker
-      :columns="scenicOptions"
+      :columns="hotelOptions"
       @confirm="confirm"
       @cancel="cancel"
       :columns-field-names="{ text: 'name', value: 'id' }"
@@ -13,7 +13,7 @@
 import { Popup, Picker } from "vant";
 import type { Option } from "@/utils/type";
 
-defineProps<{ visible: boolean; scenicOptions: Option[] }>();
+defineProps<{ visible: boolean; hotelOptions: Option[] }>();
 const emit = defineEmits(["confirm", "cancel"]);
 
 const confirm = ({ selectedValues }: { selectedValues: number[] }) =>

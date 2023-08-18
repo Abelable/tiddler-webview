@@ -14,9 +14,9 @@
         </li>
         <li class="form-item flex">
           <div class="name required">关联景点</div>
-          <div class="picker" @click="showScenicPickerPopup">
-            <div class="content" :class="{ active: scenicNames }">
-              {{ scenicNames || "请选择关联景点" }}
+          <div class="picker" @click="showHotelPickerPopup">
+            <div class="content" :class="{ active: hotelNames }">
+              {{ hotelNames || "请选择关联景点" }}
             </div>
             <Icon name="arrow" />
           </div>
@@ -121,8 +121,8 @@
         <div class="title flex" style="margin-top: 0.32rem">
           <div>
             {{
-              categoryOptions.find(
-                (categoryOption) => categoryOption.id === item.categoryId
+              typeOptions.find(
+                (typeOption) => typeOption.id === item.categoryId
               )?.name
             }}
           </div>
@@ -379,19 +379,19 @@
     @confirm="setType"
     @cancel="typePickerPopupVisible = false"
   />
-  <ScenicPickerPopup
+  <HotelPickerPopup
     v-if="ticketInfo.type === 1"
-    :visible="scenicPickerPopupVisible"
-    :scenic-options="scenicOptions"
-    @confirm="setScenicIds"
-    @cancel="scenicPickerPopupVisible = false"
+    :visible="hotelPickerPopupVisible"
+    :hotel-options="hotelOptions"
+    @confirm="setHotelIds"
+    @cancel="hotelPickerPopupVisible = false"
   />
-  <MultiScenicPickerPopup
+  <MultiHotelPickerPopup
     v-if="ticketInfo.type === 2"
-    :visible="scenicPickerPopupVisible"
-    :scenic-options="scenicOptions"
-    @confirm="setScenicIds"
-    @cancel="scenicPickerPopupVisible = false"
+    :visible="hotelPickerPopupVisible"
+    :hotel-options="hotelOptions"
+    @confirm="setHotelIds"
+    @cancel="hotelPickerPopupVisible = false"
   />
   <TimePickerPopup
     :visible="bookingTimePickerPopupVisible"
@@ -413,9 +413,9 @@
     @confirm="setEnterTime"
     @cancel="enterTimePickerPopupVisible = false"
   />
-  <CategoryPickerPopup
+  <TypePickerPopup
     :visible="categoryPickerPopupVisible"
-    :category-options="categoryOptions"
+    :category-options="typeOptions"
     @confirm="addSpec"
     @cancel="categoryPickerPopupVisible = false"
   />
@@ -439,38 +439,36 @@ import {
   Calendar,
 } from "vant";
 import TypePickerPopup from "./components/typePickerPopup.vue";
-import ScenicPickerPopup from "./components/scenicPickerPopup.vue";
-import MultiScenicPickerPopup from "./components/multiScenicPickerPopup.vue";
+import HotelPickerPopup from "./components/hotelPickerPopup.vue";
+import MultiHotelPickerPopup from "./components/multiHotelPickerPopup.vue";
 import TimePickerPopup from "./components/timePickerPopup.vue";
 import TimeRangePickerPopup from "./components/timeRangePickerPopup.vue";
 import RefundStatusPickerPopup from "./components/refundStatusPickerPopup.vue";
-import CategoryPickerPopup from "./components/categoryPickerPopup.vue";
 
 import { ref, reactive, computed, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import _ from "lodash";
 import dayjs from "dayjs";
 import { cleanObject } from "@/utils/index";
-import { getTicketInfo, editTicket } from "./utils/api";
+import { getRoomInfo, editRoom } from "./utils/api";
 import {
-  typeOptions,
   refundStatusOptions,
-  scenicOptions,
-  setScenicOptions,
-  categoryOptions,
-  setCategoryOptions,
-  checkTicketInfo,
+  hotelOptions,
+  setHotelOptions,
+  typeOptions,
+  setTypeOptions,
+  checkRoomInfo,
 } from "./utils/index";
 
-import type { TicketInfo, EditTicketInfo } from "./utils/type";
+import type { RoomInfo, EditRoomInfo } from "./utils/type";
 
 const route = useRoute();
 const router = useRouter();
 
-const ticketInfo = reactive<TicketInfo>({
+const ticketInfo = reactive<RoomInfo>({
   id: 0,
   type: undefined,
-  scenicIds: [],
+  hotelIds: [],
   name: "",
   briefName: "",
   price: undefined,
@@ -504,18 +502,18 @@ const bookingTimePickerPopupVisible = ref(false);
 const refundStatusPickerPopupVisible = ref(false);
 const exchangeTimePickerPopupVisible = ref(false);
 const enterTimePickerPopupVisible = ref(false);
-const scenicPickerPopupVisible = ref(false);
+const hotelPickerPopupVisible = ref(false);
 const salesCommissionRateTipsVisible = ref(false);
 const promotionCommissionRateTipsVisible = ref(false);
 
 // 计算属性
-const scenicNames = computed(() =>
-  ticketInfo.scenicIds
-    .map((id) => scenicOptions.value.find((item) => item.id === id)?.name)
+const hotelNames = computed(() =>
+  ticketInfo.hotelIds
+    .map((id) => hotelOptions.value.find((item) => item.id === id)?.name)
     .join()
 );
 const typeName = computed(
-  () => typeOptions.find((item) => item.value === ticketInfo.type)?.text
+  () => typeOptions.value.find((item) => item.id === ticketInfo.type)?.name
 );
 const refundStatusName = computed(
   () =>
@@ -524,16 +522,16 @@ const refundStatusName = computed(
 );
 
 onMounted(async () => {
-  await setScenicOptions();
-  await setCategoryOptions();
-  setTicketInfo();
+  await setHotelOptions();
+  await setTypeOptions();
+  setRoomInfo();
 });
 
-const setTicketInfo = async () => {
+const setRoomInfo = async () => {
   const {
     id,
     type,
-    scenicIds,
+    hotelIds,
     name,
     briefName,
     price,
@@ -557,10 +555,10 @@ const setTicketInfo = async () => {
     enterLocation,
     invoiceTips,
     reminderTips,
-  } = await getTicketInfo(+(route.query.id as string));
+  } = await getRoomInfo(+(route.query.id as string));
   ticketInfo.id = id;
   ticketInfo.type = type;
-  ticketInfo.scenicIds = scenicIds;
+  ticketInfo.hotelIds = hotelIds;
   ticketInfo.name = name;
   ticketInfo.briefName = briefName;
   ticketInfo.price = price;
@@ -592,22 +590,22 @@ const setTicketInfo = async () => {
 
 const setType = (type: number) => {
   if (ticketInfo.type !== type) {
-    ticketInfo.scenicIds = [];
+    ticketInfo.hotelIds = [];
   }
   ticketInfo.type = type;
   typePickerPopupVisible.value = false;
 };
 
-const showScenicPickerPopup = () => {
+const showHotelPickerPopup = () => {
   if (!ticketInfo.type) {
     showToast("请先选择门票类型");
     return;
   }
-  scenicPickerPopupVisible.value = true;
+  hotelPickerPopupVisible.value = true;
 };
-const setScenicIds = (scenicIds: number[]) => {
-  ticketInfo.scenicIds = scenicIds;
-  scenicPickerPopupVisible.value = false;
+const setHotelIds = (hotelIds: number[]) => {
+  ticketInfo.hotelIds = hotelIds;
+  hotelPickerPopupVisible.value = false;
 };
 
 const setBookTime = (bookingTime: string) => {
@@ -630,7 +628,7 @@ const setEnterTime = (enterTime: string) => {
 };
 
 const addSpec = (categoryId: number) => {
-  categoryOptions.value = categoryOptions.value.map((item) =>
+  typeOptions.value = typeOptions.value.map((item) =>
     item.id === categoryId
       ? {
           ...item,
@@ -644,7 +642,7 @@ const addSpec = (categoryId: number) => {
 const deleteSpec = (index: number) =>
   showConfirmDialog({ title: "确定删除该门票规格吗？" })
     .then(() => {
-      categoryOptions.value = categoryOptions.value.map((item) =>
+      typeOptions.value = typeOptions.value.map((item) =>
         item.id === ticketInfo.specList[index].categoryId
           ? { ...item, disabled: false }
           : item
@@ -688,7 +686,7 @@ const dateRangeConfirm = (dateList: Date[]) => {
 };
 
 const save = async () => {
-  if (!checkTicketInfo(ticketInfo)) {
+  if (!checkRoomInfo(ticketInfo)) {
     return;
   }
 
@@ -699,7 +697,7 @@ const save = async () => {
     needExchange,
     ...rest
   } = ticketInfo;
-  const editTicketInfo = {
+  const editRoomInfo = {
     ...cleanObject(rest),
     salesCommissionRate: (salesCommissionRate as number) / 100,
     promotionCommissionRate: (promotionCommissionRate as number) / 100,
@@ -710,7 +708,7 @@ const save = async () => {
     needExchange: needExchange ? 1 : 0,
   };
   try {
-    await editTicket(editTicketInfo as EditTicketInfo);
+    await editRoom(editRoomInfo as EditRoomInfo);
     router.back();
   } catch (error) {
     showToast("上传失败，请重试");

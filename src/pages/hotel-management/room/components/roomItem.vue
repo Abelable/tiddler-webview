@@ -1,23 +1,23 @@
 <template>
-  <SwipeCell class="ticket-item">
-    <div class="inner" @click="editTicket">
+  <SwipeCell class="room-item">
+    <div class="inner" @click="editRoom">
       <div class="row">
         <div class="name">{{ item.name }}</div>
         <div class="type row">
           {{
-            typeOptions.find((typeOptions) => typeOptions.value === item.type)
-              ?.text
+            typeOptions.find((typeOptions) => typeOptions.id === item.type)
+              ?.name
           }}
         </div>
       </div>
-      <div class="scenic-list row">
+      <div class="hotel-list row">
         <div class="label">关联景点：</div>
         <div
-          class="scenic"
-          v-for="(scenicId, index) in item.scenicIds"
+          class="hotel"
+          v-for="(hotelId, index) in item.hotelIds"
           :key="index"
         >
-          {{ scenicOptions.find((option) => option.id === scenicId)?.name }}
+          {{ hotelOptions.find((option) => option.id === hotelId)?.name }}
         </div>
       </div>
       <div class="row between" v-if="status === 1">
@@ -57,7 +57,7 @@
       />
       <Button
         class="delete-btn"
-        @click.stop="deleteCurTicket"
+        @click.stop="deleteCurRoom"
         text="删除"
         type="danger"
         square
@@ -72,17 +72,17 @@ import { SwipeCell, Button, showConfirmDialog, showToast } from "vant";
 import { useRouter } from "vue-router";
 import dayjs from "dayjs";
 import { typeOptions } from "../utils/index";
-import { deleteTicket, offShelfTicket, onShelfTicket } from "../utils/api";
+import { deleteRoom, offShelfRoom, onShelfRoom } from "../utils/api";
 
 import type { Option } from "@/utils/type";
-import type { TicketListItem } from "../utils/type";
+import type { RoomListItem } from "../utils/type";
 
 const router = useRouter();
 
 const props = defineProps<{
   status: number;
-  item: TicketListItem;
-  scenicOptions: Option[];
+  item: RoomListItem;
+  hotelOptions: Option[];
 }>();
 const emit = defineEmits(["refresh"]);
 
@@ -90,7 +90,7 @@ const offShelf = () =>
   showConfirmDialog({ title: "确定下架该门票吗？" })
     .then(async () => {
       try {
-        await offShelfTicket(props.item.id);
+        await offShelfRoom(props.item.id);
         emit("refresh");
       } catch (error) {
         showToast("下架失败，请重试");
@@ -101,7 +101,7 @@ const offShelf = () =>
 
 const onShelf = async () => {
   try {
-    await onShelfTicket(props.item.id);
+    await onShelfRoom(props.item.id);
     emit("refresh");
   } catch (error) {
     showToast("上架失败，请重试");
@@ -109,11 +109,11 @@ const onShelf = async () => {
   return true;
 };
 
-const deleteCurTicket = () =>
+const deleteCurRoom = () =>
   showConfirmDialog({ title: "确定删除该门票吗？" })
     .then(async () => {
       try {
-        await deleteTicket(props.item.id);
+        await deleteRoom(props.item.id);
         emit("refresh");
       } catch (error) {
         showToast("删除失败，请重试");
@@ -122,9 +122,9 @@ const deleteCurTicket = () =>
     })
     .catch(() => true);
 
-const editTicket = () => {
+const editRoom = () => {
   if (props.status === 2 || props.status === 3) {
-    router.push({ path: "/scenic/ticket/edit", query: { id: props.item.id } });
+    router.push({ path: "/hotel/room/edit", query: { id: props.item.id } });
   }
 };
 </script>
@@ -137,7 +137,7 @@ const editTicket = () => {
     justify-content: space-between;
   }
 }
-.ticket-item {
+.room-item {
   position: relative;
   margin-bottom: 0.24rem;
   border-radius: 0.24rem;
@@ -159,10 +159,10 @@ const editTicket = () => {
       border-radius: 0.04rem;
       background: #e2edf9;
     }
-    .scenic-list {
+    .hotel-list {
       margin-top: 0.12rem;
       margin-bottom: 0.48rem;
-      .scenic {
+      .hotel {
         margin-right: 0.08rem;
         padding: 0 0.08rem;
         height: 0.26rem;

@@ -17,40 +17,37 @@
       温馨提示：审核时间是3个工作日
     </div>
     <List
-      class="ticket-list"
+      class="room-list"
       v-model="loading"
       :finished="finished"
       @load="onLoadMore"
-      :finished-text="ticketLists[curMenuIndex].length ? '没有更多了' : ''"
+      :finished-text="roomLists[curMenuIndex].length ? '没有更多了' : ''"
     >
-      <TicketItem
-        v-for="item in ticketLists[curMenuIndex]"
+      <RoomItem
+        v-for="item in roomLists[curMenuIndex]"
         :key="item.id"
         :item="item"
         :status="menuList[curMenuIndex].status"
-        :scenic-options="scenicOptions"
+        :hotel-options="hotelOptions"
         @refresh="onRefresh"
       />
     </List>
-    <Empty
-      v-if="!ticketLists[curMenuIndex].length"
-      description="暂无门票列表"
-    />
+    <Empty v-if="!roomLists[curMenuIndex].length" description="暂无门票列表" />
   </PullRefresh>
 
-  <button class="add-btn" @click="addTicket">添加门票</button>
+  <button class="add-btn" @click="addRoom">添加门票</button>
 </template>
 
 <script setup lang="ts">
 import { PullRefresh, List, Empty } from "vant";
-import TicketItem from "./components/ticketItem.vue";
+import RoomItem from "./components/roomItem.vue";
 
 import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { getTicketTotals, getTicketList } from "./utils/api";
-import { scenicOptions, setScenicOptions } from "./utils/index";
+import { getRoomTotals, getRoomList } from "./utils/api";
+import { hotelOptions, setHotelOptions } from "./utils/index";
 
-import type { TicketListItem } from "./utils/type";
+import type { RoomListItem } from "./utils/type";
 
 const router = useRouter();
 
@@ -80,52 +77,52 @@ const menuList = ref([
   },
 ]);
 const curMenuIndex = ref(0);
-const ticketLists = reactive<TicketListItem[][]>([[], [], [], []]);
+const roomLists = reactive<RoomListItem[][]>([[], [], [], []]);
 const pageList = [0, 0, 0, 0];
 
 onMounted(async () => {
-  setScenicOptions();
+  setHotelOptions();
   setTotals();
-  setTicketList(true);
+  setRoomList(true);
 });
 
 const onRefresh = () => {
   setTotals();
-  setTicketList(true);
+  setRoomList(true);
 };
 
-const onLoadMore = () => setTicketList();
+const onLoadMore = () => setRoomList();
 
 const selectMenu = (index: number) => {
   curMenuIndex.value = index;
-  setTicketList(true);
+  setRoomList(true);
 };
 
 const setTotals = async () => {
-  const totals = await getTicketTotals();
+  const totals = await getRoomTotals();
   totals.forEach((item, index) => (menuList.value[index].total = item));
 };
 
-const setTicketList = async (init = false) => {
+const setRoomList = async (init = false) => {
   if (init) {
     pageList[curMenuIndex.value] = 0;
     finished.value = false;
   }
   const list =
-    (await getTicketList(
+    (await getRoomList(
       menuList.value[curMenuIndex.value].status,
       ++pageList[curMenuIndex.value]
     )) || {};
 
-  ticketLists[curMenuIndex.value] = init
+  roomLists[curMenuIndex.value] = init
     ? list
-    : [...ticketLists[curMenuIndex.value], ...list];
+    : [...roomLists[curMenuIndex.value], ...list];
   if (!list.length) finished.value = true;
   loading.value = false;
   refreshing.value = false;
 };
 
-const addTicket = () => router.push("/scenic/ticket/create");
+const addRoom = () => router.push("/hotel/room/create");
 </script>
 
 <style lang="scss" scoped>
@@ -190,9 +187,9 @@ const addTicket = () => router.push("/scenic/ticket/create");
     line-height: 1;
     background: #fffaed;
   }
-  .ticket-list {
+  .room-list {
     padding: 0.24rem;
-    .ticket-item {
+    .room-item {
       margin-bottom: 0.24rem;
       border-radius: 0.24rem;
       background: #fff;
