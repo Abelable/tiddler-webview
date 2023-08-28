@@ -32,10 +32,10 @@
         @refresh="onRefresh"
       />
     </List>
-    <Empty v-if="!roomLists[curMenuIndex].length" description="暂无门票列表" />
+    <Empty v-if="!roomLists[curMenuIndex].length" description="暂无房间列表" />
   </PullRefresh>
 
-  <button class="add-btn" @click="addRoom">添加门票</button>
+  <button class="add-btn" @click="addRoom">添加房间</button>
 </template>
 
 <script setup lang="ts">

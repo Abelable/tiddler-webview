@@ -3,9 +3,9 @@ export interface ProviderHotel {
   status: number;
   failureReason: string;
   hotelId: number;
-  hotelImage: string;
+  hotelCover: string;
   hotelName: string;
-  hotelLevel: string;
+  hotelGrade: number;
   hotelAddress: string;
   createdAt: string;
   updatedAt: string;

@@ -17,24 +17,26 @@
       温馨提示：审核时间是3个工作日
     </div>
     <List
-      class="spot-list"
+      class="hotel-list"
       v-model="loading"
       :finished="finished"
       @load="onLoadMore"
-      :finished-text="spotLists[curMenuIndex].length ? '没有更多了' : ''"
+      :finished-text="hotelLists[curMenuIndex].length ? '没有更多了' : ''"
     >
       <SwipeCell
-        class="spot-item"
-        v-for="(item, index) in spotLists[0]"
+        class="hotel-item"
+        v-for="(item, index) in hotelLists[0]"
         :key="index"
         v-show="curMenuIndex === 0"
       >
         <div class="inner">
-          <img class="image" :src="item.hotelImage" alt="" />
+          <img class="image" :src="item.hotelCover" alt="" />
           <div class="content">
             <div class="row">
               <div class="name">{{ item.hotelName }}</div>
-              <div class="level row">{{ item.hotelLevel }}</div>
+              <div class="level row">
+                {{ ["经济", "舒适", "高档", "豪华"][item.hotelGrade - 1] }}
+              </div>
             </div>
             <div class="address row">
               <Icon name="location-o" size="0.24rem" />
@@ -45,7 +47,7 @@
         <template #right>
           <Button
             class="delete-btn"
-            @click.stop="deleteSpot(index)"
+            @click.stop="deleteHotel(index)"
             square
             text="删除"
             type="danger"
@@ -54,17 +56,19 @@
       </SwipeCell>
 
       <SwipeCell
-        class="spot-item"
-        v-for="(item, index) in spotLists[1]"
+        class="hotel-item"
+        v-for="(item, index) in hotelLists[1]"
         :key="index"
         v-show="curMenuIndex === 1"
       >
         <div class="inner">
-          <img class="image" :src="item.hotelImage" alt="" />
+          <img class="image" :src="item.hotelCover" alt="" />
           <div class="content">
             <div class="row">
               <div class="name">{{ item.hotelName }}</div>
-              <div class="level row">{{ item.hotelLevel }}</div>
+              <div class="level row">
+                {{ ["经济", "舒适", "高档", "豪华"][item.hotelGrade - 1] }}
+              </div>
             </div>
             <div class="time">
               提交时间：{{
@@ -76,7 +80,7 @@
         <template #right>
           <Button
             class="delete-btn"
-            @click.stop="deleteSpot(index)"
+            @click.stop="deleteHotel(index)"
             square
             text="删除"
             type="danger"
@@ -85,17 +89,19 @@
       </SwipeCell>
 
       <SwipeCell
-        class="spot-item"
-        v-for="(item, index) in spotLists[2]"
+        class="hotel-item"
+        v-for="(item, index) in hotelLists[2]"
         :key="index"
         v-show="curMenuIndex === 2"
       >
         <div class="inner">
-          <img class="image" :src="item.hotelImage" alt="" />
+          <img class="image" :src="item.hotelCover" alt="" />
           <div class="content">
             <div class="row">
               <div class="name">{{ item.hotelName }}</div>
-              <div class="level row">{{ item.hotelLevel }}</div>
+              <div class="level row">
+                {{ ["经济", "舒适", "高档", "豪华"][item.hotelGrade - 1] }}
+              </div>
             </div>
             <div class="failure-reason">
               未通过原因：{{ item.failureReason }}
@@ -105,7 +111,7 @@
         <template #right>
           <Button
             class="delete-btn"
-            @click.stop="deleteSpot(index)"
+            @click.stop="deleteHotel(index)"
             square
             text="删除"
             type="danger"
@@ -114,7 +120,7 @@
       </SwipeCell>
 
       <Empty
-        v-if="!spotLists[curMenuIndex].length"
+        v-if="!hotelLists[curMenuIndex].length"
         style="margin-top: 1rem"
         description="暂无酒店列表"
       />
@@ -180,7 +186,7 @@ const menuList = ref([
   },
 ]);
 const curMenuIndex = ref(0);
-const spotLists = reactive<ProviderHotel[][]>([[], [], []]);
+const hotelLists = reactive<ProviderHotel[][]>([[], [], []]);
 const pageList = [0, 0, 0];
 const hotelOptions = ref<HotelOption[]>([]);
 const hotelPickerPopupVisible = ref(false);
@@ -191,14 +197,14 @@ onMounted(() => {
 
 const onRefresh = () => {
   setTotals();
-  setSpotLists(true);
+  setHotelLists(true);
 };
 
-const onLoadMore = () => setSpotLists();
+const onLoadMore = () => setHotelLists();
 
 const selectMenu = (index: number) => {
   curMenuIndex.value = index;
-  setSpotLists(true);
+  setHotelLists(true);
 };
 
 const setHotelOptions = async () => {
@@ -210,7 +216,7 @@ const setTotals = async () => {
   totals.forEach((item, index) => (menuList.value[index].total = item));
 };
 
-const setSpotLists = async (init = false) => {
+const setHotelLists = async (init = false) => {
   if (init) {
     pageList[curMenuIndex.value] = 0;
     finished.value = false;
@@ -221,9 +227,9 @@ const setSpotLists = async (init = false) => {
       ++pageList[curMenuIndex.value]
     )) || {};
 
-  spotLists[curMenuIndex.value] = init
+  hotelLists[curMenuIndex.value] = init
     ? list
-    : [...spotLists[curMenuIndex.value], ...list];
+    : [...hotelLists[curMenuIndex.value], ...list];
   if (!list.length) finished.value = true;
   loading.value = false;
   refreshing.value = false;
@@ -248,12 +254,12 @@ const selectHotel = async ({
   hotelPickerPopupVisible.value = false;
 };
 
-const deleteSpot = (index: number) =>
+const deleteHotel = (index: number) =>
   showConfirmDialog({ title: "确定删除酒店吗？" })
     .then(async () => {
       try {
-        await deleteProviderHotel(spotLists[curMenuIndex.value][index].id);
-        spotLists[curMenuIndex.value].splice(index, 1);
+        await deleteProviderHotel(hotelLists[curMenuIndex.value][index].id);
+        hotelLists[curMenuIndex.value].splice(index, 1);
         setTotals();
       } catch (error) {
         showToast("删除失败，请重试");
@@ -325,9 +331,9 @@ const deleteSpot = (index: number) =>
     line-height: 1;
     background: #fffaed;
   }
-  .spot-list {
+  .hotel-list {
     padding: 0.24rem;
-    .spot-item {
+    .hotel-item {
       margin-bottom: 0.24rem;
       border-radius: 0.24rem;
       background: #fff;
