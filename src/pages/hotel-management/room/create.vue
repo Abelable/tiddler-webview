@@ -225,7 +225,6 @@ const roomInfo = reactive<Omit<RoomInfo, "id">>({
   guestNum: undefined,
   cancellable: true,
 });
-
 const curPriceItemIndex = ref(0);
 const typePickerPopupVisible = ref(false);
 const dateRangePickerPopupVisible = ref(false);
@@ -253,11 +252,11 @@ const setHotelId = (hotelId: number) => {
   roomInfo.hotelId = hotelId;
   hotelPickerPopupVisible.value = false;
 };
+
 const setType = (typeId: number) => {
   roomInfo.typeId = typeId;
   typePickerPopupVisible.value = false;
 };
-
 const showTypePickerPopup = () => {
   if (!roomInfo.hotelId) {
     showToast("请先选择关联酒店");
@@ -274,17 +273,14 @@ const addPriceItem = () => {
   });
   dateRangePickerPopupVisible.value = false;
 };
-
 const showDateRangePickerPopup = (priceItemIndex: number) => {
   curPriceItemIndex.value = priceItemIndex;
   dateRangePickerPopupVisible.value = true;
 };
-
 const deletePriceItem = (priceItemIndex: number) =>
   showConfirmDialog({ title: "确定删除该房间价格吗？" })
     .then(() => roomInfo.priceList.splice(priceItemIndex, 1))
     .catch(() => true);
-
 const dateRangeConfirm = (dateList: Date[]) => {
   const priceItem = _.cloneDeep(roomInfo.priceList[curPriceItemIndex.value]);
   roomInfo.priceList[curPriceItemIndex.value] = {
@@ -317,11 +313,6 @@ const save = async () => {
 };
 </script>
 
-<style>
-.van-empty__description {
-  font-size: 0.24rem;
-}
-</style>
 <style lang="scss" scoped>
 .container {
   padding: 0.32rem 0.32rem 1.52rem;
@@ -437,5 +428,10 @@ const save = async () => {
   font-size: 0.24rem;
   line-height: 1.5;
   white-space: wrap;
+}
+</style>
+<style>
+.van-empty__description {
+  font-size: 0.24rem;
 }
 </style>

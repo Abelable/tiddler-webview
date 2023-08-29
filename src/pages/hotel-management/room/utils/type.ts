@@ -16,6 +16,7 @@ export interface PriceItem {
 }
 
 export interface RoomInfo {
+  id: number;
   hotelId: number | undefined;
   typeId: number | undefined;
   price: number | undefined;

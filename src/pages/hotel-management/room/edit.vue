@@ -4,59 +4,31 @@
     <div class="card">
       <ul class="form">
         <li class="form-item flex">
-          <div class="name required">门票类型</div>
-          <div class="picker" @click="typePickerPopupVisible = true">
+          <div class="name required">关联酒店</div>
+          <div class="picker" @click="hotelPickerPopupVisible = true">
+            <div class="content" :class="{ active: hotelName }">
+              {{ hotelName || "请选择关联酒店" }}
+            </div>
+            <Icon name="arrow" />
+          </div>
+        </li>
+        <li class="form-item flex">
+          <div class="name required">房间类型</div>
+          <div class="picker" @click="showTypePickerPopup">
             <div class="content" :class="{ active: typeName }">
-              {{ typeName || "请选择门票类型" }}
+              {{ typeName || "请选择房间类型" }}
             </div>
             <Icon name="arrow" />
           </div>
-        </li>
-        <li class="form-item flex">
-          <div class="name required">关联景点</div>
-          <div class="picker" @click="showHotelPickerPopup">
-            <div class="content" :class="{ active: hotelNames }">
-              {{ hotelNames || "请选择关联景点" }}
-            </div>
-            <Icon name="arrow" />
-          </div>
-        </li>
-        <li class="form-item flex">
-          <div class="name required">门票名称</div>
-          <input
-            class="input"
-            v-model="ticketInfo.name"
-            type="text"
-            placeholder="请输入名称，最长30字"
-          />
-        </li>
-        <li class="form-item flex">
-          <div class="name required">门票简称</div>
-          <input
-            class="input"
-            v-model="ticketInfo.briefName"
-            type="text"
-            placeholder="请输入简称，最长30字"
-          />
         </li>
         <li class="form-item flex">
           <div class="name required">起始价格</div>
           <input
             class="input"
-            v-model="ticketInfo.price"
+            v-model="roomInfo.price"
             type="number"
             step="0.01"
             placeholder="请输入起始价格"
-          />
-        </li>
-        <li class="form-item flex">
-          <div class="name">市场价格</div>
-          <input
-            class="input"
-            v-model="ticketInfo.marketPrice"
-            type="number"
-            step="0.01"
-            placeholder="请输入市场价格"
           />
         </li>
         <li class="form-item flex">
@@ -75,7 +47,7 @@
           </div>
           <input
             class="input"
-            v-model="ticketInfo.salesCommissionRate"
+            v-model="roomInfo.salesCommissionRate"
             type="number"
             placeholder="请输入销售佣金比例"
           />
@@ -97,7 +69,7 @@
           </div>
           <input
             class="input"
-            v-model="ticketInfo.promotionCommissionRate"
+            v-model="roomInfo.promotionCommissionRate"
             type="number"
             placeholder="请输入推广佣金比例"
           />
@@ -107,266 +79,83 @@
     </div>
 
     <div class="title flex">
-      <div>编辑门票规格</div>
+      <div>编辑房间价格</div>
       <Button
-        @click="categoryPickerPopupVisible = true"
+        @click="addPriceItem"
         icon="plus"
-        text="新增规格"
+        text="新增价格列表"
         type="primary"
         size="mini"
       />
     </div>
-    <SwipeCell v-for="(item, index) in ticketInfo.specList" :key="index">
+    <SwipeCell v-for="(item, index) in roomInfo.priceList" :key="index">
       <div class="card">
-        <div class="title flex" style="margin-top: 0.32rem">
-          <div>
-            {{
-              typeOptions.find(
-                (typeOption) => typeOption.id === item.categoryId
-              )?.name
-            }}
-          </div>
-          <Button
-            @click="addPriceItem(index)"
-            icon="plus"
-            text="新增价格列表"
-            type="primary"
-            size="mini"
-          />
-        </div>
-        <SwipeCell
-          v-for="(_item, _index) in item.priceList"
-          :key="_index"
-          stop-propagation
-        >
-          <ul class="form unit">
-            <li class="form-item flex">
-              <div class="name required">日期范围</div>
-              <div
-                class="picker"
-                @click="showDateRangePickerPopup(index, _index)"
-              >
-                <div class="content" :class="{ active: _item.startDate }">
-                  {{
-                    _item.startDate
-                      ? `${dayjs(_item.startDate).format(
-                          "YYYY-MM-DD"
-                        )}至${dayjs(_item.endDate).format("YYYY-MM-DD")}`
-                      : "请选择日期范围"
-                  }}
-                </div>
-                <Icon name="arrow" />
+        <ul class="form">
+          <li class="form-item flex">
+            <div class="name required">日期范围</div>
+            <div class="picker" @click="showDateRangePickerPopup(index)">
+              <div class="content" :class="{ active: item.startDate }">
+                {{
+                  item.startDate && item.endDate
+                    ? `${dayjs(item.startDate * 1000).format(
+                        "YYYY-MM-DD"
+                      )}至${dayjs(item.endDate * 1000).format("YYYY-MM-DD")}`
+                    : "请选择日期范围"
+                }}
               </div>
-            </li>
-            <li class="form-item flex">
-              <div class="name required">价格</div>
-              <input
-                class="input"
-                v-model="_item.price"
-                type="number"
-                step="0.01"
-                placeholder="请输入价格"
-              />
-            </li>
-            <li class="form-item flex">
-              <div class="name">库存</div>
-              <input
-                class="input"
-                v-model="_item.stock"
-                type="number"
-                placeholder="请输入库存"
-              />
-            </li>
-          </ul>
-          <template #right>
-            <Button
-              class="delete-btn"
-              @click.stop="deletePriceItem(index, _index)"
-              icon="delete"
-              color="#EE0D23"
-              plain
+              <Icon name="arrow" />
+            </div>
+          </li>
+          <li class="form-item flex">
+            <div class="name required">价格</div>
+            <input
+              class="input"
+              v-model="item.price"
+              type="number"
+              step="0.01"
+              placeholder="请输入价格"
             />
-          </template>
-        </SwipeCell>
-        <div class="card" v-if="!item.priceList.length">
-          <Empty image-size="1.8rem" description="暂无价格列表" />
-        </div>
+          </li>
+        </ul>
       </div>
       <template #right>
         <Button
           class="delete-btn"
-          @click.stop="deleteSpec(index)"
+          @click.stop="deletePriceItem(index)"
           icon="delete"
           color="#EE0D23"
           plain
         />
       </template>
     </SwipeCell>
-    <div class="card" v-if="!ticketInfo.specList.length">
-      <Empty image-size="1.8rem" description="暂无规格" />
-    </div>
-
-    <div class="title">填写费用说明</div>
-    <div class="card">
-      <ul class="form">
-        <li class="form-item flex">
-          <div class="name">费用包含</div>
-          <input
-            class="input"
-            v-model="ticketInfo.feeIncludeTips"
-            type="text"
-            placeholder="请输入费用包含内容"
-          />
-        </li>
-        <li class="form-item flex">
-          <div class="name">费用不含</div>
-          <input
-            class="input"
-            v-model="ticketInfo.feeNotIncludeTips"
-            type="text"
-            placeholder="请输入费用不含内容"
-          />
-        </li>
-      </ul>
+    <div class="card" v-if="!roomInfo.priceList.length">
+      <Empty image-size="1.8rem" description="暂无价格列表" />
     </div>
 
     <div class="title">填写预定说明</div>
     <div class="card">
       <ul class="form">
         <li class="form-item flex">
-          <div class="name required">当天预定最晚时间</div>
-          <div class="picker" @click="bookingTimePickerPopupVisible = true">
-            <div class="content" :class="{ active: ticketInfo.bookingTime }">
-              {{ ticketInfo.bookingTime || "请选择最晚预定时间" }}
-            </div>
-            <Icon name="arrow" />
-          </div>
-        </li>
-        <li class="form-item flex">
-          <div class="name">生效时间</div>
+          <div class="name required">早餐数量</div>
           <input
             class="input"
-            v-model="ticketInfo.effectiveTime"
+            v-model="roomInfo.breakfastNum"
             type="number"
-            placeholder="请输入生效时间"
+            placeholder="请输入早餐数量"
           />
-          <div class="unit">小时</div>
         </li>
         <li class="form-item flex">
-          <div class="name">有效期</div>
+          <div class="name required">入住人数</div>
           <input
             class="input"
-            v-model="ticketInfo.validityTime"
+            v-model="roomInfo.guestNum"
             type="number"
-            placeholder="请输入有效期"
-          />
-          <div class="unit">天</div>
-        </li>
-        <li class="form-item flex">
-          <div class="name">限购数量</div>
-          <input
-            class="input"
-            v-model="ticketInfo.limitNumber"
-            type="number"
-            placeholder="请输入限购数量"
+            placeholder="请输入入住人数"
           />
         </li>
         <li class="form-item flex">
-          <div class="name required">退票条件</div>
-          <div class="picker" @click="refundStatusPickerPopupVisible = true">
-            <div class="content" :class="{ active: refundStatusName }">
-              {{ refundStatusName || "请选择退票条件" }}
-            </div>
-            <Icon name="arrow" />
-          </div>
-        </li>
-        <li class="form-item flex">
-          <div class="name">退票说明</div>
-          <input
-            class="input"
-            v-model="ticketInfo.refundTips"
-            type="text"
-            placeholder="请输入退票说明"
-          />
-        </li>
-      </ul>
-    </div>
-
-    <div class="title">填写使用说明</div>
-    <div class="card">
-      <ul class="form">
-        <li class="form-item flex">
-          <div class="name">是否需要换票</div>
-          <Switch v-model="ticketInfo.needExchange" size="18px" />
-        </li>
-        <li class="form-item flex">
-          <div class="name">换票说明</div>
-          <input
-            class="input"
-            v-model="ticketInfo.exchangeTips"
-            type="text"
-            placeholder="请输入换票说明"
-          />
-        </li>
-        <li class="form-item flex" v-show="ticketInfo.needExchange">
-          <div class="name">换票时间</div>
-          <div class="picker" @click="exchangeTimePickerPopupVisible = true">
-            <div class="content" :class="{ active: ticketInfo.exchangeTime }">
-              {{ ticketInfo.exchangeTime || "请选择换票时间" }}
-            </div>
-            <Icon name="arrow" />
-          </div>
-        </li>
-        <li class="form-item flex" v-show="ticketInfo.needExchange">
-          <div class="name">换票地点</div>
-          <input
-            class="input"
-            v-model="ticketInfo.exchangeLocation"
-            type="text"
-            placeholder="请输入换票地点"
-          />
-        </li>
-        <li class="form-item flex">
-          <div class="name">入园时间</div>
-          <div class="picker" @click="enterTimePickerPopupVisible = true">
-            <div class="content" :class="{ active: ticketInfo.enterTime }">
-              {{ ticketInfo.enterTime || "请选择入园时间" }}
-            </div>
-            <Icon name="arrow" />
-          </div>
-        </li>
-        <li class="form-item flex">
-          <div class="name">入园地点</div>
-          <input
-            class="input"
-            v-model="ticketInfo.enterLocation"
-            type="text"
-            placeholder="请输入入园地点"
-          />
-        </li>
-      </ul>
-    </div>
-
-    <div class="title">填写其他说明</div>
-    <div class="card">
-      <ul class="form">
-        <li class="form-item flex">
-          <div class="name">发票说明</div>
-          <input
-            class="input"
-            v-model="ticketInfo.invoiceTips"
-            type="text"
-            placeholder="请输入发票说明"
-          />
-        </li>
-        <li class="form-item flex">
-          <div class="name">特别提醒</div>
-          <input
-            class="input"
-            v-model="ticketInfo.reminderTips"
-            type="text"
-            placeholder="请输入特别提醒"
-          />
+          <div class="name required">免费取消</div>
+          <Switch v-model="roomInfo.cancellable" size="18px" />
         </li>
       </ul>
     </div>
@@ -374,43 +163,16 @@
 
   <button class="upload-btn" @click="save">点击提交</button>
 
+  <HotelPickerPopup
+    :visible="hotelPickerPopupVisible"
+    :hotel-options="hotelOptions"
+    @confirm="setHotelId"
+    @cancel="hotelPickerPopupVisible = false"
+  />
   <TypePickerPopup
     :visible="typePickerPopupVisible"
     @confirm="setType"
     @cancel="typePickerPopupVisible = false"
-  />
-  <HotelPickerPopup
-    v-if="ticketInfo.type === 1"
-    :visible="hotelPickerPopupVisible"
-    :hotel-options="hotelOptions"
-    @confirm="setHotelIds"
-    @cancel="hotelPickerPopupVisible = false"
-  />
-  <TimePickerPopup
-    :visible="bookingTimePickerPopupVisible"
-    @confirm="setBookTime"
-    @cancel="bookingTimePickerPopupVisible = false"
-  />
-  <RefundStatusPickerPopup
-    :visible="refundStatusPickerPopupVisible"
-    @confirm="setRefundStatus"
-    @cancel="refundStatusPickerPopupVisible = false"
-  />
-  <TimeRangePickerPopup
-    :visible="exchangeTimePickerPopupVisible"
-    @confirm="setExchangeTime"
-    @cancel="exchangeTimePickerPopupVisible = false"
-  />
-  <TimeRangePickerPopup
-    :visible="enterTimePickerPopupVisible"
-    @confirm="setEnterTime"
-    @cancel="enterTimePickerPopupVisible = false"
-  />
-  <TypePickerPopup
-    :visible="categoryPickerPopupVisible"
-    :category-options="typeOptions"
-    @confirm="addSpec"
-    @cancel="categoryPickerPopupVisible = false"
   />
   <Calendar
     v-model:show="dateRangePickerPopupVisible"
@@ -433,9 +195,6 @@ import {
 } from "vant";
 import TypePickerPopup from "./components/typePickerPopup.vue";
 import HotelPickerPopup from "./components/hotelPickerPopup.vue";
-import TimePickerPopup from "./components/timePickerPopup.vue";
-import TimeRangePickerPopup from "./components/timeRangePickerPopup.vue";
-import RefundStatusPickerPopup from "./components/refundStatusPickerPopup.vue";
 
 import { ref, reactive, computed, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
@@ -444,7 +203,6 @@ import dayjs from "dayjs";
 import { cleanObject } from "@/utils/index";
 import { getRoomInfo, editRoom } from "./utils/api";
 import {
-  refundStatusOptions,
   hotelOptions,
   setHotelOptions,
   typeOptions,
@@ -457,219 +215,103 @@ import type { RoomInfo, EditRoomInfo } from "./utils/type";
 const route = useRoute();
 const router = useRouter();
 
-const ticketInfo = reactive<RoomInfo>({
+const roomInfo = reactive<RoomInfo>({
   id: 0,
-  type: undefined,
-  hotelIds: [],
-  name: "",
-  briefName: "",
+  hotelId: undefined,
+  typeId: undefined,
   price: undefined,
-  marketPrice: undefined,
   salesCommissionRate: undefined,
   promotionCommissionRate: undefined,
-  specList: [],
-  feeIncludeTips: "",
-  feeNotIncludeTips: "",
-  bookingTime: "",
-  effectiveTime: 0,
-  validityTime: 0,
-  limitNumber: 0,
-  refundStatus: undefined,
-  refundTips: "",
-  needExchange: false,
-  exchangeTips: "",
-  exchangeTime: "",
-  exchangeLocation: "",
-  enterTime: "",
-  enterLocation: "",
-  invoiceTips: "",
-  reminderTips: "",
+  priceList: [],
+  breakfastNum: 0,
+  guestNum: undefined,
+  cancellable: true,
 });
-const curSpecIndex = ref(0);
 const curPriceItemIndex = ref(0);
 const typePickerPopupVisible = ref(false);
-const categoryPickerPopupVisible = ref(false);
 const dateRangePickerPopupVisible = ref(false);
-const bookingTimePickerPopupVisible = ref(false);
-const refundStatusPickerPopupVisible = ref(false);
-const exchangeTimePickerPopupVisible = ref(false);
-const enterTimePickerPopupVisible = ref(false);
 const hotelPickerPopupVisible = ref(false);
 const salesCommissionRateTipsVisible = ref(false);
 const promotionCommissionRateTipsVisible = ref(false);
 
 // 计算属性
-const hotelNames = computed(() =>
-  ticketInfo.hotelIds
-    .map((id) => hotelOptions.value.find((item) => item.id === id)?.name)
-    .join()
+const hotelName = computed(
+  () => hotelOptions.value.find((item) => item.id === roomInfo.hotelId)?.name
 );
 const typeName = computed(
-  () => typeOptions.value.find((item) => item.id === ticketInfo.type)?.name
-);
-const refundStatusName = computed(
-  () =>
-    refundStatusOptions.find((item) => item.value === ticketInfo.refundStatus)
-      ?.text
+  () => typeOptions.value.find((item) => item.id === roomInfo.typeId)?.name
 );
 
 onMounted(async () => {
   await setHotelOptions();
-  await setTypeOptions();
   setRoomInfo();
 });
 
 const setRoomInfo = async () => {
   const {
     id,
-    type,
-    hotelIds,
-    name,
-    briefName,
+    hotelId,
+    typeId,
     price,
-    marketPrice,
     salesCommissionRate,
     promotionCommissionRate,
-    specList,
-    feeIncludeTips,
-    feeNotIncludeTips,
-    bookingTime,
-    effectiveTime,
-    validityTime,
-    limitNumber,
-    refundStatus,
-    refundTips,
-    needExchange,
-    exchangeTips,
-    exchangeTime,
-    exchangeLocation,
-    enterTime,
-    enterLocation,
-    invoiceTips,
-    reminderTips,
+    priceList,
+    breakfastNum,
+    guestNum,
+    cancellable,
   } = await getRoomInfo(+(route.query.id as string));
-  ticketInfo.id = id;
-  ticketInfo.type = type;
-  ticketInfo.hotelIds = hotelIds;
-  ticketInfo.name = name;
-  ticketInfo.briefName = briefName;
-  ticketInfo.price = price;
-  ticketInfo.marketPrice = marketPrice || undefined;
-  ticketInfo.salesCommissionRate = salesCommissionRate * 100;
-  ticketInfo.promotionCommissionRate = promotionCommissionRate * 100;
-  specList.forEach((item) =>
-    ticketInfo.specList.push(
-      _.cloneDeep({ ...item, priceList: JSON.parse(item.priceList) })
-    )
-  );
-  ticketInfo.feeIncludeTips = feeIncludeTips;
-  ticketInfo.feeNotIncludeTips = feeNotIncludeTips;
-  ticketInfo.bookingTime = bookingTime;
-  ticketInfo.effectiveTime = effectiveTime || undefined;
-  ticketInfo.validityTime = validityTime || undefined;
-  ticketInfo.limitNumber = limitNumber || undefined;
-  ticketInfo.refundStatus = refundStatus;
-  ticketInfo.refundTips = refundTips;
-  ticketInfo.needExchange = !!needExchange;
-  ticketInfo.exchangeTips = exchangeTips;
-  ticketInfo.exchangeTime = exchangeTime;
-  ticketInfo.exchangeLocation = exchangeLocation;
-  ticketInfo.enterTime = enterTime;
-  ticketInfo.enterLocation = enterLocation;
-  ticketInfo.invoiceTips = invoiceTips;
-  ticketInfo.reminderTips = reminderTips;
+  roomInfo.id = id;
+  roomInfo.hotelId = hotelId;
+  roomInfo.typeId = typeId;
+  roomInfo.price = price;
+  roomInfo.salesCommissionRate = salesCommissionRate * 100;
+  roomInfo.promotionCommissionRate = promotionCommissionRate * 100;
+  roomInfo.priceList = priceList;
+  roomInfo.breakfastNum = breakfastNum;
+  roomInfo.guestNum = guestNum;
+  roomInfo.cancellable = !!cancellable;
 };
 
-const setType = (type: number) => {
-  if (ticketInfo.type !== type) {
-    ticketInfo.hotelIds = [];
+const setHotelId = (hotelId: number) => {
+  if (roomInfo.hotelId !== hotelId) {
+    roomInfo.typeId = undefined;
+    setTypeOptions(hotelId);
   }
-  ticketInfo.type = type;
-  typePickerPopupVisible.value = false;
-};
-
-const showHotelPickerPopup = () => {
-  if (!ticketInfo.type) {
-    showToast("请先选择门票类型");
-    return;
-  }
-  hotelPickerPopupVisible.value = true;
-};
-const setHotelIds = (hotelIds: number[]) => {
-  ticketInfo.hotelIds = hotelIds;
+  roomInfo.hotelId = hotelId;
   hotelPickerPopupVisible.value = false;
 };
 
-const setBookTime = (bookingTime: string) => {
-  ticketInfo.bookingTime = bookingTime;
-  bookingTimePickerPopupVisible.value = false;
+const setType = (typeId: number) => {
+  roomInfo.typeId = typeId;
+  typePickerPopupVisible.value = false;
+};
+const showTypePickerPopup = () => {
+  if (!roomInfo.hotelId) {
+    showToast("请先选择关联酒店");
+    return;
+  }
+  typePickerPopupVisible.value = true;
 };
 
-const setRefundStatus = (status: number) => {
-  ticketInfo.refundStatus = status;
-  refundStatusPickerPopupVisible.value = false;
-};
-
-const setExchangeTime = (exchangeTime: string) => {
-  ticketInfo.exchangeTime = exchangeTime;
-  exchangeTimePickerPopupVisible.value = false;
-};
-const setEnterTime = (enterTime: string) => {
-  ticketInfo.enterTime = enterTime;
-  enterTimePickerPopupVisible.value = false;
-};
-
-const addSpec = (categoryId: number) => {
-  typeOptions.value = typeOptions.value.map((item) =>
-    item.id === categoryId
-      ? {
-          ...item,
-          disabled: true,
-        }
-      : item
-  );
-  ticketInfo.specList.push({ categoryId, priceList: [] });
-  categoryPickerPopupVisible.value = false;
-};
-const deleteSpec = (index: number) =>
-  showConfirmDialog({ title: "确定删除该门票规格吗？" })
-    .then(() => {
-      typeOptions.value = typeOptions.value.map((item) =>
-        item.id === ticketInfo.specList[index].categoryId
-          ? { ...item, disabled: false }
-          : item
-      );
-      ticketInfo.specList.splice(index, 1);
-    })
-    .catch(() => true);
-
-const addPriceItem = (index: number) => {
-  curSpecIndex.value = index;
-  ticketInfo.specList[curSpecIndex.value].priceList.push({
+const addPriceItem = () => {
+  roomInfo.priceList.push({
     startDate: undefined,
     endDate: undefined,
     price: undefined,
-    stock: undefined,
   });
   dateRangePickerPopupVisible.value = false;
 };
-const showDateRangePickerPopup = (
-  specIndex: number,
-  priceItemIndex: number
-) => {
-  curSpecIndex.value = specIndex;
+const showDateRangePickerPopup = (priceItemIndex: number) => {
   curPriceItemIndex.value = priceItemIndex;
   dateRangePickerPopupVisible.value = true;
 };
-const deletePriceItem = (index: number, priceItemIndex: number) =>
-  showConfirmDialog({ title: "确定删除该门票规格吗？" })
-    .then(() => ticketInfo.specList[index].priceList.splice(priceItemIndex, 1))
+const deletePriceItem = (priceItemIndex: number) =>
+  showConfirmDialog({ title: "确定删除该房间价格吗？" })
+    .then(() => roomInfo.priceList.splice(priceItemIndex, 1))
     .catch(() => true);
 const dateRangeConfirm = (dateList: Date[]) => {
-  const priceItem = _.cloneDeep(
-    ticketInfo.specList[curSpecIndex.value].priceList[curPriceItemIndex.value]
-  );
-  ticketInfo.specList[curSpecIndex.value].priceList[curPriceItemIndex.value] = {
+  const priceItem = _.cloneDeep(roomInfo.priceList[curPriceItemIndex.value]);
+  roomInfo.priceList[curPriceItemIndex.value] = {
     ...priceItem,
     startDate: Math.floor(new Date(dateList[0]).getTime() / 1000),
     endDate: Math.floor(new Date(dateList[1]).getTime() / 1000),
@@ -678,26 +320,17 @@ const dateRangeConfirm = (dateList: Date[]) => {
 };
 
 const save = async () => {
-  if (!checkRoomInfo(ticketInfo)) {
+  if (!checkRoomInfo(roomInfo)) {
     return;
   }
 
-  const {
-    specList,
-    salesCommissionRate,
-    promotionCommissionRate,
-    needExchange,
-    ...rest
-  } = ticketInfo;
+  const { salesCommissionRate, promotionCommissionRate, cancellable, ...rest } =
+    roomInfo;
   const editRoomInfo = {
     ...cleanObject(rest),
     salesCommissionRate: (salesCommissionRate as number) / 100,
     promotionCommissionRate: (promotionCommissionRate as number) / 100,
-    specList: specList.map((item) => ({
-      ...item,
-      priceList: JSON.stringify(item.priceList),
-    })),
-    needExchange: needExchange ? 1 : 0,
+    cancellable: cancellable ? 1 : 0,
   };
   try {
     await editRoom(editRoomInfo as EditRoomInfo);
@@ -708,11 +341,6 @@ const save = async () => {
 };
 </script>
 
-<style>
-.van-empty__description {
-  font-size: 0.24rem;
-}
-</style>
 <style lang="scss" scoped>
 .container {
   padding: 0.32rem 0.32rem 1.52rem;
@@ -828,5 +456,10 @@ const save = async () => {
   font-size: 0.24rem;
   line-height: 1.5;
   white-space: wrap;
+}
+</style>
+<style>
+.van-empty__description {
+  font-size: 0.24rem;
 }
 </style>
