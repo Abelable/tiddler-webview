@@ -14,8 +14,8 @@ export const refundStatusOptions = [
 export const hotelOptions = ref<Option[]>([]);
 export const typeOptions = ref<RoomTypeOption[]>([]);
 
-export const setTypeOptions = async () => {
-  const options = await getRoomTypeOptions();
+export const setTypeOptions = async (hotelId: number) => {
+  const options = await getRoomTypeOptions(hotelId);
   typeOptions.value = options.map((item) => ({
     ...item,
     disabled: false,
@@ -24,66 +24,52 @@ export const setTypeOptions = async () => {
 export const setHotelOptions = async () =>
   (hotelOptions.value = await getHotelOptions());
 
-export const checkRoomInfo = (ticketInfo: RoomInfo | Omit<RoomInfo, "id">) => {
-  if (!ticketInfo.type) {
-    showToast("请选择门票类型");
+export const checkRoomInfo = (roomInfo: RoomInfo | Omit<RoomInfo, "id">) => {
+  if (!roomInfo.hotelId) {
+    showToast("请选择关联酒店");
     return false;
   }
-  if (!ticketInfo.hotelIds.length) {
-    showToast("请选择关联景点");
+  if (!roomInfo.typeId) {
+    showToast("请选择房间类型");
     return false;
   }
-  if (!ticketInfo.name) {
-    showToast("请输入门票名称");
-    return false;
-  }
-  if (!ticketInfo.briefName) {
-    showToast("请输入门票简称");
-    return false;
-  }
-  if (!ticketInfo.price) {
-    showToast("请输入门票起始价格");
+  if (!roomInfo.price) {
+    showToast("请输入房间起始价格");
     return false;
   }
   if (
-    !ticketInfo.salesCommissionRate ||
-    ticketInfo.salesCommissionRate < 10 ||
-    ticketInfo.salesCommissionRate > 70
+    !roomInfo.salesCommissionRate ||
+    roomInfo.salesCommissionRate < 10 ||
+    roomInfo.salesCommissionRate > 70
   ) {
     showToast("请输入范围为10%~70%的销售佣金比例");
     return false;
   }
   if (
-    !ticketInfo.promotionCommissionRate ||
-    ticketInfo.promotionCommissionRate < 2 ||
-    ticketInfo.promotionCommissionRate > 70
+    !roomInfo.promotionCommissionRate ||
+    roomInfo.promotionCommissionRate < 2 ||
+    roomInfo.promotionCommissionRate > 70
   ) {
     showToast("请输入范围为2%~70%的推广佣金比例");
     return false;
   }
-  if (
-    !ticketInfo.specList.length ||
-    ticketInfo.specList.findIndex((item) => !item.priceList.length) !== -1
-  ) {
-    showToast("请完善门票规格信息");
+  if (!roomInfo.priceList.length) {
+    showToast("请完善房间规格信息");
     return false;
   }
-  let incompletePriceItemIndex = -1;
-  ticketInfo.specList.forEach((item) => {
-    incompletePriceItemIndex = item.priceList.findIndex(
-      (_item) => !_item.startDate || !_item.endDate || !_item.price
-    );
-  });
+  const incompletePriceItemIndex = roomInfo.priceList.findIndex(
+    (item) => !item.startDate || !item.endDate || !item.price
+  );
   if (incompletePriceItemIndex !== -1) {
-    showToast("部分门票规格未选择日期范围或未填写价格");
+    showToast("部分价格列表未选择日期范围或未填写价格");
     return false;
   }
-  if (!ticketInfo.bookingTime) {
-    showToast("请选择当前预定最晚时间");
+  if (roomInfo.breakfastNum === undefined) {
+    showToast("请输入早餐数量");
     return false;
   }
-  if (!ticketInfo.refundStatus) {
-    showToast("请选择退票条件");
+  if (!roomInfo.guestNum) {
+    showToast("请输入入住人数");
     return false;
   }
   return true;
