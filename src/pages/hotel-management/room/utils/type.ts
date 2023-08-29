@@ -1,8 +1,11 @@
 export interface RoomListItem {
   id: number;
   hotelId: number;
-  typeId: number;
+  typeName: string;
   price: number;
+  breakfastNum: number;
+  guestNum: number;
+  cancellable: number;
   salesVolume: number;
   failureReason?: string;
   createdAt: string;

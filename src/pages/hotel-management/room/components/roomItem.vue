@@ -2,22 +2,22 @@
   <SwipeCell class="room-item">
     <div class="inner" @click="editRoom">
       <div class="row">
-        <div class="name">{{ item.name }}</div>
-        <div class="type row">
-          {{
-            typeOptions.find((typeOptions) => typeOptions.id === item.type)
-              ?.name
-          }}
+        <div class="name">{{ item.typeName }}</div>
+        <div
+          class="status"
+          :class="{ valid: item.cancellable, unvalid: !item.cancellable }"
+        >
+          {{ item.cancellable ? "免费取消" : "不可取消" }}
         </div>
+        <div class="status">
+          {{ item.breakfastNum ? `${item.breakfastNum}份早餐` : "无早餐" }}
+        </div>
+        <div class="status">{{ item.guestNum }}人入住</div>
       </div>
       <div class="hotel-list row">
-        <div class="label">关联景点：</div>
-        <div
-          class="hotel"
-          v-for="(hotelId, index) in item.hotelIds"
-          :key="index"
-        >
-          {{ hotelOptions.find((option) => option.id === hotelId)?.name }}
+        <div class="label">关联酒店：</div>
+        <div class="hotel">
+          {{ hotelOptions.find((option) => option.id === item.hotelId)?.name }}
         </div>
       </div>
       <div class="row between" v-if="status === 1">
@@ -71,7 +71,6 @@ import { SwipeCell, Button, showConfirmDialog, showToast } from "vant";
 
 import { useRouter } from "vue-router";
 import dayjs from "dayjs";
-import { typeOptions } from "../utils/index";
 import { deleteRoom, offShelfRoom, onShelfRoom } from "../utils/api";
 
 import type { Option } from "@/utils/type";
@@ -87,7 +86,7 @@ const props = defineProps<{
 const emit = defineEmits(["refresh"]);
 
 const offShelf = () =>
-  showConfirmDialog({ title: "确定下架该门票吗？" })
+  showConfirmDialog({ title: "确定下架该房间吗？" })
     .then(async () => {
       try {
         await offShelfRoom(props.item.id);
@@ -110,7 +109,7 @@ const onShelf = async () => {
 };
 
 const deleteCurRoom = () =>
-  showConfirmDialog({ title: "确定删除该门票吗？" })
+  showConfirmDialog({ title: "确定删除该房间吗？" })
     .then(async () => {
       try {
         await deleteRoom(props.item.id);
@@ -149,15 +148,23 @@ const editRoom = () => {
       font-size: 0.32rem;
       font-weight: 550;
     }
-    .type {
+    .status {
       margin-left: 0.12rem;
       padding: 0 0.08rem;
       height: 0.32rem;
-      color: #4e92df;
+      color: #999;
       font-size: 0.2rem;
       line-height: 0.32rem;
       border-radius: 0.04rem;
-      background: #e2edf9;
+      background: #f1f1f1;
+      &.valid {
+        color: #5dce86;
+        background: #d1f7e5;
+      }
+      &.unvalid {
+        color: #f00c10;
+        background: #fac5c5;
+      }
     }
     .hotel-list {
       margin-top: 0.12rem;
@@ -166,11 +173,11 @@ const editRoom = () => {
         margin-right: 0.08rem;
         padding: 0 0.08rem;
         height: 0.26rem;
-        color: #5dce86;
+        color: #4e92df;
         font-size: 0.18rem;
         line-height: 0.26rem;
         border-radius: 0.04rem;
-        background: #d1f7e5;
+        background: #e2edf9;
       }
     }
     .label,
