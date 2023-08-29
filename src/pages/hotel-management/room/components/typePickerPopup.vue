@@ -1,6 +1,11 @@
 <template>
   <Popup :show="visible" @click-overlay="cancel" position="bottom" round>
-    <Picker :columns="typeOptions" @confirm="confirm" @cancel="cancel" />
+    <Picker
+      :columns="typeOptions"
+      @confirm="confirm"
+      @cancel="cancel"
+      :columns-field-names="{ text: 'name', value: 'id' }"
+    />
   </Popup>
 </template>
 

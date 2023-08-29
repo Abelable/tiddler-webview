@@ -148,10 +148,10 @@
               >
                 <div class="content" :class="{ active: _item.startDate }">
                   {{
-                    _item.startDate
-                      ? `${dayjs(_item.startDate).format(
+                    _item.startDate && _item.endDate
+                      ? `${dayjs(_item.startDate * 1000).format(
                           "YYYY-MM-DD"
-                        )}至${dayjs(_item.endDate).format("YYYY-MM-DD")}`
+                        )}至${dayjs(_item.endDate * 1000).format("YYYY-MM-DD")}`
                       : "请选择日期范围"
                   }}
                 </div>

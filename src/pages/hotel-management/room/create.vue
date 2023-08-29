@@ -96,10 +96,10 @@
             <div class="picker" @click="showDateRangePickerPopup(index)">
               <div class="content" :class="{ active: item.startDate }">
                 {{
-                  item.startDate
-                    ? `${dayjs(item.startDate).format("YYYY-MM-DD")}至${dayjs(
-                        item.endDate
-                      ).format("YYYY-MM-DD")}`
+                  item.startDate && item.endDate
+                    ? `${dayjs(item.startDate * 1000).format(
+                        "YYYY-MM-DD"
+                      )}至${dayjs(item.endDate * 1000).format("YYYY-MM-DD")}`
                     : "请选择日期范围"
                 }}
               </div>
@@ -136,7 +136,7 @@
     <div class="card">
       <ul class="form">
         <li class="form-item flex">
-          <div class="name">早餐数量</div>
+          <div class="name required">早餐数量</div>
           <input
             class="input"
             v-model="roomInfo.breakfastNum"
@@ -145,7 +145,7 @@
           />
         </li>
         <li class="form-item flex">
-          <div class="name">入住人数</div>
+          <div class="name required">入住人数</div>
           <input
             class="input"
             v-model="roomInfo.guestNum"
@@ -154,7 +154,7 @@
           />
         </li>
         <li class="form-item flex">
-          <div class="name">免费取消</div>
+          <div class="name required">免费取消</div>
           <Switch v-model="roomInfo.cancellable" size="18px" />
         </li>
       </ul>
@@ -166,7 +166,7 @@
   <HotelPickerPopup
     :visible="hotelPickerPopupVisible"
     :hotel-options="hotelOptions"
-    @confirm="setHotelIds"
+    @confirm="setHotelId"
     @cancel="hotelPickerPopupVisible = false"
   />
   <TypePickerPopup
@@ -245,7 +245,7 @@ onMounted(() => {
   setHotelOptions();
 });
 
-const setHotelIds = (hotelId: number) => {
+const setHotelId = (hotelId: number) => {
   if (roomInfo.hotelId !== hotelId) {
     roomInfo.typeId = undefined;
     setTypeOptions(hotelId);

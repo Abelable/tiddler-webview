@@ -17,7 +17,7 @@ defineProps<{ visible: boolean; hotelOptions: Option[] }>();
 const emit = defineEmits(["confirm", "cancel"]);
 
 const confirm = ({ selectedValues }: { selectedValues: number[] }) =>
-  emit("confirm", selectedValues);
+  emit("confirm", selectedValues[0]);
 const cancel = () => emit("cancel");
 </script>
 

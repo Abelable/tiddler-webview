@@ -1,8 +1,3 @@
-export interface RoomTypeOption {
-  id: number;
-  name: string;
-}
-
 export interface RoomListItem {
   id: number;
   hotelId: number;

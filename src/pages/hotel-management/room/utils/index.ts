@@ -3,23 +3,13 @@ import { showToast } from "vant";
 import { getHotelOptions, getRoomTypeOptions } from "./api";
 
 import type { Option } from "@/utils/type";
-import type { RoomTypeOption, RoomInfo } from "./type";
-
-export const refundStatusOptions = [
-  { text: "随时可退", value: 1 },
-  { text: "有条件退", value: 2 },
-  { text: "不可退", value: 3 },
-];
+import type { RoomInfo } from "./type";
 
 export const hotelOptions = ref<Option[]>([]);
-export const typeOptions = ref<RoomTypeOption[]>([]);
+export const typeOptions = ref<Option[]>([]);
 
 export const setTypeOptions = async (hotelId: number) => {
-  const options = await getRoomTypeOptions(hotelId);
-  typeOptions.value = options.map((item) => ({
-    ...item,
-    disabled: false,
-  }));
+  typeOptions.value = await getRoomTypeOptions(hotelId);
 };
 export const setHotelOptions = async () =>
   (hotelOptions.value = await getHotelOptions());
