@@ -16,6 +16,7 @@ export interface PriceItem {
   startDate: number | undefined;
   endDate: number | undefined;
   price: number | undefined;
+  num: number | undefined;
 }
 
 export interface RoomInfo {

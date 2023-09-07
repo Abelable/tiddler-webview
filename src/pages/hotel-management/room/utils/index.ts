@@ -48,7 +48,7 @@ export const checkRoomInfo = (roomInfo: RoomInfo | Omit<RoomInfo, "id">) => {
     return false;
   }
   const incompletePriceItemIndex = roomInfo.priceList.findIndex(
-    (item) => !item.startDate || !item.endDate || !item.price
+    (item) => !item.startDate || !item.endDate || !item.price || !item.price
   );
   if (incompletePriceItemIndex !== -1) {
     showToast("部分价格列表未选择日期范围或未填写价格");

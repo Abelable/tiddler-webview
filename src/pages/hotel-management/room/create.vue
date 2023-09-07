@@ -116,6 +116,15 @@
               placeholder="请输入价格"
             />
           </li>
+          <li class="form-item flex">
+            <div class="name required">房间数量</div>
+            <input
+              class="input"
+              v-model="item.num"
+              type="number"
+              placeholder="请输入房间数量"
+            />
+          </li>
         </ul>
       </div>
       <template #right>
@@ -270,6 +279,7 @@ const addPriceItem = () => {
     startDate: undefined,
     endDate: undefined,
     price: undefined,
+    num: undefined,
   });
   dateRangePickerPopupVisible.value = false;
 };
