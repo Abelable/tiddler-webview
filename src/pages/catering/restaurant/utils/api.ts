@@ -1,31 +1,46 @@
 import { http } from "@/utils/http";
 
-import type { ProviderHotel } from "./type";
 import type { Option } from "@/utils/type";
+import type { RoomListItem, CreateRoomInfo, EditRoomInfo } from "./type";
 
 export const getHotelOptions = async (): Promise<Option[]> =>
-  await http("hotel/options");
+  await http("hotel/provider/hotel_options");
 
-export const getHotelListTotals = async (): Promise<number[]> =>
-  await http("hotel/provider/hotel_list_totals");
+export const getRoomTotals = async (): Promise<number[]> =>
+  await http("hotel/provider/room/totals");
 
-export const getProviderHotelList = async (
+export const getRoomList = async (
   status: number,
   page: number,
   limit = 10
-): Promise<ProviderHotel[]> => {
+): Promise<RoomListItem[]> => {
   const { list = [] } =
-    (await http("hotel/provider/hotel_list", {
+    (await http("hotel/provider/room/list", {
       data: { status, page, limit },
     })) || {};
   return list;
 };
 
-export const applyHotel = async (hotelId: number) =>
-  await http("hotel/provider/apply_hotel", {
-    method: "POST",
-    data: { hotelId },
-  });
+export const getRoomTypeOptions = async (hotelId: number): Promise<Option[]> =>
+  await http("hotel/room/type_options", { data: { hotelId } });
 
-export const deleteProviderHotel = async (id: number) =>
-  await http("hotel/provider/delete_hotel", { method: "POST", data: { id } });
+export const offShelfRoom = async (id: number) =>
+  await http("hotel/provider/room/down", { method: "POST", data: { id } });
+
+export const onShelfRoom = async (id: number) =>
+  await http("hotel/provider/room/up", { method: "POST", data: { id } });
+
+export const deleteRoom = async (id: number) =>
+  await http("hotel/provider/room/delete", { method: "POST", data: { id } });
+
+export const getRoomInfo = async (id: number): Promise<EditRoomInfo> =>
+  await http("hotel/provider/room/detail", { data: { id } });
+
+export const createRoom = async (goodsInfo: CreateRoomInfo) =>
+  await http("hotel/provider/room/add", { method: "POST", data: goodsInfo });
+
+export const editRoom = async (goodsInfo: EditRoomInfo) =>
+  await http("hotel/provider/room/edit", {
+    method: "POST",
+    data: goodsInfo,
+  });

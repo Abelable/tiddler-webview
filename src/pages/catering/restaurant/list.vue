@@ -13,165 +13,56 @@
   </ul>
 
   <PullRefresh class="container" v-model="refreshing" @refresh="onRefresh">
-    <div class="warning-tips" v-show="curMenuIndex === 1">
+    <div class="warning-tips" v-show="curMenuIndex === 2">
       温馨提示：审核时间是3个工作日
     </div>
     <List
-      class="hotel-list"
+      class="room-list"
       v-model="loading"
       :finished="finished"
       @load="onLoadMore"
-      :finished-text="hotelLists[curMenuIndex].length ? '没有更多了' : ''"
+      :finished-text="roomLists[curMenuIndex].length ? '没有更多了' : ''"
     >
-      <SwipeCell
-        class="hotel-item"
-        v-for="(item, index) in hotelLists[0]"
-        :key="index"
-        v-show="curMenuIndex === 0"
-      >
-        <div class="inner">
-          <img class="image" :src="item.hotelCover" alt="" />
-          <div class="content">
-            <div class="row">
-              <div class="name">{{ item.hotelName }}</div>
-              <div class="level row">
-                {{ ["经济", "舒适", "高档", "豪华"][item.hotelGrade - 1] }}
-              </div>
-            </div>
-            <div class="address row">
-              <Icon name="location-o" size="0.24rem" />
-              <div>{{ item.hotelAddress }}</div>
-            </div>
-          </div>
-        </div>
-        <template #right>
-          <Button
-            class="delete-btn"
-            @click.stop="deleteHotel(index)"
-            square
-            text="删除"
-            type="danger"
-          />
-        </template>
-      </SwipeCell>
-
-      <SwipeCell
-        class="hotel-item"
-        v-for="(item, index) in hotelLists[1]"
-        :key="index"
-        v-show="curMenuIndex === 1"
-      >
-        <div class="inner">
-          <img class="image" :src="item.hotelCover" alt="" />
-          <div class="content">
-            <div class="row">
-              <div class="name">{{ item.hotelName }}</div>
-              <div class="level row">
-                {{ ["经济", "舒适", "高档", "豪华"][item.hotelGrade - 1] }}
-              </div>
-            </div>
-            <div class="time">
-              提交时间：{{
-                dayjs(item.createdAt).format("YYYY-MM-DD HH:mm:ss")
-              }}
-            </div>
-          </div>
-        </div>
-        <template #right>
-          <Button
-            class="delete-btn"
-            @click.stop="deleteHotel(index)"
-            square
-            text="删除"
-            type="danger"
-          />
-        </template>
-      </SwipeCell>
-
-      <SwipeCell
-        class="hotel-item"
-        v-for="(item, index) in hotelLists[2]"
-        :key="index"
-        v-show="curMenuIndex === 2"
-      >
-        <div class="inner">
-          <img class="image" :src="item.hotelCover" alt="" />
-          <div class="content">
-            <div class="row">
-              <div class="name">{{ item.hotelName }}</div>
-              <div class="level row">
-                {{ ["经济", "舒适", "高档", "豪华"][item.hotelGrade - 1] }}
-              </div>
-            </div>
-            <div class="failure-reason">
-              未通过原因：{{ item.failureReason }}
-            </div>
-          </div>
-        </div>
-        <template #right>
-          <Button
-            class="delete-btn"
-            @click.stop="deleteHotel(index)"
-            square
-            text="删除"
-            type="danger"
-          />
-        </template>
-      </SwipeCell>
-
-      <Empty
-        v-if="!hotelLists[curMenuIndex].length"
-        style="margin-top: 1rem"
-        description="暂无酒店列表"
+      <RoomItem
+        v-for="item in roomLists[curMenuIndex]"
+        :key="item.id"
+        :item="item"
+        :status="menuList[curMenuIndex].status"
+        :hotel-options="hotelOptions"
+        @refresh="onRefresh"
       />
     </List>
+    <Empty v-if="!roomLists[curMenuIndex].length" description="暂无房间列表" />
   </PullRefresh>
 
-  <Popup v-model:show="hotelPickerPopupVisible" position="bottom" round>
-    <Picker
-      :columns="hotelOptions"
-      @confirm="selectHotel"
-      @cancel="hotelPickerPopupVisible = false"
-      :columns-field-names="{ text: 'name', value: 'id' }"
-    />
-  </Popup>
-
-  <button class="add-btn" @click="showHotelPickerPopup">添加酒店</button>
+  <button class="add-btn" @click="addRoom">添加房间</button>
 </template>
 
 <script setup lang="ts">
-import {
-  PullRefresh,
-  List,
-  SwipeCell,
-  Popup,
-  Picker,
-  Button,
-  Icon,
-  showConfirmDialog,
-  Empty,
-  showToast,
-} from "vant";
-import { ref, reactive, onMounted } from "vue";
-import dayjs from "dayjs";
-import {
-  getHotelOptions,
-  getProviderHotelList,
-  deleteProviderHotel,
-  applyHotel,
-  getHotelListTotals,
-} from "./utils/api";
+import { PullRefresh, List, Empty } from "vant";
+import RoomItem from "./components/roomItem.vue";
 
-import type { Option as HotelOption } from "@/utils/type";
-import type { ProviderHotel } from "./utils/type";
+import { ref, reactive, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { getRoomTotals, getRoomList } from "./utils/api";
+import { hotelOptions, setHotelOptions } from "./utils/index";
+
+import type { RoomListItem } from "./utils/type";
+
+const router = useRouter();
 
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
 const menuList = ref([
   {
-    name: "已过审",
+    name: "出售中",
     status: 1,
+    total: 0,
+  },
+  {
+    name: "已下架",
+    status: 3,
     total: 0,
   },
   {
@@ -186,101 +77,66 @@ const menuList = ref([
   },
 ]);
 const curMenuIndex = ref(0);
-const hotelLists = reactive<ProviderHotel[][]>([[], [], []]);
-const pageList = [0, 0, 0];
-const hotelOptions = ref<HotelOption[]>([]);
-const hotelPickerPopupVisible = ref(false);
+const roomLists = reactive<RoomListItem[][]>([[], [], [], []]);
+const pageList = [0, 0, 0, 0];
 
-onMounted(() => {
+onMounted(async () => {
+  setHotelOptions();
   setTotals();
+  setRoomList(true);
 });
 
 const onRefresh = () => {
   setTotals();
-  setHotelLists(true);
+  setRoomList(true);
 };
 
-const onLoadMore = () => setHotelLists();
+const onLoadMore = () => setRoomList();
 
 const selectMenu = (index: number) => {
   curMenuIndex.value = index;
-  setHotelLists(true);
-};
-
-const setHotelOptions = async () => {
-  hotelOptions.value = await getHotelOptions();
+  setRoomList(true);
 };
 
 const setTotals = async () => {
-  const totals = await getHotelListTotals();
+  const totals = await getRoomTotals();
   totals.forEach((item, index) => (menuList.value[index].total = item));
 };
 
-const setHotelLists = async (init = false) => {
+const setRoomList = async (init = false) => {
   if (init) {
     pageList[curMenuIndex.value] = 0;
     finished.value = false;
   }
   const list =
-    (await getProviderHotelList(
+    (await getRoomList(
       menuList.value[curMenuIndex.value].status,
       ++pageList[curMenuIndex.value]
     )) || {};
 
-  hotelLists[curMenuIndex.value] = init
+  roomLists[curMenuIndex.value] = init
     ? list
-    : [...hotelLists[curMenuIndex.value], ...list];
+    : [...roomLists[curMenuIndex.value], ...list];
   if (!list.length) finished.value = true;
   loading.value = false;
   refreshing.value = false;
 };
 
-const showHotelPickerPopup = async () => {
-  await setHotelOptions();
-  hotelPickerPopupVisible.value = true;
-};
-
-const selectHotel = async ({
-  selectedValues,
-}: {
-  selectedValues: number[];
-}) => {
-  try {
-    await applyHotel(selectedValues[0]);
-    setTotals();
-  } catch (error) {
-    showToast((error as { code: number; message: string }).message);
-  }
-  hotelPickerPopupVisible.value = false;
-};
-
-const deleteHotel = (index: number) =>
-  showConfirmDialog({ title: "确定删除酒店吗？" })
-    .then(async () => {
-      try {
-        await deleteProviderHotel(hotelLists[curMenuIndex.value][index].id);
-        hotelLists[curMenuIndex.value].splice(index, 1);
-        setTotals();
-      } catch (error) {
-        showToast("删除失败，请重试");
-      }
-      return true;
-    })
-    .catch(() => true);
+const addRoom = () => router.push("/hotel/room/create");
 </script>
 
 <style lang="scss" scoped>
-.limit {
-  display: -webkit-box;
-  overflow: hidden;
-  line-height: 1;
-  text-overflow: ellipsis;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-}
 .row {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+}
+.omit {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 .menu-list {
   position: fixed;
@@ -331,26 +187,19 @@ const deleteHotel = (index: number) =>
     line-height: 1;
     background: #fffaed;
   }
-  .hotel-list {
+  .room-list {
     padding: 0.24rem;
-    .hotel-item {
+    .room-item {
       margin-bottom: 0.24rem;
       border-radius: 0.24rem;
       background: #fff;
       .inner {
         display: flex;
         padding: 0.24rem;
-
-        .image {
-          width: 1.8rem;
-          height: 1.8rem;
-          border-radius: 0.24rem;
-        }
         .content {
           display: flex;
           flex-direction: column;
           justify-content: space-between;
-          margin-left: 0.2rem;
           flex: 1;
           height: 1.8rem;
           .name {
@@ -358,18 +207,8 @@ const deleteHotel = (index: number) =>
             font-size: 0.28rem;
             font-weight: 500;
           }
-          .level {
-            margin-left: 0.08rem;
-            padding: 0 0.12rem;
-            height: 0.32rem;
-            color: #5dce86;
-            font-size: 0.2rem;
-            font-weight: bold;
-            line-height: 1;
-            border-radius: 0.08rem;
-            background: #d1f7e5;
-          }
-          .address,
+          .price,
+          .sales-volume,
           .time {
             color: #666;
             font-size: 0.26rem;
