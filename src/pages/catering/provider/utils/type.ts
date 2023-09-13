@@ -1,5 +1,3 @@
-import type { UploaderFileListItem } from "vant";
-
 export interface RegionOption {
   text: string;
   value: string;
@@ -10,6 +8,7 @@ export interface ProviderInfo {
   type: number;
   companyName?: string;
   businessLicensePhoto?: string;
+  hygienicLicensePhoto?: string;
   regionDesc: string;
   regionCodeList: string;
   addressDetail: string;
@@ -19,25 +18,6 @@ export interface ProviderInfo {
   idCardNumber: string;
   idCardFrontPhoto: string;
   idCardBackPhoto: string;
-  holdIdCardPhoto: string;
-  bankCardOwnerName: string;
-  bankCardNumber: string;
-  bankName: string;
-  shopAvatar: UploaderFileListItem[];
-  shopName: string;
-  shopCategoryId: number;
-  shopCover: UploaderFileListItem[];
-}
-
-export interface CreateProviderInfo
-  extends Omit<ProviderInfo, "shopAvatar" | "shopCover"> {
-  shopAvatar: string;
-  shopCover?: string;
-}
-
-export interface RestaurantCategoryOption {
-  id: number;
-  name: string;
 }
 
 export interface ProviderStatusInfo {

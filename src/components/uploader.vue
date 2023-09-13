@@ -1,7 +1,12 @@
 <template>
   <Uploader :max-count="maxCount" :after-read="uploadPhoto">
-    <img class="photo" v-if="!loading && photo" :src="photo" alt="" />
-    <div class="default-img" v-if="!loading && !photo">
+    <img
+      class="photo"
+      v-if="defaultImg ? !loading : !loading && photo"
+      :src="photo || defaultImg"
+      alt=""
+    />
+    <div class="default-img" v-if="!defaultImg && !loading && !photo">
       <div class="img-wrap">
         <img
           style="width: 0.5rem; height: 0.5rem"

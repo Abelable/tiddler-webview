@@ -51,40 +51,14 @@
               <div class="form-item">
                 <div class="form-title">上传经营者身份证</div>
                 <div class="uploader-wrap">
-                  <Uploader max-count="1" :after-read="uploadIdCardFrontPhoto">
-                    <img
-                      class="photo"
-                      v-if="!uploadIdCardFrontPhotoLoading"
-                      :src="
-                        providerInfo.idCardFrontPhoto ||
-                        require('./images/front.png')
-                      "
-                      alt=""
-                    />
-                    <div
-                      class="loading-wrap"
-                      v-if="uploadIdCardFrontPhotoLoading"
-                    >
-                      <Loading vertical color="#fff">上传中...</Loading>
-                    </div>
-                  </Uploader>
-                  <Uploader max-count="1" :after-read="uploadIdCardBackPhoto">
-                    <img
-                      class="photo"
-                      v-if="!uploadIdCardBackPhotoLoading"
-                      :src="
-                        providerInfo.idCardBackPhoto ||
-                        require('./images/behind.png')
-                      "
-                      alt=""
-                    />
-                    <div
-                      class="loading-wrap"
-                      v-if="uploadIdCardBackPhotoLoading"
-                    >
-                      <Loading vertical color="#fff">上传中...</Loading>
-                    </div>
-                  </Uploader>
+                  <Uploader
+                    :default-img="require('./images/front.png')"
+                    @finish="uploadIdCardFrontPhoto"
+                  />
+                  <Uploader
+                    :default-img="require('./images/behind.png')"
+                    @finish="uploadIdCardBackPhoto"
+                  />
                 </div>
               </div>
               <div class="form-item">
@@ -108,13 +82,13 @@
               <div class="form-item">
                 <div class="form-title">上传营业执照、卫生许可证</div>
                 <div class="uploader-wrap">
-                  <CustomUploader
+                  <Uploader
                     title="营业执照照片"
                     @finish="uploadBusinessLicensePhoto"
                   />
-                  <CustomUploader
+                  <Uploader
                     title="卫生许可证照片"
-                    @finish="uploadBusinessLicensePhoto"
+                    @finish="uploadHygienicLicensePhoto"
                   />
                 </div>
               </div>
@@ -212,13 +186,13 @@
               <div class="form-item">
                 <div class="form-title">上传营业执照、卫生许可证</div>
                 <div class="uploader-wrap">
-                  <CustomUploader
+                  <Uploader
                     title="营业执照照片"
                     @finish="uploadBusinessLicensePhoto"
                   />
-                  <CustomUploader
+                  <Uploader
                     title="卫生许可证照片"
-                    @finish="uploadBusinessLicensePhoto"
+                    @finish="uploadHygienicLicensePhoto"
                   />
                 </div>
               </div>
@@ -262,40 +236,14 @@
               <div class="form-item">
                 <div class="form-title">上传法人身份证</div>
                 <div class="uploader-wrap">
-                  <Uploader max-count="1" :after-read="uploadIdCardFrontPhoto">
-                    <img
-                      class="photo"
-                      v-if="!uploadIdCardFrontPhotoLoading"
-                      :src="
-                        providerInfo.idCardFrontPhoto ||
-                        require('./images/front.png')
-                      "
-                      alt=""
-                    />
-                    <div
-                      class="loading-wrap"
-                      v-if="uploadIdCardFrontPhotoLoading"
-                    >
-                      <Loading vertical color="#fff">上传中...</Loading>
-                    </div>
-                  </Uploader>
-                  <Uploader max-count="1" :after-read="uploadIdCardBackPhoto">
-                    <img
-                      class="photo"
-                      v-if="!uploadIdCardBackPhotoLoading"
-                      :src="
-                        providerInfo.idCardBackPhoto ||
-                        require('./images/behind.png')
-                      "
-                      alt=""
-                    />
-                    <div
-                      class="loading-wrap"
-                      v-if="uploadIdCardBackPhotoLoading"
-                    >
-                      <Loading vertical color="#fff">上传中...</Loading>
-                    </div>
-                  </Uploader>
+                  <Uploader
+                    :default-img="require('./images/front.png')"
+                    @finish="uploadIdCardFrontPhoto"
+                  />
+                  <Uploader
+                    :default-img="require('./images/behind.png')"
+                    @finish="uploadIdCardBackPhoto"
+                  />
                 </div>
               </div>
             </template>
@@ -390,34 +338,22 @@
 </template>
 
 <script setup lang="ts">
-import {
-  Checkbox,
-  Area,
-  Popup,
-  Uploader,
-  Picker,
-  Loading,
-  showToast,
-} from "vant";
-import CustomUploader from "@/components/uploader";
+import { Checkbox, Area, Popup, showToast } from "vant";
+import Uploader from "@/components/uploader.vue";
 
 import { ref, onMounted, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { areaList } from "@vant/area-data";
-import { upload, uploadFile } from "@/utils/upload";
 import {
-  getRestaurantCategoryOptions,
   uploadProviderInfo,
   getProviderStatusInfo,
   deleteProvider,
   payProviderDeposit,
 } from "./utils/api";
 
-import type { UploaderAfterRead } from "vant/lib/uploader/types";
 import type {
   RegionOption,
   ProviderInfo,
-  RestaurantCategoryOption,
   ProviderStatusInfo,
 } from "./utils/type";
 
@@ -438,30 +374,12 @@ const providerInfo = reactive<ProviderInfo>({
   idCardNumber: "",
   idCardFrontPhoto: "",
   idCardBackPhoto: "",
-  holdIdCardPhoto: "",
-  bankCardOwnerName: "",
-  bankCardNumber: "",
-  bankName: "",
-  shopAvatar: [],
-  shopName: "",
-  shopCategoryId: 0,
-  shopCover: [],
 });
 const areaPickerPopupVisible = ref(false);
-const uploadIdCardFrontPhotoLoading = ref(false);
-const uploadIdCardBackPhotoLoading = ref(false);
-const uploadHoldIdCardPhotoLoading = ref(false);
-const uploadBusinessLicensePhotoLoading = ref(false);
-const categoryOptions = ref<RestaurantCategoryOption[]>([]);
-const categoryPickerPopupVisible = ref(false);
-const pickedCategoryDesc = ref("");
 const statusInfo = ref<ProviderStatusInfo | undefined>();
 
 onMounted(async () => {
   await setStatusInfo();
-  if (!statusInfo.value) {
-    setCategoryOptions();
-  }
 });
 
 const nextStep = () => {
@@ -494,10 +412,6 @@ const nextStep = () => {
         }
         if (!providerInfo.idCardBackPhoto) {
           showToast("请上传身份证反面照片");
-          return;
-        }
-        if (!providerInfo.holdIdCardPhoto) {
-          showToast("请上传手持身份证照片");
           return;
         }
         if (
@@ -578,53 +492,10 @@ const nextStep = () => {
           showToast("请上传身份证反面照片");
           return;
         }
-        if (!providerInfo.holdIdCardPhoto) {
-          showToast("请上传手持身份证照片");
-          return;
-        }
-      }
-      step.value = 2;
-      break;
-
-    case 2:
-      if (!providerInfo.bankCardOwnerName) {
-        showToast("请输入持卡人姓名");
-        return;
-      }
-      if (
-        !providerInfo.bankCardNumber ||
-        !/^([1-9]{1})(\d{15}|\d{16}|\d{18})$/.test(providerInfo.bankCardNumber)
-      ) {
-        showToast("请输入正确银行卡号");
-        return;
-      }
-      if (!providerInfo.bankName) {
-        showToast("请输入开户银行及支行名称");
-        return;
-      }
-      step.value = 3;
-      break;
-
-    case 3:
-      if (!providerInfo.shopAvatar.length) {
-        showToast("请上传店铺头像");
-        return;
-      }
-      if (!providerInfo.shopName) {
-        showToast("请输入店铺名称");
-        return;
-      }
-      if (!providerInfo.shopCategoryId) {
-        showToast("请选择店铺分类");
-        return;
       }
       submit();
       break;
   }
-};
-
-const setCategoryOptions = async () => {
-  categoryOptions.value = await getRestaurantCategoryOptions();
 };
 
 const setStatusInfo = async () => {
@@ -633,12 +504,7 @@ const setStatusInfo = async () => {
 
 const submit = async () => {
   try {
-    const { shopAvatar, shopCover, ...rest } = providerInfo;
-    await uploadProviderInfo({
-      shopAvatar: shopAvatar[0].url as string,
-      shopCover: shopCover.length ? (shopCover[0].url as string) : "",
-      ...rest,
-    });
+    await uploadProviderInfo(providerInfo);
     setStatusInfo();
   } catch (error) {
     showToast("审核提交失败，请重试");
@@ -657,37 +523,17 @@ const areaConfirm = ({
   areaPickerPopupVisible.value = false;
 };
 
-const uploadIdCardFrontPhoto = (async ({ file }: { file: File }) => {
-  uploadIdCardFrontPhotoLoading.value = true;
-  providerInfo.idCardFrontPhoto = await upload(file);
-  uploadIdCardFrontPhotoLoading.value = false;
-}) as UploaderAfterRead;
-const uploadIdCardBackPhoto = (async ({ file }: { file: File }) => {
-  uploadIdCardBackPhotoLoading.value = true;
-  providerInfo.idCardBackPhoto = await upload(file);
-  uploadIdCardBackPhotoLoading.value = false;
-}) as UploaderAfterRead;
-const uploadHoldIdCardPhoto = (async ({ file }: { file: File }) => {
-  uploadHoldIdCardPhotoLoading.value = true;
-  providerInfo.holdIdCardPhoto = await upload(file);
-  uploadHoldIdCardPhotoLoading.value = false;
-}) as UploaderAfterRead;
-const uploadBusinessLicensePhoto = (async ({ file }: { file: File }) => {
-  uploadBusinessLicensePhotoLoading.value = true;
-  providerInfo.businessLicensePhoto = await upload(file);
-  uploadBusinessLicensePhotoLoading.value = false;
-}) as UploaderAfterRead;
-
-const categoryConfirm = ({
-  selectedValues,
-  selectedOptions,
-}: {
-  selectedValues: number[];
-  selectedOptions: RestaurantCategoryOption[];
-}) => {
-  providerInfo.shopCategoryId = selectedValues[0];
-  pickedCategoryDesc.value = selectedOptions[0].name;
-  categoryPickerPopupVisible.value = false;
+const uploadIdCardFrontPhoto = (photo: string) => {
+  providerInfo.idCardFrontPhoto = photo;
+};
+const uploadIdCardBackPhoto = (photo: string) => {
+  providerInfo.idCardBackPhoto = photo;
+};
+const uploadBusinessLicensePhoto = (photo: string) => {
+  providerInfo.businessLicensePhoto = photo;
+};
+const uploadHygienicLicensePhoto = (photo: string) => {
+  providerInfo.hygienicLicensePhoto = photo;
 };
 
 const checkAgreement = () => router.push("/shop/agreements/provider_service");
@@ -829,36 +675,6 @@ const back = () => {
           color: #999;
           font-size: 0.24rem;
         }
-        .steps {
-          display: flex;
-          margin-top: 0.36rem;
-          padding: 0 0.16rem;
-          .step {
-            margin: 0 0.08em;
-            flex: 1;
-            .name {
-              color: #999;
-              font-size: 0.26rem;
-              text-align: center;
-              font-weight: 550;
-              &.active {
-                color: #1b89fa;
-              }
-              &.finished {
-                color: #333;
-              }
-            }
-            .progress-bar {
-              margin-top: 0.12rem;
-              height: 0.1rem;
-              background: #ddd;
-              border-radius: 0.05rem;
-              &.finished {
-                background: #1b89fa;
-              }
-            }
-          }
-        }
       }
       .main {
         position: relative;
@@ -912,40 +728,6 @@ const back = () => {
               margin-top: 0.2rem;
               display: flex;
               justify-content: space-between;
-              .photo,
-              .default-img,
-              .loading-wrap {
-                width: 3.3rem;
-                height: 2.14rem;
-                box-shadow: 0 0 10px 0 #e6e6e6;
-                border-radius: 0.24rem;
-              }
-              .default-img {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                .img-wrap {
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  width: 1rem;
-                  height: 1rem;
-                  background: rgba(0, 0, 0, 0.6);
-                  border-radius: 50%;
-                }
-                .desc {
-                  margin-top: 0.3rem;
-                  color: #000;
-                  font-size: 0.2rem;
-                }
-              }
-              .loading-wrap {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background: rgba(0, 0, 0, 0.6);
-              }
             }
           }
         }
