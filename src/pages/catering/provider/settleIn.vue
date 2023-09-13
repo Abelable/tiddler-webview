@@ -365,6 +365,7 @@ const providerInfo = reactive<ProviderInfo>({
   type: 1,
   companyName: "",
   businessLicensePhoto: "",
+  hygienicLicensePhoto: "",
   regionDesc: "",
   regionCodeList: "",
   addressDetail: "",

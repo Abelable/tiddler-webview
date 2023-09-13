@@ -5,7 +5,7 @@ const catering: Array<RouteRecordRaw> = [
     path: "/catering/agreements/provider_service",
     name: "catering_provider_service",
     meta: {
-      title: "餐饮服务商服务协议",
+      title: "餐饮商家服务协议",
     },
     component: () => import("@/pages/catering/agreements/providerService.vue"),
   },
@@ -13,7 +13,7 @@ const catering: Array<RouteRecordRaw> = [
     path: "/catering/provider/settle_in",
     name: "catering_provider_settle_in",
     meta: {
-      title: "餐饮门店服务商入驻",
+      title: "餐饮商家入驻",
     },
     component: () => import("@/pages/catering/provider/settleIn.vue"),
   },
