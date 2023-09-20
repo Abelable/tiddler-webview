@@ -4,21 +4,9 @@
     <div class="card">
       <ul class="form">
         <li class="form-item">
-          <div class="name flex required">
-            <div>列表图片</div>
-            <Popover
-              v-model:show="imageTipsVisible"
-              placement="bottom-start"
-              theme="dark"
-            >
-              <div class="warning">用于商品列表展示</div>
-              <template #reference>
-                <Icon style="margin-left: 0.06rem" name="question-o" />
-              </template>
-            </Popover>
-          </div>
+          <div class="name required">门店logo</div>
           <Uploader
-            v-model="restaurantInfo.cover"
+            v-model="restaurantInfo.logo"
             :after-read="uploadFile"
             style="margin-top: 0.32rem"
             max-count="1"
@@ -26,7 +14,7 @@
         </li>
         <li class="form-item">
           <div class="name flex">
-            <div>主图视频</div>
+            <div>门店视频</div>
             <Popover
               v-model:show="videoTipsVisible"
               placement="bottom-start"
@@ -37,7 +25,7 @@
                 <p>大小：建议不超过50M</p>
                 <p>尺寸：建议比例16:9或3:4</p>
                 <p>格式：mp4</p>
-                <p>内容：建议突出商品1-2个核心卖点</p>
+                <p>内容：建议突出门店1-2个核心卖点</p>
               </div>
               <template #reference>
                 <Icon style="margin-left: 0.06rem" name="question-o" />
@@ -53,60 +41,34 @@
           />
         </li>
         <li class="form-item">
-          <div class="name flex required">
-            <div>主图图片列表</div>
-            <Popover
-              v-model:show="imageListTipsVisible"
-              placement="bottom-start"
-              theme="dark"
-            >
-              <div class="warning">数量：最多不超过10张</div>
-              <template #reference>
-                <Icon style="margin-left: 0.06rem" name="question-o" />
-              </template>
-            </Popover>
-          </div>
+          <div class="name required">门店封面</div>
           <Uploader
-            v-model="restaurantInfo.priceImageList"
+            v-model="restaurantInfo.cover"
             :after-read="uploadFile"
             style="margin-top: 0.32rem"
-            max-count="10"
+            max-count="1"
           />
         </li>
         <li class="form-item">
-          <div class="name flex required">
-            <div>详情图片列表</div>
-            <Popover
-              v-model:show="detailImageListTipsVisible"
-              placement="bottom-start"
-              theme="dark"
-            >
-              <div class="warning">注意图片顺序</div>
-              <template #reference>
-                <Icon style="margin-left: 0.06rem" name="question-o" />
-              </template>
-            </Popover>
-          </div>
+          <div class="name flex">菜品图片列表</div>
+          <Uploader
+            v-model="restaurantInfo.foodImageList"
+            :after-read="uploadFile"
+            style="margin-top: 0.32rem"
+            max-count="1"
+          />
+        </li>
+        <li class="form-item">
+          <div class="name flex">环境图片列表</div>
           <Uploader
             v-model="restaurantInfo.environmentImageList"
             :after-read="uploadFile"
             style="margin-top: 0.32rem"
+            max-count="1"
           />
         </li>
         <li class="form-item">
-          <div class="name flex required">
-            <div>默认规格图片</div>
-            <Popover
-              v-model:show="defaultSpecImageTipsVisible"
-              placement="bottom-start"
-              theme="dark"
-            >
-              <div class="warning">未设置或未选择规格时，展示的默认图片</div>
-              <template #reference>
-                <Icon style="margin-left: 0.06rem" name="question-o" />
-              </template>
-            </Popover>
-          </div>
+          <div class="name flex">价目表图片列表</div>
           <Uploader
             v-model="restaurantInfo.priceImageList"
             :after-read="uploadFile"
@@ -121,7 +83,7 @@
     <div class="card">
       <ul class="form">
         <li class="form-item flex">
-          <div class="name required">商品名称</div>
+          <div class="name required">门店名称</div>
           <input
             class="input"
             v-model="restaurantInfo.name"
@@ -130,22 +92,22 @@
           />
         </li>
         <li class="form-item flex">
-          <div class="name required">商品分类</div>
+          <div class="name required">门店分类</div>
           <div class="picker" @click="categoryPickerPopupVisible = true">
             <div class="content" :class="{ active: selectedCategoryName }">
-              {{ selectedCategoryName || "请选择商品分类" }}
+              {{ selectedCategoryName || "请选择门店分类" }}
             </div>
             <Icon name="arrow" />
           </div>
         </li>
         <li class="form-item flex">
-          <div class="name required">店铺价格</div>
+          <div class="name required">人均消费价格</div>
           <input
             class="input"
             v-model="restaurantInfo.price"
             type="number"
             step="0.01"
-            placeholder="请输入店铺价格"
+            placeholder="请输入人均消费价格"
           />
         </li>
       </ul>
@@ -197,11 +159,7 @@ const restaurantInfo = reactive<Omit<RestaurantInfo, "id">>({
   facilityList: [],
 });
 const categoryPickerPopupVisible = ref(false);
-const imageTipsVisible = ref(false);
 const videoTipsVisible = ref(false);
-const imageListTipsVisible = ref(false);
-const detailImageListTipsVisible = ref(false);
-const defaultSpecImageTipsVisible = ref(false);
 
 // 计算属性
 const selectedCategoryName = computed(
@@ -240,15 +198,15 @@ const save = async () => {
     return;
   }
   if (!restaurantInfo.name) {
-    showToast("请输入商品名称");
+    showToast("请输入门店名称");
     return;
   }
   if (!restaurantInfo.categoryId) {
-    showToast("请选择商品分类");
+    showToast("请选择门店分类");
     return;
   }
   if (!restaurantInfo.price) {
-    showToast("请输入商品店铺价格");
+    showToast("请输入门店店铺价格");
     return;
   }
   const {

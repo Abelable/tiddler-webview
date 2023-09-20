@@ -119,7 +119,7 @@
       @cancel="restaurantPickerPopupVisible = false"
       :columns-field-names="{ text: 'name', value: 'id' }"
     />
-    <div class="no-tips row center">
+    <div class="no-tips row center" @click="createRestaurant">
       没有找到您的门店？<span style="color: #1182fb">点此创建</span>
     </div>
   </Popup>
@@ -141,6 +141,7 @@ import {
   showToast,
 } from "vant";
 import { ref, reactive, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import dayjs from "dayjs";
 import {
   getRestaurantOptions,
@@ -152,6 +153,8 @@ import {
 
 import type { Option as RestaurantOption } from "@/utils/type";
 import type { ProviderRestaurant } from "./utils/type";
+
+const router = useRouter();
 
 const loading = ref(false);
 const finished = ref(false);
@@ -255,6 +258,8 @@ const deleteRestaurant = (index: number) =>
       return true;
     })
     .catch(() => true);
+
+const createRestaurant = () => router.push("/catering/restaurant/create");
 </script>
 
 <style lang="scss" scoped>
