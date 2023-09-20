@@ -119,6 +119,9 @@
       @cancel="restaurantPickerPopupVisible = false"
       :columns-field-names="{ text: 'name', value: 'id' }"
     />
+    <div class="no-tips row center">
+      没有找到您的门店？<span style="color: #1182fb">点此创建</span>
+    </div>
   </Popup>
 
   <button class="add-btn" @click="showRestaurantPickerPopup">添加门店</button>
@@ -266,6 +269,9 @@ const deleteRestaurant = (index: number) =>
 .row {
   display: flex;
   align-items: center;
+  &.center {
+    justify-content: center;
+  }
 }
 .menu-list {
   position: fixed;
@@ -372,6 +378,11 @@ const deleteRestaurant = (index: number) =>
       height: 100%;
     }
   }
+}
+.no-tips {
+  height: 1rem;
+  color: #333;
+  font-size: 0.26rem;
 }
 .add-btn {
   position: fixed;
