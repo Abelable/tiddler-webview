@@ -18,7 +18,7 @@ const catering: Array<RouteRecordRaw> = [
     component: () => import("@/pages/catering/provider/settleIn.vue"),
   },
   {
-    path: "/restaurant/list",
+    path: "/catering/restaurant/list",
     name: "restaurant_list",
     meta: {
       title: "餐饮门店列表",
@@ -26,7 +26,7 @@ const catering: Array<RouteRecordRaw> = [
     component: () => import("@/pages/catering/restaurant/list.vue"),
   },
   {
-    path: "/restaurant/create",
+    path: "/catering/restaurant/create",
     name: "restaurant_create",
     meta: {
       title: "新增餐饮门店",
@@ -34,7 +34,7 @@ const catering: Array<RouteRecordRaw> = [
     component: () => import("@/pages/catering/restaurant/create.vue"),
   },
   {
-    path: "/restaurant/edit",
+    path: "/catering/restaurant/edit",
     name: "restaurant_edit",
     meta: {
       title: "编辑餐饮门店",

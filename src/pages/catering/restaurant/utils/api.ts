@@ -1,46 +1,31 @@
 import { http } from "@/utils/http";
 
+import type { ProviderScenicSpot } from "./type";
 import type { Option } from "@/utils/type";
-import type { RoomListItem, CreateRoomInfo, EditRoomInfo } from "./type";
 
-export const getHotelOptions = async (): Promise<Option[]> =>
-  await http("hotel/provider/hotel_options");
+export const getScenicOptions = async (): Promise<Option[]> =>
+  await http("scenic/options");
 
-export const getRoomTotals = async (): Promise<number[]> =>
-  await http("hotel/provider/room/totals");
+export const getScenicListTotals = async (): Promise<number[]> =>
+  await http("scenic/provider/scenic_list_totals");
 
-export const getRoomList = async (
+export const getProviderScenicSpotList = async (
   status: number,
   page: number,
   limit = 10
-): Promise<RoomListItem[]> => {
+): Promise<ProviderScenicSpot[]> => {
   const { list = [] } =
-    (await http("hotel/provider/room/list", {
+    (await http("scenic/provider/scenic_list", {
       data: { status, page, limit },
     })) || {};
   return list;
 };
 
-export const getRoomTypeOptions = async (hotelId: number): Promise<Option[]> =>
-  await http("hotel/room/type_options", { data: { hotelId } });
-
-export const offShelfRoom = async (id: number) =>
-  await http("hotel/provider/room/down", { method: "POST", data: { id } });
-
-export const onShelfRoom = async (id: number) =>
-  await http("hotel/provider/room/up", { method: "POST", data: { id } });
-
-export const deleteRoom = async (id: number) =>
-  await http("hotel/provider/room/delete", { method: "POST", data: { id } });
-
-export const getRoomInfo = async (id: number): Promise<EditRoomInfo> =>
-  await http("hotel/provider/room/detail", { data: { id } });
-
-export const createRoom = async (goodsInfo: CreateRoomInfo) =>
-  await http("hotel/provider/room/add", { method: "POST", data: goodsInfo });
-
-export const editRoom = async (goodsInfo: EditRoomInfo) =>
-  await http("hotel/provider/room/edit", {
+export const applyScenicSpot = async (scenicId: number) =>
+  await http("scenic/provider/apply_scenic", {
     method: "POST",
-    data: goodsInfo,
+    data: { scenicId },
   });
+
+export const deleteProviderScenicSpot = async (id: number) =>
+  await http("scenic/provider/delete_scenic", { method: "POST", data: { id } });

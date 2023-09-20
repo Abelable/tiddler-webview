@@ -13,56 +13,159 @@
   </ul>
 
   <PullRefresh class="container" v-model="refreshing" @refresh="onRefresh">
-    <div class="warning-tips" v-show="curMenuIndex === 2">
+    <div class="warning-tips" v-show="curMenuIndex === 1">
       温馨提示：审核时间是3个工作日
     </div>
     <List
-      class="room-list"
+      class="spot-list"
       v-model="loading"
       :finished="finished"
       @load="onLoadMore"
-      :finished-text="roomLists[curMenuIndex].length ? '没有更多了' : ''"
+      :finished-text="spotLists[curMenuIndex].length ? '没有更多了' : ''"
     >
-      <RoomItem
-        v-for="item in roomLists[curMenuIndex]"
-        :key="item.id"
-        :item="item"
-        :status="menuList[curMenuIndex].status"
-        :hotel-options="hotelOptions"
-        @refresh="onRefresh"
+      <SwipeCell
+        class="spot-item"
+        v-for="(item, index) in spotLists[0]"
+        :key="index"
+        v-show="curMenuIndex === 0"
+      >
+        <div class="inner">
+          <img class="image" :src="item.scenicImage" alt="" />
+          <div class="content">
+            <div class="row">
+              <div class="name">{{ item.scenicName }}</div>
+              <div class="level row">{{ item.scenicLevel }}</div>
+            </div>
+            <div class="address row">
+              <Icon name="location-o" size="0.24rem" />
+              <div>{{ item.scenicAddress }}</div>
+            </div>
+          </div>
+        </div>
+        <template #right>
+          <Button
+            class="delete-btn"
+            @click.stop="deleteSpot(index)"
+            square
+            text="删除"
+            type="danger"
+          />
+        </template>
+      </SwipeCell>
+
+      <SwipeCell
+        class="spot-item"
+        v-for="(item, index) in spotLists[1]"
+        :key="index"
+        v-show="curMenuIndex === 1"
+      >
+        <div class="inner">
+          <img class="image" :src="item.scenicImage" alt="" />
+          <div class="content">
+            <div class="row">
+              <div class="name">{{ item.scenicName }}</div>
+              <div class="level row">{{ item.scenicLevel }}</div>
+            </div>
+            <div class="time">
+              提交时间：{{
+                dayjs(item.createdAt).format("YYYY-MM-DD HH:mm:ss")
+              }}
+            </div>
+          </div>
+        </div>
+        <template #right>
+          <Button
+            class="delete-btn"
+            @click.stop="deleteSpot(index)"
+            square
+            text="删除"
+            type="danger"
+          />
+        </template>
+      </SwipeCell>
+
+      <SwipeCell
+        class="spot-item"
+        v-for="(item, index) in spotLists[2]"
+        :key="index"
+        v-show="curMenuIndex === 2"
+      >
+        <div class="inner">
+          <img class="image" :src="item.scenicImage" alt="" />
+          <div class="content">
+            <div class="row">
+              <div class="name">{{ item.scenicName }}</div>
+              <div class="level row">{{ item.scenicLevel }}</div>
+            </div>
+            <div class="failure-reason">
+              未通过原因：{{ item.failureReason }}
+            </div>
+          </div>
+        </div>
+        <template #right>
+          <Button
+            class="delete-btn"
+            @click.stop="deleteSpot(index)"
+            square
+            text="删除"
+            type="danger"
+          />
+        </template>
+      </SwipeCell>
+
+      <Empty
+        v-if="!spotLists[curMenuIndex].length"
+        style="margin-top: 1rem"
+        description="暂无景点列表"
       />
     </List>
-    <Empty v-if="!roomLists[curMenuIndex].length" description="暂无房间列表" />
   </PullRefresh>
 
-  <button class="add-btn" @click="addRoom">添加房间</button>
+  <Popup v-model:show="scenicPickerPopupVisible" position="bottom" round>
+    <Picker
+      :columns="scenicOptions"
+      @confirm="selectScenic"
+      @cancel="scenicPickerPopupVisible = false"
+      :columns-field-names="{ text: 'name', value: 'id' }"
+    />
+  </Popup>
+
+  <button class="add-btn" @click="showScenicPickerPopup">添加景点</button>
 </template>
 
 <script setup lang="ts">
-import { PullRefresh, List, Empty } from "vant";
-import RoomItem from "./components/roomItem.vue";
-
+import {
+  PullRefresh,
+  List,
+  SwipeCell,
+  Popup,
+  Picker,
+  Button,
+  Icon,
+  showConfirmDialog,
+  Empty,
+  showToast,
+} from "vant";
 import { ref, reactive, onMounted } from "vue";
-import { useRouter } from "vue-router";
-import { getRoomTotals, getRoomList } from "./utils/api";
-import { hotelOptions, setHotelOptions } from "./utils/index";
+import dayjs from "dayjs";
+import {
+  getScenicOptions,
+  getProviderScenicSpotList,
+  deleteProviderScenicSpot,
+  applyScenicSpot,
+  getScenicListTotals,
+} from "./utils/api";
 
-import type { RoomListItem } from "./utils/type";
-
-const router = useRouter();
+import type { Option as ScenicOption } from "@/utils/type";
+import type { ProviderScenicSpot } from "./utils/type";
 
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
 const menuList = ref([
   {
-    name: "出售中",
+    name: "已过审",
     status: 1,
-    total: 0,
-  },
-  {
-    name: "已下架",
-    status: 3,
     total: 0,
   },
   {
@@ -77,66 +180,101 @@ const menuList = ref([
   },
 ]);
 const curMenuIndex = ref(0);
-const roomLists = reactive<RoomListItem[][]>([[], [], [], []]);
-const pageList = [0, 0, 0, 0];
+const spotLists = reactive<ProviderScenicSpot[][]>([[], [], []]);
+const pageList = [0, 0, 0];
+const scenicOptions = ref<ScenicOption[]>([]);
+const scenicPickerPopupVisible = ref(false);
 
-onMounted(async () => {
-  setHotelOptions();
+onMounted(() => {
   setTotals();
-  setRoomList(true);
 });
 
 const onRefresh = () => {
   setTotals();
-  setRoomList(true);
+  setSpotLists(true);
 };
 
-const onLoadMore = () => setRoomList();
+const onLoadMore = () => setSpotLists();
 
 const selectMenu = (index: number) => {
   curMenuIndex.value = index;
-  setRoomList(true);
+  setSpotLists(true);
+};
+
+const setScenicOptions = async () => {
+  scenicOptions.value = await getScenicOptions();
 };
 
 const setTotals = async () => {
-  const totals = await getRoomTotals();
+  const totals = await getScenicListTotals();
   totals.forEach((item, index) => (menuList.value[index].total = item));
 };
 
-const setRoomList = async (init = false) => {
+const setSpotLists = async (init = false) => {
   if (init) {
     pageList[curMenuIndex.value] = 0;
     finished.value = false;
   }
   const list =
-    (await getRoomList(
+    (await getProviderScenicSpotList(
       menuList.value[curMenuIndex.value].status,
       ++pageList[curMenuIndex.value]
     )) || {};
 
-  roomLists[curMenuIndex.value] = init
+  spotLists[curMenuIndex.value] = init
     ? list
-    : [...roomLists[curMenuIndex.value], ...list];
+    : [...spotLists[curMenuIndex.value], ...list];
   if (!list.length) finished.value = true;
   loading.value = false;
   refreshing.value = false;
 };
 
-const addRoom = () => router.push("/hotel/room/create");
+const showScenicPickerPopup = async () => {
+  await setScenicOptions();
+  scenicPickerPopupVisible.value = true;
+};
+
+const selectScenic = async ({
+  selectedValues,
+}: {
+  selectedValues: number[];
+}) => {
+  try {
+    await applyScenicSpot(selectedValues[0]);
+    setTotals();
+  } catch (error) {
+    showToast((error as { code: number; message: string }).message);
+  }
+  scenicPickerPopupVisible.value = false;
+};
+
+const deleteSpot = (index: number) =>
+  showConfirmDialog({ title: "确定删除景点吗？" })
+    .then(async () => {
+      try {
+        await deleteProviderScenicSpot(spotLists[curMenuIndex.value][index].id);
+        spotLists[curMenuIndex.value].splice(index, 1);
+        setTotals();
+      } catch (error) {
+        showToast("删除失败，请重试");
+      }
+      return true;
+    })
+    .catch(() => true);
 </script>
 
 <style lang="scss" scoped>
+.limit {
+  display: -webkit-box;
+  overflow: hidden;
+  line-height: 1;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
 .row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-}
-.omit {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
 }
 .menu-list {
   position: fixed;
@@ -187,19 +325,26 @@ const addRoom = () => router.push("/hotel/room/create");
     line-height: 1;
     background: #fffaed;
   }
-  .room-list {
+  .spot-list {
     padding: 0.24rem;
-    .room-item {
+    .spot-item {
       margin-bottom: 0.24rem;
       border-radius: 0.24rem;
       background: #fff;
       .inner {
         display: flex;
         padding: 0.24rem;
+
+        .image {
+          width: 1.8rem;
+          height: 1.8rem;
+          border-radius: 0.24rem;
+        }
         .content {
           display: flex;
           flex-direction: column;
           justify-content: space-between;
+          margin-left: 0.2rem;
           flex: 1;
           height: 1.8rem;
           .name {
@@ -207,8 +352,18 @@ const addRoom = () => router.push("/hotel/room/create");
             font-size: 0.28rem;
             font-weight: 500;
           }
-          .price,
-          .sales-volume,
+          .level {
+            margin-left: 0.08rem;
+            padding: 0 0.12rem;
+            height: 0.32rem;
+            color: #5dce86;
+            font-size: 0.2rem;
+            font-weight: bold;
+            line-height: 1;
+            border-radius: 0.08rem;
+            background: #d1f7e5;
+          }
+          .address,
           .time {
             color: #666;
             font-size: 0.26rem;
