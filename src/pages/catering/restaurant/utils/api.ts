@@ -1,31 +1,34 @@
 import { http } from "@/utils/http";
 
-import type { ProviderScenicSpot } from "./type";
+import type { ProviderRestaurant } from "./type";
 import type { Option } from "@/utils/type";
 
-export const getScenicOptions = async (): Promise<Option[]> =>
-  await http("scenic/options");
+export const getRestaurantOptions = async (): Promise<Option[]> =>
+  await http("catering/restaurant/options");
 
-export const getScenicListTotals = async (): Promise<number[]> =>
-  await http("scenic/provider/scenic_list_totals");
+export const getRestaurantListTotals = async (): Promise<number[]> =>
+  await http("catering/provider/restaurant/totals");
 
-export const getProviderScenicSpotList = async (
+export const getProviderRestaurantList = async (
   status: number,
   page: number,
   limit = 10
-): Promise<ProviderScenicSpot[]> => {
+): Promise<ProviderRestaurant[]> => {
   const { list = [] } =
-    (await http("scenic/provider/scenic_list", {
+    (await http("catering/provider/restaurant_list", {
       data: { status, page, limit },
     })) || {};
   return list;
 };
 
-export const applyScenicSpot = async (scenicId: number) =>
-  await http("scenic/provider/apply_scenic", {
+export const applyRestaurant = async (restaurantId: number) =>
+  await http("catering/provider/apply_restaurant", {
     method: "POST",
-    data: { scenicId },
+    data: { restaurantId },
   });
 
-export const deleteProviderScenicSpot = async (id: number) =>
-  await http("scenic/provider/delete_scenic", { method: "POST", data: { id } });
+export const deleteProviderRestaurant = async (id: number) =>
+  await http("catering/provider/delete_restaurant", {
+    method: "POST",
+    data: { id },
+  });

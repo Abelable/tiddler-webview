@@ -30,22 +30,19 @@
         v-show="curMenuIndex === 0"
       >
         <div class="inner">
-          <img class="image" :src="item.scenicImage" alt="" />
+          <img class="image" :src="item.restaurantImage" alt="" />
           <div class="content">
-            <div class="row">
-              <div class="name">{{ item.scenicName }}</div>
-              <div class="level row">{{ item.scenicLevel }}</div>
-            </div>
+            <div class="name">{{ item.restaurantName }}</div>
             <div class="address row">
               <Icon name="location-o" size="0.24rem" />
-              <div>{{ item.scenicAddress }}</div>
+              <div>{{ item.restaurantAddress }}</div>
             </div>
           </div>
         </div>
         <template #right>
           <Button
             class="delete-btn"
-            @click.stop="deleteSpot(index)"
+            @click.stop="deleteRestaurant(index)"
             square
             text="删除"
             type="danger"
@@ -60,12 +57,9 @@
         v-show="curMenuIndex === 1"
       >
         <div class="inner">
-          <img class="image" :src="item.scenicImage" alt="" />
+          <img class="image" :src="item.restaurantImage" alt="" />
           <div class="content">
-            <div class="row">
-              <div class="name">{{ item.scenicName }}</div>
-              <div class="level row">{{ item.scenicLevel }}</div>
-            </div>
+            <div class="name">{{ item.restaurantName }}</div>
             <div class="time">
               提交时间：{{
                 dayjs(item.createdAt).format("YYYY-MM-DD HH:mm:ss")
@@ -76,7 +70,7 @@
         <template #right>
           <Button
             class="delete-btn"
-            @click.stop="deleteSpot(index)"
+            @click.stop="deleteRestaurant(index)"
             square
             text="删除"
             type="danger"
@@ -91,12 +85,9 @@
         v-show="curMenuIndex === 2"
       >
         <div class="inner">
-          <img class="image" :src="item.scenicImage" alt="" />
+          <img class="image" :src="item.restaurantImage" alt="" />
           <div class="content">
-            <div class="row">
-              <div class="name">{{ item.scenicName }}</div>
-              <div class="level row">{{ item.scenicLevel }}</div>
-            </div>
+            <div class="name">{{ item.restaurantName }}</div>
             <div class="failure-reason">
               未通过原因：{{ item.failureReason }}
             </div>
@@ -105,7 +96,7 @@
         <template #right>
           <Button
             class="delete-btn"
-            @click.stop="deleteSpot(index)"
+            @click.stop="deleteRestaurant(index)"
             square
             text="删除"
             type="danger"
@@ -116,21 +107,21 @@
       <Empty
         v-if="!spotLists[curMenuIndex].length"
         style="margin-top: 1rem"
-        description="暂无景点列表"
+        description="暂无门店列表"
       />
     </List>
   </PullRefresh>
 
-  <Popup v-model:show="scenicPickerPopupVisible" position="bottom" round>
+  <Popup v-model:show="restaurantPickerPopupVisible" position="bottom" round>
     <Picker
-      :columns="scenicOptions"
-      @confirm="selectScenic"
-      @cancel="scenicPickerPopupVisible = false"
+      :columns="restaurantOptions"
+      @confirm="selectRestaurant"
+      @cancel="restaurantPickerPopupVisible = false"
       :columns-field-names="{ text: 'name', value: 'id' }"
     />
   </Popup>
 
-  <button class="add-btn" @click="showScenicPickerPopup">添加景点</button>
+  <button class="add-btn" @click="showRestaurantPickerPopup">添加门店</button>
 </template>
 
 <script setup lang="ts">
@@ -149,15 +140,15 @@ import {
 import { ref, reactive, onMounted } from "vue";
 import dayjs from "dayjs";
 import {
-  getScenicOptions,
-  getProviderScenicSpotList,
-  deleteProviderScenicSpot,
-  applyScenicSpot,
-  getScenicListTotals,
+  getRestaurantOptions,
+  getProviderRestaurantList,
+  deleteProviderRestaurant,
+  applyRestaurant,
+  getRestaurantListTotals,
 } from "./utils/api";
 
-import type { Option as ScenicOption } from "@/utils/type";
-import type { ProviderScenicSpot } from "./utils/type";
+import type { Option as RestaurantOption } from "@/utils/type";
+import type { ProviderRestaurant } from "./utils/type";
 
 const loading = ref(false);
 const finished = ref(false);
@@ -180,10 +171,10 @@ const menuList = ref([
   },
 ]);
 const curMenuIndex = ref(0);
-const spotLists = reactive<ProviderScenicSpot[][]>([[], [], []]);
+const spotLists = reactive<ProviderRestaurant[][]>([[], [], []]);
 const pageList = [0, 0, 0];
-const scenicOptions = ref<ScenicOption[]>([]);
-const scenicPickerPopupVisible = ref(false);
+const restaurantOptions = ref<RestaurantOption[]>([]);
+const restaurantPickerPopupVisible = ref(false);
 
 onMounted(() => {
   setTotals();
@@ -191,32 +182,32 @@ onMounted(() => {
 
 const onRefresh = () => {
   setTotals();
-  setSpotLists(true);
+  setRestaurantLists(true);
 };
 
-const onLoadMore = () => setSpotLists();
+const onLoadMore = () => setRestaurantLists();
 
 const selectMenu = (index: number) => {
   curMenuIndex.value = index;
-  setSpotLists(true);
+  setRestaurantLists(true);
 };
 
-const setScenicOptions = async () => {
-  scenicOptions.value = await getScenicOptions();
+const setRestaurantOptions = async () => {
+  restaurantOptions.value = await getRestaurantOptions();
 };
 
 const setTotals = async () => {
-  const totals = await getScenicListTotals();
+  const totals = await getRestaurantListTotals();
   totals.forEach((item, index) => (menuList.value[index].total = item));
 };
 
-const setSpotLists = async (init = false) => {
+const setRestaurantLists = async (init = false) => {
   if (init) {
     pageList[curMenuIndex.value] = 0;
     finished.value = false;
   }
   const list =
-    (await getProviderScenicSpotList(
+    (await getProviderRestaurantList(
       menuList.value[curMenuIndex.value].status,
       ++pageList[curMenuIndex.value]
     )) || {};
@@ -229,30 +220,30 @@ const setSpotLists = async (init = false) => {
   refreshing.value = false;
 };
 
-const showScenicPickerPopup = async () => {
-  await setScenicOptions();
-  scenicPickerPopupVisible.value = true;
+const showRestaurantPickerPopup = async () => {
+  await setRestaurantOptions();
+  restaurantPickerPopupVisible.value = true;
 };
 
-const selectScenic = async ({
+const selectRestaurant = async ({
   selectedValues,
 }: {
   selectedValues: number[];
 }) => {
   try {
-    await applyScenicSpot(selectedValues[0]);
+    await applyRestaurant(selectedValues[0]);
     setTotals();
   } catch (error) {
     showToast((error as { code: number; message: string }).message);
   }
-  scenicPickerPopupVisible.value = false;
+  restaurantPickerPopupVisible.value = false;
 };
 
-const deleteSpot = (index: number) =>
-  showConfirmDialog({ title: "确定删除景点吗？" })
+const deleteRestaurant = (index: number) =>
+  showConfirmDialog({ title: "确定删除门店吗？" })
     .then(async () => {
       try {
-        await deleteProviderScenicSpot(spotLists[curMenuIndex.value][index].id);
+        await deleteProviderRestaurant(spotLists[curMenuIndex.value][index].id);
         spotLists[curMenuIndex.value].splice(index, 1);
         setTotals();
       } catch (error) {

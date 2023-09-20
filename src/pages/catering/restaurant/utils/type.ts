@@ -1,12 +1,11 @@
-export interface ProviderScenicSpot {
+export interface ProviderRestaurant {
   id: number;
   status: number;
   failureReason: string;
-  scenicId: number;
-  scenicImage: string;
-  scenicName: string;
-  scenicLevel: string;
-  scenicAddress: string;
+  restaurantId: number;
+  restaurantImage: string;
+  restaurantName: string;
+  restaurantAddress: string;
   createdAt: string;
   updatedAt: string;
 }

@@ -1,45 +1,202 @@
 <template>
   <div class="container">
+    <div class="title">上传视频及图片</div>
+    <div class="card">
+      <ul class="form">
+        <li class="form-item">
+          <div class="name flex required">
+            <div>列表图片</div>
+            <Popover
+              v-model:show="imageTipsVisible"
+              placement="bottom-start"
+              theme="dark"
+            >
+              <div class="warning">用于商品列表展示</div>
+              <template #reference>
+                <Icon style="margin-left: 0.06rem" name="question-o" />
+              </template>
+            </Popover>
+          </div>
+          <Uploader
+            v-model="goodsInfo.image"
+            :after-read="uploadFile"
+            style="margin-top: 0.32rem"
+            max-count="1"
+          />
+        </li>
+        <li class="form-item">
+          <div class="name flex">
+            <div>主图视频</div>
+            <Popover
+              v-model:show="videoTipsVisible"
+              placement="bottom-start"
+              theme="dark"
+            >
+              <div class="warning">
+                <p>时长：建议不超过60s</p>
+                <p>大小：建议不超过50M</p>
+                <p>尺寸：建议比例16:9或3:4</p>
+                <p>格式：mp4</p>
+                <p>内容：建议突出商品1-2个核心卖点</p>
+              </div>
+              <template #reference>
+                <Icon style="margin-left: 0.06rem" name="question-o" />
+              </template>
+            </Popover>
+          </div>
+          <Uploader
+            v-model="goodsInfo.video"
+            :after-read="uploadFile"
+            style="margin-top: 0.32rem"
+            max-count="1"
+            accept="video/*"
+          />
+        </li>
+        <li class="form-item">
+          <div class="name flex required">
+            <div>主图图片列表</div>
+            <Popover
+              v-model:show="imageListTipsVisible"
+              placement="bottom-start"
+              theme="dark"
+            >
+              <div class="warning">数量：最多不超过10张</div>
+              <template #reference>
+                <Icon style="margin-left: 0.06rem" name="question-o" />
+              </template>
+            </Popover>
+          </div>
+          <Uploader
+            v-model="goodsInfo.imageList"
+            :after-read="uploadFile"
+            style="margin-top: 0.32rem"
+            max-count="10"
+          />
+        </li>
+        <li class="form-item">
+          <div class="name flex required">
+            <div>详情图片列表</div>
+            <Popover
+              v-model:show="detailImageListTipsVisible"
+              placement="bottom-start"
+              theme="dark"
+            >
+              <div class="warning">注意图片顺序</div>
+              <template #reference>
+                <Icon style="margin-left: 0.06rem" name="question-o" />
+              </template>
+            </Popover>
+          </div>
+          <Uploader
+            v-model="goodsInfo.detailImageList"
+            :after-read="uploadFile"
+            style="margin-top: 0.32rem"
+          />
+        </li>
+        <li class="form-item">
+          <div class="name flex required">
+            <div>默认规格图片</div>
+            <Popover
+              v-model:show="defaultSpecImageTipsVisible"
+              placement="bottom-start"
+              theme="dark"
+            >
+              <div class="warning">未设置或未选择规格时，展示的默认图片</div>
+              <template #reference>
+                <Icon style="margin-left: 0.06rem" name="question-o" />
+              </template>
+            </Popover>
+          </div>
+          <Uploader
+            v-model="goodsInfo.defaultSpecImage"
+            :after-read="uploadFile"
+            style="margin-top: 0.32rem"
+            max-count="1"
+          />
+        </li>
+      </ul>
+    </div>
+
     <div class="title">填写基本信息</div>
     <div class="card">
       <ul class="form">
         <li class="form-item flex">
-          <div class="name required">关联酒店</div>
-          <div class="picker" @click="hotelPickerPopupVisible = true">
-            <div class="content" :class="{ active: hotelName }">
-              {{ hotelName || "请选择关联酒店" }}
-            </div>
-            <Icon name="arrow" />
-          </div>
-        </li>
-        <li class="form-item flex">
-          <div class="name required">房间类型</div>
-          <div class="picker" @click="showTypePickerPopup">
-            <div class="content" :class="{ active: typeName }">
-              {{ typeName || "请选择房间类型" }}
-            </div>
-            <Icon name="arrow" />
-          </div>
-        </li>
-        <li class="form-item flex">
-          <div class="name required">起始价格</div>
+          <div class="name required">商品名称</div>
           <input
             class="input"
-            v-model="roomInfo.price"
+            v-model="goodsInfo.name"
+            type="text"
+            placeholder="请输入名称，最长30字"
+          />
+        </li>
+        <li class="form-item flex">
+          <div class="name required">运费模板</div>
+          <div class="picker" @click="freightTemplatePickerPopupVisible = true">
+            <div
+              class="content"
+              :class="{ active: selectedFreightTemplateName }"
+            >
+              {{ selectedFreightTemplateName || "请选择运费模板" }}
+            </div>
+            <Icon name="arrow" />
+          </div>
+        </li>
+        <li class="form-item flex">
+          <div class="name required">商品分类</div>
+          <div class="picker" @click="categoryPickerPopupVisible = true">
+            <div class="content" :class="{ active: selectedCategoryName }">
+              {{ selectedCategoryName || "请选择商品分类" }}
+            </div>
+            <Icon name="arrow" />
+          </div>
+        </li>
+        <li class="form-item flex">
+          <div class="name required">退货地址</div>
+          <div class="picker" @click="returnAddressPickerPopupVisible = true">
+            <div class="content" :class="{ active: selectedReturnAddress }">
+              {{ selectedReturnAddress || "请选择退货地址" }}
+            </div>
+            <Icon name="arrow" />
+          </div>
+        </li>
+        <li class="form-item flex">
+          <div class="name required">店铺价格</div>
+          <input
+            class="input"
+            v-model="goodsInfo.price"
             type="number"
             step="0.01"
-            placeholder="请输入起始价格"
+            placeholder="请输入店铺价格"
+          />
+        </li>
+        <li class="form-item flex">
+          <div class="name">市场价格</div>
+          <input
+            class="input"
+            v-model="goodsInfo.marketPrice"
+            type="number"
+            step="0.01"
+            placeholder="请输入市场价格"
+          />
+        </li>
+        <li class="form-item flex">
+          <div class="name required">商品总库存</div>
+          <input
+            class="input"
+            v-model="goodsInfo.stock"
+            type="number"
+            placeholder="请输入商品总库存"
           />
         </li>
         <li class="form-item flex">
           <div class="name flex required">
             <div>销售佣金比例</div>
             <Popover
-              v-model:show="salesCommissionRateTipsVisible"
+              v-model:show="commissionRateTipsVisible"
               placement="bottom-start"
               theme="dark"
             >
-              <div class="warning">范围：10%～70%</div>
+              <div class="warning">范围：0～70%</div>
               <template #reference>
                 <Icon style="margin-left: 0.06rem" name="question-o" />
               </template>
@@ -47,9 +204,9 @@
           </div>
           <input
             class="input"
-            v-model="roomInfo.salesCommissionRate"
+            v-model="goodsInfo.salesCommissionRate"
             type="number"
-            placeholder="请输入销售佣金比例"
+            placeholder="请输入佣金比例"
           />
           <div class="unit">%</div>
         </li>
@@ -57,11 +214,11 @@
           <div class="name flex required">
             <div>推广佣金比例</div>
             <Popover
-              v-model:show="promotionCommissionRateTipsVisible"
+              v-model:show="commissionRateTipsVisible"
               placement="bottom-start"
               theme="dark"
             >
-              <div class="warning">范围：2%～70%</div>
+              <div class="warning">范围：0～70%</div>
               <template #reference>
                 <Icon style="margin-left: 0.06rem" name="question-o" />
               </template>
@@ -69,9 +226,9 @@
           </div>
           <input
             class="input"
-            v-model="roomInfo.promotionCommissionRate"
+            v-model="goodsInfo.promotionCommissionRate"
             type="number"
-            placeholder="请输入推广佣金比例"
+            placeholder="请输入佣金比例"
           />
           <div class="unit">%</div>
         </li>
@@ -79,272 +236,500 @@
     </div>
 
     <div class="title flex">
-      <div>编辑房间价格</div>
+      <div>编辑商品规格</div>
       <Button
-        @click="addPriceItem"
+        @click="addSpec"
         icon="plus"
-        text="新增价格列表"
+        text="新增规格"
         type="primary"
         size="mini"
       />
     </div>
-    <SwipeCell v-for="(item, index) in roomInfo.priceList" :key="index">
+    <SwipeCell v-for="(item, index) in goodsInfo.specList" :key="index">
       <div class="card">
         <ul class="form">
           <li class="form-item flex">
-            <div class="name required">日期范围</div>
-            <div class="picker" @click="showDateRangePickerPopup(index)">
-              <div class="content" :class="{ active: item.startDate }">
-                {{
-                  item.startDate && item.endDate
-                    ? `${dayjs(item.startDate * 1000).format(
-                        "YYYY-MM-DD"
-                      )}至${dayjs(item.endDate * 1000).format("YYYY-MM-DD")}`
-                    : "请选择日期范围"
-                }}
-              </div>
-              <Icon name="arrow" />
+            <div class="name required">规格名称</div>
+            <input
+              class="input"
+              v-model="item.name"
+              type="text"
+              placeholder="请输入规格名称"
+            />
+          </li>
+          <li class="form-item">
+            <div class="name required">规格选项</div>
+            <div class="sku-options">
+              <Tag
+                v-for="(option, optionIndex) in item.options"
+                :key="optionIndex"
+                @close="deleteSpecOption(index, optionIndex)"
+                class="sku-option"
+                color="#DBEFFD"
+                text-color="#2A3664"
+                closeable
+                size="medium"
+                >{{ option }}</Tag
+              >
+              <Tag
+                class="sku-option"
+                @click="showSpecOptionModalVisible(index)"
+                type="primary"
+                size="medium"
+                >+ 新增选项</Tag
+              >
             </div>
-          </li>
-          <li class="form-item flex">
-            <div class="name required">价格</div>
-            <input
-              class="input"
-              v-model="item.price"
-              type="number"
-              step="0.01"
-              placeholder="请输入价格"
-            />
-          </li>
-          <li class="form-item flex">
-            <div class="name required">房间数量</div>
-            <input
-              class="input"
-              v-model="item.num"
-              type="number"
-              placeholder="请输入房间数量"
-            />
           </li>
         </ul>
       </div>
       <template #right>
         <Button
           class="delete-btn"
-          @click.stop="deletePriceItem(index)"
+          @click.stop="deleteSpec(index)"
           icon="delete"
           color="#EE0D23"
           plain
         />
       </template>
     </SwipeCell>
-    <div class="card" v-if="!roomInfo.priceList.length">
-      <Empty image-size="1.8rem" description="暂无价格列表" />
+    <div class="card" v-if="!goodsInfo.specList.length">
+      <Empty image-size="1.8rem" description="暂无规格" />
     </div>
 
-    <div class="title">填写预定说明</div>
-    <div class="card">
-      <ul class="form">
-        <li class="form-item flex">
-          <div class="name required">早餐数量</div>
-          <input
-            class="input"
-            v-model="roomInfo.breakfastNum"
-            type="number"
-            placeholder="请输入早餐数量"
-          />
-        </li>
-        <li class="form-item flex">
-          <div class="name required">入住人数</div>
-          <input
-            class="input"
-            v-model="roomInfo.guestNum"
-            type="number"
-            placeholder="请输入入住人数"
-          />
-        </li>
-        <li class="form-item flex">
-          <div class="name required">免费取消</div>
-          <Switch v-model="roomInfo.cancellable" size="18px" />
-        </li>
-      </ul>
+    <div class="title" v-if="goodsInfo.skuList.length">补充规格信息</div>
+    <div class="card" v-if="goodsInfo.skuList.length" style="padding: 0">
+      <Collapse v-model="activeSkuNames">
+        <CollapseItem
+          v-for="(item, index) in goodsInfo.skuList"
+          :key="index"
+          :title="item.name"
+          :name="index"
+        >
+          <ul class="form unit">
+            <li class="form-item">
+              <div class="name">图片</div>
+              <Uploader
+                v-model="item.image"
+                :after-read="uploadFile"
+                style="margin-top: 0.32rem"
+                max-count="1"
+              />
+            </li>
+            <li class="form-item flex">
+              <div class="name required">价格</div>
+              <input
+                class="input"
+                v-model="item.price"
+                type="number"
+                step="0.01"
+                placeholder="请输入价格"
+              />
+            </li>
+            <li class="form-item flex">
+              <div class="name required">库存</div>
+              <input
+                class="input"
+                v-model="item.stock"
+                type="number"
+                placeholder="请输入库存"
+              />
+            </li>
+          </ul>
+        </CollapseItem>
+      </Collapse>
     </div>
   </div>
 
-  <button class="upload-btn" @click="save">点击提交</button>
+  <button class="upload-btn" @click="save">点击上传</button>
 
-  <HotelPickerPopup
-    :visible="hotelPickerPopupVisible"
-    :hotel-options="hotelOptions"
-    @confirm="setHotelId"
-    @cancel="hotelPickerPopupVisible = false"
-  />
-  <TypePickerPopup
-    :visible="typePickerPopupVisible"
-    @confirm="setType"
-    @cancel="typePickerPopupVisible = false"
-  />
-  <Calendar
-    v-model:show="dateRangePickerPopupVisible"
-    type="range"
-    @confirm="dateRangeConfirm"
-  />
+  <Popup
+    v-model:show="freightTemplatePickerPopupVisible"
+    position="bottom"
+    round
+  >
+    <Picker
+      :columns="freightTemplateOptions"
+      @confirm="selectFreightTemplate"
+      @cancel="freightTemplatePickerPopupVisible = false"
+      :columns-field-names="{ text: 'name', value: 'id' }"
+    />
+  </Popup>
+  <Popup v-model:show="categoryPickerPopupVisible" position="bottom" round>
+    <Picker
+      :columns="categoryOptions"
+      @confirm="selectCategory"
+      @cancel="categoryPickerPopupVisible = false"
+      :columns-field-names="{ text: 'name', value: 'id' }"
+    />
+  </Popup>
+  <Popup v-model:show="returnAddressPickerPopupVisible" position="bottom" round>
+    <Picker
+      :columns="returnAddressOptions"
+      @confirm="selectReturnAddress"
+      @cancel="returnAddressPickerPopupVisible = false"
+      :columns-field-names="{ text: 'addressDetail', value: 'id' }"
+    />
+  </Popup>
+
+  <Dialog
+    v-model:show="specOptionModalVisible"
+    title="新增规格选项"
+    show-cancel-button
+    :before-close="addSpecOption"
+  >
+    <input
+      class="sku-option-input"
+      v-model="specOptionName"
+      type="text"
+      placeholder="请输入规格选项名称"
+    />
+  </Dialog>
 </template>
 
 <script setup lang="ts">
 import {
+  Uploader,
   Icon,
   Empty,
   Popover,
   Button,
+  Dialog,
+  Tag,
+  SwipeCell,
   showConfirmDialog,
   showToast,
-  Switch,
-  SwipeCell,
-  Calendar,
+  Collapse,
+  CollapseItem,
+  Popup,
+  Picker,
+  showDialog,
 } from "vant";
-import TypePickerPopup from "./components/typePickerPopup.vue";
-import HotelPickerPopup from "./components/hotelPickerPopup.vue";
-
-import { ref, reactive, computed, onMounted } from "vue";
+import { ref, watch, computed, onMounted, reactive } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import _ from "lodash";
-import dayjs from "dayjs";
-import { cleanObject } from "@/utils/index";
-import { getRoomInfo, editRoom } from "./utils/api";
-import {
-  hotelOptions,
-  setHotelOptions,
-  typeOptions,
-  setTypeOptions,
-  checkRoomInfo,
-} from "./utils/index";
+import { uploadFile } from "@/utils/upload";
+import { editGoods, getGoodsCategoryOptions, getGoodsInfo } from "./utils/api";
+import { getFreightTemplateList } from "../freightTemplate/utils/api";
+import { getAddressList } from "../goodsReturnAddress/utils/api";
 
-import type { RoomInfo, EditRoomInfo } from "./utils/type";
+import type {
+  GoodsInfo,
+  GoodsCategoryOption,
+  EditGoodsInfo,
+} from "./utils/type";
+import type { FreightTemplateListItem } from "../freightTemplate/utils/type";
+import type { AddressListItem } from "../goodsReturnAddress/utils/type";
 
 const route = useRoute();
 const router = useRouter();
 
-const roomInfo = reactive<RoomInfo>({
+const freightTemplateOptions = ref<FreightTemplateListItem[]>([]);
+const categoryOptions = ref<GoodsCategoryOption[]>([]);
+const returnAddressOptions = ref<AddressListItem[]>([]);
+const goodsInfo = reactive<GoodsInfo>({
   id: 0,
-  hotelId: undefined,
-  typeId: undefined,
+  image: [],
+  video: [],
+  imageList: [],
+  detailImageList: [],
+  defaultSpecImage: [],
+  name: "",
+  freightTemplateId: undefined,
+  categoryId: undefined,
+  returnAddressId: undefined,
   price: undefined,
+  marketPrice: undefined,
+  stock: undefined,
   salesCommissionRate: undefined,
   promotionCommissionRate: undefined,
-  priceList: [],
-  breakfastNum: 0,
-  guestNum: undefined,
-  cancellable: true,
+  specList: [],
+  skuList: [],
 });
-const curPriceItemIndex = ref(0);
-const typePickerPopupVisible = ref(false);
-const dateRangePickerPopupVisible = ref(false);
-const hotelPickerPopupVisible = ref(false);
-const salesCommissionRateTipsVisible = ref(false);
-const promotionCommissionRateTipsVisible = ref(false);
+const specOptionModalVisible = ref(false);
+const curSpecIndex = ref(0);
+const specOptionName = ref("");
+const freightTemplatePickerPopupVisible = ref(false);
+const categoryPickerPopupVisible = ref(false);
+const returnAddressPickerPopupVisible = ref(false);
+const imageTipsVisible = ref(false);
+const videoTipsVisible = ref(false);
+const imageListTipsVisible = ref(false);
+const detailImageListTipsVisible = ref(false);
+const defaultSpecImageTipsVisible = ref(false);
+const commissionRateTipsVisible = ref(false);
+const activeSkuNames = ref([0]);
 
 // 计算属性
-const hotelName = computed(
-  () => hotelOptions.value.find((item) => item.id === roomInfo.hotelId)?.name
+const selectedFreightTemplateName = computed(
+  () =>
+    freightTemplateOptions.value.find(
+      (item) => item.id === goodsInfo?.freightTemplateId
+    )?.name
 );
-const typeName = computed(
-  () => typeOptions.value.find((item) => item.id === roomInfo.typeId)?.name
+const selectedCategoryName = computed(
+  () =>
+    categoryOptions.value.find((item) => item.id === goodsInfo?.categoryId)
+      ?.name
+);
+const selectedReturnAddress = computed(
+  () =>
+    returnAddressOptions.value.find(
+      (item) => item.id === goodsInfo?.returnAddressId
+    )?.addressDetail
 );
 
 onMounted(async () => {
-  await setHotelOptions();
-  await setRoomInfo();
-  setTypeOptions(roomInfo.hotelId || 0);
+  await setFreightTemplateOptions();
+  await setCategoryOptions();
+  await setReturnAddressOptions();
+  setGoodsInfo();
 });
 
-const setRoomInfo = async () => {
+const setFreightTemplateOptions = async () =>
+  (freightTemplateOptions.value = [
+    { id: 0, name: "包邮" },
+    ...(await getFreightTemplateList()),
+  ]);
+const setCategoryOptions = async () =>
+  (categoryOptions.value = await getGoodsCategoryOptions());
+const setReturnAddressOptions = async () =>
+  (returnAddressOptions.value = await getAddressList());
+const setGoodsInfo = async () => {
   const {
     id,
-    hotelId,
-    typeId,
+    image,
+    video,
+    imageList,
+    detailImageList,
+    defaultSpecImage,
+    name,
+    freightTemplateId,
+    categoryId,
+    returnAddressId,
     price,
+    marketPrice,
+    stock,
     salesCommissionRate,
     promotionCommissionRate,
-    priceList,
-    breakfastNum,
-    guestNum,
-    cancellable,
-  } = await getRoomInfo(+(route.query.id as string));
-  roomInfo.id = id;
-  roomInfo.hotelId = hotelId;
-  roomInfo.typeId = typeId;
-  roomInfo.price = price;
-  roomInfo.salesCommissionRate = salesCommissionRate * 100;
-  roomInfo.promotionCommissionRate = promotionCommissionRate * 100;
-  roomInfo.priceList = priceList;
-  roomInfo.breakfastNum = breakfastNum;
-  roomInfo.guestNum = guestNum;
-  roomInfo.cancellable = !!cancellable;
+    specList,
+    skuList,
+  } = await getGoodsInfo(+(route.query.id as string));
+  goodsInfo.id = id;
+  goodsInfo.image = [{ url: image }];
+  goodsInfo.video = video ? [{ url: video }] : [];
+  goodsInfo.imageList = imageList.map((item) => ({ url: item }));
+  goodsInfo.detailImageList = detailImageList.map((item) => ({ url: item }));
+  goodsInfo.defaultSpecImage = [{ url: defaultSpecImage }];
+  goodsInfo.name = name;
+  goodsInfo.freightTemplateId = freightTemplateId;
+  goodsInfo.categoryId = categoryId;
+  goodsInfo.returnAddressId = returnAddressId;
+  goodsInfo.price = price;
+  goodsInfo.marketPrice = marketPrice || undefined;
+  goodsInfo.stock = stock;
+  goodsInfo.salesCommissionRate = salesCommissionRate * 100;
+  goodsInfo.promotionCommissionRate = promotionCommissionRate * 100;
+  goodsInfo.skuList = skuList.map((item) => ({
+    ...item,
+    image: item.image ? [{ url: item.image }] : [],
+  }));
+  specList.forEach((item) => goodsInfo.specList.push(_.cloneDeep(item)));
 };
 
-const setHotelId = (hotelId: number) => {
-  if (roomInfo.hotelId !== hotelId) {
-    roomInfo.typeId = undefined;
-    setTypeOptions(hotelId);
-  }
-  roomInfo.hotelId = hotelId;
-  hotelPickerPopupVisible.value = false;
+const selectFreightTemplate = ({
+  selectedValues,
+}: {
+  selectedValues: number[];
+}) => {
+  goodsInfo.freightTemplateId = selectedValues[0];
+  freightTemplatePickerPopupVisible.value = false;
+};
+const selectCategory = ({ selectedValues }: { selectedValues: number[] }) => {
+  goodsInfo.categoryId = selectedValues[0];
+  categoryPickerPopupVisible.value = false;
+};
+const selectReturnAddress = ({
+  selectedValues,
+}: {
+  selectedValues: number[];
+}) => {
+  goodsInfo.returnAddressId = selectedValues[0];
+  returnAddressPickerPopupVisible.value = false;
 };
 
-const setType = (typeId: number) => {
-  roomInfo.typeId = typeId;
-  typePickerPopupVisible.value = false;
-};
-const showTypePickerPopup = () => {
-  if (!roomInfo.hotelId) {
-    showToast("请先选择关联酒店");
-    return;
-  }
-  typePickerPopupVisible.value = true;
-};
-
-const addPriceItem = () => {
-  roomInfo.priceList.push({
-    startDate: undefined,
-    endDate: undefined,
-    price: undefined,
-    num: undefined,
+watch(goodsInfo.specList, () => {
+  let nameList: string[][] = [];
+  goodsInfo.specList.forEach((item, index) => {
+    const nameListUnit = _.cloneDeep(nameList);
+    for (let i = 0; i < item.options.length - 1; i++) {
+      nameList = [...nameList, ..._.cloneDeep(nameListUnit)];
+    }
+    item.options.forEach((_item, _index) => {
+      if (index === 0) {
+        if (!nameList[_index]) nameList[_index] = [];
+        nameList[_index][index] = _item;
+      } else {
+        const unitLength = nameList.length / item.options.length;
+        for (let j = 0; j < unitLength; j++) {
+          if (!nameList[j + _index * unitLength]) {
+            nameList[j + _index * unitLength] = [];
+          }
+          nameList[j + _index * unitLength][index] = _item;
+        }
+      }
+    });
   });
-  dateRangePickerPopupVisible.value = false;
+  goodsInfo.skuList = nameList.map((item) => {
+    const sku = goodsInfo.skuList.find((sku) => sku.name === item.join());
+    return (
+      sku || {
+        name: item.join(),
+        image: [],
+        price: undefined,
+        stock: undefined,
+      }
+    );
+  });
+});
+
+const addSpec = () => {
+  goodsInfo.specList.push({ name: "", options: [] });
 };
-const showDateRangePickerPopup = (priceItemIndex: number) => {
-  curPriceItemIndex.value = priceItemIndex;
-  dateRangePickerPopupVisible.value = true;
-};
-const deletePriceItem = (priceItemIndex: number) =>
-  showConfirmDialog({ title: "确定删除该房间价格吗？" })
-    .then(() => roomInfo.priceList.splice(priceItemIndex, 1))
+const deleteSpec = (index: number) => {
+  showConfirmDialog({ title: "确定删除该商品规格吗？" })
+    .then(() => goodsInfo.specList.splice(index, 1))
     .catch(() => true);
-const dateRangeConfirm = (dateList: Date[]) => {
-  const priceItem = _.cloneDeep(roomInfo.priceList[curPriceItemIndex.value]);
-  roomInfo.priceList[curPriceItemIndex.value] = {
-    ...priceItem,
-    startDate: Math.floor(new Date(dateList[0]).getTime() / 1000),
-    endDate: Math.floor(new Date(dateList[1]).getTime() / 1000),
-  };
-  dateRangePickerPopupVisible.value = false;
+};
+const showSpecOptionModalVisible = (index: number) => {
+  curSpecIndex.value = index;
+  specOptionModalVisible.value = true;
+};
+const addSpecOption = (action: string) => {
+  if (action === "cancel") {
+    return true;
+  }
+  if (!specOptionName.value) {
+    showToast("名称不能为空");
+    return false;
+  }
+  goodsInfo.specList[curSpecIndex.value].options.push(specOptionName.value);
+  specOptionName.value = "";
+  specOptionModalVisible.value = false;
+  return true;
+};
+const deleteSpecOption = (index: number, optionIndex: number) => {
+  goodsInfo.specList[index].options.splice(optionIndex, 1);
 };
 
 const save = async () => {
-  if (!checkRoomInfo(roomInfo)) {
+  if (!goodsInfo.image.length) {
+    showToast("请上传列表图片");
     return;
   }
-
-  const { salesCommissionRate, promotionCommissionRate, cancellable, ...rest } =
-    roomInfo;
-  const editRoomInfo = {
-    ...cleanObject(rest),
-    salesCommissionRate: (salesCommissionRate as number) / 100,
-    promotionCommissionRate: (promotionCommissionRate as number) / 100,
-    cancellable: cancellable ? 1 : 0,
+  if (!goodsInfo.imageList.length) {
+    showToast("请上传至少一张主图图片");
+    return;
+  }
+  if (!goodsInfo.detailImageList.length) {
+    showToast("请上传至少一张详情图片");
+    return;
+  }
+  if (!goodsInfo.defaultSpecImage.length) {
+    showToast("请上传默认规格图片");
+    return;
+  }
+  if (!goodsInfo.name) {
+    showToast("请输入商品名称");
+    return;
+  }
+  if (goodsInfo.freightTemplateId === undefined) {
+    showToast("请选择运费模板");
+    return;
+  }
+  if (!goodsInfo.categoryId) {
+    showToast("请选择商品分类");
+    return;
+  }
+  if (!goodsInfo.returnAddressId) {
+    showToast("请选择退货地址");
+    return;
+  }
+  if (!goodsInfo.price) {
+    showToast("请输入商品店铺价格");
+    return;
+  }
+  if (!goodsInfo.stock) {
+    showToast("请输入商品总库存");
+    return;
+  }
+  if (goodsInfo.salesCommissionRate === undefined) {
+    showToast("请输入销售佣金比例");
+    return;
+  }
+  if (goodsInfo.promotionCommissionRate === undefined) {
+    showToast("请输入推广佣金比例");
+    return;
+  }
+  if (
+    goodsInfo.specList.length &&
+    goodsInfo.specList.findIndex(
+      (item) => !item.name || !item.options.length
+    ) !== -1
+  ) {
+    showToast("请完善商品规格信息");
+    return;
+  }
+  if (goodsInfo.skuList.length) {
+    if (
+      goodsInfo.skuList.findIndex((item) => !item.price || !item.stock) !== -1
+    ) {
+      showToast("部分商品规格未填写价格或库存");
+      return;
+    }
+    if (
+      goodsInfo.stock <
+      goodsInfo.skuList.reduce((stock, sku) => stock + (sku.stock as number), 0)
+    ) {
+      showDialog({
+        title: "请核对库存设置",
+        message: "商品总库存，小于商品各规格库存总和",
+      });
+      return;
+    }
+  }
+  const {
+    image,
+    video,
+    imageList,
+    detailImageList,
+    defaultSpecImage,
+    marketPrice,
+    specList,
+    skuList,
+    salesCommissionRate,
+    promotionCommissionRate,
+    ...rest
+  } = goodsInfo;
+  const editGoodsInfo: EditGoodsInfo = {
+    ...rest,
+    image: image[0].url as string,
+    imageList: JSON.stringify(imageList.map((item) => item.url)),
+    detailImageList: JSON.stringify(detailImageList.map((item) => item.url)),
+    defaultSpecImage: defaultSpecImage[0].url as string,
+    salesCommissionRate: salesCommissionRate / 100,
+    promotionCommissionRate: promotionCommissionRate / 100,
+    specList: JSON.stringify(specList),
+    skuList: JSON.stringify(
+      skuList.map((item) => ({
+        ...item,
+        image: item.image.length ? item.image[0].url : "",
+      }))
+    ),
   };
+  if (video.length) editGoodsInfo.video = video[0].url;
+  if (marketPrice) editGoodsInfo.marketPrice = marketPrice;
   try {
-    await editRoom(editRoomInfo as EditRoomInfo);
+    await editGoods(editGoodsInfo);
     router.back();
   } catch (error) {
     showToast("上传失败，请重试");
@@ -352,6 +737,15 @@ const save = async () => {
 };
 </script>
 
+<style>
+.van-empty__description {
+  font-size: 0.24rem;
+}
+.van-collapse-item__title {
+  font-size: 0.26rem;
+  font-weight: 500;
+}
+</style>
 <style lang="scss" scoped>
 .container {
   padding: 0.32rem 0.32rem 1.52rem;
@@ -375,7 +769,6 @@ const save = async () => {
     overflow: hidden;
     .form {
       &.unit {
-        margin-bottom: 0.32rem;
         padding: 0 0.32rem;
         border: 1px solid #eee;
         border-radius: 0.24rem;
@@ -399,6 +792,9 @@ const save = async () => {
           &.flex {
             display: flex;
             align-items: center;
+            &.between {
+              justify-content: space-between;
+            }
           }
           &.required {
             position: relative;
@@ -424,7 +820,7 @@ const save = async () => {
           .content {
             color: #777;
             &.active {
-              max-width: 3.6rem;
+              max-width: 3rem;
               color: #333;
               overflow: hidden;
               text-overflow: ellipsis;
@@ -435,10 +831,11 @@ const save = async () => {
             }
           }
         }
-        .unit {
-          margin-left: 0.06rem;
-          font-weight: 500;
-          line-height: 1;
+        .sku-options {
+          .sku-option {
+            margin-top: 0.32rem;
+            margin-right: 0.32rem;
+          }
         }
       }
     }
@@ -468,9 +865,13 @@ const save = async () => {
   line-height: 1.5;
   white-space: wrap;
 }
-</style>
-<style>
-.van-empty__description {
-  font-size: 0.24rem;
+.sku-option-input {
+  margin: 0.32rem 0.32rem 0.5rem;
+  padding: 0.24rem;
+  width: calc(100% - 0.64rem);
+  height: 0.88rem;
+  font-size: 0.26rem;
+  border: 1px solid #ddd;
+  border-radius: 0.12rem;
 }
 </style>
