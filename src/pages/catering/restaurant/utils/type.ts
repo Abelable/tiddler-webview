@@ -30,6 +30,7 @@ export interface OriginalRestaurantInfo {
   categoryId: number;
   name: string;
   price: number;
+  telList: string[];
   logo: string;
   video: string;
   cover: string;
@@ -49,6 +50,7 @@ export interface RestaurantInfo {
   name: string;
   openStatus: number | undefined;
   price: number | undefined;
+  telList: string[];
   logo: UploaderFileListItem[];
   video: UploaderFileListItem[];
   cover: UploaderFileListItem[];

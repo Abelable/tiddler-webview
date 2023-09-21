@@ -62,6 +62,52 @@
             placeholder="请输入门店具体地址"
           />
         </li>
+        <li class="form-item">
+          <div class="name required">联系电话</div>
+          <div class="tags">
+            <Tag
+              v-for="(item, index) in restaurantInfo.telList"
+              :key="index"
+              @close="deleteTel(index)"
+              class="tag"
+              color="#DBEFFD"
+              text-color="#2A3664"
+              closeable
+              size="medium"
+              >{{ item }}</Tag
+            >
+            <Tag
+              class="tag"
+              @click="telModalVisible = true"
+              type="primary"
+              size="medium"
+              >+ 新增联系电话</Tag
+            >
+          </div>
+        </li>
+        <li class="form-item">
+          <div class="name">服务设施</div>
+          <div class="tags">
+            <Tag
+              v-for="(item, index) in restaurantInfo.facilityList"
+              :key="index"
+              @close="deleteFacility(index)"
+              class="tag"
+              color="#DBEFFD"
+              text-color="#2A3664"
+              closeable
+              size="medium"
+              >{{ item }}</Tag
+            >
+            <Tag
+              class="tag"
+              @click="facilityModalVisible = true"
+              type="primary"
+              size="medium"
+              >+ 新增服务设施</Tag
+            >
+          </div>
+        </li>
       </ul>
     </div>
 
@@ -167,10 +213,45 @@
     @confirm="setLnglat"
     @cancel="mapPopupVisible = false"
   />
+  <Dialog
+    v-model:show="telModalVisible"
+    title="新增联系电话"
+    show-cancel-button
+    :before-close="addTel"
+  >
+    <input
+      class="sku-option-input"
+      v-model="tel"
+      type="text"
+      placeholder="请输入联系电话"
+    />
+  </Dialog>
+  <Dialog
+    v-model:show="facilityModalVisible"
+    title="新增服务设施"
+    show-cancel-button
+    :before-close="addFacility"
+  >
+    <input
+      class="sku-option-input"
+      v-model="facility"
+      type="text"
+      placeholder="请输入设施名称"
+    />
+  </Dialog>
 </template>
 
 <script setup lang="ts">
-import { Uploader, Icon, Popover, showToast, Popup, Picker } from "vant";
+import {
+  Uploader,
+  Icon,
+  Popover,
+  showToast,
+  Popup,
+  Picker,
+  Dialog,
+  Tag,
+} from "vant";
 import MapPopup from "./components/mapPopup.vue";
 
 import { ref, reactive, computed, onMounted } from "vue";
@@ -196,6 +277,7 @@ const restaurantInfo = reactive<Omit<RestaurantInfo, "id">>({
   name: "",
   openStatus: undefined,
   price: undefined,
+  telList: [],
   logo: [],
   video: [],
   cover: [],
@@ -212,6 +294,10 @@ const videoTipsVisible = ref(false);
 const categoryPickerPopupVisible = ref(false);
 const openStatusPickerPopupVisible = ref(false);
 const mapPopupVisible = ref(false);
+const telModalVisible = ref(false);
+const tel = ref("");
+const facilityModalVisible = ref(false);
+const facility = ref("");
 
 // 计算属性
 const selectedCategoryName = computed(
@@ -252,6 +338,39 @@ const setLnglat = ({
   restaurantInfo.longitude = longitude;
   restaurantInfo.latitude = latitude;
   mapPopupVisible.value = false;
+};
+
+const deleteTel = (index: number) => restaurantInfo.telList.splice(index, 1);
+const addTel = (action: string) => {
+  if (action === "cancel") {
+    return true;
+  }
+  if (
+    !tel.value ||
+    (!/^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/.test(tel.value) &&
+      !/^0\d{2,3}-?\d{7,8}$/.test(tel.value))
+  ) {
+    showToast("请输入正确联系电话");
+    return;
+  }
+  restaurantInfo.telList.push(tel.value);
+  tel.value = "";
+  telModalVisible.value = false;
+};
+
+const deleteFacility = (index: number) =>
+  restaurantInfo.facilityList.splice(index, 1);
+const addFacility = (action: string) => {
+  if (action === "cancel") {
+    return true;
+  }
+  if (!facility.value) {
+    showToast("请输入设施名称");
+    return;
+  }
+  restaurantInfo.facilityList.push(facility.value);
+  facility.value = "";
+  facilityModalVisible.value = false;
 };
 
 const save = async () => {
@@ -406,8 +525,8 @@ const save = async () => {
             }
           }
         }
-        .sku-options {
-          .sku-option {
+        .tags {
+          .tag {
             margin-top: 0.32rem;
             margin-right: 0.32rem;
           }
