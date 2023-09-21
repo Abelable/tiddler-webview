@@ -1,5 +1,70 @@
 <template>
   <div class="container">
+    <div class="title">填写基本信息</div>
+    <div class="card">
+      <ul class="form">
+        <li class="form-item flex">
+          <div class="name required">门店名称</div>
+          <input
+            class="input"
+            v-model="restaurantInfo.name"
+            type="text"
+            placeholder="请输入名称，最长30字"
+          />
+        </li>
+        <li class="form-item flex">
+          <div class="name required">门店分类</div>
+          <div class="picker" @click="categoryPickerPopupVisible = true">
+            <div class="content" :class="{ active: selectedCategoryName }">
+              {{ selectedCategoryName || "请选择门店分类" }}
+            </div>
+            <Icon name="arrow" />
+          </div>
+        </li>
+        <li class="form-item flex">
+          <div class="name required">营业状态</div>
+          <div class="picker" @click="openStatusPickerPopupVisible = true">
+            <div class="content" :class="{ active: selectedOpenStatus }">
+              {{ selectedOpenStatus || "请选择营业状态" }}
+            </div>
+            <Icon name="arrow" />
+          </div>
+        </li>
+        <li class="form-item flex">
+          <div class="name required">人均价格</div>
+          <input
+            class="input"
+            v-model="restaurantInfo.price"
+            type="number"
+            step="0.01"
+            placeholder="请输入人均价格"
+          />
+        </li>
+        <li class="form-item flex">
+          <div class="name required">经纬度</div>
+          <div class="picker" @click="mapPopupVisible = true">
+            <div class="content" :class="{ active: restaurantInfo.longitude }">
+              {{
+                restaurantInfo.longitude
+                  ? `${restaurantInfo.longitude},${restaurantInfo.latitude}`
+                  : "打开地图选择"
+              }}
+            </div>
+            <Icon name="arrow" />
+          </div>
+        </li>
+        <li class="form-item flex">
+          <div class="name required">具体地址</div>
+          <input
+            class="input"
+            v-model="restaurantInfo.address"
+            type="text"
+            placeholder="请输入门店具体地址"
+          />
+        </li>
+      </ul>
+    </div>
+
     <div class="title">上传视频及图片</div>
     <div class="card">
       <ul class="form">
@@ -78,40 +143,6 @@
         </li>
       </ul>
     </div>
-
-    <div class="title">填写基本信息</div>
-    <div class="card">
-      <ul class="form">
-        <li class="form-item flex">
-          <div class="name required">门店名称</div>
-          <input
-            class="input"
-            v-model="restaurantInfo.name"
-            type="text"
-            placeholder="请输入名称，最长30字"
-          />
-        </li>
-        <li class="form-item flex">
-          <div class="name required">门店分类</div>
-          <div class="picker" @click="categoryPickerPopupVisible = true">
-            <div class="content" :class="{ active: selectedCategoryName }">
-              {{ selectedCategoryName || "请选择门店分类" }}
-            </div>
-            <Icon name="arrow" />
-          </div>
-        </li>
-        <li class="form-item flex">
-          <div class="name required">人均消费价格</div>
-          <input
-            class="input"
-            v-model="restaurantInfo.price"
-            type="number"
-            step="0.01"
-            placeholder="请输入人均消费价格"
-          />
-        </li>
-      </ul>
-    </div>
   </div>
 
   <button class="upload-btn" @click="save">点击提交</button>
@@ -124,10 +155,24 @@
       :columns-field-names="{ text: 'name', value: 'id' }"
     />
   </Popup>
+  <Popup v-model:show="openStatusPickerPopupVisible" position="bottom" round>
+    <Picker
+      :columns="openStatusOptions"
+      @confirm="selectOpenStatus"
+      @cancel="openStatusPickerPopupVisible = false"
+    />
+  </Popup>
+  <MapPopup
+    :visible="mapPopupVisible"
+    @confirm="setLnglat"
+    @cancel="mapPopupVisible = false"
+  />
 </template>
 
 <script setup lang="ts">
 import { Uploader, Icon, Popover, showToast, Popup, Picker } from "vant";
+import MapPopup from "./components/mapPopup.vue";
+
 import { ref, reactive, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { uploadFile } from "@/utils/upload";
@@ -141,10 +186,15 @@ import type {
 
 const router = useRouter();
 
+const openStatusOptions = [
+  { text: "正在营业", value: 1 },
+  { text: "尚未营业", value: 0 },
+];
 const categoryOptions = ref<RestaurantCategoryOption[]>([]);
 const restaurantInfo = reactive<Omit<RestaurantInfo, "id">>({
   categoryId: undefined,
   name: "",
+  openStatus: undefined,
   price: undefined,
   logo: [],
   video: [],
@@ -158,14 +208,21 @@ const restaurantInfo = reactive<Omit<RestaurantInfo, "id">>({
   openTimeList: [],
   facilityList: [],
 });
-const categoryPickerPopupVisible = ref(false);
 const videoTipsVisible = ref(false);
+const categoryPickerPopupVisible = ref(false);
+const openStatusPickerPopupVisible = ref(false);
+const mapPopupVisible = ref(false);
 
 // 计算属性
 const selectedCategoryName = computed(
   () =>
     categoryOptions.value.find((item) => item.id === restaurantInfo.categoryId)
       ?.name
+);
+const selectedOpenStatus = computed(
+  () =>
+    openStatusOptions.find((item) => item.value === restaurantInfo.openStatus)
+      ?.text
 );
 
 onMounted(() => {
@@ -178,6 +235,23 @@ const setCategoryOptions = async () =>
 const selectCategory = ({ selectedValues }: { selectedValues: number[] }) => {
   restaurantInfo.categoryId = selectedValues[0];
   categoryPickerPopupVisible.value = false;
+};
+
+const selectOpenStatus = ({ selectedValues }: { selectedValues: number[] }) => {
+  restaurantInfo.openStatus = selectedValues[0];
+  categoryPickerPopupVisible.value = false;
+};
+
+const setLnglat = ({
+  longitude,
+  latitude,
+}: {
+  longitude: number;
+  latitude: number;
+}) => {
+  restaurantInfo.longitude = longitude;
+  restaurantInfo.latitude = latitude;
+  mapPopupVisible.value = false;
 };
 
 const save = async () => {

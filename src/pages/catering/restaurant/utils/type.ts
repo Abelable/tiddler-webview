@@ -47,6 +47,7 @@ export interface RestaurantInfo {
   id: number;
   categoryId: number | undefined;
   name: string;
+  openStatus: number | undefined;
   price: number | undefined;
   logo: UploaderFileListItem[];
   video: UploaderFileListItem[];
