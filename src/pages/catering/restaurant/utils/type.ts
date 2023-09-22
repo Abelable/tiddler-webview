@@ -19,27 +19,6 @@ interface OpenTime {
   closeTime: string;
   tips: string;
 }
-
-export interface RestaurantInfo {
-  id: number;
-  name: string;
-  categoryId: number | undefined;
-  openStatus: number | undefined;
-  price: number | undefined;
-  longitude: number | undefined;
-  latitude: number | undefined;
-  address: string;
-  telList: string[];
-  facilityList: string[];
-  openTimeList: OpenTime[];
-  logo: UploaderFileListItem[];
-  video: UploaderFileListItem[];
-  cover: UploaderFileListItem[];
-  foodImageList: UploaderFileListItem[];
-  environmentImageList: UploaderFileListItem[];
-  priceImageList: UploaderFileListItem[];
-}
-
 export interface OriginalRestaurantInfo {
   id: number;
   name: string;
@@ -58,4 +37,32 @@ export interface OriginalRestaurantInfo {
   foodImageList: string[];
   environmentImageList: string[];
   priceImageList: string[];
+}
+
+export interface RestaurantInfo
+  extends Omit<
+    OriginalRestaurantInfo,
+    | "categoryId"
+    | "openStatus"
+    | "price"
+    | "longitude"
+    | "latitude"
+    | "logo"
+    | "video"
+    | "cover"
+    | "foodImageList"
+    | "environmentImageList"
+    | "priceImageList"
+  > {
+  categoryId: number | undefined;
+  openStatus: number | undefined;
+  price: number | undefined;
+  longitude: number | undefined;
+  latitude: number | undefined;
+  logo: UploaderFileListItem[];
+  video: UploaderFileListItem[];
+  cover: UploaderFileListItem[];
+  foodImageList: UploaderFileListItem[];
+  environmentImageList: UploaderFileListItem[];
+  priceImageList: UploaderFileListItem[];
 }
