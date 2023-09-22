@@ -354,53 +354,36 @@ import MapPopup from "./components/mapPopup.vue";
 import { ref, reactive, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { uploadFile } from "@/utils/upload";
-import { createRestaurant, getRestaurantCategoryOptions } from "./utils/api";
+import { createRestaurant } from "./utils/api";
+import {
+  openStatusOptions,
+  monthOptions,
+  categoryOptions,
+  setCategoryOptions,
+  checkRestaurantInfo,
+} from "./utils/index";
 
-import type {
-  RestaurantInfo,
-  RestaurantCategoryOption,
-  CreateRestaurantInfo,
-} from "./utils/type";
+import type { RestaurantInfo, OriginalRestaurantInfo } from "./utils/type";
 
 const router = useRouter();
 
-const openStatusOptions = [
-  { text: "正在营业", value: 1 },
-  { text: "尚未营业", value: 0 },
-];
-const monthOptions = [
-  { text: "1月", value: 1 },
-  { text: "2月", value: 2 },
-  { text: "3月", value: 3 },
-  { text: "4月", value: 4 },
-  { text: "5月", value: 5 },
-  { text: "6月", value: 6 },
-  { text: "7月", value: 7 },
-  { text: "8月", value: 8 },
-  { text: "9月", value: 9 },
-  { text: "10月", value: 10 },
-  { text: "11月", value: 11 },
-  { text: "12月", value: 12 },
-];
-
-const categoryOptions = ref<RestaurantCategoryOption[]>([]);
 const restaurantInfo = reactive<Omit<RestaurantInfo, "id">>({
-  categoryId: undefined,
   name: "",
+  categoryId: undefined,
   openStatus: undefined,
   price: undefined,
+  longitude: undefined,
+  latitude: undefined,
+  address: "",
   telList: [],
+  facilityList: [],
+  openTimeList: [],
   logo: [],
   video: [],
   cover: [],
   foodImageList: [],
   environmentImageList: [],
   priceImageList: [],
-  longitude: undefined,
-  latitude: undefined,
-  address: "",
-  openTimeList: [],
-  facilityList: [],
 });
 const videoTipsVisible = ref(false);
 const categoryPickerPopupVisible = ref(false);
@@ -431,9 +414,6 @@ const selectedOpenStatus = computed(
 onMounted(() => {
   setCategoryOptions();
 });
-
-const setCategoryOptions = async () =>
-  (categoryOptions.value = await getRestaurantCategoryOptions());
 
 const selectCategory = ({ selectedValues }: { selectedValues: number[] }) => {
   restaurantInfo.categoryId = selectedValues[0];
@@ -518,6 +498,7 @@ const selectMonth = ({ selectedValues }: { selectedValues: number[] }) => {
     restaurantInfo.openTimeList[curOpenTimeIdx.value].openMonth =
       selectedValues[0];
   }
+  monthPickerPopupVisible.value = false;
 };
 
 const pickTime = (index: number, type: number) => {
@@ -539,59 +520,41 @@ const selectTime = ({ selectedValues }: { selectedValues: string[] }) => {
 };
 
 const save = async () => {
-  if (!restaurantInfo.cover.length) {
-    showToast("请上传列表图片");
-    return;
-  }
-  if (!restaurantInfo.foodImageList.length) {
-    showToast("请上传至少一张主图图片");
-    return;
-  }
-  if (!restaurantInfo.environmentImageList.length) {
-    showToast("请上传至少一张详情图片");
-    return;
-  }
-  if (!restaurantInfo.priceImageList.length) {
-    showToast("请上传默认规格图片");
-    return;
-  }
-  if (!restaurantInfo.name) {
-    showToast("请输入门店名称");
-    return;
-  }
-  if (!restaurantInfo.categoryId) {
-    showToast("请选择门店分类");
-    return;
-  }
-  if (!restaurantInfo.price) {
-    showToast("请输入门店店铺价格");
-    return;
-  }
-  const {
-    logo,
-    video,
-    cover,
-    foodImageList,
-    environmentImageList,
-    priceImageList,
-    ...rest
-  } = restaurantInfo;
-  const createRestaurantInfo: CreateRestaurantInfo = {
-    ...rest,
-    logo: logo[0].url as string,
-    cover: cover[0].url as string,
-    foodImageList: JSON.stringify(foodImageList.map((item) => item.url)),
-    environmentImageList: JSON.stringify(
-      environmentImageList.map((item) => item.url)
-    ),
-    priceImageList: priceImageList[0].url as string,
-  };
-  if (video.length) createRestaurantInfo.video = video[0].url;
-  try {
-    await createRestaurant(createRestaurantInfo);
-    router.back();
-  } catch (error) {
-    showToast("上传失败，请重试");
+  if (checkRestaurantInfo(restaurantInfo)) {
+    const {
+      categoryId,
+      openStatus,
+      price,
+      longitude,
+      latitude,
+      logo,
+      video,
+      cover,
+      foodImageList,
+      environmentImageList,
+      priceImageList,
+      ...rest
+    } = restaurantInfo;
+    const createRestaurantInfo: Omit<OriginalRestaurantInfo, "id"> = {
+      ...rest,
+      categoryId: categoryId as number,
+      openStatus: openStatus as number,
+      price: price as number,
+      longitude: longitude as number,
+      latitude: latitude as number,
+      logo: logo[0].url || "",
+      cover: cover[0].url || "",
+      foodImageList: foodImageList.map((item) => item.url || ""),
+      environmentImageList: environmentImageList.map((item) => item.url || ""),
+      priceImageList: priceImageList.map((item) => item.url || ""),
+    };
+    if (video.length) createRestaurantInfo.video = video[0].url;
+    try {
+      await createRestaurant(createRestaurantInfo);
+      router.back();
+    } catch (error) {
+      showToast("上传失败，请重试");
+    }
   }
 };
 </script>

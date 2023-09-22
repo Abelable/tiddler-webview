@@ -12,11 +12,6 @@ export interface ProviderRestaurant {
   updatedAt: string;
 }
 
-export interface RestaurantCategoryOption {
-  id: number;
-  name: string;
-}
-
 interface OpenTime {
   openMonth: number | undefined;
   closeMonth: number | undefined;
@@ -25,64 +20,42 @@ interface OpenTime {
   tips: string;
 }
 
-export interface OriginalRestaurantInfo {
-  id: number;
-  categoryId: number;
-  name: string;
-  price: number;
-  telList: string[];
-  logo: string;
-  video: string;
-  cover: string;
-  foodImageList: string[];
-  environmentImageList: string[];
-  priceImageList: string;
-  longitude: number;
-  latitude: number;
-  address: string;
-  openTimeList: OpenTime[];
-  facilityList: string[];
-}
-
 export interface RestaurantInfo {
   id: number;
-  categoryId: number | undefined;
   name: string;
+  categoryId: number | undefined;
   openStatus: number | undefined;
   price: number | undefined;
+  longitude: number | undefined;
+  latitude: number | undefined;
+  address: string;
   telList: string[];
+  facilityList: string[];
+  openTimeList: OpenTime[];
   logo: UploaderFileListItem[];
   video: UploaderFileListItem[];
   cover: UploaderFileListItem[];
   foodImageList: UploaderFileListItem[];
   environmentImageList: UploaderFileListItem[];
   priceImageList: UploaderFileListItem[];
-  longitude: number | undefined;
-  latitude: number | undefined;
-  address: string;
-  openTimeList: OpenTime[];
-  facilityList: string[];
 }
 
-export interface CreateRestaurantInfo
-  extends Omit<
-    RestaurantInfo,
-    | "id"
-    | "logo"
-    | "video"
-    | "cover"
-    | "foodImageList"
-    | "environmentImageList"
-    | "priceImageList"
-  > {
+export interface OriginalRestaurantInfo {
+  id: number;
+  name: string;
+  categoryId: number;
+  openStatus: number;
+  price: number;
+  longitude: number;
+  latitude: number;
+  address: string;
+  telList: string[];
+  facilityList: string[];
+  openTimeList: OpenTime[];
   logo: string;
   video?: string;
   cover: string;
-  foodImageList: string;
-  environmentImageList: string;
-  priceImageList: string;
-}
-
-export interface EditRestaurantInfo extends CreateRestaurantInfo {
-  id: number;
+  foodImageList: string[];
+  environmentImageList: string[];
+  priceImageList: string[];
 }
