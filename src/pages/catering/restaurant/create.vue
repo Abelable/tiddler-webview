@@ -111,6 +111,85 @@
       </ul>
     </div>
 
+    <div class="title flex">
+      <div>编辑营业时间</div>
+      <Button
+        @click="addOpenTime"
+        icon="plus"
+        text="新增营业时间"
+        type="primary"
+        size="mini"
+      />
+    </div>
+    <SwipeCell
+      v-for="(item, index) in restaurantInfo.openTimeList"
+      :key="index"
+    >
+      <div class="card">
+        <ul class="form">
+          <li class="form-item flex">
+            <div class="name required">开始月份</div>
+            <div class="picker" @click="pickMonth(index, 0)">
+              <div class="content" :class="{ active: item.openMonth }">
+                {{ item.openMonth ? `${item.openMonth}月` : "请选择开始月份" }}
+              </div>
+              <Icon name="arrow" />
+            </div>
+          </li>
+          <li class="form-item flex">
+            <div class="name required">结束月份</div>
+            <div class="picker" @click="pickMonth(index, 1)">
+              <div class="content" :class="{ active: item.closeMonth }">
+                {{
+                  item.closeMonth ? `${item.closeMonth}月` : "请选择结束月份"
+                }}
+              </div>
+              <Icon name="arrow" />
+            </div>
+          </li>
+          <li class="form-item flex">
+            <div class="name required">开业时间</div>
+            <div class="picker" @click="pickTime(index, 0)">
+              <div class="content" :class="{ active: item.openTime }">
+                {{ item.openTime || "请选择开业时间" }}
+              </div>
+              <Icon name="arrow" />
+            </div>
+          </li>
+          <li class="form-item flex">
+            <div class="name required">停业时间</div>
+            <div class="picker" @click="pickTime(index, 1)">
+              <div class="content" :class="{ active: item.closeTime }">
+                {{ item.closeTime || "请选择停业时间" }}
+              </div>
+              <Icon name="arrow" />
+            </div>
+          </li>
+          <li class="form-item flex">
+            <div class="name">时间提示</div>
+            <input
+              class="input"
+              v-model="item.tips"
+              type="text"
+              placeholder="补充时间提示"
+            />
+          </li>
+        </ul>
+      </div>
+      <template #right>
+        <Button
+          class="delete-btn"
+          @click.stop="deleteOpenTime(index)"
+          icon="delete"
+          color="#EE0D23"
+          plain
+        />
+      </template>
+    </SwipeCell>
+    <div class="card" v-if="!restaurantInfo.openTimeList.length">
+      <Empty image-size="1.8rem" description="暂未设置营业时间" />
+    </div>
+
     <div class="title">上传视频及图片</div>
     <div class="card">
       <ul class="form">
@@ -239,6 +318,19 @@
       placeholder="请输入设施名称"
     />
   </Dialog>
+  <Popup v-model:show="monthPickerPopupVisible" position="bottom" round>
+    <Picker
+      :columns="monthOptions"
+      @confirm="selectMonth"
+      @cancel="monthPickerPopupVisible = false"
+    />
+  </Popup>
+  <Popup v-model:show="timePickerPopupVisible" position="bottom" round>
+    <TimePicker
+      @confirm="selectTime"
+      @cancel="timePickerPopupVisible = false"
+    />
+  </Popup>
 </template>
 
 <script setup lang="ts">
@@ -249,8 +341,13 @@ import {
   showToast,
   Popup,
   Picker,
+  TimePicker,
   Dialog,
+  Button,
   Tag,
+  SwipeCell,
+  Empty,
+  showConfirmDialog,
 } from "vant";
 import MapPopup from "./components/mapPopup.vue";
 
@@ -271,6 +368,21 @@ const openStatusOptions = [
   { text: "正在营业", value: 1 },
   { text: "尚未营业", value: 0 },
 ];
+const monthOptions = [
+  { text: "1月", value: 1 },
+  { text: "2月", value: 2 },
+  { text: "3月", value: 3 },
+  { text: "4月", value: 4 },
+  { text: "5月", value: 5 },
+  { text: "6月", value: 6 },
+  { text: "7月", value: 7 },
+  { text: "8月", value: 8 },
+  { text: "9月", value: 9 },
+  { text: "10月", value: 10 },
+  { text: "11月", value: 11 },
+  { text: "12月", value: 12 },
+];
+
 const categoryOptions = ref<RestaurantCategoryOption[]>([]);
 const restaurantInfo = reactive<Omit<RestaurantInfo, "id">>({
   categoryId: undefined,
@@ -298,6 +410,11 @@ const telModalVisible = ref(false);
 const tel = ref("");
 const facilityModalVisible = ref(false);
 const facility = ref("");
+const curOpenTimeIdx = ref(0);
+const monthPickerPopupVisible = ref(false);
+const curMonthType = ref(0);
+const timePickerPopupVisible = ref(false);
+const curTimeType = ref(0);
 
 // 计算属性
 const selectedCategoryName = computed(
@@ -371,6 +488,54 @@ const addFacility = (action: string) => {
   restaurantInfo.facilityList.push(facility.value);
   facility.value = "";
   facilityModalVisible.value = false;
+};
+
+const addOpenTime = () => {
+  restaurantInfo.openTimeList.push({
+    openMonth: undefined,
+    closeMonth: undefined,
+    openTime: "",
+    closeTime: "",
+    tips: "",
+  });
+};
+const deleteOpenTime = (index: number) => {
+  showConfirmDialog({ title: "确定删除该营业时间吗？" })
+    .then(() => restaurantInfo.openTimeList.splice(index, 1))
+    .catch(() => true);
+};
+
+const pickMonth = (index: number, type: number) => {
+  curOpenTimeIdx.value = index;
+  curMonthType.value = type;
+  monthPickerPopupVisible.value = true;
+};
+const selectMonth = ({ selectedValues }: { selectedValues: number[] }) => {
+  if (curMonthType.value) {
+    restaurantInfo.openTimeList[curOpenTimeIdx.value].closeMonth =
+      selectedValues[0];
+  } else {
+    restaurantInfo.openTimeList[curOpenTimeIdx.value].openMonth =
+      selectedValues[0];
+  }
+};
+
+const pickTime = (index: number, type: number) => {
+  curOpenTimeIdx.value = index;
+  curTimeType.value = type;
+  timePickerPopupVisible.value = true;
+};
+const selectTime = ({ selectedValues }: { selectedValues: string[] }) => {
+  if (curTimeType.value) {
+    restaurantInfo.openTimeList[
+      curOpenTimeIdx.value
+    ].closeTime = `${selectedValues[0]}:${selectedValues[1]}`;
+  } else {
+    restaurantInfo.openTimeList[
+      curOpenTimeIdx.value
+    ].openTime = `${selectedValues[0]}:${selectedValues[1]}`;
+  }
+  timePickerPopupVisible.value = false;
 };
 
 const save = async () => {

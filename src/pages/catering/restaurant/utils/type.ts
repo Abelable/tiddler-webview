@@ -18,8 +18,8 @@ export interface RestaurantCategoryOption {
 }
 
 interface OpenTime {
-  openMonth: string;
-  closeMonth: string;
+  openMonth: number | undefined;
+  closeMonth: number | undefined;
   openTime: string;
   closeTime: string;
   tips: string;
