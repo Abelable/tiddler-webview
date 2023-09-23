@@ -22,15 +22,6 @@
           </div>
         </li>
         <li class="form-item flex">
-          <div class="name required">营业状态</div>
-          <div class="picker" @click="openStatusPickerPopupVisible = true">
-            <div class="content" :class="{ active: selectedOpenStatus }">
-              {{ selectedOpenStatus || "请选择营业状态" }}
-            </div>
-            <Icon name="arrow" />
-          </div>
-        </li>
-        <li class="form-item flex">
           <div class="name required">人均价格</div>
           <input
             class="input"
@@ -282,13 +273,6 @@
       :columns-field-names="{ text: 'name', value: 'id' }"
     />
   </Popup>
-  <Popup v-model:show="openStatusPickerPopupVisible" position="bottom" round>
-    <Picker
-      :columns="openStatusOptions"
-      @confirm="selectOpenStatus"
-      @cancel="openStatusPickerPopupVisible = false"
-    />
-  </Popup>
   <MapPopup
     :visible="mapPopupVisible"
     @confirm="setLnglat"
@@ -363,7 +347,6 @@ import { useRouter } from "vue-router";
 import { uploadFile } from "@/utils/upload";
 import { createRestaurant } from "./utils/api";
 import {
-  openStatusOptions,
   weekDayOptions,
   categoryOptions,
   setCategoryOptions,
@@ -377,7 +360,6 @@ const router = useRouter();
 const restaurantInfo = reactive<Omit<RestaurantInfo, "id">>({
   name: "",
   categoryId: undefined,
-  openStatus: undefined,
   price: undefined,
   longitude: undefined,
   latitude: undefined,
@@ -394,7 +376,6 @@ const restaurantInfo = reactive<Omit<RestaurantInfo, "id">>({
 });
 const videoTipsVisible = ref(false);
 const categoryPickerPopupVisible = ref(false);
-const openStatusPickerPopupVisible = ref(false);
 const mapPopupVisible = ref(false);
 const telModalVisible = ref(false);
 const tel = ref("");
@@ -413,11 +394,6 @@ const selectedCategoryName = computed(
     categoryOptions.value.find((item) => item.id === restaurantInfo.categoryId)
       ?.name
 );
-const selectedOpenStatus = computed(
-  () =>
-    openStatusOptions.find((item) => item.value === restaurantInfo.openStatus)
-      ?.text
-);
 
 onMounted(() => {
   setCategoryOptions();
@@ -425,11 +401,6 @@ onMounted(() => {
 
 const selectCategory = ({ selectedValues }: { selectedValues: number[] }) => {
   restaurantInfo.categoryId = selectedValues[0];
-  categoryPickerPopupVisible.value = false;
-};
-
-const selectOpenStatus = ({ selectedValues }: { selectedValues: number[] }) => {
-  restaurantInfo.openStatus = selectedValues[0];
   categoryPickerPopupVisible.value = false;
 };
 
@@ -526,7 +497,6 @@ const save = async () => {
   if (checkRestaurantInfo(restaurantInfo)) {
     const {
       categoryId,
-      openStatus,
       price,
       longitude,
       latitude,
@@ -541,7 +511,6 @@ const save = async () => {
     const createRestaurantInfo: Omit<OriginalRestaurantInfo, "id"> = {
       ...rest,
       categoryId: categoryId as number,
-      openStatus: openStatus as number,
       price: price as number,
       longitude: longitude as number,
       latitude: latitude as number,

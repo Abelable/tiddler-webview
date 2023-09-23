@@ -22,15 +22,6 @@
           </div>
         </li>
         <li class="form-item flex">
-          <div class="name required">营业状态</div>
-          <div class="picker" @click="openStatusPickerPopupVisible = true">
-            <div class="content" :class="{ active: selectedOpenStatus }">
-              {{ selectedOpenStatus || "请选择营业状态" }}
-            </div>
-            <Icon name="arrow" />
-          </div>
-        </li>
-        <li class="form-item flex">
           <div class="name required">人均价格</div>
           <input
             class="input"
@@ -282,13 +273,6 @@
       :columns-field-names="{ text: 'name', value: 'id' }"
     />
   </Popup>
-  <Popup v-model:show="openStatusPickerPopupVisible" position="bottom" round>
-    <Picker
-      :columns="openStatusOptions"
-      @confirm="selectOpenStatus"
-      @cancel="openStatusPickerPopupVisible = false"
-    />
-  </Popup>
   <MapPopup
     :visible="mapPopupVisible"
     @confirm="setLnglat"
@@ -363,7 +347,6 @@ import { useRoute, useRouter } from "vue-router";
 import { uploadFile } from "@/utils/upload";
 import { getRestaurantInfo, editRestaurant } from "./utils/api";
 import {
-  openStatusOptions,
   weekDayOptions,
   categoryOptions,
   setCategoryOptions,
@@ -379,7 +362,6 @@ const restaurantInfo = reactive<RestaurantInfo>({
   id: 0,
   name: "",
   categoryId: undefined,
-  openStatus: undefined,
   price: undefined,
   longitude: undefined,
   latitude: undefined,
@@ -396,7 +378,6 @@ const restaurantInfo = reactive<RestaurantInfo>({
 });
 const videoTipsVisible = ref(false);
 const categoryPickerPopupVisible = ref(false);
-const openStatusPickerPopupVisible = ref(false);
 const mapPopupVisible = ref(false);
 const telModalVisible = ref(false);
 const tel = ref("");
@@ -417,11 +398,6 @@ const selectedCategoryName = computed(
     categoryOptions.value.find((item) => item.id === restaurantInfo.categoryId)
       ?.name
 );
-const selectedOpenStatus = computed(
-  () =>
-    openStatusOptions.find((item) => item.value === restaurantInfo.openStatus)
-      ?.text
-);
 
 onMounted(async () => {
   await setCategoryOptions();
@@ -437,7 +413,6 @@ const setRestaurantInfo = async () => {
     id,
     name,
     categoryId,
-    openStatus,
     price,
     longitude,
     latitude,
@@ -455,7 +430,6 @@ const setRestaurantInfo = async () => {
   restaurantInfo.id = id;
   restaurantInfo.name = name;
   restaurantInfo.categoryId = categoryId;
-  restaurantInfo.openStatus = openStatus;
   restaurantInfo.price = price;
   restaurantInfo.longitude = longitude;
   restaurantInfo.latitude = latitude;
@@ -471,11 +445,6 @@ const setRestaurantInfo = async () => {
     url: item,
   }));
   restaurantInfo.priceImageList = priceImageList.map((item) => ({ url: item }));
-};
-
-const selectOpenStatus = ({ selectedValues }: { selectedValues: number[] }) => {
-  restaurantInfo.openStatus = selectedValues[0];
-  categoryPickerPopupVisible.value = false;
 };
 
 const setLnglat = ({
@@ -571,7 +540,6 @@ const save = async () => {
   if (checkRestaurantInfo(restaurantInfo)) {
     const {
       categoryId,
-      openStatus,
       price,
       longitude,
       latitude,
@@ -586,7 +554,6 @@ const save = async () => {
     const editRestaurantInfo: OriginalRestaurantInfo = {
       ...rest,
       categoryId: categoryId as number,
-      openStatus: openStatus as number,
       price: price as number,
       longitude: longitude as number,
       latitude: latitude as number,

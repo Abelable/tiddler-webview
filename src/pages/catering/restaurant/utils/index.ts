@@ -5,10 +5,6 @@ import { getRestaurantCategoryOptions } from "./api";
 import type { Option } from "@/utils/type";
 import type { RestaurantInfo } from "./type";
 
-export const openStatusOptions = [
-  { text: "正在营业", value: 1 },
-  { text: "尚未营业", value: 0 },
-];
 export const weekDayOptions = [
   { text: "周一", value: 1 },
   { text: "周二", value: 2 },
@@ -33,10 +29,6 @@ export const checkRestaurantInfo = (
   }
   if (!restaurantInfo.categoryId) {
     showToast("请选择门店分类");
-    return false;
-  }
-  if (restaurantInfo.openStatus === undefined) {
-    showToast("请选择营业状态");
     return false;
   }
   if (!restaurantInfo.price) {

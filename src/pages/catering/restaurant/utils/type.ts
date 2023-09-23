@@ -26,7 +26,6 @@ export interface OriginalRestaurantInfo {
   id: number;
   name: string;
   categoryId: number;
-  openStatus: number;
   price: number;
   longitude: number;
   latitude: number;
@@ -46,7 +45,6 @@ export interface RestaurantInfo
   extends Omit<
     OriginalRestaurantInfo,
     | "categoryId"
-    | "openStatus"
     | "price"
     | "longitude"
     | "latitude"
@@ -58,7 +56,6 @@ export interface RestaurantInfo
     | "priceImageList"
   > {
   categoryId: number | undefined;
-  openStatus: number | undefined;
   price: number | undefined;
   longitude: number | undefined;
   latitude: number | undefined;
