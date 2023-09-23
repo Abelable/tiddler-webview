@@ -128,51 +128,53 @@
       <div class="card">
         <ul class="form">
           <li class="form-item flex">
-            <div class="name required">开始月份</div>
+            <div class="name required">开始时间</div>
             <div class="picker" @click="pickMonth(index, 0)">
-              <div class="content" :class="{ active: item.openMonth }">
-                {{ item.openMonth ? `${item.openMonth}月` : "请选择开始月份" }}
-              </div>
-              <Icon name="arrow" />
-            </div>
-          </li>
-          <li class="form-item flex">
-            <div class="name required">结束月份</div>
-            <div class="picker" @click="pickMonth(index, 1)">
-              <div class="content" :class="{ active: item.closeMonth }">
+              <div class="content" :class="{ active: item.startWeekDay }">
                 {{
-                  item.closeMonth ? `${item.closeMonth}月` : "请选择结束月份"
+                  item.startWeekDay
+                    ? weekDayOptions[item.startWeekDay - 1].text
+                    : "请选择开始时间"
                 }}
               </div>
               <Icon name="arrow" />
             </div>
           </li>
           <li class="form-item flex">
-            <div class="name required">开业时间</div>
-            <div class="picker" @click="pickTime(index, 0)">
-              <div class="content" :class="{ active: item.openTime }">
-                {{ item.openTime || "请选择开业时间" }}
+            <div class="name required">结束时间</div>
+            <div class="picker" @click="pickMonth(index, 1)">
+              <div class="content" :class="{ active: item.endWeekDay }">
+                {{
+                  item.endWeekDay
+                    ? weekDayOptions[item.endWeekDay - 1].text
+                    : "请选择结束时间"
+                }}
               </div>
               <Icon name="arrow" />
             </div>
           </li>
-          <li class="form-item flex">
-            <div class="name required">停业时间</div>
-            <div class="picker" @click="pickTime(index, 1)">
-              <div class="content" :class="{ active: item.closeTime }">
-                {{ item.closeTime || "请选择停业时间" }}
-              </div>
-              <Icon name="arrow" />
+          <li class="form-item">
+            <div class="name required">营业时间段</div>
+            <div class="tags">
+              <Tag
+                v-for="(timeFrame, timeFrameIndex) in item.timeFrameList"
+                :key="timeFrameIndex"
+                @close="deleteTimeFrame(index, timeFrameIndex)"
+                class="tag"
+                color="#DBEFFD"
+                text-color="#2A3664"
+                closeable
+                size="medium"
+                >{{ `${timeFrame.openTime}-${timeFrame.closeTime}` }}</Tag
+              >
+              <Tag
+                class="tag"
+                @click="showTimeFramePickerPopup(index)"
+                type="primary"
+                size="medium"
+                >+ 新增营业时间段</Tag
+              >
             </div>
-          </li>
-          <li class="form-item flex">
-            <div class="name">时间提示</div>
-            <input
-              class="input"
-              v-model="item.tips"
-              type="text"
-              placeholder="补充时间提示"
-            />
           </li>
         </ul>
       </div>
@@ -318,18 +320,22 @@
       placeholder="请输入设施名称"
     />
   </Dialog>
-  <Popup v-model:show="monthPickerPopupVisible" position="bottom" round>
+  <Popup v-model:show="weekDayPickerPopupVisible" position="bottom" round>
     <Picker
-      :columns="monthOptions"
-      @confirm="selectMonth"
-      @cancel="monthPickerPopupVisible = false"
+      :columns="weekDayOptions"
+      @confirm="selectWeekDay"
+      @cancel="weekDayPickerPopupVisible = false"
     />
   </Popup>
-  <Popup v-model:show="timePickerPopupVisible" position="bottom" round>
-    <TimePicker
-      @confirm="selectTime"
-      @cancel="timePickerPopupVisible = false"
-    />
+  <Popup v-model:show="timeFramePickerPopupVisible" position="bottom" round>
+    <PickerGroup
+      :tabs="['开业时间', '休息时间']"
+      @confirm="selectTimeFrame"
+      @cancel="timeFramePickerPopupVisible = false"
+    >
+      <TimePicker v-model="openTime" />
+      <TimePicker v-model="closeTime" />
+    </PickerGroup>
   </Popup>
 </template>
 
@@ -340,6 +346,7 @@ import {
   Popover,
   showToast,
   Popup,
+  PickerGroup,
   Picker,
   TimePicker,
   Dialog,
@@ -357,7 +364,7 @@ import { uploadFile } from "@/utils/upload";
 import { getRestaurantInfo, editRestaurant } from "./utils/api";
 import {
   openStatusOptions,
-  monthOptions,
+  weekDayOptions,
   categoryOptions,
   setCategoryOptions,
   checkRestaurantInfo,
@@ -398,8 +405,11 @@ const facility = ref("");
 const curOpenTimeIdx = ref(0);
 const monthPickerPopupVisible = ref(false);
 const curMonthType = ref(0);
-const timePickerPopupVisible = ref(false);
-const curTimeType = ref(0);
+const weekDayPickerPopupVisible = ref(false);
+const curWeekDayType = ref(0);
+const timeFramePickerPopupVisible = ref(false);
+const openTime = ref(["12", "00"]);
+const closeTime = ref(["12", "00"]);
 
 // 计算属性
 const selectedCategoryName = computed(
@@ -515,11 +525,9 @@ const addFacility = (action: string) => {
 
 const addOpenTime = () => {
   restaurantInfo.openTimeList.push({
-    openMonth: undefined,
-    closeMonth: undefined,
-    openTime: "",
-    closeTime: "",
-    tips: "",
+    startWeekDay: undefined,
+    endWeekDay: undefined,
+    timeFrameList: [],
   });
 };
 const deleteOpenTime = (index: number) => {
@@ -533,33 +541,30 @@ const pickMonth = (index: number, type: number) => {
   curMonthType.value = type;
   monthPickerPopupVisible.value = true;
 };
-const selectMonth = ({ selectedValues }: { selectedValues: number[] }) => {
-  if (curMonthType.value) {
-    restaurantInfo.openTimeList[curOpenTimeIdx.value].closeMonth =
+const selectWeekDay = ({ selectedValues }: { selectedValues: number[] }) => {
+  if (curWeekDayType.value) {
+    restaurantInfo.openTimeList[curOpenTimeIdx.value].endWeekDay =
       selectedValues[0];
   } else {
-    restaurantInfo.openTimeList[curOpenTimeIdx.value].openMonth =
+    restaurantInfo.openTimeList[curOpenTimeIdx.value].startWeekDay =
       selectedValues[0];
   }
-  monthPickerPopupVisible.value = false;
+  weekDayPickerPopupVisible.value = false;
 };
 
-const pickTime = (index: number, type: number) => {
+const showTimeFramePickerPopup = (index: number) => {
   curOpenTimeIdx.value = index;
-  curTimeType.value = type;
-  timePickerPopupVisible.value = true;
+  timeFramePickerPopupVisible.value = true;
 };
-const selectTime = ({ selectedValues }: { selectedValues: string[] }) => {
-  if (curTimeType.value) {
-    restaurantInfo.openTimeList[
-      curOpenTimeIdx.value
-    ].closeTime = `${selectedValues[0]}:${selectedValues[1]}`;
-  } else {
-    restaurantInfo.openTimeList[
-      curOpenTimeIdx.value
-    ].openTime = `${selectedValues[0]}:${selectedValues[1]}`;
-  }
-  timePickerPopupVisible.value = false;
+const deleteTimeFrame = (index: number, timeFrameIndex: number) => {
+  restaurantInfo.openTimeList[index].timeFrameList.splice(timeFrameIndex, 1);
+};
+const selectTimeFrame = () => {
+  restaurantInfo.openTimeList[curOpenTimeIdx.value].timeFrameList.push({
+    openTime: openTime.value.join(":"),
+    closeTime: closeTime.value.join(":"),
+  });
+  timeFramePickerPopupVisible.value = false;
 };
 
 const save = async () => {

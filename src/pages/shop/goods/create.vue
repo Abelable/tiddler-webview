@@ -273,7 +273,7 @@
               >
               <Tag
                 class="sku-option"
-                @click="showSpecOptionModalVisible(index)"
+                @click="showSpecOptionModal(index)"
                 type="primary"
                 size="medium"
                 >+ 新增选项</Tag
@@ -555,7 +555,7 @@ const deleteSpec = (index: number) => {
     .then(() => goodsInfo.specList.splice(index, 1))
     .catch(() => true);
 };
-const showSpecOptionModalVisible = (index: number) => {
+const showSpecOptionModal = (index: number) => {
   curSpecIndex.value = index;
   specOptionModalVisible.value = true;
 };

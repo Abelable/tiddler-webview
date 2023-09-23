@@ -12,13 +12,16 @@ export interface ProviderRestaurant {
   updatedAt: string;
 }
 
-interface OpenTime {
-  openMonth: number | undefined;
-  closeMonth: number | undefined;
+interface timeFrame {
   openTime: string;
   closeTime: string;
-  tips: string;
 }
+interface OpenTime {
+  startWeekDay: number | undefined;
+  endWeekDay: number | undefined;
+  timeFrameList: timeFrame[];
+}
+
 export interface OriginalRestaurantInfo {
   id: number;
   name: string;
