@@ -187,15 +187,6 @@
     <div class="card">
       <ul class="form">
         <li class="form-item">
-          <div class="name required">门店logo</div>
-          <Uploader
-            v-model="restaurantInfo.logo"
-            :after-read="uploadFile"
-            style="margin-top: 0.32rem"
-            max-count="1"
-          />
-        </li>
-        <li class="form-item">
           <div class="name flex">
             <div>门店视频</div>
             <Popover
@@ -238,7 +229,6 @@
             v-model="restaurantInfo.foodImageList"
             :after-read="uploadFile"
             style="margin-top: 0.32rem"
-            max-count="1"
           />
         </li>
         <li class="form-item">
@@ -247,7 +237,6 @@
             v-model="restaurantInfo.environmentImageList"
             :after-read="uploadFile"
             style="margin-top: 0.32rem"
-            max-count="1"
           />
         </li>
         <li class="form-item">
@@ -256,7 +245,6 @@
             v-model="restaurantInfo.priceImageList"
             :after-read="uploadFile"
             style="margin-top: 0.32rem"
-            max-count="1"
           />
         </li>
       </ul>
@@ -367,7 +355,6 @@ const restaurantInfo = reactive<Omit<RestaurantInfo, "id">>({
   telList: [],
   facilityList: [],
   openTimeList: [],
-  logo: [],
   video: [],
   cover: [],
   foodImageList: [],
@@ -500,7 +487,6 @@ const save = async () => {
       price,
       longitude,
       latitude,
-      logo,
       video,
       cover,
       foodImageList,
@@ -514,7 +500,6 @@ const save = async () => {
       price: price as number,
       longitude: longitude as number,
       latitude: latitude as number,
-      logo: logo[0].url || "",
       cover: cover[0].url || "",
       foodImageList: foodImageList.map((item) => item.url || ""),
       environmentImageList: environmentImageList.map((item) => item.url || ""),

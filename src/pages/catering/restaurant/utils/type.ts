@@ -33,7 +33,6 @@ export interface OriginalRestaurantInfo {
   telList: string[];
   facilityList: string[];
   openTimeList: OpenTime[];
-  logo: string;
   video?: string;
   cover: string;
   foodImageList: string[];
@@ -48,7 +47,6 @@ export interface RestaurantInfo
     | "price"
     | "longitude"
     | "latitude"
-    | "logo"
     | "video"
     | "cover"
     | "foodImageList"
@@ -59,7 +57,6 @@ export interface RestaurantInfo
   price: number | undefined;
   longitude: number | undefined;
   latitude: number | undefined;
-  logo: UploaderFileListItem[];
   video: UploaderFileListItem[];
   cover: UploaderFileListItem[];
   foodImageList: UploaderFileListItem[];

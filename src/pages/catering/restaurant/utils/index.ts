@@ -59,10 +59,6 @@ export const checkRestaurantInfo = (
     showToast("请完善营业时间必填项");
     return false;
   }
-  if (!restaurantInfo.logo.length) {
-    showToast("请上传门店logo");
-    return false;
-  }
   if (!restaurantInfo.cover.length) {
     showToast("请上传门店封面");
     return false;
