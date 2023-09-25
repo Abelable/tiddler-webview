@@ -16,7 +16,7 @@ interface timeFrame {
   openTime: string;
   closeTime: string;
 }
-interface OpenTime {
+export interface OpenTime {
   startWeekDay: number | undefined;
   endWeekDay: number | undefined;
   timeFrameList: timeFrame[];
@@ -32,7 +32,7 @@ export interface OriginalRestaurantInfo {
   address: string;
   telList: string[];
   facilityList: string[];
-  openTimeList: OpenTime[];
+  openTimeList: string[];
   video?: string;
   cover: string;
   foodImageList: string[];
@@ -47,6 +47,7 @@ export interface RestaurantInfo
     | "price"
     | "longitude"
     | "latitude"
+    | "openTimeList"
     | "video"
     | "cover"
     | "foodImageList"
@@ -57,6 +58,7 @@ export interface RestaurantInfo
   price: number | undefined;
   longitude: number | undefined;
   latitude: number | undefined;
+  openTimeList: OpenTime[];
   video: UploaderFileListItem[];
   cover: UploaderFileListItem[];
   foodImageList: UploaderFileListItem[];
