@@ -341,11 +341,7 @@ import {
   checkRestaurantInfo,
 } from "./utils/index";
 
-import type {
-  OpenTime,
-  RestaurantInfo,
-  OriginalRestaurantInfo,
-} from "./utils/type";
+import type { RestaurantInfo, OriginalRestaurantInfo } from "./utils/type";
 
 const route = useRoute();
 const router = useRouter();
@@ -426,9 +422,7 @@ const setRestaurantInfo = async () => {
   restaurantInfo.address = address;
   restaurantInfo.telList = telList;
   restaurantInfo.facilityList = facilityList;
-  restaurantInfo.openTimeList = openTimeList.map((item: string) =>
-    JSON.parse(item)
-  );
+  restaurantInfo.openTimeList = openTimeList;
   restaurantInfo.video = video ? [{ url: video }] : [];
   restaurantInfo.cover = [{ url: cover }];
   restaurantInfo.foodImageList = foodImageList.map((item) => ({ url: item }));
@@ -534,7 +528,6 @@ const save = async () => {
       price,
       longitude,
       latitude,
-      openTimeList,
       video,
       cover,
       foodImageList,
@@ -548,7 +541,6 @@ const save = async () => {
       price: price as number,
       longitude: longitude as number,
       latitude: latitude as number,
-      openTimeList: openTimeList.map((item: OpenTime) => JSON.stringify(item)),
       cover: cover[0].url || "",
       foodImageList: foodImageList.map((item) => item.url || ""),
       environmentImageList: environmentImageList.map((item) => item.url || ""),
