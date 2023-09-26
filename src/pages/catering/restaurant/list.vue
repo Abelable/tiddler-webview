@@ -29,7 +29,7 @@
         :key="index"
         v-show="curMenuIndex === 0"
       >
-        <div class="inner">
+        <div class="inner" @click="editRestaurant(item.id)">
           <img class="image" :src="item.restaurantImage" alt="" />
           <div class="content">
             <div class="name">{{ item.restaurantName }}</div>
@@ -84,7 +84,7 @@
         :key="index"
         v-show="curMenuIndex === 2"
       >
-        <div class="inner">
+        <div class="inner" @click="editRestaurant(item.id)">
           <img class="image" :src="item.restaurantImage" alt="" />
           <div class="content">
             <div class="name">{{ item.restaurantName }}</div>
@@ -260,6 +260,11 @@ const deleteRestaurant = (index: number) =>
     .catch(() => true);
 
 const createRestaurant = () => router.push("/catering/restaurant/create");
+const editRestaurant = (id: number) =>
+  router.push({
+    path: "/catering/restaurant/edit",
+    query: { id },
+  });
 </script>
 
 <style lang="scss" scoped>

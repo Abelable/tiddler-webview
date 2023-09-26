@@ -120,7 +120,7 @@
         <ul class="form">
           <li class="form-item flex">
             <div class="name required">开始时间</div>
-            <div class="picker" @click="pickMonth(index, 0)">
+            <div class="picker" @click="pickWeekDay(index, 0)">
               <div class="content" :class="{ active: item.startWeekDay }">
                 {{
                   item.startWeekDay
@@ -133,7 +133,7 @@
           </li>
           <li class="form-item flex">
             <div class="name required">结束时间</div>
-            <div class="picker" @click="pickMonth(index, 1)">
+            <div class="picker" @click="pickWeekDay(index, 1)">
               <div class="content" :class="{ active: item.endWeekDay }">
                 {{
                   item.endWeekDay
@@ -449,7 +449,7 @@ const deleteOpenTime = (index: number) => {
     .catch(() => true);
 };
 
-const pickMonth = (index: number, type: number) => {
+const pickWeekDay = (index: number, type: number) => {
   curOpenTimeIdx.value = index;
   curWeekDayType.value = type;
   weekDayPickerPopupVisible.value = true;

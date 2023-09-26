@@ -39,7 +39,7 @@ export const getRestaurantCategoryOptions = async (): Promise<Option[]> =>
 export const getRestaurantInfo = async (
   id: number
 ): Promise<OriginalRestaurantInfo> =>
-  await http("catering/restaurant/info", { data: { id } });
+  await http("catering/restaurant/detail", { data: { id } });
 
 export const createRestaurant = async (
   restaurantInfo: Partial<OriginalRestaurantInfo>
