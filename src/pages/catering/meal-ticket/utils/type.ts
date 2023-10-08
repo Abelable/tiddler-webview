@@ -32,11 +32,11 @@ export interface OriginalTicketInfo {
   buyLimit: number;
   perTableUsageLimit: number;
   overlayUsageLimit: number;
-  useTimeList: UseTime[];
+  useTimeList: UseTime[] | "null";
   includingDrink: number;
   boxAvailable: number;
   needPreBook: number;
-  useRules: string[];
+  useRules: string[] | "null";
 }
 
 export interface TicketInfo {

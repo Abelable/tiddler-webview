@@ -273,7 +273,7 @@
     :before-close="addTel"
   >
     <input
-      class="sku-option-input"
+      class="dialog-input"
       v-model="tel"
       type="text"
       placeholder="请输入联系电话"
@@ -286,7 +286,7 @@
     :before-close="addFacility"
   >
     <input
-      class="sku-option-input"
+      class="dialog-input"
       v-model="facility"
       type="text"
       placeholder="请输入设施名称"
@@ -644,7 +644,7 @@ const save = async () => {
   line-height: 1.5;
   white-space: wrap;
 }
-.sku-option-input {
+.dialog-input {
   margin: 0.32rem 0.32rem 0.5rem;
   padding: 0.24rem;
   width: calc(100% - 0.64rem);

@@ -290,7 +290,7 @@
     :before-close="addUseRule"
   >
     <input
-      class="sku-option-input"
+      class="dialog-input"
       v-model="useRule"
       type="text"
       placeholder="请输入规则名称"
@@ -445,18 +445,21 @@ const setTicketInfo = async () => {
     ticketInfo.validityEndTime = validityEndTime;
     validityPeriod.value = `${validityStartTime}至${validityEndTime}`;
   }
-  ticketInfo.buyLimit = buyLimit;
-  ticketInfo.perTableUsageLimit = perTableUsageLimit;
-  ticketInfo.overlayUsageLimit = overlayUsageLimit;
-  ticketInfo.useTimeList = useTimeList;
+  ticketInfo.buyLimit = buyLimit || undefined;
+  ticketInfo.perTableUsageLimit = perTableUsageLimit || undefined;
+  ticketInfo.overlayUsageLimit = overlayUsageLimit || undefined;
+  ticketInfo.useTimeList = useTimeList === "null" ? [] : useTimeList;
   ticketInfo.includingDrink = !!includingDrink;
   ticketInfo.boxAvailable = !!boxAvailable;
   ticketInfo.needPreBook = !!needPreBook;
-  ticketInfo.useRules = useRules;
+  ticketInfo.useRules = useRules === "null" ? [] : useRules;
 };
 
 const setValidityType = (type: number) => {
   validityType.value = type;
+  ticketInfo.validityDays = undefined;
+  ticketInfo.validityStartTime = "";
+  ticketInfo.validityEndTime = "";
   validityTypePickerPopupVisible.value = false;
 };
 
@@ -686,5 +689,14 @@ const save = async () => {
   font-size: 0.24rem;
   line-height: 1.5;
   white-space: wrap;
+}
+.dialog-input {
+  margin: 0.32rem 0.32rem 0.5rem;
+  padding: 0.24rem;
+  width: calc(100% - 0.64rem);
+  height: 0.88rem;
+  font-size: 0.26rem;
+  border: 1px solid #ddd;
+  border-radius: 0.12rem;
 }
 </style>
