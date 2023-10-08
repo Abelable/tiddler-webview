@@ -21,10 +21,6 @@ export const checkTicketInfo = (
     showToast("请选择关联门店");
     return false;
   }
-  if (!ticketInfo.name) {
-    showToast("请输入代金券名称");
-    return false;
-  }
   if (!ticketInfo.price) {
     showToast("请输入代金券价格");
     return false;

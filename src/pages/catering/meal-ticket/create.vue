@@ -13,15 +13,6 @@
           </div>
         </li>
         <li class="form-item flex">
-          <div class="name required">代金券名称</div>
-          <input
-            class="input"
-            v-model="ticketInfo.name"
-            type="text"
-            placeholder="请输入名称，最长30字"
-          />
-        </li>
-        <li class="form-item flex">
           <div class="name required">代金券售价</div>
           <input
             class="input"
@@ -128,18 +119,27 @@
           <div class="name">限购数量</div>
           <input
             class="input"
-            v-model="ticketInfo.buyLimitNumber"
+            v-model="ticketInfo.buyLimit"
             type="number"
             placeholder="请输入限购数量"
           />
         </li>
         <li class="form-item flex">
-          <div class="name">使用数量限制</div>
+          <div class="name">每桌使用数量限制</div>
           <input
             class="input"
-            v-model="ticketInfo.useLimitNumber"
+            v-model="ticketInfo.perTableUsageLimit"
             type="number"
-            placeholder="请输入使用数量限制"
+            placeholder="请输入每桌使用数量限制"
+          />
+        </li>
+        <li class="form-item flex">
+          <div class="name">叠加使用数量限制</div>
+          <input
+            class="input"
+            v-model="ticketInfo.overlayUsageLimit"
+            type="number"
+            placeholder="请输入叠加使用数量限制"
           />
         </li>
         <li class="form-item flex">
@@ -353,7 +353,6 @@ const router = useRouter();
 
 const ticketInfo = reactive<Omit<TicketInfo, "id">>({
   restaurantIds: [],
-  name: "",
   price: undefined,
   originalPrice: undefined,
   salesCommissionRate: undefined,
@@ -361,8 +360,9 @@ const ticketInfo = reactive<Omit<TicketInfo, "id">>({
   validityDays: undefined,
   validityStartTime: "",
   validityEndTime: "",
-  buyLimitNumber: undefined,
-  useLimitNumber: undefined,
+  buyLimit: undefined,
+  perTableUsageLimit: undefined,
+  overlayUsageLimit: undefined,
   useTimeList: [],
   includingDrink: false,
   boxAvailable: false,

@@ -1,7 +1,6 @@
 export interface TicketListItem {
   id: number;
   restaurantIds: number[];
-  name: string;
   price: number;
   originalPrice: number;
   salesVolume: number;
@@ -23,7 +22,6 @@ interface UseTime {
 export interface OriginalTicketInfo {
   id: number;
   restaurantIds: number[];
-  name: string;
   price: number;
   originalPrice: number;
   salesCommissionRate: number;
@@ -31,8 +29,9 @@ export interface OriginalTicketInfo {
   validityDays: number;
   validityStartTime: string;
   validityEndTime: string;
-  buyLimitNumber: number;
-  useLimitNumber: number;
+  buyLimit: number;
+  perTableUsageLimit: number;
+  overlayUsageLimit: number;
   useTimeList: UseTime[];
   includingDrink: number;
   boxAvailable: number;
@@ -43,7 +42,6 @@ export interface OriginalTicketInfo {
 export interface TicketInfo {
   id: number;
   restaurantIds: number[];
-  name: string;
   price: number | undefined;
   originalPrice: number | undefined;
   salesCommissionRate: number | undefined;
@@ -51,18 +49,18 @@ export interface TicketInfo {
   validityDays: number | undefined;
   validityStartTime: string;
   validityEndTime: string;
-  buyLimitNumber: number | undefined;
-  useLimitNumber: number | undefined;
+  buyLimit: number | undefined;
+  perTableUsageLimit: number | undefined;
+  overlayUsageLimit: number | undefined;
   useTimeList: UseTime[];
-  includingDrink: false;
-  boxAvailable: false;
-  needPreBook: false;
+  includingDrink: boolean;
+  boxAvailable: boolean;
+  needPreBook: boolean;
   useRules: string[];
 }
 
 export interface CreateTicketInfo {
   restaurantIds: number[];
-  name: string;
   price: number;
   originalPrice: number;
   salesCommissionRate: number;
@@ -70,8 +68,9 @@ export interface CreateTicketInfo {
   validityDays?: number;
   validityStartTime?: string;
   validityEndTime?: string;
-  buyLimitNumber?: number;
-  useLimitNumber?: number;
+  buyLimit?: number;
+  perTableUsageLimit?: number;
+  overlayUsageLimit?: number;
   useTimeList: UseTime[];
   includingDrink: 0 | 1;
   boxAvailable: 0 | 1;
