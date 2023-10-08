@@ -1,101 +1,84 @@
-import type { UploaderFileListItem } from "vant";
-
-export interface GoodsCategoryOption {
+export interface TicketListItem {
   id: number;
-  name: string;
-}
-export interface GoodsListItem {
-  id: number;
-  image: string;
+  restaurantIds: number[];
   name: string;
   price: number;
+  originalPrice: number;
   salesVolume: number;
   failureReason?: string;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface SpecItem {
-  name: string;
-  options: string[];
+interface timeFrame {
+  startTime: string;
+  endTime: string;
+}
+interface UseTime {
+  startWeekDay: number | undefined;
+  endWeekDay: number | undefined;
+  timeFrameList: timeFrame[];
 }
 
-export interface OriginalSkuItem {
-  name: string;
-  image: string;
-  price: number;
-  stock: number;
-}
-export interface OriginalGoodsInfo {
+export interface OriginalTicketInfo {
   id: number;
-  image: string;
-  video: string;
-  imageList: string[];
-  detailImageList: string[];
-  defaultSpecImage: string;
+  restaurantIds: number[];
   name: string;
-  freightTemplateId: number;
-  categoryId: number;
-  returnAddressId: number;
   price: number;
-  marketPrice: number;
-  stock: number;
+  originalPrice: number;
   salesCommissionRate: number;
   promotionCommissionRate: number;
-  specList: SpecItem[];
-  skuList: OriginalSkuItem[];
+  validityDays: number;
+  validityStartTime: string;
+  validityEndTime: string;
+  buyLimitNumber: number;
+  useLimitNumber: number;
+  useTimeList: UseTime[];
+  includingDrink: number;
+  boxAvailable: number;
+  needPreBook: number;
+  useRules: string[];
 }
 
-export interface SkuItem {
-  name: string;
-  image: UploaderFileListItem[];
-  price: number | undefined;
-  stock: number | undefined;
-}
-
-export interface GoodsInfo {
+export interface TicketInfo {
   id: number;
-  image: UploaderFileListItem[];
-  video: UploaderFileListItem[];
-  imageList: UploaderFileListItem[];
-  detailImageList: UploaderFileListItem[];
-  defaultSpecImage: UploaderFileListItem[];
+  restaurantIds: number[];
   name: string;
-  freightTemplateId: number | undefined;
-  categoryId: number | undefined;
-  returnAddressId: number | undefined;
   price: number | undefined;
-  marketPrice: number | undefined;
-  stock: number | undefined;
+  originalPrice: number | undefined;
   salesCommissionRate: number | undefined;
   promotionCommissionRate: number | undefined;
-  specList: SpecItem[];
-  skuList: SkuItem[];
+  validityDays: number | undefined;
+  validityStartTime: string;
+  validityEndTime: string;
+  buyLimitNumber: number | undefined;
+  useLimitNumber: number | undefined;
+  useTimeList: UseTime[];
+  includingDrink: number | undefined;
+  boxAvailable: number | undefined;
+  needPreBook: number | undefined;
+  useRules: string[];
 }
 
-export interface CreateGoodsInfo
-  extends Omit<
-    GoodsInfo,
-    | "id"
-    | "image"
-    | "video"
-    | "imageList"
-    | "detailImageList"
-    | "defaultSpecImage"
-    | "marketPrice"
-    | "specList"
-    | "skuList"
-  > {
-  image: string;
-  video?: string;
-  imageList: string;
-  detailImageList: string;
-  defaultSpecImage: string;
-  marketPrice?: number;
-  specList: string;
-  skuList: string;
+export interface CreateTicketInfo {
+  restaurantIds: number[];
+  name: string;
+  price: number;
+  originalPrice: number;
+  salesCommissionRate: number;
+  promotionCommissionRate: number;
+  validityDays?: number;
+  validityStartTime?: string;
+  validityEndTime?: string;
+  buyLimitNumber?: number;
+  useLimitNumber?: number;
+  useTimeList: UseTime[];
+  includingDrink: 0 | 1;
+  boxAvailable: 0 | 1;
+  needPreBook: 0 | 1;
+  useRules: string[];
 }
 
-export interface EditGoodsInfo extends CreateGoodsInfo {
+export interface EditTicketInfo extends CreateTicketInfo {
   id: number;
 }

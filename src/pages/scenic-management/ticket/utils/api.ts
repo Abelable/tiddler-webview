@@ -41,11 +41,14 @@ export const deleteTicket = async (id: number) =>
 export const getTicketInfo = async (id: number): Promise<OriginalTicketInfo> =>
   await http("scenic/provider/ticket/detail", { data: { id } });
 
-export const createTicket = async (goodsInfo: CreateTicketInfo) =>
-  await http("scenic/provider/ticket/add", { method: "POST", data: goodsInfo });
+export const createTicket = async (ticketInfo: CreateTicketInfo) =>
+  await http("scenic/provider/ticket/add", {
+    method: "POST",
+    data: ticketInfo,
+  });
 
-export const editTicket = async (goodsInfo: EditTicketInfo) =>
+export const editTicket = async (ticketInfo: EditTicketInfo) =>
   await http("scenic/provider/ticket/edit", {
     method: "POST",
-    data: goodsInfo,
+    data: ticketInfo,
   });

@@ -1,45 +1,60 @@
 import { http } from "@/utils/http";
+
+import type { Option } from "@/utils/type";
 import type {
-  GoodsCategoryOption,
-  GoodsListItem,
-  CreateGoodsInfo,
-  OriginalGoodsInfo,
-  EditGoodsInfo,
+  TicketListItem,
+  CreateTicketInfo,
+  OriginalTicketInfo,
+  EditTicketInfo,
 } from "./type";
 
-export const getGoodsTotals = async (): Promise<number[]> =>
-  await http("shop/goods/totals");
+export const getRestaurantOptions = async (): Promise<Option[]> =>
+  await http("catering/provider/restaurant/options");
 
-export const getGoodsList = async (
+export const getTicketTotals = async (): Promise<number[]> =>
+  await http("catering/provider/meal_ticket/totals");
+
+export const getTicketList = async (
   status: number,
   page: number,
   limit = 10
-): Promise<GoodsListItem[]> => {
+): Promise<TicketListItem[]> => {
   const { list = [] } =
-    (await http("shop/goods/list", {
+    (await http("catering/provider/meal_ticket/list", {
       data: { status, page, limit },
     })) || {};
   return list;
 };
 
-export const getGoodsCategoryOptions = async (): Promise<
-  GoodsCategoryOption[]
-> => await http("goods/category_options");
+export const offShelfTicket = async (id: number) =>
+  await http("catering/provider/meal_ticket/down", {
+    method: "POST",
+    data: { id },
+  });
 
-export const offShelfGoods = async (id: number) =>
-  await http("shop/goods/down", { method: "POST", data: { id } });
+export const onShelfTicket = async (id: number) =>
+  await http("catering/provider/meal_ticket/up", {
+    method: "POST",
+    data: { id },
+  });
 
-export const onShelfGoods = async (id: number) =>
-  await http("shop/goods/up", { method: "POST", data: { id } });
+export const deleteTicket = async (id: number) =>
+  await http("catering/provider/meal_ticket/delete", {
+    method: "POST",
+    data: { id },
+  });
 
-export const deleteGoods = async (id: number) =>
-  await http("shop/goods/delete", { method: "POST", data: { id } });
+export const getTicketInfo = async (id: number): Promise<OriginalTicketInfo> =>
+  await http("catering/provider/meal_ticket/detail", { data: { id } });
 
-export const getGoodsInfo = async (id: number): Promise<OriginalGoodsInfo> =>
-  await http("shop/goods/info", { data: { id } });
+export const createTicket = async (ticketInfo: CreateTicketInfo) =>
+  await http("catering/provider/meal_ticket/add", {
+    method: "POST",
+    data: ticketInfo,
+  });
 
-export const createGoods = async (goodsInfo: CreateGoodsInfo) =>
-  await http("shop/goods/add", { method: "POST", data: goodsInfo });
-
-export const editGoods = async (goodsInfo: EditGoodsInfo) =>
-  await http("shop/goods/edit", { method: "POST", data: goodsInfo });
+export const editTicket = async (ticketInfo: EditTicketInfo) =>
+  await http("catering/provider/meal_ticket/edit", {
+    method: "POST",
+    data: ticketInfo,
+  });

@@ -41,6 +41,30 @@ const catering: Array<RouteRecordRaw> = [
     },
     component: () => import("@/pages/catering/restaurant/edit.vue"),
   },
+  {
+    path: "/catering/meal_ticket/list",
+    name: "meal_ticket_list",
+    meta: {
+      title: "餐饮代金券列表",
+    },
+    component: () => import("@/pages/catering/meal-ticket/list.vue"),
+  },
+  {
+    path: "/catering/meal_ticket/create",
+    name: "meal_ticket_create",
+    meta: {
+      title: "新增餐饮代金券",
+    },
+    component: () => import("@/pages/catering/meal-ticket/create.vue"),
+  },
+  {
+    path: "/catering/meal_ticket/edit",
+    name: "meal_ticket_edit",
+    meta: {
+      title: "编辑餐饮代金券",
+    },
+    component: () => import("@/pages/catering/meal-ticket/edit.vue"),
+  },
 ];
 
 export default catering;
