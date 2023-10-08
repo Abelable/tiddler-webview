@@ -54,9 +54,9 @@ export interface TicketInfo {
   buyLimitNumber: number | undefined;
   useLimitNumber: number | undefined;
   useTimeList: UseTime[];
-  includingDrink: number | undefined;
-  boxAvailable: number | undefined;
-  needPreBook: number | undefined;
+  includingDrink: false;
+  boxAvailable: false;
+  needPreBook: false;
   useRules: string[];
 }
 

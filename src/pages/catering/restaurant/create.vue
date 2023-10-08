@@ -103,7 +103,7 @@
     </div>
 
     <div class="title flex">
-      <div>添加营业时间</div>
+      <div>编辑营业时间</div>
       <Button
         @click="addOpenTime"
         icon="plus"
@@ -119,7 +119,7 @@
       <div class="card">
         <ul class="form">
           <li class="form-item flex">
-            <div class="name required">开始时间</div>
+            <div class="name required">周开始时间</div>
             <div class="picker" @click="pickWeekDay(index, 0)">
               <div class="content" :class="{ active: item.startWeekDay }">
                 {{
@@ -132,7 +132,7 @@
             </div>
           </li>
           <li class="form-item flex">
-            <div class="name required">结束时间</div>
+            <div class="name required">周结束时间</div>
             <div class="picker" @click="pickWeekDay(index, 1)">
               <div class="content" :class="{ active: item.endWeekDay }">
                 {{
@@ -332,10 +332,10 @@ import MapPopup from "./components/mapPopup.vue";
 
 import { ref, reactive, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { weekDayOptions } from "@/utils/index";
 import { uploadFile } from "@/utils/upload";
 import { createRestaurant } from "./utils/api";
 import {
-  weekDayOptions,
   categoryOptions,
   setCategoryOptions,
   checkRestaurantInfo,

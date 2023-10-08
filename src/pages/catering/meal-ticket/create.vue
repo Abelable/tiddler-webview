@@ -85,6 +85,45 @@
           />
           <div class="unit">%</div>
         </li>
+      </ul>
+    </div>
+
+    <div class="title">设置有效期</div>
+    <div class="card">
+      <ul class="form">
+        <li class="form-item flex">
+          <div class="name required">有效期类型</div>
+          <div class="picker" @click="validityTypePickerPopupVisible = true">
+            <div class="content" :class="{ active: validityTypeDesc }">
+              {{ validityTypeDesc || "请选择有效期类型" }}
+            </div>
+            <Icon name="arrow" />
+          </div>
+        </li>
+        <li class="form-item flex" v-if="validityType === 1">
+          <div class="name required">有效天数</div>
+          <input
+            class="input"
+            v-model="ticketInfo.validityDays"
+            type="number"
+            placeholder="请输入有效天数"
+          />
+        </li>
+        <li class="form-item flex" v-if="validityType === 2">
+          <div class="name required">有效期范围</div>
+          <div class="picker" @click="dateRangePickerPopupVisible = true">
+            <div class="content" :class="{ active: validityPeriod }">
+              {{ validityPeriod || "请选择有效期范围" }}
+            </div>
+            <Icon name="arrow" />
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="title">填写购买须知</div>
+    <div class="card">
+      <ul class="form">
         <li class="form-item flex">
           <div class="name">限购数量</div>
           <input
@@ -107,27 +146,6 @@
           <div class="name">是否需要预定</div>
           <Switch v-model="ticketInfo.needPreBook" size="18px" />
         </li>
-      </ul>
-    </div>
-
-    <div class="title">设置有效期</div>
-    <div class="card">
-      <ul class="form">
-        <li class="form-item flex">
-          <div class="name required">有效期类型</div>
-          <div class="picker" @click="restaurantPickerPopupVisible = true">
-            <div class="content" :class="{ active: restaurantNames }">
-              {{ restaurantNames || "请选择有效期类型" }}
-            </div>
-            <Icon name="arrow" />
-          </div>
-        </li>
-      </ul>
-    </div>
-
-    <div class="title">选择适用范围</div>
-    <div class="card">
-      <ul class="form">
         <li class="form-item flex">
           <div class="name">是否包含酒水饮料</div>
           <Switch v-model="ticketInfo.includingDrink" size="18px" />
@@ -136,7 +154,114 @@
           <div class="name">能否用于包间消费</div>
           <Switch v-model="ticketInfo.boxAvailable" size="18px" />
         </li>
+        <li class="form-item flex">
+          <div class="name">自定义使用时间</div>
+          <Switch v-model="customUseTime" size="18px" />
+        </li>
+        <li class="form-item">
+          <div class="name">使用规则</div>
+          <div class="tags">
+            <Tag
+              v-for="(item, index) in ticketInfo.useRules"
+              :key="index"
+              @close="deleteUseRule(index)"
+              class="tag"
+              color="#DBEFFD"
+              text-color="#2A3664"
+              closeable
+              size="medium"
+              >{{ item }}</Tag
+            >
+            <Tag
+              class="tag"
+              @click="useRuleModalVisible = true"
+              type="primary"
+              size="medium"
+              >+ 新增使用规则</Tag
+            >
+          </div>
+        </li>
       </ul>
+    </div>
+
+    <div class="title flex" v-if="customUseTime">
+      <div>编辑使用时间</div>
+      <Button
+        @click="addUseTime"
+        icon="plus"
+        text="新增使用时间"
+        type="primary"
+        size="mini"
+      />
+    </div>
+    <template v-if="customUseTime">
+      <SwipeCell v-for="(item, index) in ticketInfo.useTimeList" :key="index">
+        <div class="card">
+          <ul class="form">
+            <li class="form-item flex">
+              <div class="name required">周开始时间</div>
+              <div class="picker" @click="pickWeekDay(index, 0)">
+                <div class="content" :class="{ active: item.startWeekDay }">
+                  {{
+                    item.startWeekDay
+                      ? weekDayOptions[item.startWeekDay - 1].text
+                      : "请选择开始时间"
+                  }}
+                </div>
+                <Icon name="arrow" />
+              </div>
+            </li>
+            <li class="form-item flex">
+              <div class="name required">周结束时间</div>
+              <div class="picker" @click="pickWeekDay(index, 1)">
+                <div class="content" :class="{ active: item.endWeekDay }">
+                  {{
+                    item.endWeekDay
+                      ? weekDayOptions[item.endWeekDay - 1].text
+                      : "请选择结束时间"
+                  }}
+                </div>
+                <Icon name="arrow" />
+              </div>
+            </li>
+            <li class="form-item">
+              <div class="name required">使用时间段</div>
+              <div class="tags">
+                <Tag
+                  v-for="(timeFrame, timeFrameIndex) in item.timeFrameList"
+                  :key="timeFrameIndex"
+                  @close="deleteTimeFrame(index, timeFrameIndex)"
+                  class="tag"
+                  color="#DBEFFD"
+                  text-color="#2A3664"
+                  closeable
+                  size="medium"
+                  >{{ `${timeFrame.startTime}-${timeFrame.endTime}` }}</Tag
+                >
+                <Tag
+                  class="tag"
+                  @click="showTimeFramePickerPopup(index)"
+                  type="primary"
+                  size="medium"
+                  >+ 新增使用时间段</Tag
+                >
+              </div>
+            </li>
+          </ul>
+        </div>
+        <template #right>
+          <Button
+            class="delete-btn"
+            @click.stop="deleteUseTime(index)"
+            icon="delete"
+            color="#EE0D23"
+            plain
+          />
+        </template>
+      </SwipeCell>
+    </template>
+    <div class="card" v-if="customUseTime && !ticketInfo.useTimeList.length">
+      <Empty image-size="1.8rem" description="暂未添加使用时间" />
     </div>
   </div>
 
@@ -148,34 +273,75 @@
     @confirm="setRestaurantIds"
     @cancel="restaurantPickerPopupVisible = false"
   />
+  <validityTypePickerPopup
+    :visible="validityTypePickerPopupVisible"
+    @confirm="setValidityType"
+    @cancel="validityTypePickerPopupVisible = false"
+  />
+  <DateRangePickerPopup
+    :visible="dateRangePickerPopupVisible"
+    @confirm="setValidityDateRange"
+    @cancel="dateRangePickerPopupVisible = false"
+  />
+  <Dialog
+    v-model:show="useRuleModalVisible"
+    title="新增使用规则"
+    show-cancel-button
+    :before-close="addUseRule"
+  >
+    <input
+      class="sku-option-input"
+      v-model="useRule"
+      type="text"
+      placeholder="请输入规则名称"
+    />
+  </Dialog>
+  <Popup v-model:show="weekDayPickerPopupVisible" position="bottom" round>
+    <Picker
+      :columns="weekDayOptions"
+      @confirm="selectWeekDay"
+      @cancel="weekDayPickerPopupVisible = false"
+    />
+  </Popup>
+  <Popup v-model:show="timeFramePickerPopupVisible" position="bottom" round>
+    <PickerGroup
+      :tabs="['开始时间', '结束时间']"
+      @confirm="selectTimeFrame"
+      @cancel="timeFramePickerPopupVisible = false"
+    >
+      <TimePicker v-model="openTime" />
+      <TimePicker v-model="closeTime" />
+    </PickerGroup>
+  </Popup>
 </template>
 
 <script setup lang="ts">
 import {
   Icon,
   Empty,
+  Tag,
   Popover,
   Button,
   showConfirmDialog,
   showToast,
   Switch,
   SwipeCell,
-  Calendar,
+  Dialog,
+  Popup,
+  PickerGroup,
+  Picker,
+  TimePicker,
 } from "vant";
 import RestaurantPickerPopup from "./components/restaurantPickerPopup.vue";
-import TimePickerPopup from "./components/timePickerPopup.vue";
-import TimeRangePickerPopup from "./components/timeRangePickerPopup.vue";
-import RefundStatusPickerPopup from "./components/refundStatusPickerPopup.vue";
-import CategoryPickerPopup from "./components/categoryPickerPopup.vue";
+import DateRangePickerPopup from "./components/dateRangePickerPopup.vue";
+import validityTypePickerPopup from "./components/validityTypePickerPopup.vue";
 
 import { ref, reactive, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import _ from "lodash";
-import dayjs from "dayjs";
-import { cleanObject } from "@/utils/index";
+import { cleanObject, weekDayOptions } from "@/utils/index";
 import { createTicket } from "./utils/api";
 import {
-  refundStatusOptions,
+  validityTypeOptions,
   restaurantOptions,
   setRestaurantOptions,
   checkTicketInfo,
@@ -198,19 +364,28 @@ const ticketInfo = reactive<Omit<TicketInfo, "id">>({
   buyLimitNumber: undefined,
   useLimitNumber: undefined,
   useTimeList: [],
-  includingDrink: undefined,
-  boxAvailable: undefined,
-  needPreBook: undefined,
+  includingDrink: false,
+  boxAvailable: false,
+  needPreBook: false,
   useRules: [],
 });
 
-const bookingTimePickerPopupVisible = ref(false);
-const refundStatusPickerPopupVisible = ref(false);
-const exchangeTimePickerPopupVisible = ref(false);
-const enterTimePickerPopupVisible = ref(false);
 const restaurantPickerPopupVisible = ref(false);
+const validityType = ref(0);
+const validityTypePickerPopupVisible = ref(false);
+const dateRangePickerPopupVisible = ref(false);
+const validityPeriod = ref("");
 const salesCommissionRateTipsVisible = ref(false);
 const promotionCommissionRateTipsVisible = ref(false);
+const useRuleModalVisible = ref(false);
+const useRule = ref("");
+const customUseTime = ref(false);
+const curUseTimeIdx = ref(0);
+const weekDayPickerPopupVisible = ref(false);
+const curWeekDayType = ref(0);
+const timeFramePickerPopupVisible = ref(false);
+const openTime = ref(["12", "00"]);
+const closeTime = ref(["12", "00"]);
 
 // 计算属性
 const restaurantNames = computed(() =>
@@ -218,13 +393,93 @@ const restaurantNames = computed(() =>
     .map((id) => restaurantOptions.value.find((item) => item.id === id)?.name)
     .join()
 );
+const validityTypeDesc = computed(
+  () =>
+    validityTypeOptions.find((item) => item.value === validityType.value)?.text
+);
 
 onMounted(() => {
   setRestaurantOptions();
 });
+
 const setRestaurantIds = (restaurantIds: number[]) => {
   ticketInfo.restaurantIds = restaurantIds;
   restaurantPickerPopupVisible.value = false;
+};
+
+const setValidityType = (type: number) => {
+  validityType.value = type;
+  validityTypePickerPopupVisible.value = false;
+};
+
+const setValidityDateRange = ({
+  startDate,
+  endDate,
+}: {
+  startDate: string;
+  endDate: string;
+}) => {
+  ticketInfo.validityStartTime = startDate;
+  ticketInfo.validityEndTime = endDate;
+  validityPeriod.value = `${startDate}至${endDate}`;
+  dateRangePickerPopupVisible.value = false;
+};
+
+const deleteUseRule = (index: number) => ticketInfo.useRules.splice(index, 1);
+const addUseRule = (action: string) => {
+  if (action === "cancel") {
+    return true;
+  }
+  if (!useRule.value) {
+    showToast("请输入设施名称");
+    return;
+  }
+  ticketInfo.useRules.push(useRule.value);
+  useRule.value = "";
+  useRuleModalVisible.value = false;
+};
+
+const addUseTime = () => {
+  ticketInfo.useTimeList.push({
+    startWeekDay: undefined,
+    endWeekDay: undefined,
+    timeFrameList: [],
+  });
+};
+const deleteUseTime = (index: number) => {
+  showConfirmDialog({ title: "确定删除该使用时间吗？" })
+    .then(() => ticketInfo.useTimeList.splice(index, 1))
+    .catch(() => true);
+};
+
+const pickWeekDay = (index: number, type: number) => {
+  curUseTimeIdx.value = index;
+  curWeekDayType.value = type;
+  weekDayPickerPopupVisible.value = true;
+};
+const selectWeekDay = ({ selectedValues }: { selectedValues: number[] }) => {
+  if (curWeekDayType.value) {
+    ticketInfo.useTimeList[curUseTimeIdx.value].endWeekDay = selectedValues[0];
+  } else {
+    ticketInfo.useTimeList[curUseTimeIdx.value].startWeekDay =
+      selectedValues[0];
+  }
+  weekDayPickerPopupVisible.value = false;
+};
+
+const showTimeFramePickerPopup = (index: number) => {
+  curUseTimeIdx.value = index;
+  timeFramePickerPopupVisible.value = true;
+};
+const deleteTimeFrame = (index: number, timeFrameIndex: number) => {
+  ticketInfo.useTimeList[index].timeFrameList.splice(timeFrameIndex, 1);
+};
+const selectTimeFrame = () => {
+  ticketInfo.useTimeList[curUseTimeIdx.value].timeFrameList.push({
+    startTime: openTime.value.join(":"),
+    endTime: closeTime.value.join(":"),
+  });
+  timeFramePickerPopupVisible.value = false;
 };
 
 const save = async () => {
@@ -232,11 +487,21 @@ const save = async () => {
     return;
   }
 
-  const { salesCommissionRate, promotionCommissionRate, ...rest } = ticketInfo;
+  const {
+    includingDrink,
+    boxAvailable,
+    needPreBook,
+    salesCommissionRate,
+    promotionCommissionRate,
+    ...rest
+  } = ticketInfo;
   const createTicketInfo = {
     ...cleanObject(rest),
     salesCommissionRate: (salesCommissionRate as number) / 100,
     promotionCommissionRate: (promotionCommissionRate as number) / 100,
+    includingDrink: includingDrink ? 1 : 0,
+    boxAvailable: boxAvailable ? 1 : 0,
+    needPreBook: needPreBook ? 1 : 0,
   };
   try {
     await createTicket(createTicketInfo as CreateTicketInfo);
@@ -339,6 +604,12 @@ const save = async () => {
           margin-left: 0.06rem;
           font-weight: 500;
           line-height: 1;
+        }
+        .tags {
+          .tag {
+            margin-top: 0.32rem;
+            margin-right: 0.32rem;
+          }
         }
       }
     }

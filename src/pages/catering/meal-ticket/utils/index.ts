@@ -5,10 +5,9 @@ import { getRestaurantOptions } from "./api";
 import type { Option } from "@/utils/type";
 import type { TicketInfo } from "./type";
 
-export const refundStatusOptions = [
-  { text: "随时可退", value: 1 },
-  { text: "有条件退", value: 2 },
-  { text: "不可退", value: 3 },
+export const validityTypeOptions = [
+  { text: "购买后有效天数", value: 1 },
+  { text: "范围有效期", value: 2 },
 ];
 
 export const restaurantOptions = ref<Option[]>([]);
@@ -30,6 +29,10 @@ export const checkTicketInfo = (
     showToast("请输入代金券价格");
     return false;
   }
+  if (!ticketInfo.originalPrice) {
+    showToast("请输入抵扣价格");
+    return false;
+  }
   if (
     !ticketInfo.salesCommissionRate ||
     ticketInfo.salesCommissionRate < 10 ||
@@ -45,6 +48,20 @@ export const checkTicketInfo = (
   ) {
     showToast("请输入范围为2%~70%的推广佣金比例");
     return false;
+  }
+  if (!ticketInfo.validityDays && !ticketInfo.validityStartTime) {
+    showToast("请设置有效期");
+    return false;
+  }
+  if (ticketInfo.useTimeList.length) {
+    const incompleteOpenTimeIndex = ticketInfo.useTimeList.findIndex(
+      (item) =>
+        !item.startWeekDay || !item.endWeekDay || !item.timeFrameList.length
+    );
+    if (incompleteOpenTimeIndex !== -1) {
+      showToast("请完善使用时间必填项");
+      return false;
+    }
   }
   return true;
 };

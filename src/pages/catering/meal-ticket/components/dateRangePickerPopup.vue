@@ -1,28 +1,33 @@
 <template>
   <Popup :show="visible" @click-overlay="cancel" position="bottom" round>
     <PickerGroup
-      :tabs="['开始时间', '结束时间']"
+      :tabs="['开始日期', '结束日期']"
       @confirm="confirm"
       @cancel="cancel"
     >
-      <TimePicker v-model="startTime" />
-      <TimePicker v-model="endTime" />
+      <DatePicker v-model="startDate" :min-date="minDate" />
+      <DatePicker v-model="endDate" :min-date="minDate" />
     </PickerGroup>
   </Popup>
 </template>
 
 <script setup lang="ts">
-import { Popup, PickerGroup, TimePicker } from "vant";
+import { Popup, PickerGroup, DatePicker } from "vant";
 import { ref } from "vue";
 
 defineProps<{ visible: boolean }>();
 const emit = defineEmits(["confirm", "cancel"]);
 
-const startTime = ref([]);
-const endTime = ref([]);
+const minDate = new Date();
+
+const startDate = ref([]);
+const endDate = ref([]);
 
 const confirm = () =>
-  emit("confirm", `${startTime.value.join(":")}-${endTime.value.join(":")}`);
+  emit("confirm", {
+    startDate: startDate.value.join("-"),
+    endDate: endDate.value.join("-"),
+  });
 const cancel = () => emit("cancel");
 </script>
 

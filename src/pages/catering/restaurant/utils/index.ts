@@ -5,16 +5,6 @@ import { getRestaurantCategoryOptions } from "./api";
 import type { Option } from "@/utils/type";
 import type { RestaurantInfo } from "./type";
 
-export const weekDayOptions = [
-  { text: "周一", value: 1 },
-  { text: "周二", value: 2 },
-  { text: "周三", value: 3 },
-  { text: "周四", value: 4 },
-  { text: "周五", value: 5 },
-  { text: "周六", value: 6 },
-  { text: "周日", value: 7 },
-];
-
 export const categoryOptions = ref<Option[]>([]);
 export const setCategoryOptions = async () => {
   categoryOptions.value = await getRestaurantCategoryOptions();

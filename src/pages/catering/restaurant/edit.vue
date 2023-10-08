@@ -332,10 +332,10 @@ import MapPopup from "./components/mapPopup.vue";
 
 import { ref, reactive, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { weekDayOptions } from "@/utils/index";
 import { uploadFile } from "@/utils/upload";
 import { getRestaurantInfo, editRestaurant } from "./utils/api";
 import {
-  weekDayOptions,
   categoryOptions,
   setCategoryOptions,
   checkRestaurantInfo,
