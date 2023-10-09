@@ -146,17 +146,32 @@
           <div class="name">是否需要预定</div>
           <Switch v-model="ticketInfo.needPreBook" size="18px" />
         </li>
-        <li class="form-item flex">
-          <div class="name">是否包含酒水饮料</div>
-          <Switch v-model="ticketInfo.includingDrink" size="18px" />
+        <li class="form-item">
+          <div class="name">不可用商品</div>
+          <div class="tags">
+            <Tag
+              v-for="(item, index) in ticketInfo.inapplicableProducts"
+              :key="index"
+              @close="deleteInapplicableProduct(index)"
+              class="tag"
+              color="#DBEFFD"
+              text-color="#2A3664"
+              closeable
+              size="medium"
+              >{{ item }}</Tag
+            >
+            <Tag
+              class="tag"
+              @click="inapplicableProductModalVisible = true"
+              type="primary"
+              size="medium"
+              >+ 添加不可用商品</Tag
+            >
+          </div>
         </li>
         <li class="form-item flex">
           <div class="name">能否用于包间消费</div>
           <Switch v-model="ticketInfo.boxAvailable" size="18px" />
-        </li>
-        <li class="form-item flex">
-          <div class="name">自定义使用时间</div>
-          <Switch v-model="customUseTime" size="18px" />
         </li>
         <li class="form-item">
           <div class="name">使用规则</div>
@@ -180,6 +195,10 @@
               >+ 新增使用规则</Tag
             >
           </div>
+        </li>
+        <li class="form-item flex">
+          <div class="name">自定义使用时间</div>
+          <Switch v-model="customUseTime" size="18px" />
         </li>
       </ul>
     </div>
@@ -284,6 +303,19 @@
     @cancel="dateRangePickerPopupVisible = false"
   />
   <Dialog
+    v-model:show="inapplicableProductModalVisible"
+    title="添加不可用商品"
+    show-cancel-button
+    :before-close="addInapplicableProduct"
+  >
+    <input
+      class="dialog-input"
+      v-model="inapplicableProduct"
+      type="text"
+      placeholder="请输入商品名称"
+    />
+  </Dialog>
+  <Dialog
     v-model:show="useRuleModalVisible"
     title="新增使用规则"
     show-cancel-button
@@ -379,6 +411,8 @@ const dateRangePickerPopupVisible = ref(false);
 const validityPeriod = ref("");
 const salesCommissionRateTipsVisible = ref(false);
 const promotionCommissionRateTipsVisible = ref(false);
+const inapplicableProductModalVisible = ref(false);
+const inapplicableProduct = ref("");
 const useRuleModalVisible = ref(false);
 const useRule = ref("");
 const customUseTime = ref(false);
@@ -476,6 +510,21 @@ const setValidityDateRange = ({
   dateRangePickerPopupVisible.value = false;
 };
 
+const deleteInapplicableProduct = (index: number) =>
+  ticketInfo.inapplicableProducts.splice(index, 1);
+const addInapplicableProduct = (action: string) => {
+  if (action === "cancel") {
+    return true;
+  }
+  if (!useRule.value) {
+    showToast("请输入商品名称");
+    return;
+  }
+  ticketInfo.inapplicableProducts.push(useRule.value);
+  inapplicableProduct.value = "";
+  inapplicableProductModalVisible.value = false;
+};
+
 const deleteUseRule = (index: number) => ticketInfo.useRules.splice(index, 1);
 const addUseRule = (action: string) => {
   if (action === "cancel") {
@@ -539,7 +588,6 @@ const save = async () => {
   }
 
   const {
-    includingDrink,
     boxAvailable,
     needPreBook,
     salesCommissionRate,
@@ -550,7 +598,6 @@ const save = async () => {
     ...cleanObject(rest),
     salesCommissionRate: (salesCommissionRate as number) / 100,
     promotionCommissionRate: (promotionCommissionRate as number) / 100,
-    includingDrink: includingDrink ? 1 : 0,
     boxAvailable: boxAvailable ? 1 : 0,
     needPreBook: needPreBook ? 1 : 0,
   };
