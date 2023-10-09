@@ -1,7 +1,9 @@
 <template>
   <SwipeCell class="ticket-item">
     <div class="inner" @click="editTicket">
-      <div class="name">{{ `${item.price}代${item.originalPrice}代金券` }}</div>
+      <div class="name">
+        {{ `${item.price}代${item.originalPrice}元代金券` }}
+      </div>
       <div class="scenic-list row">
         <div class="label">关联门店：</div>
         <div

@@ -366,7 +366,7 @@ const ticketInfo = reactive<TicketInfo>({
   perTableUsageLimit: undefined,
   overlayUsageLimit: undefined,
   useTimeList: [],
-  includingDrink: false,
+  inapplicableProducts: [],
   boxAvailable: false,
   needPreBook: false,
   useRules: [],
@@ -425,7 +425,7 @@ const setTicketInfo = async () => {
     perTableUsageLimit,
     overlayUsageLimit,
     useTimeList,
-    includingDrink,
+    inapplicableProducts,
     boxAvailable,
     needPreBook,
     useRules,
@@ -448,11 +448,11 @@ const setTicketInfo = async () => {
   ticketInfo.buyLimit = buyLimit || undefined;
   ticketInfo.perTableUsageLimit = perTableUsageLimit || undefined;
   ticketInfo.overlayUsageLimit = overlayUsageLimit || undefined;
-  ticketInfo.useTimeList = useTimeList === "null" ? [] : useTimeList;
-  ticketInfo.includingDrink = !!includingDrink;
+  ticketInfo.useTimeList = useTimeList;
+  ticketInfo.inapplicableProducts = inapplicableProducts;
   ticketInfo.boxAvailable = !!boxAvailable;
   ticketInfo.needPreBook = !!needPreBook;
-  ticketInfo.useRules = useRules === "null" ? [] : useRules;
+  ticketInfo.useRules = useRules;
 };
 
 const setValidityType = (type: number) => {

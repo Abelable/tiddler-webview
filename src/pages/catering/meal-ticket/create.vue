@@ -146,14 +146,6 @@
           <div class="name">是否需要预定</div>
           <Switch v-model="ticketInfo.needPreBook" size="18px" />
         </li>
-        <li class="form-item flex">
-          <div class="name">能否用于包间消费</div>
-          <Switch v-model="ticketInfo.boxAvailable" size="18px" />
-        </li>
-        <li class="form-item flex">
-          <div class="name">自定义使用时间</div>
-          <Switch v-model="customUseTime" size="18px" />
-        </li>
         <li class="form-item">
           <div class="name">不可用商品</div>
           <div class="tags">
@@ -177,6 +169,10 @@
             >
           </div>
         </li>
+        <li class="form-item flex">
+          <div class="name">能否用于包间消费</div>
+          <Switch v-model="ticketInfo.boxAvailable" size="18px" />
+        </li>
         <li class="form-item">
           <div class="name">使用规则</div>
           <div class="tags">
@@ -199,6 +195,10 @@
               >+ 新增使用规则</Tag
             >
           </div>
+        </li>
+        <li class="form-item flex">
+          <div class="name">自定义使用时间</div>
+          <Switch v-model="customUseTime" size="18px" />
         </li>
       </ul>
     </div>
@@ -399,7 +399,13 @@ const ticketInfo = reactive<Omit<TicketInfo, "id">>({
   inapplicableProducts: [],
   boxAvailable: false,
   needPreBook: false,
-  useRules: [],
+  useRules: [
+    "本单发票由商家提供，详情请咨询商家",
+    "仅限堂食",
+    "团购用户不可同时享受商家其他优惠",
+    "酒水饮料等问题，请致电商家咨询，以商家反馈为准",
+    "使用优惠券购买团单，有效期以优惠券规则为准",
+  ],
 });
 
 const restaurantPickerPopupVisible = ref(false);
