@@ -15,7 +15,7 @@
         </div>
       </div>
       <div class="row between" v-if="status === 1">
-        <div class="price">价格：¥{{ item.price }}起</div>
+        <div class="price">售价：¥{{ item.price }}</div>
         <div class="sales-volume">销量：{{ item.salesVolume }}</div>
       </div>
       <div class="row between" v-if="status === 3">
