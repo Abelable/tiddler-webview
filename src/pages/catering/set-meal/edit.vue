@@ -12,24 +12,54 @@
             <Icon name="arrow" />
           </div>
         </li>
+        <li class="form-item">
+          <div class="name flex required">
+            <div>套餐封面</div>
+            <Popover
+              v-model:show="imageTipsVisible"
+              placement="bottom-start"
+              theme="dark"
+            >
+              <div class="warning">用于套餐展示</div>
+              <template #reference>
+                <Icon style="margin-left: 0.06rem" name="question-o" />
+              </template>
+            </Popover>
+          </div>
+          <Uploader
+            v-model="setMealInfo.cover"
+            :after-read="uploadFile"
+            style="margin-top: 0.32rem"
+            max-count="1"
+          />
+        </li>
         <li class="form-item flex">
-          <div class="name required">代金券售价</div>
+          <div class="name required">套餐名称</div>
           <input
             class="input"
-            v-model="ticketInfo.price"
+            v-model="setMealInfo.name"
+            type="text"
+            placeholder="请输入名称，最长30字"
+          />
+        </li>
+        <li class="form-item flex">
+          <div class="name required">套餐售价</div>
+          <input
+            class="input"
+            v-model="setMealInfo.price"
             type="number"
             step="0.01"
             placeholder="请输入售价"
           />
         </li>
         <li class="form-item flex">
-          <div class="name required">抵扣价格</div>
+          <div class="name required">套餐原价</div>
           <input
             class="input"
-            v-model="ticketInfo.originalPrice"
+            v-model="setMealInfo.originalPrice"
             type="number"
             step="0.01"
-            placeholder="请输入抵扣价格"
+            placeholder="请输入套餐原价"
           />
         </li>
         <li class="form-item flex">
@@ -48,7 +78,7 @@
           </div>
           <input
             class="input"
-            v-model="ticketInfo.salesCommissionRate"
+            v-model="setMealInfo.salesCommissionRate"
             type="number"
             placeholder="请输入销售佣金比例"
           />
@@ -70,7 +100,7 @@
           </div>
           <input
             class="input"
-            v-model="ticketInfo.promotionCommissionRate"
+            v-model="setMealInfo.promotionCommissionRate"
             type="number"
             placeholder="请输入推广佣金比例"
           />
@@ -95,7 +125,7 @@
           <div class="name required">有效天数</div>
           <input
             class="input"
-            v-model="ticketInfo.validityDays"
+            v-model="setMealInfo.validityDays"
             type="number"
             placeholder="请输入有效天数"
           />
@@ -112,6 +142,90 @@
       </ul>
     </div>
 
+    <div class="title flex">
+      <div>编辑套餐详情</div>
+      <Button
+        @click="packageDetailModalVisible = true"
+        icon="plus"
+        text="新增菜品分类"
+        type="primary"
+        size="mini"
+      />
+    </div>
+    <SwipeCell v-for="(item, index) in setMealInfo.packageDetails" :key="index">
+      <div class="card">
+        <div class="title flex" style="margin-top: 0.32rem">
+          <div>{{ item.name }}</div>
+          <Button
+            @click="addFoodItem(index)"
+            icon="plus"
+            text="新增菜品"
+            type="primary"
+            size="mini"
+          />
+        </div>
+        <SwipeCell
+          v-for="(_item, _index) in item.foodList"
+          :key="_index"
+          stop-propagation
+        >
+          <ul class="form unit">
+            <li class="form-item flex">
+              <div class="name required">菜品名称</div>
+              <input
+                class="input"
+                v-model="_item.name"
+                placeholder="请输入菜品名称"
+              />
+            </li>
+            <li class="form-item flex">
+              <div class="name required">菜品份数</div>
+              <input
+                class="input"
+                v-model="_item.num"
+                type="number"
+                step="0.01"
+                placeholder="请输入菜品份数"
+              />
+            </li>
+            <li class="form-item flex">
+              <div class="name required">菜品价格</div>
+              <input
+                class="input"
+                v-model="_item.price"
+                type="number"
+                placeholder="请输入菜品价格"
+              />
+            </li>
+          </ul>
+          <template #right>
+            <Button
+              class="delete-btn"
+              @click.stop="deleteFoodItem(index, _index)"
+              icon="delete"
+              color="#EE0D23"
+              plain
+            />
+          </template>
+        </SwipeCell>
+        <div class="card" v-if="!item.foodList.length">
+          <Empty image-size="1.8rem" description="暂无菜品列表" />
+        </div>
+      </div>
+      <template #right>
+        <Button
+          class="delete-btn"
+          @click.stop="deletePackageDetail(index)"
+          icon="delete"
+          color="#EE0D23"
+          plain
+        />
+      </template>
+    </SwipeCell>
+    <div class="card" v-if="!setMealInfo.packageDetails.length">
+      <Empty image-size="1.8rem" description="暂未设置套餐详情" />
+    </div>
+
     <div class="title">填写购买须知</div>
     <div class="card">
       <ul class="form">
@@ -119,7 +233,7 @@
           <div class="name">限购数量</div>
           <input
             class="input"
-            v-model="ticketInfo.buyLimit"
+            v-model="setMealInfo.buyLimit"
             type="number"
             placeholder="请输入限购数量"
           />
@@ -128,56 +242,20 @@
           <div class="name">每桌使用数量限制</div>
           <input
             class="input"
-            v-model="ticketInfo.perTableUsageLimit"
+            v-model="setMealInfo.perTableUsageLimit"
             type="number"
             placeholder="请输入每桌使用数量限制"
           />
         </li>
         <li class="form-item flex">
-          <div class="name">叠加使用数量限制</div>
-          <input
-            class="input"
-            v-model="ticketInfo.overlayUsageLimit"
-            type="number"
-            placeholder="请输入叠加使用数量限制"
-          />
-        </li>
-        <li class="form-item flex">
           <div class="name">是否需要预定</div>
-          <Switch v-model="ticketInfo.needPreBook" size="18px" />
-        </li>
-        <li class="form-item">
-          <div class="name">不可用商品</div>
-          <div class="tags">
-            <Tag
-              v-for="(item, index) in ticketInfo.inapplicableProducts"
-              :key="index"
-              @close="deleteInapplicableProduct(index)"
-              class="tag"
-              color="#DBEFFD"
-              text-color="#2A3664"
-              closeable
-              size="medium"
-              >{{ item }}</Tag
-            >
-            <Tag
-              class="tag"
-              @click="inapplicableProductModalVisible = true"
-              type="primary"
-              size="medium"
-              >+ 添加不可用商品</Tag
-            >
-          </div>
-        </li>
-        <li class="form-item flex">
-          <div class="name">能否用于包间消费</div>
-          <Switch v-model="ticketInfo.boxAvailable" size="18px" />
+          <Switch v-model="setMealInfo.needPreBook" size="18px" />
         </li>
         <li class="form-item">
           <div class="name">使用规则</div>
           <div class="tags">
             <Tag
-              v-for="(item, index) in ticketInfo.useRules"
+              v-for="(item, index) in setMealInfo.useRules"
               :key="index"
               @close="deleteUseRule(index)"
               class="tag"
@@ -214,7 +292,7 @@
       />
     </div>
     <template v-if="customUseTime">
-      <SwipeCell v-for="(item, index) in ticketInfo.useTimeList" :key="index">
+      <SwipeCell v-for="(item, index) in setMealInfo.useTimeList" :key="index">
         <div class="card">
           <ul class="form">
             <li class="form-item flex">
@@ -279,7 +357,7 @@
         </template>
       </SwipeCell>
     </template>
-    <div class="card" v-if="customUseTime && !ticketInfo.useTimeList.length">
+    <div class="card" v-if="customUseTime && !setMealInfo.useTimeList.length">
       <Empty image-size="1.8rem" description="暂未添加使用时间" />
     </div>
   </div>
@@ -303,16 +381,16 @@
     @cancel="dateRangePickerPopupVisible = false"
   />
   <Dialog
-    v-model:show="inapplicableProductModalVisible"
-    title="添加不可用商品"
+    v-model:show="packageDetailModalVisible"
+    title="新增菜品分类"
     show-cancel-button
-    :before-close="addInapplicableProduct"
+    :before-close="addPackageDetail"
   >
     <input
       class="dialog-input"
-      v-model="inapplicableProduct"
+      v-model="packageDetailName"
       type="text"
-      placeholder="请输入商品名称"
+      placeholder="请输入菜品分类名称"
     />
   </Dialog>
   <Dialog
@@ -349,6 +427,7 @@
 
 <script setup lang="ts">
 import {
+  Uploader,
   Icon,
   Empty,
   Tag,
@@ -371,39 +450,40 @@ import validityTypePickerPopup from "./components/validityTypePickerPopup.vue";
 import { ref, reactive, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { cleanObject, weekDayOptions } from "@/utils/index";
-import { getTicketInfo, editTicket } from "./utils/api";
+import { uploadFile } from "@/utils/upload";
+import { getSetMealInfo, editSetMeal } from "./utils/api";
 import {
   validityTypeOptions,
   restaurantOptions,
   setRestaurantOptions,
-  checkTicketInfo,
+  checkSetMealInfo,
 } from "./utils/index";
 
-import type { TicketInfo, EditTicketInfo } from "./utils/type";
+import type { SetMealInfo, EditSetMealInfo } from "./utils/type";
 
 const route = useRoute();
 const router = useRouter();
 
-const ticketInfo = reactive<TicketInfo>({
+const setMealInfo = reactive<SetMealInfo>({
   id: 0,
   restaurantIds: [],
+  cover: [],
+  name: "",
   price: undefined,
   originalPrice: undefined,
   salesCommissionRate: undefined,
   promotionCommissionRate: undefined,
+  packageDetails: [],
   validityDays: undefined,
   validityStartTime: "",
   validityEndTime: "",
   buyLimit: undefined,
   perTableUsageLimit: undefined,
-  overlayUsageLimit: undefined,
   useTimeList: [],
-  inapplicableProducts: [],
-  boxAvailable: false,
   needPreBook: false,
   useRules: [],
 });
-
+const imageTipsVisible = ref(false);
 const restaurantPickerPopupVisible = ref(false);
 const validityType = ref(0);
 const validityTypePickerPopupVisible = ref(false);
@@ -411,8 +491,8 @@ const dateRangePickerPopupVisible = ref(false);
 const validityPeriod = ref("");
 const salesCommissionRateTipsVisible = ref(false);
 const promotionCommissionRateTipsVisible = ref(false);
-const inapplicableProductModalVisible = ref(false);
-const inapplicableProduct = ref("");
+const packageDetailModalVisible = ref(false);
+const packageDetailName = ref("");
 const useRuleModalVisible = ref(false);
 const useRule = ref("");
 const customUseTime = ref(false);
@@ -425,7 +505,7 @@ const closeTime = ref(["12", "00"]);
 
 // 计算属性
 const restaurantNames = computed(() =>
-  ticketInfo.restaurantIds
+  setMealInfo.restaurantIds
     .map((id) => restaurantOptions.value.find((item) => item.id === id)?.name)
     .join()
 );
@@ -436,64 +516,64 @@ const validityTypeDesc = computed(
 
 onMounted(async () => {
   await setRestaurantOptions();
-  setTicketInfo();
+  setSetMealInfo();
 });
 
 const setRestaurantIds = (restaurantIds: number[]) => {
-  ticketInfo.restaurantIds = restaurantIds;
+  setMealInfo.restaurantIds = restaurantIds;
   restaurantPickerPopupVisible.value = false;
 };
 
-const setTicketInfo = async () => {
+const setSetMealInfo = async () => {
   const {
     id,
     restaurantIds,
+    cover,
+    name,
     price,
     originalPrice,
     salesCommissionRate,
     promotionCommissionRate,
+    packageDetails,
     validityDays,
     validityStartTime,
     validityEndTime,
     buyLimit,
     perTableUsageLimit,
-    overlayUsageLimit,
     useTimeList,
-    inapplicableProducts,
-    boxAvailable,
     needPreBook,
     useRules,
-  } = await getTicketInfo(+(route.query.id as string));
-  ticketInfo.id = id;
-  ticketInfo.restaurantIds = restaurantIds;
-  ticketInfo.price = price;
-  ticketInfo.originalPrice = originalPrice;
-  ticketInfo.salesCommissionRate = salesCommissionRate * 100;
-  ticketInfo.promotionCommissionRate = promotionCommissionRate * 100;
+  } = await getSetMealInfo(+(route.query.id as string));
+  setMealInfo.id = id;
+  setMealInfo.restaurantIds = restaurantIds;
+  setMealInfo.cover = [{ url: cover }];
+  setMealInfo.name = name;
+  setMealInfo.price = price;
+  setMealInfo.originalPrice = originalPrice;
+  setMealInfo.salesCommissionRate = salesCommissionRate * 100;
+  setMealInfo.promotionCommissionRate = promotionCommissionRate * 100;
+  setMealInfo.packageDetails = packageDetails;
   if (validityDays) {
     validityType.value = 1;
-    ticketInfo.validityDays = validityDays;
+    setMealInfo.validityDays = validityDays;
   } else {
     validityType.value = 2;
-    ticketInfo.validityStartTime = validityStartTime;
-    ticketInfo.validityEndTime = validityEndTime;
+    setMealInfo.validityStartTime = validityStartTime;
+    setMealInfo.validityEndTime = validityEndTime;
     validityPeriod.value = `${validityStartTime}至${validityEndTime}`;
   }
-  ticketInfo.buyLimit = buyLimit || undefined;
-  ticketInfo.perTableUsageLimit = perTableUsageLimit || undefined;
-  ticketInfo.overlayUsageLimit = overlayUsageLimit || undefined;
-  ticketInfo.useTimeList = useTimeList;
-  ticketInfo.inapplicableProducts = inapplicableProducts;
-  ticketInfo.boxAvailable = !!boxAvailable;
-  ticketInfo.needPreBook = !!needPreBook;
-  ticketInfo.useRules = useRules;
+  setMealInfo.buyLimit = buyLimit || undefined;
+  setMealInfo.perTableUsageLimit = perTableUsageLimit || undefined;
+  setMealInfo.useTimeList = useTimeList;
+  setMealInfo.needPreBook = !!needPreBook;
+  setMealInfo.useRules = useRules;
 };
 
 const setValidityType = (type: number) => {
   validityType.value = type;
-  ticketInfo.validityDays = undefined;
-  ticketInfo.validityStartTime = "";
-  ticketInfo.validityEndTime = "";
+  setMealInfo.validityDays = undefined;
+  setMealInfo.validityStartTime = "";
+  setMealInfo.validityEndTime = "";
   validityTypePickerPopupVisible.value = false;
 };
 
@@ -504,28 +584,41 @@ const setValidityDateRange = ({
   startDate: string;
   endDate: string;
 }) => {
-  ticketInfo.validityStartTime = startDate;
-  ticketInfo.validityEndTime = endDate;
+  setMealInfo.validityStartTime = startDate;
+  setMealInfo.validityEndTime = endDate;
   validityPeriod.value = `${startDate}至${endDate}`;
   dateRangePickerPopupVisible.value = false;
 };
 
-const deleteInapplicableProduct = (index: number) =>
-  ticketInfo.inapplicableProducts.splice(index, 1);
-const addInapplicableProduct = (action: string) => {
-  if (action === "cancel") {
-    return true;
-  }
-  if (!useRule.value) {
-    showToast("请输入商品名称");
-    return;
-  }
-  ticketInfo.inapplicableProducts.push(useRule.value);
-  inapplicableProduct.value = "";
-  inapplicableProductModalVisible.value = false;
+const addPackageDetail = () => {
+  setMealInfo.packageDetails.push({
+    name: packageDetailName.value,
+    foodList: [],
+  });
+  packageDetailName.value = "";
+  packageDetailModalVisible.value = false;
 };
+const deletePackageDetail = (index: number) =>
+  showConfirmDialog({ title: "确定删除该套餐详情吗？" })
+    .then(() => {
+      setMealInfo.packageDetails.splice(index, 1);
+    })
+    .catch(() => true);
+const addFoodItem = (index: number) => {
+  setMealInfo.packageDetails[index].foodList.push({
+    name: "",
+    num: undefined,
+    price: undefined,
+  });
+};
+const deleteFoodItem = (index: number, foodItemIndex: number) =>
+  showConfirmDialog({ title: "确定删除该菜品吗？" })
+    .then(() =>
+      setMealInfo.packageDetails[index].foodList.splice(foodItemIndex, 1)
+    )
+    .catch(() => true);
 
-const deleteUseRule = (index: number) => ticketInfo.useRules.splice(index, 1);
+const deleteUseRule = (index: number) => setMealInfo.useRules.splice(index, 1);
 const addUseRule = (action: string) => {
   if (action === "cancel") {
     return true;
@@ -534,13 +627,13 @@ const addUseRule = (action: string) => {
     showToast("请输入设施名称");
     return;
   }
-  ticketInfo.useRules.push(useRule.value);
+  setMealInfo.useRules.push(useRule.value);
   useRule.value = "";
   useRuleModalVisible.value = false;
 };
 
 const addUseTime = () => {
-  ticketInfo.useTimeList.push({
+  setMealInfo.useTimeList.push({
     startWeekDay: undefined,
     endWeekDay: undefined,
     timeFrameList: [],
@@ -548,7 +641,7 @@ const addUseTime = () => {
 };
 const deleteUseTime = (index: number) => {
   showConfirmDialog({ title: "确定删除该使用时间吗？" })
-    .then(() => ticketInfo.useTimeList.splice(index, 1))
+    .then(() => setMealInfo.useTimeList.splice(index, 1))
     .catch(() => true);
 };
 
@@ -559,9 +652,9 @@ const pickWeekDay = (index: number, type: number) => {
 };
 const selectWeekDay = ({ selectedValues }: { selectedValues: number[] }) => {
   if (curWeekDayType.value) {
-    ticketInfo.useTimeList[curUseTimeIdx.value].endWeekDay = selectedValues[0];
+    setMealInfo.useTimeList[curUseTimeIdx.value].endWeekDay = selectedValues[0];
   } else {
-    ticketInfo.useTimeList[curUseTimeIdx.value].startWeekDay =
+    setMealInfo.useTimeList[curUseTimeIdx.value].startWeekDay =
       selectedValues[0];
   }
   weekDayPickerPopupVisible.value = false;
@@ -572,10 +665,10 @@ const showTimeFramePickerPopup = (index: number) => {
   timeFramePickerPopupVisible.value = true;
 };
 const deleteTimeFrame = (index: number, timeFrameIndex: number) => {
-  ticketInfo.useTimeList[index].timeFrameList.splice(timeFrameIndex, 1);
+  setMealInfo.useTimeList[index].timeFrameList.splice(timeFrameIndex, 1);
 };
 const selectTimeFrame = () => {
-  ticketInfo.useTimeList[curUseTimeIdx.value].timeFrameList.push({
+  setMealInfo.useTimeList[curUseTimeIdx.value].timeFrameList.push({
     startTime: openTime.value.join(":"),
     endTime: closeTime.value.join(":"),
   });
@@ -583,26 +676,26 @@ const selectTimeFrame = () => {
 };
 
 const save = async () => {
-  if (!checkTicketInfo(ticketInfo)) {
+  if (!checkSetMealInfo(setMealInfo)) {
     return;
   }
 
   const {
-    boxAvailable,
+    cover,
     needPreBook,
     salesCommissionRate,
     promotionCommissionRate,
     ...rest
-  } = ticketInfo;
-  const editTicketInfo = {
+  } = setMealInfo;
+  const editSetMealInfo = {
     ...cleanObject(rest),
+    cover: cover[0].url as string,
     salesCommissionRate: (salesCommissionRate as number) / 100,
     promotionCommissionRate: (promotionCommissionRate as number) / 100,
-    boxAvailable: boxAvailable ? 1 : 0,
     needPreBook: needPreBook ? 1 : 0,
   };
   try {
-    await editTicket(editTicketInfo as EditTicketInfo);
+    await editSetMeal(editSetMealInfo as EditSetMealInfo);
     router.back();
   } catch (error) {
     showToast("上传失败，请重试");

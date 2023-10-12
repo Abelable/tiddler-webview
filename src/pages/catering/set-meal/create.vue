@@ -20,7 +20,7 @@
               placement="bottom-start"
               theme="dark"
             >
-              <div class="warning">用于商品列表展示</div>
+              <div class="warning">用于套餐展示</div>
               <template #reference>
                 <Icon style="margin-left: 0.06rem" name="question-o" />
               </template>
@@ -487,7 +487,6 @@ const setMealInfo = reactive<Omit<SetMealInfo, "id">>({
     "使用优惠券购买团单，有效期以优惠券规则为准",
   ],
 });
-
 const imageTipsVisible = ref(false);
 const restaurantPickerPopupVisible = ref(false);
 const validityType = ref(0);
