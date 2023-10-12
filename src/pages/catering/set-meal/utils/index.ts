@@ -3,7 +3,7 @@ import { showToast } from "vant";
 import { getRestaurantOptions } from "./api";
 
 import type { Option } from "@/utils/type";
-import type { TicketInfo } from "./type";
+import type { SetMealInfo } from "./type";
 
 export const validityTypeOptions = [
   { text: "购买后有效天数", value: 1 },
@@ -14,43 +14,55 @@ export const restaurantOptions = ref<Option[]>([]);
 export const setRestaurantOptions = async () =>
   (restaurantOptions.value = await getRestaurantOptions());
 
-export const checkTicketInfo = (
-  ticketInfo: TicketInfo | Omit<TicketInfo, "id">
+export const checkSetMealInfo = (
+  setMealInfo: SetMealInfo | Omit<SetMealInfo, "id">
 ) => {
-  if (!ticketInfo.restaurantIds.length) {
+  if (!setMealInfo.restaurantIds.length) {
     showToast("请选择关联门店");
     return false;
   }
-  if (!ticketInfo.price) {
-    showToast("请输入代金券价格");
+  if (!setMealInfo.cover.length) {
+    showToast("请上传套餐封面");
+    return;
+  }
+  if (!setMealInfo.name) {
+    showToast("请输入套餐名称");
     return false;
   }
-  if (!ticketInfo.originalPrice) {
-    showToast("请输入抵扣价格");
+  if (!setMealInfo.price) {
+    showToast("请输入套餐价格");
+    return false;
+  }
+  if (!setMealInfo.originalPrice) {
+    showToast("请输入套餐原价");
     return false;
   }
   if (
-    !ticketInfo.salesCommissionRate ||
-    ticketInfo.salesCommissionRate < 10 ||
-    ticketInfo.salesCommissionRate > 70
+    !setMealInfo.salesCommissionRate ||
+    setMealInfo.salesCommissionRate < 10 ||
+    setMealInfo.salesCommissionRate > 70
   ) {
     showToast("请输入范围为10%~70%的销售佣金比例");
     return false;
   }
   if (
-    !ticketInfo.promotionCommissionRate ||
-    ticketInfo.promotionCommissionRate < 2 ||
-    ticketInfo.promotionCommissionRate > 70
+    !setMealInfo.promotionCommissionRate ||
+    setMealInfo.promotionCommissionRate < 2 ||
+    setMealInfo.promotionCommissionRate > 70
   ) {
     showToast("请输入范围为2%~70%的推广佣金比例");
     return false;
   }
-  if (!ticketInfo.validityDays && !ticketInfo.validityStartTime) {
+  if (!setMealInfo.packageDetails.length) {
+    showToast("请完善套餐详情");
+    return false;
+  }
+  if (!setMealInfo.validityDays && !setMealInfo.validityStartTime) {
     showToast("请设置有效期");
     return false;
   }
-  if (ticketInfo.useTimeList.length) {
-    const incompleteOpenTimeIndex = ticketInfo.useTimeList.findIndex(
+  if (setMealInfo.useTimeList.length) {
+    const incompleteOpenTimeIndex = setMealInfo.useTimeList.findIndex(
       (item) =>
         !item.startWeekDay || !item.endWeekDay || !item.timeFrameList.length
     );

@@ -1,3 +1,5 @@
+import type { UploaderFileListItem } from "vant";
+
 export interface SetMealListItem {
   id: number;
   restaurantIds: number[];
@@ -54,7 +56,7 @@ export interface OriginalSetMealInfo {
 export interface SetMealInfo {
   id: number;
   restaurantIds: number[];
-  cover: string;
+  cover: UploaderFileListItem[];
   name: string;
   price: number | undefined;
   originalPrice: number | undefined;
