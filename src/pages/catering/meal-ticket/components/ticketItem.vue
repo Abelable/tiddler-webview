@@ -4,10 +4,10 @@
       <div class="name">
         {{ `${item.price}代${item.originalPrice}元代金券` }}
       </div>
-      <div class="scenic-list row">
+      <div class="restaurant-list row">
         <div class="label">关联门店：</div>
         <div
-          class="scenic"
+          class="restaurant"
           v-for="(restaurantId, index) in item.restaurantIds"
           :key="index"
         >
@@ -157,10 +157,10 @@ const editTicket = () => {
       border-radius: 0.04rem;
       background: #e2edf9;
     }
-    .scenic-list {
+    .restaurant-list {
       margin-top: 0.12rem;
       margin-bottom: 0.48rem;
-      .scenic {
+      .restaurant {
         margin-right: 0.08rem;
         padding: 0 0.08rem;
         height: 0.26rem;

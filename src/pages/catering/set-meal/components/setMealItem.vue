@@ -1,35 +1,39 @@
 <template>
   <SwipeCell class="set-meal-item">
     <div class="inner" @click="editSetMeal">
-      <div class="name">{{ item.name }}</div>
-      <div class="scenic-list row">
-        <div class="label">关联门店：</div>
-        <div
-          class="scenic"
-          v-for="(restaurantId, index) in item.restaurantIds"
-          :key="index"
-        >
-          {{
-            restaurantOptions.find((option) => option.id === restaurantId)?.name
-          }}
+      <img class="image" :src="item.cover" alt="" />
+      <div class="content">
+        <div class="name">{{ item.name }}</div>
+        <div class="restaurant-list row">
+          <div class="label">关联门店：</div>
+          <div
+            class="restaurant"
+            v-for="(restaurantId, index) in item.restaurantIds"
+            :key="index"
+          >
+            {{
+              restaurantOptions.find((option) => option.id === restaurantId)
+                ?.name
+            }}
+          </div>
         </div>
-      </div>
-      <div class="row between" v-if="status === 1">
-        <div class="price">售价：¥{{ item.price }}</div>
-        <div class="sales-volume">销量：{{ item.salesVolume }}</div>
-      </div>
-      <div class="row between" v-if="status === 3">
-        <div class="time">
-          下架时间：{{ dayjs(item.updatedAt).format("YYYY-MM-DD HH:mm:ss") }}
+        <div class="row between" v-if="status === 1">
+          <div class="price">售价：¥{{ item.price }}</div>
+          <div class="sales-volume">销量：{{ item.salesVolume }}</div>
         </div>
-      </div>
-      <div class="row between" v-if="status === 0">
-        <div class="time">
-          提交时间：{{ dayjs(item.createdAt).format("YYYY-MM-DD HH:mm:ss") }}
+        <div class="row between" v-if="status === 3">
+          <div class="time">
+            下架时间：{{ dayjs(item.updatedAt).format("YYYY-MM-DD HH:mm:ss") }}
+          </div>
         </div>
-      </div>
-      <div class="row between" v-if="status === 2">
-        <div class="failure-reason">未通过原因：{{ item.failureReason }}</div>
+        <div class="row between" v-if="status === 0">
+          <div class="time">
+            提交时间：{{ dayjs(item.createdAt).format("YYYY-MM-DD HH:mm:ss") }}
+          </div>
+        </div>
+        <div class="row between" v-if="status === 2">
+          <div class="failure-reason">未通过原因：{{ item.failureReason }}</div>
+        </div>
       </div>
     </div>
     <template #right>
@@ -139,46 +143,60 @@ const editSetMeal = () => {
   border-radius: 0.24rem;
   background: #fff;
   .inner {
+    display: flex;
     padding: 0.24rem;
-    .name {
-      color: #333;
-      font-size: 0.32rem;
-      font-weight: 550;
+    .image {
+      width: 1.8rem;
+      height: 1.8rem;
+      border-radius: 0.24rem;
     }
-    .type {
-      margin-left: 0.12rem;
-      padding: 0 0.08rem;
-      height: 0.32rem;
-      color: #4e92df;
-      font-size: 0.2rem;
-      line-height: 0.32rem;
-      border-radius: 0.04rem;
-      background: #e2edf9;
-    }
-    .scenic-list {
-      margin-top: 0.12rem;
-      margin-bottom: 0.48rem;
-      .scenic {
-        margin-right: 0.08rem;
-        padding: 0 0.08rem;
-        height: 0.26rem;
-        color: #5dce86;
-        font-size: 0.18rem;
-        line-height: 0.26rem;
-        border-radius: 0.04rem;
-        background: #d1f7e5;
+    .content {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      margin-left: 0.2rem;
+      flex: 1;
+      height: 1.8rem;
+      .name {
+        color: #333;
+        font-size: 0.32rem;
+        font-weight: 550;
       }
-    }
-    .label,
-    .price,
-    .sales-volume,
-    .time {
-      color: #666;
-      font-size: 0.26rem;
-    }
-    .failure-reason {
-      color: #fd0b0a;
-      font-size: 0.26rem;
+      .type {
+        margin-left: 0.12rem;
+        padding: 0 0.08rem;
+        height: 0.32rem;
+        color: #4e92df;
+        font-size: 0.2rem;
+        line-height: 0.32rem;
+        border-radius: 0.04rem;
+        background: #e2edf9;
+      }
+      .restaurant-list {
+        margin-top: 0.12rem;
+        margin-bottom: 0.48rem;
+        .restaurant {
+          margin-right: 0.08rem;
+          padding: 0 0.08rem;
+          height: 0.26rem;
+          color: #5dce86;
+          font-size: 0.18rem;
+          line-height: 0.26rem;
+          border-radius: 0.04rem;
+          background: #d1f7e5;
+        }
+      }
+      .label,
+      .price,
+      .sales-volume,
+      .time {
+        color: #666;
+        font-size: 0.26rem;
+      }
+      .failure-reason {
+        color: #fd0b0a;
+        font-size: 0.26rem;
+      }
     }
   }
   .down-btn,
