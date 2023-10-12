@@ -1,101 +1,96 @@
-import type { UploaderFileListItem } from "vant";
-
-export interface GoodsCategoryOption {
+export interface SetMealListItem {
   id: number;
-  name: string;
-}
-export interface GoodsListItem {
-  id: number;
-  image: string;
+  restaurantIds: number[];
+  cover: string;
   name: string;
   price: number;
+  originalPrice: number;
   salesVolume: number;
   failureReason?: string;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface SpecItem {
+interface FoodItem {
   name: string;
-  options: string[];
+  num: number;
+  price: number;
+}
+interface PackageDetail {
+  name: string;
+  foodList: FoodItem[];
 }
 
-export interface OriginalSkuItem {
-  name: string;
-  image: string;
-  price: number;
-  stock: number;
+interface timeFrame {
+  startTime: string;
+  endTime: string;
 }
-export interface OriginalGoodsInfo {
+interface UseTime {
+  startWeekDay: number | undefined;
+  endWeekDay: number | undefined;
+  timeFrameList: timeFrame[];
+}
+
+export interface OriginalSetMealInfo {
   id: number;
-  image: string;
-  video: string;
-  imageList: string[];
-  detailImageList: string[];
-  defaultSpecImage: string;
+  restaurantIds: number[];
+  cover: string;
   name: string;
-  freightTemplateId: number;
-  categoryId: number;
-  returnAddressId: number;
   price: number;
-  marketPrice: number;
-  stock: number;
+  originalPrice: number;
   salesCommissionRate: number;
   promotionCommissionRate: number;
-  specList: SpecItem[];
-  skuList: OriginalSkuItem[];
+  packageDetails: PackageDetail[];
+  validityDays: number;
+  validityStartTime: string;
+  validityEndTime: string;
+  buyLimit: number;
+  perTableUsageLimit: number;
+  useTimeList: UseTime[];
+  needPreBook: number;
+  useRules: string[];
 }
 
-export interface SkuItem {
-  name: string;
-  image: UploaderFileListItem[];
-  price: number | undefined;
-  stock: number | undefined;
-}
-
-export interface GoodsInfo {
+export interface SetMealInfo {
   id: number;
-  image: UploaderFileListItem[];
-  video: UploaderFileListItem[];
-  imageList: UploaderFileListItem[];
-  detailImageList: UploaderFileListItem[];
-  defaultSpecImage: UploaderFileListItem[];
+  restaurantIds: number[];
+  cover: string;
   name: string;
-  freightTemplateId: number | undefined;
-  categoryId: number | undefined;
-  returnAddressId: number | undefined;
   price: number | undefined;
-  marketPrice: number | undefined;
-  stock: number | undefined;
+  originalPrice: number | undefined;
   salesCommissionRate: number | undefined;
   promotionCommissionRate: number | undefined;
-  specList: SpecItem[];
-  skuList: SkuItem[];
+  packageDetails: PackageDetail[];
+  validityDays: number | undefined;
+  validityStartTime: string;
+  validityEndTime: string;
+  buyLimit: number | undefined;
+  perTableUsageLimit: number | undefined;
+  useTimeList: UseTime[];
+  needPreBook: boolean;
+  useRules: string[];
 }
 
-export interface CreateGoodsInfo
-  extends Omit<
-    GoodsInfo,
-    | "id"
-    | "image"
-    | "video"
-    | "imageList"
-    | "detailImageList"
-    | "defaultSpecImage"
-    | "marketPrice"
-    | "specList"
-    | "skuList"
-  > {
-  image: string;
-  video?: string;
-  imageList: string;
-  detailImageList: string;
-  defaultSpecImage: string;
-  marketPrice?: number;
-  specList: string;
-  skuList: string;
+export interface CreateSetMealInfo {
+  restaurantIds: number[];
+  cover: string;
+  name: string;
+  price: number;
+  originalPrice: number;
+  salesCommissionRate: number;
+  promotionCommissionRate: number;
+  packageDetails: PackageDetail[];
+  validityDays?: number;
+  validityStartTime?: string;
+  validityEndTime?: string;
+  buyLimit?: number;
+  perTableUsageLimit?: number;
+  overlayUsageLimit?: number;
+  useTimeList: UseTime[];
+  needPreBook: 0 | 1;
+  useRules: string[];
 }
 
-export interface EditGoodsInfo extends CreateGoodsInfo {
+export interface EditSetMealInfo extends CreateSetMealInfo {
   id: number;
 }

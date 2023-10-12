@@ -1,202 +1,46 @@
 <template>
   <div class="container">
-    <div class="title">上传视频及图片</div>
-    <div class="card">
-      <ul class="form">
-        <li class="form-item">
-          <div class="name flex required">
-            <div>列表图片</div>
-            <Popover
-              v-model:show="imageTipsVisible"
-              placement="bottom-start"
-              theme="dark"
-            >
-              <div class="warning">用于商品列表展示</div>
-              <template #reference>
-                <Icon style="margin-left: 0.06rem" name="question-o" />
-              </template>
-            </Popover>
-          </div>
-          <Uploader
-            v-model="goodsInfo.image"
-            :after-read="uploadFile"
-            style="margin-top: 0.32rem"
-            max-count="1"
-          />
-        </li>
-        <li class="form-item">
-          <div class="name flex">
-            <div>主图视频</div>
-            <Popover
-              v-model:show="videoTipsVisible"
-              placement="bottom-start"
-              theme="dark"
-            >
-              <div class="warning">
-                <p>时长：建议不超过60s</p>
-                <p>大小：建议不超过50M</p>
-                <p>尺寸：建议比例16:9或3:4</p>
-                <p>格式：mp4</p>
-                <p>内容：建议突出商品1-2个核心卖点</p>
-              </div>
-              <template #reference>
-                <Icon style="margin-left: 0.06rem" name="question-o" />
-              </template>
-            </Popover>
-          </div>
-          <Uploader
-            v-model="goodsInfo.video"
-            :after-read="uploadFile"
-            style="margin-top: 0.32rem"
-            max-count="1"
-            accept="video/*"
-          />
-        </li>
-        <li class="form-item">
-          <div class="name flex required">
-            <div>主图图片列表</div>
-            <Popover
-              v-model:show="imageListTipsVisible"
-              placement="bottom-start"
-              theme="dark"
-            >
-              <div class="warning">数量：最多不超过10张</div>
-              <template #reference>
-                <Icon style="margin-left: 0.06rem" name="question-o" />
-              </template>
-            </Popover>
-          </div>
-          <Uploader
-            v-model="goodsInfo.imageList"
-            :after-read="uploadFile"
-            style="margin-top: 0.32rem"
-            max-count="10"
-          />
-        </li>
-        <li class="form-item">
-          <div class="name flex required">
-            <div>详情图片列表</div>
-            <Popover
-              v-model:show="detailImageListTipsVisible"
-              placement="bottom-start"
-              theme="dark"
-            >
-              <div class="warning">注意图片顺序</div>
-              <template #reference>
-                <Icon style="margin-left: 0.06rem" name="question-o" />
-              </template>
-            </Popover>
-          </div>
-          <Uploader
-            v-model="goodsInfo.detailImageList"
-            :after-read="uploadFile"
-            style="margin-top: 0.32rem"
-          />
-        </li>
-        <li class="form-item">
-          <div class="name flex required">
-            <div>默认规格图片</div>
-            <Popover
-              v-model:show="defaultSpecImageTipsVisible"
-              placement="bottom-start"
-              theme="dark"
-            >
-              <div class="warning">未设置或未选择规格时，展示的默认图片</div>
-              <template #reference>
-                <Icon style="margin-left: 0.06rem" name="question-o" />
-              </template>
-            </Popover>
-          </div>
-          <Uploader
-            v-model="goodsInfo.defaultSpecImage"
-            :after-read="uploadFile"
-            style="margin-top: 0.32rem"
-            max-count="1"
-          />
-        </li>
-      </ul>
-    </div>
-
     <div class="title">填写基本信息</div>
     <div class="card">
       <ul class="form">
         <li class="form-item flex">
-          <div class="name required">商品名称</div>
+          <div class="name required">关联门店</div>
+          <div class="picker" @click="restaurantPickerPopupVisible = true">
+            <div class="content" :class="{ active: restaurantNames }">
+              {{ restaurantNames || "请选择关联门店" }}
+            </div>
+            <Icon name="arrow" />
+          </div>
+        </li>
+        <li class="form-item flex">
+          <div class="name required">代金券售价</div>
           <input
             class="input"
-            v-model="goodsInfo.name"
-            type="text"
-            placeholder="请输入名称，最长30字"
-          />
-        </li>
-        <li class="form-item flex">
-          <div class="name required">运费模板</div>
-          <div class="picker" @click="freightTemplatePickerPopupVisible = true">
-            <div
-              class="content"
-              :class="{ active: selectedFreightTemplateName }"
-            >
-              {{ selectedFreightTemplateName || "请选择运费模板" }}
-            </div>
-            <Icon name="arrow" />
-          </div>
-        </li>
-        <li class="form-item flex">
-          <div class="name required">商品分类</div>
-          <div class="picker" @click="categoryPickerPopupVisible = true">
-            <div class="content" :class="{ active: selectedCategoryName }">
-              {{ selectedCategoryName || "请选择商品分类" }}
-            </div>
-            <Icon name="arrow" />
-          </div>
-        </li>
-        <li class="form-item flex">
-          <div class="name required">退货地址</div>
-          <div class="picker" @click="returnAddressPickerPopupVisible = true">
-            <div class="content" :class="{ active: selectedReturnAddress }">
-              {{ selectedReturnAddress || "请选择退货地址" }}
-            </div>
-            <Icon name="arrow" />
-          </div>
-        </li>
-        <li class="form-item flex">
-          <div class="name required">店铺价格</div>
-          <input
-            class="input"
-            v-model="goodsInfo.price"
+            v-model="ticketInfo.price"
             type="number"
             step="0.01"
-            placeholder="请输入店铺价格"
+            placeholder="请输入售价"
           />
         </li>
         <li class="form-item flex">
-          <div class="name">市场价格</div>
+          <div class="name required">抵扣价格</div>
           <input
             class="input"
-            v-model="goodsInfo.marketPrice"
+            v-model="ticketInfo.originalPrice"
             type="number"
             step="0.01"
-            placeholder="请输入市场价格"
-          />
-        </li>
-        <li class="form-item flex">
-          <div class="name required">商品总库存</div>
-          <input
-            class="input"
-            v-model="goodsInfo.stock"
-            type="number"
-            placeholder="请输入商品总库存"
+            placeholder="请输入抵扣价格"
           />
         </li>
         <li class="form-item flex">
           <div class="name flex required">
             <div>销售佣金比例</div>
             <Popover
-              v-model:show="commissionRateTipsVisible"
+              v-model:show="salesCommissionRateTipsVisible"
               placement="bottom-start"
               theme="dark"
             >
-              <div class="warning">范围：0～70%</div>
+              <div class="warning">范围：10%～70%</div>
               <template #reference>
                 <Icon style="margin-left: 0.06rem" name="question-o" />
               </template>
@@ -204,9 +48,9 @@
           </div>
           <input
             class="input"
-            v-model="goodsInfo.salesCommissionRate"
+            v-model="ticketInfo.salesCommissionRate"
             type="number"
-            placeholder="请输入佣金比例"
+            placeholder="请输入销售佣金比例"
           />
           <div class="unit">%</div>
         </li>
@@ -214,11 +58,11 @@
           <div class="name flex required">
             <div>推广佣金比例</div>
             <Popover
-              v-model:show="commissionRateTipsVisible"
+              v-model:show="promotionCommissionRateTipsVisible"
               placement="bottom-start"
               theme="dark"
             >
-              <div class="warning">范围：0～70%</div>
+              <div class="warning">范围：2%～70%</div>
               <template #reference>
                 <Icon style="margin-left: 0.06rem" name="question-o" />
               </template>
@@ -226,510 +70,539 @@
           </div>
           <input
             class="input"
-            v-model="goodsInfo.promotionCommissionRate"
+            v-model="ticketInfo.promotionCommissionRate"
             type="number"
-            placeholder="请输入佣金比例"
+            placeholder="请输入推广佣金比例"
           />
           <div class="unit">%</div>
         </li>
       </ul>
     </div>
 
-    <div class="title flex">
-      <div>编辑商品规格</div>
+    <div class="title">设置有效期</div>
+    <div class="card">
+      <ul class="form">
+        <li class="form-item flex">
+          <div class="name required">有效期类型</div>
+          <div class="picker" @click="validityTypePickerPopupVisible = true">
+            <div class="content" :class="{ active: validityTypeDesc }">
+              {{ validityTypeDesc || "请选择有效期类型" }}
+            </div>
+            <Icon name="arrow" />
+          </div>
+        </li>
+        <li class="form-item flex" v-if="validityType === 1">
+          <div class="name required">有效天数</div>
+          <input
+            class="input"
+            v-model="ticketInfo.validityDays"
+            type="number"
+            placeholder="请输入有效天数"
+          />
+        </li>
+        <li class="form-item flex" v-if="validityType === 2">
+          <div class="name required">有效期范围</div>
+          <div class="picker" @click="dateRangePickerPopupVisible = true">
+            <div class="content" :class="{ active: validityPeriod }">
+              {{ validityPeriod || "请选择有效期范围" }}
+            </div>
+            <Icon name="arrow" />
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="title">填写购买须知</div>
+    <div class="card">
+      <ul class="form">
+        <li class="form-item flex">
+          <div class="name">限购数量</div>
+          <input
+            class="input"
+            v-model="ticketInfo.buyLimit"
+            type="number"
+            placeholder="请输入限购数量"
+          />
+        </li>
+        <li class="form-item flex">
+          <div class="name">每桌使用数量限制</div>
+          <input
+            class="input"
+            v-model="ticketInfo.perTableUsageLimit"
+            type="number"
+            placeholder="请输入每桌使用数量限制"
+          />
+        </li>
+        <li class="form-item flex">
+          <div class="name">叠加使用数量限制</div>
+          <input
+            class="input"
+            v-model="ticketInfo.overlayUsageLimit"
+            type="number"
+            placeholder="请输入叠加使用数量限制"
+          />
+        </li>
+        <li class="form-item flex">
+          <div class="name">是否需要预定</div>
+          <Switch v-model="ticketInfo.needPreBook" size="18px" />
+        </li>
+        <li class="form-item">
+          <div class="name">不可用商品</div>
+          <div class="tags">
+            <Tag
+              v-for="(item, index) in ticketInfo.inapplicableProducts"
+              :key="index"
+              @close="deleteInapplicableProduct(index)"
+              class="tag"
+              color="#DBEFFD"
+              text-color="#2A3664"
+              closeable
+              size="medium"
+              >{{ item }}</Tag
+            >
+            <Tag
+              class="tag"
+              @click="inapplicableProductModalVisible = true"
+              type="primary"
+              size="medium"
+              >+ 添加不可用商品</Tag
+            >
+          </div>
+        </li>
+        <li class="form-item flex">
+          <div class="name">能否用于包间消费</div>
+          <Switch v-model="ticketInfo.boxAvailable" size="18px" />
+        </li>
+        <li class="form-item">
+          <div class="name">使用规则</div>
+          <div class="tags">
+            <Tag
+              v-for="(item, index) in ticketInfo.useRules"
+              :key="index"
+              @close="deleteUseRule(index)"
+              class="tag"
+              color="#DBEFFD"
+              text-color="#2A3664"
+              closeable
+              size="medium"
+              >{{ item }}</Tag
+            >
+            <Tag
+              class="tag"
+              @click="useRuleModalVisible = true"
+              type="primary"
+              size="medium"
+              >+ 新增使用规则</Tag
+            >
+          </div>
+        </li>
+        <li class="form-item flex">
+          <div class="name">自定义使用时间</div>
+          <Switch v-model="customUseTime" size="18px" />
+        </li>
+      </ul>
+    </div>
+
+    <div class="title flex" v-if="customUseTime">
+      <div>编辑使用时间</div>
       <Button
-        @click="addSpec"
+        @click="addUseTime"
         icon="plus"
-        text="新增规格"
+        text="新增使用时间"
         type="primary"
         size="mini"
       />
     </div>
-    <SwipeCell v-for="(item, index) in goodsInfo.specList" :key="index">
-      <div class="card">
-        <ul class="form">
-          <li class="form-item flex">
-            <div class="name required">规格名称</div>
-            <input
-              class="input"
-              v-model="item.name"
-              type="text"
-              placeholder="请输入规格名称"
-            />
-          </li>
-          <li class="form-item">
-            <div class="name required">规格选项</div>
-            <div class="sku-options">
-              <Tag
-                v-for="(option, optionIndex) in item.options"
-                :key="optionIndex"
-                @close="deleteSpecOption(index, optionIndex)"
-                class="sku-option"
-                color="#DBEFFD"
-                text-color="#2A3664"
-                closeable
-                size="medium"
-                >{{ option }}</Tag
-              >
-              <Tag
-                class="sku-option"
-                @click="showSpecOptionModalVisible(index)"
-                type="primary"
-                size="medium"
-                >+ 新增选项</Tag
-              >
-            </div>
-          </li>
-        </ul>
-      </div>
-      <template #right>
-        <Button
-          class="delete-btn"
-          @click.stop="deleteSpec(index)"
-          icon="delete"
-          color="#EE0D23"
-          plain
-        />
-      </template>
-    </SwipeCell>
-    <div class="card" v-if="!goodsInfo.specList.length">
-      <Empty image-size="1.8rem" description="暂无规格" />
-    </div>
-
-    <div class="title" v-if="goodsInfo.skuList.length">补充规格信息</div>
-    <div class="card" v-if="goodsInfo.skuList.length" style="padding: 0">
-      <Collapse v-model="activeSkuNames">
-        <CollapseItem
-          v-for="(item, index) in goodsInfo.skuList"
-          :key="index"
-          :title="item.name"
-          :name="index"
-        >
-          <ul class="form unit">
+    <template v-if="customUseTime">
+      <SwipeCell v-for="(item, index) in ticketInfo.useTimeList" :key="index">
+        <div class="card">
+          <ul class="form">
+            <li class="form-item flex">
+              <div class="name required">周开始时间</div>
+              <div class="picker" @click="pickWeekDay(index, 0)">
+                <div class="content" :class="{ active: item.startWeekDay }">
+                  {{
+                    item.startWeekDay
+                      ? weekDayOptions[item.startWeekDay - 1].text
+                      : "请选择开始时间"
+                  }}
+                </div>
+                <Icon name="arrow" />
+              </div>
+            </li>
+            <li class="form-item flex">
+              <div class="name required">周结束时间</div>
+              <div class="picker" @click="pickWeekDay(index, 1)">
+                <div class="content" :class="{ active: item.endWeekDay }">
+                  {{
+                    item.endWeekDay
+                      ? weekDayOptions[item.endWeekDay - 1].text
+                      : "请选择结束时间"
+                  }}
+                </div>
+                <Icon name="arrow" />
+              </div>
+            </li>
             <li class="form-item">
-              <div class="name">图片</div>
-              <Uploader
-                v-model="item.image"
-                :after-read="uploadFile"
-                style="margin-top: 0.32rem"
-                max-count="1"
-              />
-            </li>
-            <li class="form-item flex">
-              <div class="name required">价格</div>
-              <input
-                class="input"
-                v-model="item.price"
-                type="number"
-                step="0.01"
-                placeholder="请输入价格"
-              />
-            </li>
-            <li class="form-item flex">
-              <div class="name required">库存</div>
-              <input
-                class="input"
-                v-model="item.stock"
-                type="number"
-                placeholder="请输入库存"
-              />
+              <div class="name required">使用时间段</div>
+              <div class="tags">
+                <Tag
+                  v-for="(timeFrame, timeFrameIndex) in item.timeFrameList"
+                  :key="timeFrameIndex"
+                  @close="deleteTimeFrame(index, timeFrameIndex)"
+                  class="tag"
+                  color="#DBEFFD"
+                  text-color="#2A3664"
+                  closeable
+                  size="medium"
+                  >{{ `${timeFrame.startTime}-${timeFrame.endTime}` }}</Tag
+                >
+                <Tag
+                  class="tag"
+                  @click="showTimeFramePickerPopup(index)"
+                  type="primary"
+                  size="medium"
+                  >+ 新增使用时间段</Tag
+                >
+              </div>
             </li>
           </ul>
-        </CollapseItem>
-      </Collapse>
+        </div>
+        <template #right>
+          <Button
+            class="delete-btn"
+            @click.stop="deleteUseTime(index)"
+            icon="delete"
+            color="#EE0D23"
+            plain
+          />
+        </template>
+      </SwipeCell>
+    </template>
+    <div class="card" v-if="customUseTime && !ticketInfo.useTimeList.length">
+      <Empty image-size="1.8rem" description="暂未添加使用时间" />
     </div>
   </div>
 
-  <button class="upload-btn" @click="save">点击上传</button>
+  <button class="upload-btn" @click="save">点击提交</button>
 
-  <Popup
-    v-model:show="freightTemplatePickerPopupVisible"
-    position="bottom"
-    round
-  >
-    <Picker
-      :columns="freightTemplateOptions"
-      @confirm="selectFreightTemplate"
-      @cancel="freightTemplatePickerPopupVisible = false"
-      :columns-field-names="{ text: 'name', value: 'id' }"
-    />
-  </Popup>
-  <Popup v-model:show="categoryPickerPopupVisible" position="bottom" round>
-    <Picker
-      :columns="categoryOptions"
-      @confirm="selectCategory"
-      @cancel="categoryPickerPopupVisible = false"
-      :columns-field-names="{ text: 'name', value: 'id' }"
-    />
-  </Popup>
-  <Popup v-model:show="returnAddressPickerPopupVisible" position="bottom" round>
-    <Picker
-      :columns="returnAddressOptions"
-      @confirm="selectReturnAddress"
-      @cancel="returnAddressPickerPopupVisible = false"
-      :columns-field-names="{ text: 'addressDetail', value: 'id' }"
-    />
-  </Popup>
-
+  <RestaurantPickerPopup
+    :visible="restaurantPickerPopupVisible"
+    :restaurant-options="restaurantOptions"
+    @confirm="setRestaurantIds"
+    @cancel="restaurantPickerPopupVisible = false"
+  />
+  <validityTypePickerPopup
+    :visible="validityTypePickerPopupVisible"
+    @confirm="setValidityType"
+    @cancel="validityTypePickerPopupVisible = false"
+  />
+  <DateRangePickerPopup
+    :visible="dateRangePickerPopupVisible"
+    @confirm="setValidityDateRange"
+    @cancel="dateRangePickerPopupVisible = false"
+  />
   <Dialog
-    v-model:show="specOptionModalVisible"
-    title="新增规格选项"
+    v-model:show="inapplicableProductModalVisible"
+    title="添加不可用商品"
     show-cancel-button
-    :before-close="addSpecOption"
+    :before-close="addInapplicableProduct"
   >
     <input
-      class="sku-option-input"
-      v-model="specOptionName"
+      class="dialog-input"
+      v-model="inapplicableProduct"
       type="text"
-      placeholder="请输入规格选项名称"
+      placeholder="请输入商品名称"
     />
   </Dialog>
+  <Dialog
+    v-model:show="useRuleModalVisible"
+    title="新增使用规则"
+    show-cancel-button
+    :before-close="addUseRule"
+  >
+    <input
+      class="dialog-input"
+      v-model="useRule"
+      type="text"
+      placeholder="请输入规则名称"
+    />
+  </Dialog>
+  <Popup v-model:show="weekDayPickerPopupVisible" position="bottom" round>
+    <Picker
+      :columns="weekDayOptions"
+      @confirm="selectWeekDay"
+      @cancel="weekDayPickerPopupVisible = false"
+    />
+  </Popup>
+  <Popup v-model:show="timeFramePickerPopupVisible" position="bottom" round>
+    <PickerGroup
+      :tabs="['开始时间', '结束时间']"
+      @confirm="selectTimeFrame"
+      @cancel="timeFramePickerPopupVisible = false"
+    >
+      <TimePicker v-model="openTime" />
+      <TimePicker v-model="closeTime" />
+    </PickerGroup>
+  </Popup>
 </template>
 
 <script setup lang="ts">
 import {
-  Uploader,
   Icon,
   Empty,
+  Tag,
   Popover,
   Button,
-  Dialog,
-  Tag,
-  SwipeCell,
   showConfirmDialog,
   showToast,
-  Collapse,
-  CollapseItem,
+  Switch,
+  SwipeCell,
+  Dialog,
   Popup,
+  PickerGroup,
   Picker,
-  showDialog,
+  TimePicker,
 } from "vant";
-import { ref, watch, computed, onMounted, reactive } from "vue";
-import { useRouter, useRoute } from "vue-router";
-import _ from "lodash";
-import { uploadFile } from "@/utils/upload";
-import { editGoods, getGoodsCategoryOptions, getGoodsInfo } from "./utils/api";
-import { getFreightTemplateList } from "../freightTemplate/utils/api";
-import { getAddressList } from "../goodsReturnAddress/utils/api";
+import RestaurantPickerPopup from "./components/restaurantPickerPopup.vue";
+import DateRangePickerPopup from "./components/dateRangePickerPopup.vue";
+import validityTypePickerPopup from "./components/validityTypePickerPopup.vue";
 
-import type {
-  GoodsInfo,
-  GoodsCategoryOption,
-  EditGoodsInfo,
-} from "./utils/type";
-import type { FreightTemplateListItem } from "../freightTemplate/utils/type";
-import type { AddressListItem } from "../goodsReturnAddress/utils/type";
+import { ref, reactive, computed, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { cleanObject, weekDayOptions } from "@/utils/index";
+import { getTicketInfo, editTicket } from "./utils/api";
+import {
+  validityTypeOptions,
+  restaurantOptions,
+  setRestaurantOptions,
+  checkTicketInfo,
+} from "./utils/index";
+
+import type { TicketInfo, EditTicketInfo } from "./utils/type";
 
 const route = useRoute();
 const router = useRouter();
 
-const freightTemplateOptions = ref<FreightTemplateListItem[]>([]);
-const categoryOptions = ref<GoodsCategoryOption[]>([]);
-const returnAddressOptions = ref<AddressListItem[]>([]);
-const goodsInfo = reactive<GoodsInfo>({
+const ticketInfo = reactive<TicketInfo>({
   id: 0,
-  image: [],
-  video: [],
-  imageList: [],
-  detailImageList: [],
-  defaultSpecImage: [],
-  name: "",
-  freightTemplateId: undefined,
-  categoryId: undefined,
-  returnAddressId: undefined,
+  restaurantIds: [],
   price: undefined,
-  marketPrice: undefined,
-  stock: undefined,
+  originalPrice: undefined,
   salesCommissionRate: undefined,
   promotionCommissionRate: undefined,
-  specList: [],
-  skuList: [],
+  validityDays: undefined,
+  validityStartTime: "",
+  validityEndTime: "",
+  buyLimit: undefined,
+  perTableUsageLimit: undefined,
+  overlayUsageLimit: undefined,
+  useTimeList: [],
+  inapplicableProducts: [],
+  boxAvailable: false,
+  needPreBook: false,
+  useRules: [],
 });
-const specOptionModalVisible = ref(false);
-const curSpecIndex = ref(0);
-const specOptionName = ref("");
-const freightTemplatePickerPopupVisible = ref(false);
-const categoryPickerPopupVisible = ref(false);
-const returnAddressPickerPopupVisible = ref(false);
-const imageTipsVisible = ref(false);
-const videoTipsVisible = ref(false);
-const imageListTipsVisible = ref(false);
-const detailImageListTipsVisible = ref(false);
-const defaultSpecImageTipsVisible = ref(false);
-const commissionRateTipsVisible = ref(false);
-const activeSkuNames = ref([0]);
+
+const restaurantPickerPopupVisible = ref(false);
+const validityType = ref(0);
+const validityTypePickerPopupVisible = ref(false);
+const dateRangePickerPopupVisible = ref(false);
+const validityPeriod = ref("");
+const salesCommissionRateTipsVisible = ref(false);
+const promotionCommissionRateTipsVisible = ref(false);
+const inapplicableProductModalVisible = ref(false);
+const inapplicableProduct = ref("");
+const useRuleModalVisible = ref(false);
+const useRule = ref("");
+const customUseTime = ref(false);
+const curUseTimeIdx = ref(0);
+const weekDayPickerPopupVisible = ref(false);
+const curWeekDayType = ref(0);
+const timeFramePickerPopupVisible = ref(false);
+const openTime = ref(["12", "00"]);
+const closeTime = ref(["12", "00"]);
 
 // 计算属性
-const selectedFreightTemplateName = computed(
-  () =>
-    freightTemplateOptions.value.find(
-      (item) => item.id === goodsInfo?.freightTemplateId
-    )?.name
+const restaurantNames = computed(() =>
+  ticketInfo.restaurantIds
+    .map((id) => restaurantOptions.value.find((item) => item.id === id)?.name)
+    .join()
 );
-const selectedCategoryName = computed(
+const validityTypeDesc = computed(
   () =>
-    categoryOptions.value.find((item) => item.id === goodsInfo?.categoryId)
-      ?.name
-);
-const selectedReturnAddress = computed(
-  () =>
-    returnAddressOptions.value.find(
-      (item) => item.id === goodsInfo?.returnAddressId
-    )?.addressDetail
+    validityTypeOptions.find((item) => item.value === validityType.value)?.text
 );
 
 onMounted(async () => {
-  await setFreightTemplateOptions();
-  await setCategoryOptions();
-  await setReturnAddressOptions();
-  setGoodsInfo();
+  await setRestaurantOptions();
+  setTicketInfo();
 });
 
-const setFreightTemplateOptions = async () =>
-  (freightTemplateOptions.value = [
-    { id: 0, name: "包邮" },
-    ...(await getFreightTemplateList()),
-  ]);
-const setCategoryOptions = async () =>
-  (categoryOptions.value = await getGoodsCategoryOptions());
-const setReturnAddressOptions = async () =>
-  (returnAddressOptions.value = await getAddressList());
-const setGoodsInfo = async () => {
+const setRestaurantIds = (restaurantIds: number[]) => {
+  ticketInfo.restaurantIds = restaurantIds;
+  restaurantPickerPopupVisible.value = false;
+};
+
+const setTicketInfo = async () => {
   const {
     id,
-    image,
-    video,
-    imageList,
-    detailImageList,
-    defaultSpecImage,
-    name,
-    freightTemplateId,
-    categoryId,
-    returnAddressId,
+    restaurantIds,
     price,
-    marketPrice,
-    stock,
+    originalPrice,
     salesCommissionRate,
     promotionCommissionRate,
-    specList,
-    skuList,
-  } = await getGoodsInfo(+(route.query.id as string));
-  goodsInfo.id = id;
-  goodsInfo.image = [{ url: image }];
-  goodsInfo.video = video ? [{ url: video }] : [];
-  goodsInfo.imageList = imageList.map((item) => ({ url: item }));
-  goodsInfo.detailImageList = detailImageList.map((item) => ({ url: item }));
-  goodsInfo.defaultSpecImage = [{ url: defaultSpecImage }];
-  goodsInfo.name = name;
-  goodsInfo.freightTemplateId = freightTemplateId;
-  goodsInfo.categoryId = categoryId;
-  goodsInfo.returnAddressId = returnAddressId;
-  goodsInfo.price = price;
-  goodsInfo.marketPrice = marketPrice || undefined;
-  goodsInfo.stock = stock;
-  goodsInfo.salesCommissionRate = salesCommissionRate * 100;
-  goodsInfo.promotionCommissionRate = promotionCommissionRate * 100;
-  goodsInfo.skuList = skuList.map((item) => ({
-    ...item,
-    image: item.image ? [{ url: item.image }] : [],
-  }));
-  specList.forEach((item) => goodsInfo.specList.push(_.cloneDeep(item)));
+    validityDays,
+    validityStartTime,
+    validityEndTime,
+    buyLimit,
+    perTableUsageLimit,
+    overlayUsageLimit,
+    useTimeList,
+    inapplicableProducts,
+    boxAvailable,
+    needPreBook,
+    useRules,
+  } = await getTicketInfo(+(route.query.id as string));
+  ticketInfo.id = id;
+  ticketInfo.restaurantIds = restaurantIds;
+  ticketInfo.price = price;
+  ticketInfo.originalPrice = originalPrice;
+  ticketInfo.salesCommissionRate = salesCommissionRate * 100;
+  ticketInfo.promotionCommissionRate = promotionCommissionRate * 100;
+  if (validityDays) {
+    validityType.value = 1;
+    ticketInfo.validityDays = validityDays;
+  } else {
+    validityType.value = 2;
+    ticketInfo.validityStartTime = validityStartTime;
+    ticketInfo.validityEndTime = validityEndTime;
+    validityPeriod.value = `${validityStartTime}至${validityEndTime}`;
+  }
+  ticketInfo.buyLimit = buyLimit || undefined;
+  ticketInfo.perTableUsageLimit = perTableUsageLimit || undefined;
+  ticketInfo.overlayUsageLimit = overlayUsageLimit || undefined;
+  ticketInfo.useTimeList = useTimeList;
+  ticketInfo.inapplicableProducts = inapplicableProducts;
+  ticketInfo.boxAvailable = !!boxAvailable;
+  ticketInfo.needPreBook = !!needPreBook;
+  ticketInfo.useRules = useRules;
 };
 
-const selectFreightTemplate = ({
-  selectedValues,
+const setValidityType = (type: number) => {
+  validityType.value = type;
+  ticketInfo.validityDays = undefined;
+  ticketInfo.validityStartTime = "";
+  ticketInfo.validityEndTime = "";
+  validityTypePickerPopupVisible.value = false;
+};
+
+const setValidityDateRange = ({
+  startDate,
+  endDate,
 }: {
-  selectedValues: number[];
+  startDate: string;
+  endDate: string;
 }) => {
-  goodsInfo.freightTemplateId = selectedValues[0];
-  freightTemplatePickerPopupVisible.value = false;
-};
-const selectCategory = ({ selectedValues }: { selectedValues: number[] }) => {
-  goodsInfo.categoryId = selectedValues[0];
-  categoryPickerPopupVisible.value = false;
-};
-const selectReturnAddress = ({
-  selectedValues,
-}: {
-  selectedValues: number[];
-}) => {
-  goodsInfo.returnAddressId = selectedValues[0];
-  returnAddressPickerPopupVisible.value = false;
+  ticketInfo.validityStartTime = startDate;
+  ticketInfo.validityEndTime = endDate;
+  validityPeriod.value = `${startDate}至${endDate}`;
+  dateRangePickerPopupVisible.value = false;
 };
 
-watch(goodsInfo.specList, () => {
-  let nameList: string[][] = [];
-  goodsInfo.specList.forEach((item, index) => {
-    const nameListUnit = _.cloneDeep(nameList);
-    for (let i = 0; i < item.options.length - 1; i++) {
-      nameList = [...nameList, ..._.cloneDeep(nameListUnit)];
-    }
-    item.options.forEach((_item, _index) => {
-      if (index === 0) {
-        if (!nameList[_index]) nameList[_index] = [];
-        nameList[_index][index] = _item;
-      } else {
-        const unitLength = nameList.length / item.options.length;
-        for (let j = 0; j < unitLength; j++) {
-          if (!nameList[j + _index * unitLength]) {
-            nameList[j + _index * unitLength] = [];
-          }
-          nameList[j + _index * unitLength][index] = _item;
-        }
-      }
-    });
-  });
-  goodsInfo.skuList = nameList.map((item) => {
-    const sku = goodsInfo.skuList.find((sku) => sku.name === item.join());
-    return (
-      sku || {
-        name: item.join(),
-        image: [],
-        price: undefined,
-        stock: undefined,
-      }
-    );
-  });
-});
-
-const addSpec = () => {
-  goodsInfo.specList.push({ name: "", options: [] });
-};
-const deleteSpec = (index: number) => {
-  showConfirmDialog({ title: "确定删除该商品规格吗？" })
-    .then(() => goodsInfo.specList.splice(index, 1))
-    .catch(() => true);
-};
-const showSpecOptionModalVisible = (index: number) => {
-  curSpecIndex.value = index;
-  specOptionModalVisible.value = true;
-};
-const addSpecOption = (action: string) => {
+const deleteInapplicableProduct = (index: number) =>
+  ticketInfo.inapplicableProducts.splice(index, 1);
+const addInapplicableProduct = (action: string) => {
   if (action === "cancel") {
     return true;
   }
-  if (!specOptionName.value) {
-    showToast("名称不能为空");
-    return false;
-  }
-  goodsInfo.specList[curSpecIndex.value].options.push(specOptionName.value);
-  specOptionName.value = "";
-  specOptionModalVisible.value = false;
-  return true;
-};
-const deleteSpecOption = (index: number, optionIndex: number) => {
-  goodsInfo.specList[index].options.splice(optionIndex, 1);
-};
-
-const save = async () => {
-  if (!goodsInfo.image.length) {
-    showToast("请上传列表图片");
-    return;
-  }
-  if (!goodsInfo.imageList.length) {
-    showToast("请上传至少一张主图图片");
-    return;
-  }
-  if (!goodsInfo.detailImageList.length) {
-    showToast("请上传至少一张详情图片");
-    return;
-  }
-  if (!goodsInfo.defaultSpecImage.length) {
-    showToast("请上传默认规格图片");
-    return;
-  }
-  if (!goodsInfo.name) {
+  if (!useRule.value) {
     showToast("请输入商品名称");
     return;
   }
-  if (goodsInfo.freightTemplateId === undefined) {
-    showToast("请选择运费模板");
+  ticketInfo.inapplicableProducts.push(useRule.value);
+  inapplicableProduct.value = "";
+  inapplicableProductModalVisible.value = false;
+};
+
+const deleteUseRule = (index: number) => ticketInfo.useRules.splice(index, 1);
+const addUseRule = (action: string) => {
+  if (action === "cancel") {
+    return true;
+  }
+  if (!useRule.value) {
+    showToast("请输入设施名称");
     return;
   }
-  if (!goodsInfo.categoryId) {
-    showToast("请选择商品分类");
+  ticketInfo.useRules.push(useRule.value);
+  useRule.value = "";
+  useRuleModalVisible.value = false;
+};
+
+const addUseTime = () => {
+  ticketInfo.useTimeList.push({
+    startWeekDay: undefined,
+    endWeekDay: undefined,
+    timeFrameList: [],
+  });
+};
+const deleteUseTime = (index: number) => {
+  showConfirmDialog({ title: "确定删除该使用时间吗？" })
+    .then(() => ticketInfo.useTimeList.splice(index, 1))
+    .catch(() => true);
+};
+
+const pickWeekDay = (index: number, type: number) => {
+  curUseTimeIdx.value = index;
+  curWeekDayType.value = type;
+  weekDayPickerPopupVisible.value = true;
+};
+const selectWeekDay = ({ selectedValues }: { selectedValues: number[] }) => {
+  if (curWeekDayType.value) {
+    ticketInfo.useTimeList[curUseTimeIdx.value].endWeekDay = selectedValues[0];
+  } else {
+    ticketInfo.useTimeList[curUseTimeIdx.value].startWeekDay =
+      selectedValues[0];
+  }
+  weekDayPickerPopupVisible.value = false;
+};
+
+const showTimeFramePickerPopup = (index: number) => {
+  curUseTimeIdx.value = index;
+  timeFramePickerPopupVisible.value = true;
+};
+const deleteTimeFrame = (index: number, timeFrameIndex: number) => {
+  ticketInfo.useTimeList[index].timeFrameList.splice(timeFrameIndex, 1);
+};
+const selectTimeFrame = () => {
+  ticketInfo.useTimeList[curUseTimeIdx.value].timeFrameList.push({
+    startTime: openTime.value.join(":"),
+    endTime: closeTime.value.join(":"),
+  });
+  timeFramePickerPopupVisible.value = false;
+};
+
+const save = async () => {
+  if (!checkTicketInfo(ticketInfo)) {
     return;
   }
-  if (!goodsInfo.returnAddressId) {
-    showToast("请选择退货地址");
-    return;
-  }
-  if (!goodsInfo.price) {
-    showToast("请输入商品店铺价格");
-    return;
-  }
-  if (!goodsInfo.stock) {
-    showToast("请输入商品总库存");
-    return;
-  }
-  if (goodsInfo.salesCommissionRate === undefined) {
-    showToast("请输入销售佣金比例");
-    return;
-  }
-  if (goodsInfo.promotionCommissionRate === undefined) {
-    showToast("请输入推广佣金比例");
-    return;
-  }
-  if (
-    goodsInfo.specList.length &&
-    goodsInfo.specList.findIndex(
-      (item) => !item.name || !item.options.length
-    ) !== -1
-  ) {
-    showToast("请完善商品规格信息");
-    return;
-  }
-  if (goodsInfo.skuList.length) {
-    if (
-      goodsInfo.skuList.findIndex((item) => !item.price || !item.stock) !== -1
-    ) {
-      showToast("部分商品规格未填写价格或库存");
-      return;
-    }
-    if (
-      goodsInfo.stock <
-      goodsInfo.skuList.reduce((stock, sku) => stock + (sku.stock as number), 0)
-    ) {
-      showDialog({
-        title: "请核对库存设置",
-        message: "商品总库存，小于商品各规格库存总和",
-      });
-      return;
-    }
-  }
+
   const {
-    image,
-    video,
-    imageList,
-    detailImageList,
-    defaultSpecImage,
-    marketPrice,
-    specList,
-    skuList,
+    boxAvailable,
+    needPreBook,
     salesCommissionRate,
     promotionCommissionRate,
     ...rest
-  } = goodsInfo;
-  const editGoodsInfo: EditGoodsInfo = {
-    ...rest,
-    image: image[0].url as string,
-    imageList: JSON.stringify(imageList.map((item) => item.url)),
-    detailImageList: JSON.stringify(detailImageList.map((item) => item.url)),
-    defaultSpecImage: defaultSpecImage[0].url as string,
-    salesCommissionRate: salesCommissionRate / 100,
-    promotionCommissionRate: promotionCommissionRate / 100,
-    specList: JSON.stringify(specList),
-    skuList: JSON.stringify(
-      skuList.map((item) => ({
-        ...item,
-        image: item.image.length ? item.image[0].url : "",
-      }))
-    ),
+  } = ticketInfo;
+  const editTicketInfo = {
+    ...cleanObject(rest),
+    salesCommissionRate: (salesCommissionRate as number) / 100,
+    promotionCommissionRate: (promotionCommissionRate as number) / 100,
+    boxAvailable: boxAvailable ? 1 : 0,
+    needPreBook: needPreBook ? 1 : 0,
   };
-  if (video.length) editGoodsInfo.video = video[0].url;
-  if (marketPrice) editGoodsInfo.marketPrice = marketPrice;
   try {
-    await editGoods(editGoodsInfo);
+    await editTicket(editTicketInfo as EditTicketInfo);
     router.back();
   } catch (error) {
     showToast("上传失败，请重试");
@@ -740,10 +613,6 @@ const save = async () => {
 <style>
 .van-empty__description {
   font-size: 0.24rem;
-}
-.van-collapse-item__title {
-  font-size: 0.26rem;
-  font-weight: 500;
 }
 </style>
 <style lang="scss" scoped>
@@ -769,6 +638,7 @@ const save = async () => {
     overflow: hidden;
     .form {
       &.unit {
+        margin-bottom: 0.32rem;
         padding: 0 0.32rem;
         border: 1px solid #eee;
         border-radius: 0.24rem;
@@ -792,9 +662,6 @@ const save = async () => {
           &.flex {
             display: flex;
             align-items: center;
-            &.between {
-              justify-content: space-between;
-            }
           }
           &.required {
             position: relative;
@@ -820,7 +687,7 @@ const save = async () => {
           .content {
             color: #777;
             &.active {
-              max-width: 3rem;
+              max-width: 3.6rem;
               color: #333;
               overflow: hidden;
               text-overflow: ellipsis;
@@ -831,8 +698,13 @@ const save = async () => {
             }
           }
         }
-        .sku-options {
-          .sku-option {
+        .unit {
+          margin-left: 0.06rem;
+          font-weight: 500;
+          line-height: 1;
+        }
+        .tags {
+          .tag {
             margin-top: 0.32rem;
             margin-right: 0.32rem;
           }
@@ -865,7 +737,7 @@ const save = async () => {
   line-height: 1.5;
   white-space: wrap;
 }
-.sku-option-input {
+.dialog-input {
   margin: 0.32rem 0.32rem 0.5rem;
   padding: 0.24rem;
   width: calc(100% - 0.64rem);
