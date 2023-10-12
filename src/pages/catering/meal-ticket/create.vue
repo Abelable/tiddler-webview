@@ -486,7 +486,7 @@ const addUseRule = (action: string) => {
     return true;
   }
   if (!useRule.value) {
-    showToast("请输入设施名称");
+    showToast("请输入规则名称");
     return;
   }
   ticketInfo.useRules.push(useRule.value);

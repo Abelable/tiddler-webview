@@ -142,6 +142,90 @@
       </ul>
     </div>
 
+    <div class="title flex">
+      <div>编辑套餐详情</div>
+      <Button
+        @click="packageDetailModalVisible = true"
+        icon="plus"
+        text="新增套餐分类"
+        type="primary"
+        size="mini"
+      />
+    </div>
+    <SwipeCell v-for="(item, index) in setMealInfo.packageDetails" :key="index">
+      <div class="card">
+        <div class="title flex" style="margin-top: 0.32rem">
+          <div>{{ item.name }}</div>
+          <Button
+            @click="addFoodItem(index)"
+            icon="plus"
+            text="新增菜品"
+            type="primary"
+            size="mini"
+          />
+        </div>
+        <SwipeCell
+          v-for="(_item, _index) in item.foodList"
+          :key="_index"
+          stop-propagation
+        >
+          <ul class="form unit">
+            <li class="form-item flex">
+              <div class="name required">菜品名称</div>
+              <input
+                class="input"
+                v-model="_item.name"
+                placeholder="请输入菜品名称"
+              />
+            </li>
+            <li class="form-item flex">
+              <div class="name required">菜品份数</div>
+              <input
+                class="input"
+                v-model="_item.num"
+                type="number"
+                step="0.01"
+                placeholder="请输入菜品份数"
+              />
+            </li>
+            <li class="form-item flex">
+              <div class="name required">菜品价格</div>
+              <input
+                class="input"
+                v-model="_item.price"
+                type="number"
+                placeholder="请输入菜品价格"
+              />
+            </li>
+          </ul>
+          <template #right>
+            <Button
+              class="delete-btn"
+              @click.stop="deleteFoodItem(index, _index)"
+              icon="delete"
+              color="#EE0D23"
+              plain
+            />
+          </template>
+        </SwipeCell>
+        <div class="card" v-if="!item.foodList.length">
+          <Empty image-size="1.8rem" description="暂无菜品列表" />
+        </div>
+      </div>
+      <template #right>
+        <Button
+          class="delete-btn"
+          @click.stop="deletePackageDetail(index)"
+          icon="delete"
+          color="#EE0D23"
+          plain
+        />
+      </template>
+    </SwipeCell>
+    <div class="card" v-if="!setMealInfo.packageDetails.length">
+      <Empty image-size="1.8rem" description="暂未设置套餐详情" />
+    </div>
+
     <div class="title">填写购买须知</div>
     <div class="card">
       <ul class="form">
@@ -297,6 +381,19 @@
     @cancel="dateRangePickerPopupVisible = false"
   />
   <Dialog
+    v-model:show="packageDetailModalVisible"
+    title="新增套餐分类"
+    show-cancel-button
+    :before-close="addPackageDetail"
+  >
+    <input
+      class="dialog-input"
+      v-model="packageDetailName"
+      type="text"
+      placeholder="请输入套餐分类名称"
+    />
+  </Dialog>
+  <Dialog
     v-model:show="useRuleModalVisible"
     title="新增使用规则"
     show-cancel-button
@@ -330,6 +427,7 @@
 
 <script setup lang="ts">
 import {
+  Uploader,
   Icon,
   Empty,
   Tag,
@@ -398,6 +496,8 @@ const dateRangePickerPopupVisible = ref(false);
 const validityPeriod = ref("");
 const salesCommissionRateTipsVisible = ref(false);
 const promotionCommissionRateTipsVisible = ref(false);
+const packageDetailModalVisible = ref(false);
+const packageDetailName = ref("");
 const useRuleModalVisible = ref(false);
 const useRule = ref("");
 const customUseTime = ref(false);
@@ -446,13 +546,41 @@ const setValidityDateRange = ({
   dateRangePickerPopupVisible.value = false;
 };
 
+const addPackageDetail = () => {
+  setMealInfo.packageDetails.push({
+    name: packageDetailName.value,
+    foodList: [],
+  });
+  packageDetailName.value = "";
+  packageDetailModalVisible.value = false;
+};
+const deletePackageDetail = (index: number) =>
+  showConfirmDialog({ title: "确定删除该套餐详情吗？" })
+    .then(() => {
+      setMealInfo.packageDetails.splice(index, 1);
+    })
+    .catch(() => true);
+const addFoodItem = (index: number) => {
+  setMealInfo.packageDetails[index].foodList.push({
+    name: "",
+    num: undefined,
+    price: undefined,
+  });
+};
+const deleteFoodItem = (index: number, foodItemIndex: number) =>
+  showConfirmDialog({ title: "确定删除该菜品吗？" })
+    .then(() =>
+      setMealInfo.packageDetails[index].foodList.splice(foodItemIndex, 1)
+    )
+    .catch(() => true);
+
 const deleteUseRule = (index: number) => setMealInfo.useRules.splice(index, 1);
 const addUseRule = (action: string) => {
   if (action === "cancel") {
     return true;
   }
   if (!useRule.value) {
-    showToast("请输入设施名称");
+    showToast("请输入规则名称");
     return;
   }
   setMealInfo.useRules.push(useRule.value);

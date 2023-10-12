@@ -15,8 +15,8 @@ export interface SetMealListItem {
 
 interface FoodItem {
   name: string;
-  num: number;
-  price: number;
+  num: number | undefined;
+  price: number | undefined;
 }
 interface PackageDetail {
   name: string;
