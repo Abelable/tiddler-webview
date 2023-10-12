@@ -147,7 +147,7 @@
       <Button
         @click="packageDetailModalVisible = true"
         icon="plus"
-        text="新增套餐分类"
+        text="新增菜品分类"
         type="primary"
         size="mini"
       />
@@ -382,7 +382,7 @@
   />
   <Dialog
     v-model:show="packageDetailModalVisible"
-    title="新增套餐分类"
+    title="新增菜品分类"
     show-cancel-button
     :before-close="addPackageDetail"
   >
@@ -390,7 +390,7 @@
       class="dialog-input"
       v-model="packageDetailName"
       type="text"
-      placeholder="请输入套餐分类名称"
+      placeholder="请输入菜品分类名称"
     />
   </Dialog>
   <Dialog
