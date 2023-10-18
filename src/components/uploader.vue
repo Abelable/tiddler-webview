@@ -2,11 +2,16 @@
   <Uploader :max-count="maxCount" :after-read="uploadPhoto">
     <img
       class="photo"
+      :style="{ width, height }"
       v-if="defaultImg ? !loading : !loading && photo"
       :src="photo || defaultImg"
       alt=""
     />
-    <div class="default-img" v-if="!defaultImg && !loading && !photo">
+    <div
+      class="default-img"
+      :style="{ width, height }"
+      v-if="!defaultImg && !loading && !photo"
+    >
       <div class="img-wrap">
         <img
           style="width: 0.5rem; height: 0.5rem"
@@ -16,7 +21,7 @@
       </div>
       <div class="desc">{{ title }}</div>
     </div>
-    <div class="loading-wrap" v-if="loading">
+    <div class="loading-wrap" :style="{ width, height }" v-if="loading">
       <Loading vertical color="#fff">上传中...</Loading>
     </div>
   </Uploader>
@@ -33,8 +38,10 @@ withDefaults(
     maxCount?: number;
     title?: string;
     defaultImg?: string;
+    width?: string;
+    height?: string;
   }>(),
-  { maxCount: 1 }
+  { maxCount: 1, width: "3.3rem", height: "2.14rem" }
 );
 
 const emit = defineEmits(["finish"]);
@@ -55,8 +62,6 @@ const uploadPhoto = (async ({ file }: { file: File }) => {
 .photo,
 .default-img,
 .loading-wrap {
-  width: 3.3rem;
-  height: 2.14rem;
   box-shadow: 0 0 10px 0 #e6e6e6;
   border-radius: 0.24rem;
 }
