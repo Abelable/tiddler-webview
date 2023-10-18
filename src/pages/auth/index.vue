@@ -6,7 +6,7 @@
       done: authInfo?.status === 1,
       fail: authInfo?.status === 2,
     }"
-    v-if="authInfo?.status"
+    v-if="authInfo?.status !== undefined"
   >
     {{
       authInfo?.status === 0
@@ -28,16 +28,13 @@
         <div class="label">真实姓名</div>
         <div
           class="input"
-          v-if="authInfo && (authInfo?.status === 0 || authInfo?.status === 1)"
+          v-if="authInfo?.status === 0 || authInfo?.status === 1"
         >
           {{ authInfo?.name }}
         </div>
         <input
           class="input"
-          v-if="
-            !authInfo ||
-            (authInfo && (!authInfo?.status || authInfo?.status === 2))
-          "
+          v-if="authInfo?.status === undefined || authInfo?.status === 2"
           v-model="authInfo.name"
           placeholder="请输入真实姓名"
         />
@@ -46,16 +43,13 @@
         <div class="label">身份证号</div>
         <div
           class="input"
-          v-if="authInfo && (authInfo?.status === 0 || authInfo?.status === 1)"
+          v-if="authInfo?.status === 0 || authInfo?.status === 1"
         >
           {{ authInfo?.idCardNumber }}
         </div>
         <input
           class="input"
-          v-if="
-            !authInfo ||
-            (authInfo && (!authInfo?.status || authInfo?.status === 2))
-          "
+          v-if="authInfo?.status === undefined || authInfo?.status === 2"
           v-model="authInfo.idCardNumber"
           placeholder="请输入身份证号"
         />
@@ -64,16 +58,13 @@
         <div class="label">手机号码</div>
         <div
           class="input"
-          v-if="authInfo && (authInfo?.status === 0 || authInfo?.status === 1)"
+          v-if="authInfo?.status === 0 || authInfo?.status === 1"
         >
           {{ authInfo?.mobile }}
         </div>
         <input
           class="input"
-          v-if="
-            !authInfo ||
-            (authInfo && (!authInfo?.status || authInfo?.status === 2))
-          "
+          v-if="authInfo?.status === undefined || authInfo?.status === 2"
           v-model="authInfo.mobile"
           placeholder="请输入手机号码"
         />
@@ -84,18 +75,14 @@
     <div class="card">
       <div class="upload-wrap">
         <div class="upload">
-          <div
-            class="upload-bg"
-            v-if="
-              authInfo && (authInfo?.status === 0 || authInfo?.status === 1)
-            "
-            :style="`background: url(${authInfo?.idCardFrontPhoto} no-repeat center;`"
-          ></div>
+          <img
+            class="photo"
+            v-if="authInfo?.status === 0 || authInfo?.status === 1"
+            :src="authInfo?.idCardFrontPhoto"
+            alt=""
+          />
           <Uploader
-            v-if="
-              !authInfo ||
-              (authInfo && (!authInfo?.status || authInfo?.status === 2))
-            "
+            v-if="authInfo?.status === undefined || authInfo?.status === 2"
             width="3rem"
             height="2rem"
             :default-img="
@@ -107,18 +94,14 @@
           <div class="upload-desc">点击上传身份证正面</div>
         </div>
         <div class="upload">
-          <div
-            class="upload-bg"
-            v-if="
-              authInfo && (authInfo?.status === 0 || authInfo?.status === 1)
-            "
-            :style="`background: url(${authInfo?.idCardBackPhoto} no-repeat center;`"
-          ></div>
+          <img
+            class="photo"
+            v-if="authInfo?.status === 0 || authInfo?.status === 1"
+            :src="authInfo?.idCardBackPhoto"
+            alt=""
+          />
           <Uploader
-            v-if="
-              !authInfo ||
-              (authInfo && (!authInfo?.status || authInfo?.status === 2))
-            "
+            v-if="authInfo?.status === undefined || authInfo?.status === 2"
             width="3rem"
             height="2rem"
             :default-img="
@@ -135,23 +118,18 @@
     <div class="title">上传手持身份证照片</div>
     <div class="card">
       <div class="upload-wrap">
-        <div class="example">
-          <img
-            class="upload-bg"
-            src="https://img.ubo.vip/youbo_plus/id-card-example.png"
-          />
-          <div class="example-tag">参考事例</div>
-        </div>
-        <div
-          class="upload-bg"
-          v-if="authInfo && (authInfo?.status === 0 || authInfo?.status === 1)"
-          :style="`background: url(${authInfo?.holdIdCardPhoto} no-repeat center;`"
-        ></div>
+        <img
+          class="photo"
+          src="https://img.ubo.vip/youbo_plus/id-card-example.png"
+        />
+        <img
+          class="photo"
+          v-if="authInfo?.status === 0 || authInfo?.status === 1"
+          :src="authInfo?.holdIdCardPhoto"
+          alt=""
+        />
         <Uploader
-          v-if="
-            !authInfo ||
-            (authInfo && (!authInfo?.status || authInfo?.status === 2))
-          "
+          v-if="authInfo?.status === undefined || authInfo?.status === 2"
           width="3rem"
           height="2rem"
           :default-img="
@@ -169,7 +147,8 @@
     <div
       class="submit-btn"
       v-if="
-        !authInfo || (authInfo && (!authInfo?.status || authInfo?.status === 2))
+        !authInfo ||
+        (authInfo && (authInfo?.status === undefined || authInfo?.status === 2))
       "
       @click="submit"
     >
@@ -180,13 +159,13 @@
 
 <script setup lang="ts">
 import { getAuthInfo, addAuthInfo, editAuthInfo } from "./utils/api";
-import { ref, onMounted } from "vue";
+import { onMounted, reactive } from "vue";
 import { Toast, showLoadingToast, closeToast } from "vant";
 import Uploader from "@/components/uploader.vue";
 
 import type { AuthInfo } from "./utils/type";
 
-const authInfo = ref<AuthInfo>({
+const authInfo = reactive<AuthInfo>({
   id: undefined,
   status: undefined,
   name: "",
@@ -198,13 +177,13 @@ const authInfo = ref<AuthInfo>({
 });
 
 const uploadIdCardFrontPhoto = (photo: string) => {
-  authInfo.value.idCardFrontPhoto = photo;
+  authInfo.idCardFrontPhoto = photo;
 };
 const uploadIdCardBackPhoto = (photo: string) => {
-  authInfo.value.idCardBackPhoto = photo;
+  authInfo.idCardBackPhoto = photo;
 };
 const uploadHoldIdCardPhoto = (photo: string) => {
-  authInfo.value.holdIdCardPhoto = photo;
+  authInfo.holdIdCardPhoto = photo;
 };
 
 onMounted(() => {
@@ -212,35 +191,52 @@ onMounted(() => {
 });
 
 const setAuthInfo = async () => {
-  const info = await getAuthInfo();
-  if (info) {
-    authInfo.value = info;
+  const {
+    id,
+    status,
+    name,
+    idCardNumber,
+    mobile,
+    idCardFrontPhoto,
+    idCardBackPhoto,
+    holdIdCardPhoto,
+  } = (await getAuthInfo()) || {};
+  if (id) {
+    authInfo.id = id;
+    authInfo.status = status;
+    authInfo.name = name;
+    authInfo.mobile = mobile;
+    authInfo.idCardNumber = idCardNumber;
+    authInfo.idCardFrontPhoto = idCardFrontPhoto;
+    authInfo.idCardBackPhoto = idCardBackPhoto;
+    authInfo.holdIdCardPhoto = holdIdCardPhoto;
+    console.log("authInfo", authInfo);
   }
 };
 
 const submit = async () => {
-  if (!authInfo.value.name) {
+  if (!authInfo.name) {
     Toast("姓名不能为空");
     return;
   }
-  if (!authInfo.value.idCardNumber) {
+  if (!authInfo.idCardNumber) {
     Toast("身份证号不能为空");
     return;
   }
-  const mobile = authInfo.value.mobile;
+  const mobile = authInfo.mobile;
   if (!mobile || (mobile && !/^[1][3,4,5,6,7,8,9][0-9]{9}$/.test(mobile))) {
     Toast("请输入正确手机号");
     return;
   }
-  if (!authInfo.value.idCardFrontPhoto) {
+  if (!authInfo.idCardFrontPhoto) {
     Toast("请上传身份证正面照片");
     return;
   }
-  if (!authInfo.value.idCardBackPhoto) {
+  if (!authInfo.idCardBackPhoto) {
     Toast("请上传身份证反面照片");
     return;
   }
-  if (!authInfo.value.holdIdCardPhoto) {
+  if (!authInfo.holdIdCardPhoto) {
     Toast("请上传手持身份证照片");
     return;
   }
@@ -251,10 +247,10 @@ const submit = async () => {
     forbidClick: true,
   });
   try {
-    if (authInfo.value.status === 2) {
-      await editAuthInfo(authInfo.value);
+    if (authInfo.status === 2) {
+      await editAuthInfo(authInfo);
     } else {
-      await addAuthInfo(authInfo.value);
+      await addAuthInfo(authInfo);
     }
     await setAuthInfo();
     closeToast();
@@ -339,38 +335,15 @@ const submit = async () => {
 .upload {
   text-align: center;
 }
-.upload-bg {
-  width: 3rem;
-  height: 2rem;
-  background-size: cover;
-}
 .upload-desc {
   margin-top: 0.16rem;
   color: #242424;
   font-size: 0.28rem;
 }
 
-.example {
-  position: relative;
+.photo {
   width: 3.3rem;
   height: 2.14rem;
-  font-size: 0;
-  border-radius: 5px;
-  overflow: hidden;
-}
-.example-tag {
-  position: absolute;
-  left: 0;
-  top: 0.16rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.2rem;
-  height: 0.38rem;
-  color: #333;
-  font-size: 0.24rem;
-  background: #fdcc87;
-  border-radius: 0 0.2rem 0.2rem 0;
 }
 
 .card-tips {
