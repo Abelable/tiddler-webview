@@ -181,7 +181,7 @@
 <script setup lang="ts">
 import { getAuthInfo, addAuthInfo, editAuthInfo } from "./utils/api";
 import { ref, onMounted } from "vue";
-import { Toast } from "vant";
+import { Toast, showLoadingToast, closeToast } from "vant";
 import Uploader from "@/components/uploader.vue";
 
 import type { AuthInfo } from "./utils/type";
@@ -245,7 +245,11 @@ const submit = async () => {
     return;
   }
 
-  Toast.loading({ message: "信息上传中...", duration: 0, forbidClick: true });
+  showLoadingToast({
+    message: "信息上传中...",
+    duration: 0,
+    forbidClick: true,
+  });
   try {
     if (authInfo.value.status === 2) {
       await editAuthInfo(authInfo.value);
@@ -253,9 +257,9 @@ const submit = async () => {
       await addAuthInfo(authInfo.value);
     }
     await setAuthInfo();
-    Toast.clear();
+    closeToast();
   } catch (error) {
-    Toast.clear();
+    closeToast();
     if ((error as { message: string })?.message) {
       Toast((error as { message: string }).message);
     }
