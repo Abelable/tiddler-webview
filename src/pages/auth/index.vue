@@ -179,13 +179,16 @@
 </template>
 
 <script setup lang="ts">
-import { getAuthInfo, uploadAuthInfo } from "./utils/api";
-import type { AuthInfo } from "./utils/type";
+import { getAuthInfo, addAuthInfo, editAuthInfo } from "./utils/api";
 import { ref, onMounted } from "vue";
 import { Toast } from "vant";
 import Uploader from "@/components/uploader.vue";
 
+import type { AuthInfo } from "./utils/type";
+
 const authInfo = ref<AuthInfo>({
+  id: undefined,
+  status: undefined,
   name: "",
   idCardNumber: "",
   mobile: "",
@@ -205,11 +208,14 @@ const uploadHoldIdCardPhoto = (photo: string) => {
 };
 
 onMounted(() => {
-  // setAuthInfo();
+  setAuthInfo();
 });
 
 const setAuthInfo = async () => {
-  authInfo.value = await getAuthInfo();
+  const info = await getAuthInfo();
+  if (info) {
+    authInfo.value = info;
+  }
 };
 
 const submit = async () => {
@@ -241,7 +247,11 @@ const submit = async () => {
 
   Toast.loading({ message: "信息上传中...", duration: 0, forbidClick: true });
   try {
-    await uploadAuthInfo(authInfo.value);
+    if (authInfo.value.status === 2) {
+      await editAuthInfo(authInfo.value);
+    } else {
+      await addAuthInfo(authInfo.value);
+    }
     await setAuthInfo();
     Toast.clear();
   } catch (error) {

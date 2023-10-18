@@ -1,4 +1,5 @@
 export interface AuthInfo {
+  id?: number;
   status?: number;
   failureReason?: string;
   name: string;
