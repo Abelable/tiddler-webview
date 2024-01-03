@@ -32,7 +32,7 @@
               <div style="margin-left: 0.1rem">
                 我已阅读并同意
                 <span style="color: #1b89fa" @click="checkAgreement"
-                  >《小鱼游商家服务协议》</span
+                  >《小鱼游电商商家服务协议》</span
                 >
               </div>
             </div>
@@ -497,7 +497,11 @@
                 round
               >
                 <Picker
-                  :columns="categoryOptions"
+                  :columns="
+                    categoryOptions.filter((item) =>
+                      item.adaptedMerchantTypes.includes(merchantInfo.type)
+                    )
+                  "
                   @confirm="categoryConfirm"
                   @cancel="categoryPickerPopupVisible = false"
                   :columns-field-names="{ text: 'name', value: 'id' }"
@@ -556,18 +560,18 @@
         <div class="title">审核通过</div>
         <div class="pay-amount">
           缴纳保证金：<span style="color: #eaab63"
-            >{{ statusInfo.type === 1 ? 1000 : 10000 }}元</span
+            >{{ statusInfo.deposit }}元</span
           >
         </div>
         <div class="agreement">
           <p>缴纳保证金默认接受以下条款:</p>
           <p>
             1.
-            商家在小鱼游参与经营活动必须缴纳服务保证金，保证金主要用于保证商家直播带货符合法律法规及小鱼游的平台规定。
+            商家在小鱼游参与经营活动必须缴纳服务保证金，保证金主要用于保证商家商品销售符合法律法规及小鱼游的平台规定。
           </p>
           <p>
             2.
-            商家在入驻申请通过后需一次性足额缴纳保证金，保证金金额统一为人民币壹仟元。
+            商家在入驻申请通过后需一次性足额缴纳保证金，不同店铺分类下，保证金金额会有所不同。
           </p>
           <p>
             3.
@@ -632,6 +636,7 @@ const step = ref(0);
 const agreementsChecked = ref(false);
 const merchantInfo = reactive<MerchantInfo>({
   type: 1,
+  deposit: 0,
   companyName: "",
   businessLicensePhoto: "",
   regionDesc: "",
@@ -891,6 +896,7 @@ const categoryConfirm = ({
   selectedOptions: ShopCategoryOption[];
 }) => {
   merchantInfo.shopCategoryId = selectedValues[0];
+  merchantInfo.deposit = selectedOptions[0].deposit;
   pickedCategoryDesc.value = selectedOptions[0].name;
   categoryPickerPopupVisible.value = false;
 };

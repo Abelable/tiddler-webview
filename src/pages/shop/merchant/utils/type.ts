@@ -8,6 +8,7 @@ export interface RegionOption {
 
 export interface MerchantInfo {
   type: number;
+  deposit: number;
   companyName?: string;
   businessLicensePhoto?: string;
   regionDesc: string;
@@ -38,11 +39,13 @@ export interface CreateMerchantInfo
 export interface ShopCategoryOption {
   id: number;
   name: string;
+  deposit: number;
+  adaptedMerchantTypes: number[];
 }
 
 export interface MerchantStatusInfo {
   id: number;
-  type: number;
+  deposit: number;
   status: number;
   failureReason: string;
   orderId: number;
