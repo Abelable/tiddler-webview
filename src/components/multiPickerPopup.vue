@@ -4,10 +4,10 @@
       <button class="cancel-btn" @click="cancel">取消</button>
       <button class="confirm-btn" @click="confirm">确认</button>
     </div>
-    <CheckboxGroup class="restaurant-options" v-model="restaurantIds">
+    <CheckboxGroup class="restaurant-options" v-model="pickedIds">
       <CellGroup>
         <Cell
-          v-for="(item, index) in restaurantOptions"
+          v-for="(item, index) in options"
           :key="item.id"
           :title="item.name"
           @click="toggleSelected(index)"
@@ -15,7 +15,7 @@
           <template #right-icon>
             <Checkbox
               :name="item.id"
-              :ref="(el: CheckboxInstance) => (restaurantOptionRefs[index] = el)"
+              :ref="(el: CheckboxInstance) => (optionRefs[index] = el)"
               @click.stop
             />
           </template>
@@ -32,16 +32,16 @@ import { ref } from "vue";
 import type { CheckboxInstance } from "vant";
 import type { Option } from "@/utils/type";
 
-defineProps<{ visible: boolean; restaurantOptions: Option[] }>();
+defineProps<{ visible: boolean; options: Option[] }>();
 const emit = defineEmits(["confirm", "cancel"]);
 
-const restaurantIds = ref([]);
-const restaurantOptionRefs = ref<CheckboxInstance[]>([]);
+const pickedIds = ref([]);
+const optionRefs = ref<CheckboxInstance[]>([]);
 
 const toggleSelected = (index: number) => {
-  restaurantOptionRefs.value[index].toggle();
+  optionRefs.value[index].toggle();
 };
-const confirm = () => emit("confirm", restaurantIds.value);
+const confirm = () => emit("confirm", pickedIds.value);
 const cancel = () => emit("cancel");
 </script>
 

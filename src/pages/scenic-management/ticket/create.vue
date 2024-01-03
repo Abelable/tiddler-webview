@@ -386,10 +386,10 @@
     @confirm="setScenicIds"
     @cancel="scenicPickerPopupVisible = false"
   />
-  <MultiScenicPickerPopup
+  <MultiPickerPopup
     v-if="ticketInfo.type === 2"
     :visible="scenicPickerPopupVisible"
-    :scenic-options="scenicOptions"
+    :options="scenicOptions"
     @confirm="setScenicIds"
     @cancel="scenicPickerPopupVisible = false"
   />
@@ -438,9 +438,9 @@ import {
   SwipeCell,
   Calendar,
 } from "vant";
+import MultiPickerPopup from "@/components/multiPickerPopup.vue";
 import TypePickerPopup from "./components/typePickerPopup.vue";
 import ScenicPickerPopup from "./components/scenicPickerPopup.vue";
-import MultiScenicPickerPopup from "./components/multiScenicPickerPopup.vue";
 import TimePickerPopup from "./components/timePickerPopup.vue";
 import TimeRangePickerPopup from "./components/timeRangePickerPopup.vue";
 import RefundStatusPickerPopup from "./components/refundStatusPickerPopup.vue";

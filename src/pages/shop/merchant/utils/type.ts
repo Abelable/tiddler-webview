@@ -26,7 +26,7 @@ export interface MerchantInfo {
   bankName: string;
   shopAvatar: UploaderFileListItem[];
   shopName: string;
-  shopCategoryId: number;
+  shopCategoryIds: number[];
   shopCover: UploaderFileListItem[];
 }
 

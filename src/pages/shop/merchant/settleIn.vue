@@ -491,22 +491,6 @@
               >
                 {{ pickedCategoryDesc || "请选择店铺分类" }}
               </div>
-              <Popup
-                v-model:show="categoryPickerPopupVisible"
-                position="bottom"
-                round
-              >
-                <Picker
-                  :columns="
-                    categoryOptions.filter((item) =>
-                      item.adaptedMerchantTypes.includes(merchantInfo.type)
-                    )
-                  "
-                  @confirm="categoryConfirm"
-                  @cancel="categoryPickerPopupVisible = false"
-                  :columns-field-names="{ text: 'name', value: 'id' }"
-                />
-              </Popup>
             </div>
           </div>
           <div class="btns">
@@ -598,21 +582,27 @@
       </div>
     </div>
   </div>
+
+  <MultiPickerPopup
+    :visible="categoryPickerPopupVisible"
+    :options="
+      categoryOptions.filter((item) =>
+        item.adaptedMerchantTypes.includes(merchantInfo.type)
+      )
+    "
+    @confirm="categoryConfirm"
+    @cancel="categoryPickerPopupVisible = false"
+  />
 </template>
 
 <script setup lang="ts">
-import {
-  Checkbox,
-  Area,
-  Popup,
-  Uploader,
-  Picker,
-  Loading,
-  showToast,
-} from "vant";
+import { Checkbox, Area, Popup, Uploader, Loading, showToast } from "vant";
+import MultiPickerPopup from "@/components/multiPickerPopup.vue";
+
 import { ref, onMounted, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { areaList } from "@vant/area-data";
+import _ from "lodash";
 import { upload, uploadFile } from "@/utils/upload";
 import {
   getShopCategoryOptions,
@@ -654,7 +644,7 @@ const merchantInfo = reactive<MerchantInfo>({
   bankName: "",
   shopAvatar: [],
   shopName: "",
-  shopCategoryId: 0,
+  shopCategoryIds: [],
   shopCover: [],
 });
 const areaPickerPopupVisible = ref(false);
@@ -824,7 +814,7 @@ const nextStep = () => {
         showToast("请输入店铺名称");
         return;
       }
-      if (!merchantInfo.shopCategoryId) {
+      if (!merchantInfo.shopCategoryIds.length) {
         showToast("请选择店铺分类");
         return;
       }
@@ -888,16 +878,18 @@ const uploadBusinessLicensePhoto = (async ({ file }: { file: File }) => {
   uploadBusinessLicensePhotoLoading.value = false;
 }) as UploaderAfterRead;
 
-const categoryConfirm = ({
-  selectedValues,
-  selectedOptions,
-}: {
-  selectedValues: number[];
-  selectedOptions: ShopCategoryOption[];
-}) => {
-  merchantInfo.shopCategoryId = selectedValues[0];
-  merchantInfo.deposit = selectedOptions[0].deposit;
-  pickedCategoryDesc.value = selectedOptions[0].name;
+const categoryConfirm = (shopCategoryIds: number[]) => {
+  merchantInfo.shopCategoryIds = shopCategoryIds;
+  const selectedShopCategoryOptions = categoryOptions.value.filter((item) =>
+    shopCategoryIds.includes(item.id)
+  );
+  merchantInfo.deposit = _.maxBy(
+    selectedShopCategoryOptions,
+    "deposit"
+  ).deposit;
+  pickedCategoryDesc.value = selectedShopCategoryOptions
+    .map((item) => item.name)
+    .join();
   categoryPickerPopupVisible.value = false;
 };
 

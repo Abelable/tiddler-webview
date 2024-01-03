@@ -286,9 +286,9 @@
 
   <button class="upload-btn" @click="save">点击提交</button>
 
-  <RestaurantPickerPopup
+  <MultiPickerPopup
     :visible="restaurantPickerPopupVisible"
-    :restaurant-options="restaurantOptions"
+    :options="restaurantOptions"
     @confirm="setRestaurantIds"
     @cancel="restaurantPickerPopupVisible = false"
   />
@@ -364,7 +364,7 @@ import {
   Picker,
   TimePicker,
 } from "vant";
-import RestaurantPickerPopup from "./components/restaurantPickerPopup.vue";
+import MultiPickerPopup from "@/components/multiPickerPopup.vue";
 import DateRangePickerPopup from "./components/dateRangePickerPopup.vue";
 import validityTypePickerPopup from "./components/validityTypePickerPopup.vue";
 
