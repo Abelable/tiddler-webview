@@ -192,7 +192,7 @@
           <div class="name flex required">
             <div>销售佣金比例</div>
             <Popover
-              v-model:show="commissionRateTipsVisible"
+              v-model:show="salesCommissionRateTipsVisible"
               placement="bottom-start"
               theme="dark"
             >
@@ -218,7 +218,7 @@
           <div class="name flex required">
             <div>推广佣金比例</div>
             <Popover
-              v-model:show="commissionRateTipsVisible"
+              v-model:show="promotionCommissionRateTipsVisible"
               placement="bottom-start"
               theme="dark"
             >
@@ -469,7 +469,8 @@ const minPromotionCommissionRate = ref(0);
 const maxPromotionCommissionRate = ref(0);
 const detailImageListTipsVisible = ref(false);
 const defaultSpecImageTipsVisible = ref(false);
-const commissionRateTipsVisible = ref(false);
+const salesCommissionRateTipsVisible = ref(false);
+const promotionCommissionRateTipsVisible = ref(false);
 const activeSkuNames = ref([0]);
 
 // 计算属性
@@ -549,6 +550,16 @@ const setGoodsInfo = async () => {
     image: item.image ? [{ url: item.image }] : [],
   }));
   specList.forEach((item) => goodsInfo.specList.push(_.cloneDeep(item)));
+
+  const curCategoryOption = categoryOptions.value.find(
+    (item) => item.id === categoryId
+  ) as GoodsCategoryOption;
+  minSalesCommissionRate.value = curCategoryOption.minSalesCommissionRate;
+  maxSalesCommissionRate.value = curCategoryOption.maxSalesCommissionRate;
+  minPromotionCommissionRate.value =
+    curCategoryOption.minPromotionCommissionRate;
+  maxPromotionCommissionRate.value =
+    curCategoryOption.maxPromotionCommissionRate;
 };
 
 const selectFreightTemplate = ({

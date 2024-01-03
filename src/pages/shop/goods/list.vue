@@ -56,7 +56,7 @@
         :key="index"
         v-show="curMenuIndex === 1"
       >
-        <div class="inner">
+        <div class="inner" @click="editGoods(item.id)">
           <img class="image" :src="item.image" alt="" />
           <div class="content">
             <div class="name omit">{{ item.name }}</div>
