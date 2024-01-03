@@ -2,8 +2,14 @@ import type { UploaderFileListItem } from "vant";
 
 export interface GoodsCategoryOption {
   id: number;
+  shopCategoryId: number;
   name: string;
+  minSalesCommissionRate: number;
+  maxSalesCommissionRate: number;
+  minPromotionCommissionRate: number;
+  maxPromotionCommissionRate: number;
 }
+
 export interface GoodsListItem {
   id: number;
   image: string;
@@ -35,6 +41,7 @@ export interface OriginalGoodsInfo {
   defaultSpecImage: string;
   name: string;
   freightTemplateId: number;
+  shopCategoryId: number;
   categoryId: number;
   returnAddressId: number;
   price: number;
@@ -62,6 +69,7 @@ export interface GoodsInfo {
   defaultSpecImage: UploaderFileListItem[];
   name: string;
   freightTemplateId: number | undefined;
+  shopCategoryId: number | undefined;
   categoryId: number | undefined;
   returnAddressId: number | undefined;
   price: number | undefined;

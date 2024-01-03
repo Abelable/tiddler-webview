@@ -188,7 +188,7 @@
             placeholder="请输入商品总库存"
           />
         </li>
-        <li class="form-item flex">
+        <li class="form-item flex" v-if="goodsInfo.categoryId">
           <div class="name flex required">
             <div>销售佣金比例</div>
             <Popover
@@ -196,7 +196,11 @@
               placement="bottom-start"
               theme="dark"
             >
-              <div class="warning">范围：10%～70%</div>
+              <div class="warning">
+                {{
+                  `范围：${minSalesCommissionRate}%～${maxSalesCommissionRate}%`
+                }}
+              </div>
               <template #reference>
                 <Icon style="margin-left: 0.06rem" name="question-o" />
               </template>
@@ -210,7 +214,7 @@
           />
           <div class="unit">%</div>
         </li>
-        <li class="form-item flex">
+        <li class="form-item flex" v-if="goodsInfo.categoryId">
           <div class="name flex required">
             <div>推广佣金比例</div>
             <Popover
@@ -218,7 +222,11 @@
               placement="bottom-start"
               theme="dark"
             >
-              <div class="warning">范围：2%～70%</div>
+              <div class="warning">
+                {{
+                  `范围：${minPromotionCommissionRate}%～${maxPromotionCommissionRate}%`
+                }}
+              </div>
               <template #reference>
                 <Icon style="margin-left: 0.06rem" name="question-o" />
               </template>
@@ -433,6 +441,7 @@ const goodsInfo = reactive<Omit<GoodsInfo, "id">>({
   defaultSpecImage: [],
   name: "",
   freightTemplateId: undefined,
+  shopCategoryId: undefined,
   categoryId: undefined,
   returnAddressId: undefined,
   price: undefined,
@@ -454,6 +463,10 @@ const videoTipsVisible = ref(false);
 const imageListTipsVisible = ref(false);
 const detailImageListTipsVisible = ref(false);
 const defaultSpecImageTipsVisible = ref(false);
+const minSalesCommissionRate = ref(0);
+const maxSalesCommissionRate = ref(0);
+const minPromotionCommissionRate = ref(0);
+const maxPromotionCommissionRate = ref(0);
 const salesCommissionRateTipsVisible = ref(false);
 const promotionCommissionRateTipsVisible = ref(false);
 const activeSkuNames = ref([0]);
@@ -499,8 +512,19 @@ const selectFreightTemplate = ({
   goodsInfo.freightTemplateId = selectedValues[0];
   freightTemplatePickerPopupVisible.value = false;
 };
-const selectCategory = ({ selectedValues }: { selectedValues: number[] }) => {
-  goodsInfo.categoryId = selectedValues[0];
+const selectCategory = ({
+  selectedOptions,
+}: {
+  selectedOptions: GoodsCategoryOption[];
+}) => {
+  goodsInfo.categoryId = selectedOptions[0].id;
+  goodsInfo.shopCategoryId = selectedOptions[0].shopCategoryId;
+  minSalesCommissionRate.value = selectedOptions[0].minSalesCommissionRate;
+  maxSalesCommissionRate.value = selectedOptions[0].maxSalesCommissionRate;
+  minPromotionCommissionRate.value =
+    selectedOptions[0].minPromotionCommissionRate;
+  maxPromotionCommissionRate.value =
+    selectedOptions[0].maxPromotionCommissionRate;
   categoryPickerPopupVisible.value = false;
 };
 const selectReturnAddress = ({
@@ -617,12 +641,22 @@ const save = async () => {
     showToast("请输入商品总库存");
     return;
   }
-  if (goodsInfo.salesCommissionRate === undefined) {
-    showToast("请输入销售佣金比例");
+  if (
+    goodsInfo.salesCommissionRate === undefined ||
+    goodsInfo.salesCommissionRate < minSalesCommissionRate.value
+  ) {
+    showToast(
+      `请输入范围为${minSalesCommissionRate.value}%～${maxSalesCommissionRate.value}%的销售佣金比例`
+    );
     return;
   }
-  if (goodsInfo.promotionCommissionRate === undefined) {
-    showToast("请输入推广佣金比例");
+  if (
+    goodsInfo.promotionCommissionRate === undefined ||
+    goodsInfo.promotionCommissionRate < minPromotionCommissionRate.value
+  ) {
+    showToast(
+      `请输入范围为${minPromotionCommissionRate.value}%～${maxPromotionCommissionRate.value}%的推广佣金比例`
+    );
     return;
   }
   if (
@@ -661,8 +695,6 @@ const save = async () => {
     marketPrice,
     specList,
     skuList,
-    salesCommissionRate,
-    promotionCommissionRate,
     ...rest
   } = goodsInfo;
   const createGoodsInfo: CreateGoodsInfo = {
@@ -671,8 +703,6 @@ const save = async () => {
     imageList: JSON.stringify(imageList.map((item) => item.url)),
     detailImageList: JSON.stringify(detailImageList.map((item) => item.url)),
     defaultSpecImage: defaultSpecImage[0].url as string,
-    salesCommissionRate: salesCommissionRate / 100,
-    promotionCommissionRate: promotionCommissionRate / 100,
     specList: JSON.stringify(specList),
     skuList: JSON.stringify(
       skuList.map((item) => ({
