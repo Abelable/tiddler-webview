@@ -21,10 +21,10 @@ export const getProviderRestaurantList = async (
   return list;
 };
 
-export const applyRestaurant = async (restaurantId: number) =>
+export const applyRestaurant = async (restaurantIds: number[]) =>
   await http("catering/provider/restaurant/apply", {
     method: "POST",
-    data: { restaurantId },
+    data: { restaurantIds },
   });
 
 export const deleteProviderRestaurant = async (id: number) =>

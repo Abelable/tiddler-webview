@@ -22,6 +22,7 @@
         </Cell>
       </CellGroup>
     </CheckboxGroup>
+    <slot></slot>
   </Popup>
 </template>
 

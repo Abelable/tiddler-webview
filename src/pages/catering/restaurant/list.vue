@@ -112,17 +112,16 @@
     </List>
   </PullRefresh>
 
-  <Popup v-model:show="restaurantPickerPopupVisible" position="bottom" round>
-    <Picker
-      :columns="restaurantOptions"
-      @confirm="selectRestaurant"
-      @cancel="restaurantPickerPopupVisible = false"
-      :columns-field-names="{ text: 'name', value: 'id' }"
-    />
+  <MultiPickerPopup
+    :visible="restaurantPickerPopupVisible"
+    :options="restaurantOptions"
+    @confirm="selectRestaurant"
+    @cancel="restaurantPickerPopupVisible = false"
+  >
     <div class="no-tips row center" @click="createRestaurant">
       没有找到您的门店？<span style="color: #1182fb">点此创建</span>
     </div>
-  </Popup>
+  </MultiPickerPopup>
 
   <button class="add-btn" @click="showRestaurantPickerPopup">添加门店</button>
 </template>
@@ -132,14 +131,14 @@ import {
   PullRefresh,
   List,
   SwipeCell,
-  Popup,
-  Picker,
   Button,
   Icon,
   showConfirmDialog,
   Empty,
   showToast,
 } from "vant";
+import MultiPickerPopup from "@/components/multiPickerPopup.vue";
+
 import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import dayjs from "dayjs";
@@ -231,16 +230,14 @@ const showRestaurantPickerPopup = async () => {
   restaurantPickerPopupVisible.value = true;
 };
 
-const selectRestaurant = async ({
-  selectedValues,
-}: {
-  selectedValues: number[];
-}) => {
-  try {
-    await applyRestaurant(selectedValues[0]);
-    setTotals();
-  } catch (error) {
-    showToast((error as { code: number; message: string }).message);
+const selectRestaurant = async (restaurantIds: number[]) => {
+  if (restaurantIds.length) {
+    try {
+      await applyRestaurant(restaurantIds);
+      setTotals();
+    } catch (error) {
+      showToast((error as { code: number; message: string }).message);
+    }
   }
   restaurantPickerPopupVisible.value = false;
 };
@@ -390,7 +387,7 @@ const editRestaurant = (id: number) =>
   }
 }
 .no-tips {
-  height: 1rem;
+  height: 1.2rem;
   color: #333;
   font-size: 0.26rem;
 }
