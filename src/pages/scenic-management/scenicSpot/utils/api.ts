@@ -1,6 +1,6 @@
 import { http } from "@/utils/http";
 
-import type { ProviderScenicSpot } from "./type";
+import type { OriginalScenicInfo, ProviderScenicSpot } from "./type";
 import type { Option } from "@/utils/type";
 
 export const getScenicOptions = async (): Promise<Option[]> =>
@@ -29,3 +29,20 @@ export const applyScenicSpot = async (scenicId: number) =>
 
 export const deleteProviderScenicSpot = async (id: number) =>
   await http("scenic/provider/delete_scenic", { method: "POST", data: { id } });
+
+export const getScenicInfo = async (id: number): Promise<OriginalScenicInfo> =>
+  await http("scenic/detail", { data: { id } });
+
+export const createScenic = async (
+  restaurantInfo: Partial<OriginalScenicInfo>
+) =>
+  await http("scenic/add", {
+    method: "POST",
+    data: restaurantInfo,
+  });
+
+export const editScenic = async (restaurantInfo: Partial<OriginalScenicInfo>) =>
+  await http("scenic/edit", {
+    method: "POST",
+    data: restaurantInfo,
+  });
