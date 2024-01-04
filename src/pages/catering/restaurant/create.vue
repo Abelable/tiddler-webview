@@ -516,15 +516,6 @@ const save = async () => {
 };
 </script>
 
-<style>
-.van-empty__description {
-  font-size: 0.24rem;
-}
-.van-collapse-item__title {
-  font-size: 0.26rem;
-  font-weight: 500;
-}
-</style>
 <style lang="scss" scoped>
 .container {
   padding: 0.32rem 0.32rem 1.52rem;
@@ -652,5 +643,14 @@ const save = async () => {
   font-size: 0.26rem;
   border: 1px solid #ddd;
   border-radius: 0.12rem;
+}
+</style>
+<style>
+.van-empty__description {
+  font-size: 0.24rem;
+}
+.van-collapse-item__title {
+  font-size: 0.26rem;
+  font-weight: 500;
 }
 </style>
