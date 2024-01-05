@@ -18,3 +18,8 @@ export interface ApiOption {
   id: number;
   name: string;
 }
+
+export interface Option {
+  text: string;
+  value: number;
+}

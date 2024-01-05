@@ -6,11 +6,7 @@
 
 <script setup lang="ts">
 import { Popup, Picker } from "vant";
-
-interface Option {
-  text: string;
-  value: number;
-}
+import { Option } from "@/utils/type";
 
 defineProps<{ visible: boolean; options: Option[] }>();
 const emit = defineEmits(["confirm", "cancel"]);
