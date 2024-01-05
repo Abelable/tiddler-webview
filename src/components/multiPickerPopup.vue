@@ -8,13 +8,13 @@
       <CellGroup>
         <Cell
           v-for="(item, index) in options"
-          :key="item.id"
-          :title="item.name"
+          :key="item.value"
+          :title="item.text"
           @click="toggleSelected(index)"
         >
           <template #right-icon>
             <Checkbox
-              :name="item.id"
+              :name="item.value"
               :ref="(el: CheckboxInstance) => (optionRefs[index] = el)"
               @click.stop
             />
@@ -31,9 +31,9 @@ import { Popup, CheckboxGroup, Checkbox, CellGroup, Cell } from "vant";
 import { ref } from "vue";
 
 import type { CheckboxInstance } from "vant";
-import type { ApiOption } from "@/utils/type";
+import type { Option } from "@/utils/type";
 
-defineProps<{ visible: boolean; options: ApiOption[] }>();
+defineProps<{ visible: boolean; options: Option[] }>();
 const emit = defineEmits(["confirm", "cancel"]);
 
 const selectedValues = ref([]);

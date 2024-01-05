@@ -114,7 +114,9 @@
 
   <MultiPickerPopup
     :visible="restaurantPickerPopupVisible"
-    :options="restaurantOptions"
+    :options="
+      restaurantOptions.map((item) => ({ text: item.name, value: item.id }))
+    "
     @confirm="selectRestaurant"
     @cancel="restaurantPickerPopupVisible = false"
   >

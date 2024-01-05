@@ -586,9 +586,9 @@
   <MultiPickerPopup
     :visible="categoryPickerPopupVisible"
     :options="
-      categoryOptions.filter((item) =>
-        item.adaptedMerchantTypes.includes(merchantInfo.type)
-      )
+      categoryOptions
+        .filter((item) => item.adaptedMerchantTypes.includes(merchantInfo.type))
+        .map((item) => ({ text: item.name, value: item.id }))
     "
     @confirm="categoryConfirm"
     @cancel="categoryPickerPopupVisible = false"

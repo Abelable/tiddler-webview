@@ -392,7 +392,9 @@
   <MultiPickerPopup
     v-if="ticketInfo.type === 2"
     :visible="scenicPickerPopupVisible"
-    :options="scenicOptions"
+    :options="
+      scenicOptions.map((item) => ({ text: item.name, value: item.id }))
+    "
     @confirm="setScenicIds"
     @cancel="scenicPickerPopupVisible = false"
   />
