@@ -150,7 +150,7 @@ import {
   getRestaurantListTotals,
 } from "./utils/api";
 
-import type { Option as RestaurantOption } from "@/utils/type";
+import type { ApiOption as RestaurantOption } from "@/utils/type";
 import type { ProviderRestaurant } from "./utils/type";
 
 const router = useRouter();
@@ -230,7 +230,11 @@ const showRestaurantPickerPopup = async () => {
   restaurantPickerPopupVisible.value = true;
 };
 
-const selectRestaurant = async (restaurantIds: number[]) => {
+const selectRestaurant = async ({
+  selectedValues: restaurantIds,
+}: {
+  selectedValues: number[];
+}) => {
   if (restaurantIds.length) {
     try {
       await applyRestaurant(restaurantIds);

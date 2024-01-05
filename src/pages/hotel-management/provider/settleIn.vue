@@ -74,17 +74,6 @@
               >
                 {{ providerInfo.regionDesc || "请选择省、市、区" }}
               </div>
-              <Popup
-                v-model:show="areaPickerPopupVisible"
-                position="bottom"
-                round
-              >
-                <Area
-                  :area-list="areaList"
-                  @confirm="areaConfirm"
-                  @cancel="areaPickerPopupVisible = false"
-                />
-              </Popup>
             </div>
             <div class="form-item">
               <div class="form-title">公司地址详情</div>
@@ -319,18 +308,6 @@
               >
                 {{ pickedCategoryDesc || "请选择店铺类型" }}
               </div>
-              <Popup
-                v-model:show="categoryPickerPopupVisible"
-                position="bottom"
-                round
-              >
-                <Picker
-                  :columns="categoryOptions"
-                  @confirm="categoryConfirm"
-                  @cancel="categoryPickerPopupVisible = false"
-                  :columns-field-names="{ text: 'name', value: 'id' }"
-                />
-              </Popup>
             </div>
           </div>
           <div class="btns">
@@ -420,21 +397,27 @@
       </div>
     </div>
   </div>
+
+  <PickerPopup
+    :visible="categoryPickerPopupVisible"
+    :options="categoryOptions"
+    @confirm="categoryConfirm"
+    @cancel="categoryPickerPopupVisible = false"
+  />
+  <AreaPickerPopup
+    :visible="areaPickerPopupVisible"
+    @confirm="areaConfirm"
+    @cancel="areaPickerPopupVisible = false"
+  />
 </template>
 
 <script setup lang="ts">
-import {
-  Checkbox,
-  Area,
-  Popup,
-  Uploader,
-  Picker,
-  Loading,
-  showToast,
-} from "vant";
+import { Checkbox, Uploader, Loading, showToast } from "vant";
+import PickerPopup from "@/components/pickerPopup.vue";
+import AreaPickerPopup from "@/components/areaPickerPopup.vue";
+
 import { ref, onMounted, reactive } from "vue";
 import { useRouter } from "vue-router";
-import { areaList } from "@vant/area-data";
 import { upload, uploadFile } from "@/utils/upload";
 import {
   uploadProviderInfo,
@@ -444,13 +427,12 @@ import {
 } from "./utils/api";
 
 import type { UploaderAfterRead } from "vant/lib/uploader/types";
-import type { ProviderInfo, ProviderStatusInfo } from "./utils/type";
-import { CreateProviderInfo, ShopTypeOption } from "./utils/type";
-interface RegionOption {
-  text: string;
-  value: string;
-  children?: RegionOption[];
-}
+import type { Option } from "@/utils/type";
+import type {
+  ProviderInfo,
+  ProviderStatusInfo,
+  CreateProviderInfo,
+} from "./utils/type";
 
 const router = useRouter();
 
@@ -483,9 +465,9 @@ const uploadIdCardBackPhotoLoading = ref(false);
 const uploadHoldIdCardPhotoLoading = ref(false);
 const uploadBusinessLicensePhotoLoading = ref(false);
 const categoryOptions = [
-  { id: 1, name: "酒店官方" },
-  { id: 2, name: "专营店" },
-  { id: 3, name: "平台自营" },
+  { text: "酒店官方", value: 1 },
+  { text: "专营店", value: 2 },
+  { text: "平台自营", value: 3 },
 ];
 const categoryPickerPopupVisible = ref(false);
 const pickedCategoryDesc = ref("");
@@ -628,7 +610,7 @@ const areaConfirm = ({
   selectedOptions,
 }: {
   selectedValues: string[];
-  selectedOptions: RegionOption[];
+  selectedOptions: Option[];
 }) => {
   providerInfo.regionCodeList = JSON.stringify(selectedValues);
   providerInfo.regionDesc = `${selectedOptions[0].text} ${selectedOptions[1].text} ${selectedOptions[2].text}`;
@@ -661,10 +643,10 @@ const categoryConfirm = ({
   selectedOptions,
 }: {
   selectedValues: number[];
-  selectedOptions: ShopTypeOption[];
+  selectedOptions: Option[];
 }) => {
   providerInfo.shopType = selectedValues[0];
-  pickedCategoryDesc.value = selectedOptions[0].name;
+  pickedCategoryDesc.value = selectedOptions[0].text;
   categoryPickerPopupVisible.value = false;
 };
 

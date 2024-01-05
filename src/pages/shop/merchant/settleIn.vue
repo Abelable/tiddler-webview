@@ -613,8 +613,8 @@ import {
 } from "./utils/api";
 
 import type { UploaderAfterRead } from "vant/lib/uploader/types";
+import type { Option } from "@/utils/type";
 import type {
-  RegionOption,
   MerchantInfo,
   ShopCategoryOption,
   MerchantStatusInfo,
@@ -850,7 +850,7 @@ const areaConfirm = ({
   selectedOptions,
 }: {
   selectedValues: string[];
-  selectedOptions: RegionOption[];
+  selectedOptions: Option[];
 }) => {
   merchantInfo.regionCodeList = JSON.stringify(selectedValues);
   merchantInfo.regionDesc = `${selectedOptions[0].text} ${selectedOptions[1].text} ${selectedOptions[2].text}`;
@@ -878,7 +878,11 @@ const uploadBusinessLicensePhoto = (async ({ file }: { file: File }) => {
   uploadBusinessLicensePhotoLoading.value = false;
 }) as UploaderAfterRead;
 
-const categoryConfirm = (shopCategoryIds: number[]) => {
+const categoryConfirm = ({
+  selectedValues: shopCategoryIds,
+}: {
+  selectedValues: number[];
+}) => {
   merchantInfo.shopCategoryIds = shopCategoryIds;
   const selectedShopCategoryOptions = categoryOptions.value.filter((item) =>
     shopCategoryIds.includes(item.id)

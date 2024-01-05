@@ -28,11 +28,6 @@ export interface CreateProviderInfo
   shopCover?: string;
 }
 
-export interface ShopTypeOption {
-  id: number;
-  name: string;
-}
-
 export interface ProviderStatusInfo {
   id: number;
   status: number;

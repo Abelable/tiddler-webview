@@ -121,16 +121,16 @@
     </List>
   </PullRefresh>
 
-  <Popup v-model:show="scenicPickerPopupVisible" position="bottom" round>
-    <Picker
-      :columns="scenicOptions"
-      @confirm="selectScenic"
-      @cancel="scenicPickerPopupVisible = false"
-      :columns-field-names="{ text: 'name', value: 'id' }"
-    />
-  </Popup>
-
   <button class="add-btn" @click="showScenicPickerPopup">添加景点</button>
+
+  <PickerPopup
+    :visible="scenicPickerPopupVisible"
+    :options="
+      scenicOptions.map((item) => ({ text: item.name, value: item.id }))
+    "
+    @confirm="selectScenic"
+    @cancel="scenicPickerPopupVisible = false"
+  />
 </template>
 
 <script setup lang="ts">
@@ -138,14 +138,14 @@ import {
   PullRefresh,
   List,
   SwipeCell,
-  Popup,
-  Picker,
   Button,
   Icon,
   showConfirmDialog,
   Empty,
   showToast,
 } from "vant";
+import PickerPopup from "@/components/pickerPopup.vue";
+
 import { ref, reactive, onMounted } from "vue";
 import dayjs from "dayjs";
 import {
@@ -156,7 +156,7 @@ import {
   getScenicListTotals,
 } from "./utils/api";
 
-import type { Option as ScenicOption } from "@/utils/type";
+import type { ApiOption as ScenicOption } from "@/utils/type";
 import type { ProviderScenicSpot } from "./utils/type";
 
 const loading = ref(false);

@@ -351,11 +351,8 @@ import {
   payProviderDeposit,
 } from "./utils/api";
 
-import type {
-  RegionOption,
-  ProviderInfo,
-  ProviderStatusInfo,
-} from "./utils/type";
+import type { Option } from "@/utils/type";
+import type { ProviderInfo, ProviderStatusInfo } from "./utils/type";
 
 const router = useRouter();
 
@@ -517,7 +514,7 @@ const areaConfirm = ({
   selectedOptions,
 }: {
   selectedValues: string[];
-  selectedOptions: RegionOption[];
+  selectedOptions: Option[];
 }) => {
   providerInfo.regionCodeList = JSON.stringify(selectedValues);
   providerInfo.regionDesc = `${selectedOptions[0].text} ${selectedOptions[1].text} ${selectedOptions[2].text}`;

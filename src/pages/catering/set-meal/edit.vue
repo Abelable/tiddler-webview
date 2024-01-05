@@ -370,8 +370,9 @@
     @confirm="setRestaurantIds"
     @cancel="restaurantPickerPopupVisible = false"
   />
-  <validityTypePickerPopup
+  <PickerPopup
     :visible="validityTypePickerPopupVisible"
+    :options="validityTypeOptions"
     @confirm="setValidityType"
     @cancel="validityTypePickerPopupVisible = false"
   />
@@ -406,13 +407,12 @@
       placeholder="请输入规则名称"
     />
   </Dialog>
-  <Popup v-model:show="weekDayPickerPopupVisible" position="bottom" round>
-    <Picker
-      :columns="weekDayOptions"
-      @confirm="selectWeekDay"
-      @cancel="weekDayPickerPopupVisible = false"
-    />
-  </Popup>
+  <PickerPopup
+    :visible="weekDayPickerPopupVisible"
+    :options="weekDayOptions"
+    @confirm="selectWeekDay"
+    @cancel="weekDayPickerPopupVisible = false"
+  />
   <TimeRangePickerPopup
     :visible="timeFramePickerPopupVisible"
     @confirm="selectTimeFrame"
@@ -433,13 +433,11 @@ import {
   Switch,
   SwipeCell,
   Dialog,
-  Popup,
-  Picker,
 } from "vant";
+import PickerPopup from "@/components/pickerPopup.vue";
 import MultiPickerPopup from "@/components/multiPickerPopup.vue";
 import TimeRangePickerPopup from "@/components/timeRangePickerPopup.vue";
-import DateRangePickerPopup from "./components/dateRangePickerPopup.vue";
-import validityTypePickerPopup from "./components/validityTypePickerPopup.vue";
+import DateRangePickerPopup from "@/components/dateRangePickerPopup.vue";
 
 import { ref, reactive, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -511,8 +509,8 @@ onMounted(async () => {
   setSetMealInfo();
 });
 
-const setRestaurantIds = (restaurantIds: number[]) => {
-  setMealInfo.restaurantIds = restaurantIds;
+const setRestaurantIds = ({ selectedValues }: { selectedValues: number[] }) => {
+  setMealInfo.restaurantIds = selectedValues;
   restaurantPickerPopupVisible.value = false;
 };
 
@@ -561,8 +559,8 @@ const setSetMealInfo = async () => {
   setMealInfo.useRules = useRules;
 };
 
-const setValidityType = (type: number) => {
-  validityType.value = type;
+const setValidityType = ({ selectedValues }: { selectedValues: number[] }) => {
+  validityType.value = selectedValues[0];
   setMealInfo.validityDays = undefined;
   setMealInfo.validityStartTime = "";
   setMealInfo.validityEndTime = "";

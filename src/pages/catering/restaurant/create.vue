@@ -253,14 +253,14 @@
 
   <button class="upload-btn" @click="save">点击提交</button>
 
-  <Popup v-model:show="categoryPickerPopupVisible" position="bottom" round>
-    <Picker
-      :columns="categoryOptions"
-      @confirm="selectCategory"
-      @cancel="categoryPickerPopupVisible = false"
-      :columns-field-names="{ text: 'name', value: 'id' }"
-    />
-  </Popup>
+  <PickerPopup
+    :visible="categoryPickerPopupVisible"
+    :options="
+      categoryOptions.map((item) => ({ text: item.name, value: item.id }))
+    "
+    @confirm="selectCategory"
+    @cancel="categoryPickerPopupVisible = false"
+  />
   <MapPopup
     :visible="mapPopupVisible"
     @confirm="setLnglat"
@@ -292,13 +292,12 @@
       placeholder="请输入设施名称"
     />
   </Dialog>
-  <Popup v-model:show="weekDayPickerPopupVisible" position="bottom" round>
-    <Picker
-      :columns="weekDayOptions"
-      @confirm="selectWeekDay"
-      @cancel="weekDayPickerPopupVisible = false"
-    />
-  </Popup>
+  <PickerPopup
+    :visible="weekDayPickerPopupVisible"
+    :options="weekDayOptions"
+    @confirm="selectWeekDay"
+    @cancel="weekDayPickerPopupVisible = false"
+  />
   <TimeRangePickerPopup
     :tabs="['开业时间', '休息时间']"
     :visible="timeFramePickerPopupVisible"
@@ -313,8 +312,6 @@ import {
   Icon,
   Popover,
   showToast,
-  Popup,
-  Picker,
   Dialog,
   Button,
   Tag,
@@ -322,6 +319,7 @@ import {
   Empty,
   showConfirmDialog,
 } from "vant";
+import PickerPopup from "@/components/pickerPopup.vue";
 import TimeRangePickerPopup from "@/components/timeRangePickerPopup.vue";
 import MapPopup from "@/components/mapPopup.vue";
 

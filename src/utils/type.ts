@@ -22,4 +22,5 @@ export interface ApiOption {
 export interface Option {
   text: string;
   value: number;
+  children?: Option[];
 }

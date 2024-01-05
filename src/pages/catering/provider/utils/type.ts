@@ -1,9 +1,3 @@
-export interface RegionOption {
-  text: string;
-  value: string;
-  children?: RegionOption[];
-}
-
 export interface ProviderInfo {
   type: number;
   companyName?: string;

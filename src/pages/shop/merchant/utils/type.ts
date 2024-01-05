@@ -1,11 +1,5 @@
 import type { UploaderFileListItem } from "vant";
 
-export interface RegionOption {
-  text: string;
-  value: string;
-  children?: RegionOption[];
-}
-
 export interface MerchantInfo {
   type: number;
   deposit: number;

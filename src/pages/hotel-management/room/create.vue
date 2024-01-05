@@ -172,14 +172,15 @@
 
   <button class="upload-btn" @click="save">点击提交</button>
 
-  <HotelPickerPopup
+  <PickerPopup
     :visible="hotelPickerPopupVisible"
-    :hotel-options="hotelOptions"
+    :options="hotelOptions.map((item) => ({ text: item.name, value: item.id }))"
     @confirm="setHotelId"
     @cancel="hotelPickerPopupVisible = false"
   />
-  <TypePickerPopup
+  <PickerPopup
     :visible="typePickerPopupVisible"
+    :options="typeOptions.map((item) => ({ text: item.name, value: item.id }))"
     @confirm="setType"
     @cancel="typePickerPopupVisible = false"
   />
@@ -202,8 +203,7 @@ import {
   SwipeCell,
   Calendar,
 } from "vant";
-import TypePickerPopup from "./components/typePickerPopup.vue";
-import HotelPickerPopup from "./components/hotelPickerPopup.vue";
+import PickerPopup from "@/components/pickerPopup.vue";
 
 import { ref, reactive, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
@@ -253,7 +253,8 @@ onMounted(() => {
   setHotelOptions();
 });
 
-const setHotelId = (hotelId: number) => {
+const setHotelId = ({ selectedValues }: { selectedValues: number[] }) => {
+  const hotelId = selectedValues[0];
   if (roomInfo.hotelId !== hotelId) {
     roomInfo.typeId = undefined;
     setTypeOptions(hotelId);
@@ -262,8 +263,8 @@ const setHotelId = (hotelId: number) => {
   hotelPickerPopupVisible.value = false;
 };
 
-const setType = (typeId: number) => {
-  roomInfo.typeId = typeId;
+const setType = ({ selectedValues }: { selectedValues: number[] }) => {
+  roomInfo.typeId = selectedValues[0];
   typePickerPopupVisible.value = false;
 };
 const showTypePickerPopup = () => {

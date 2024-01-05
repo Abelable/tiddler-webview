@@ -374,15 +374,18 @@
 
   <button class="upload-btn" @click="save">点击提交</button>
 
-  <TypePickerPopup
+  <PickerPopup
     :visible="typePickerPopupVisible"
+    :options="typeOptions"
     @confirm="setType"
     @cancel="typePickerPopupVisible = false"
   />
-  <ScenicPickerPopup
+  <PickerPopup
     v-if="ticketInfo.type === 1"
     :visible="scenicPickerPopupVisible"
-    :scenic-options="scenicOptions"
+    :options="
+      scenicOptions.map((item) => ({ text: item.name, value: item.id }))
+    "
     @confirm="setScenicIds"
     @cancel="scenicPickerPopupVisible = false"
   />
@@ -398,8 +401,9 @@
     @confirm="setBookTime"
     @cancel="bookingTimePickerPopupVisible = false"
   />
-  <RefundStatusPickerPopup
+  <PickerPopup
     :visible="refundStatusPickerPopupVisible"
+    :options="refundStatusOptions"
     @confirm="setRefundStatus"
     @cancel="refundStatusPickerPopupVisible = false"
   />
@@ -413,9 +417,11 @@
     @confirm="setEnterTime"
     @cancel="enterTimePickerPopupVisible = false"
   />
-  <CategoryPickerPopup
+  <PickerPopup
     :visible="categoryPickerPopupVisible"
-    :category-options="categoryOptions"
+    :options="
+      categoryOptions.map((item) => ({ text: item.name, value: item.id }))
+    "
     @confirm="addSpec"
     @cancel="categoryPickerPopupVisible = false"
   />
@@ -438,13 +444,10 @@ import {
   SwipeCell,
   Calendar,
 } from "vant";
+import PickerPopup from "@/components/pickerPopup.vue";
 import MultiPickerPopup from "@/components/multiPickerPopup.vue";
 import TimePickerPopup from "@/components/timePickerPopup.vue";
 import TimeRangePickerPopup from "@/components/timeRangePickerPopup.vue";
-import TypePickerPopup from "./components/typePickerPopup.vue";
-import ScenicPickerPopup from "./components/scenicPickerPopup.vue";
-import RefundStatusPickerPopup from "./components/refundStatusPickerPopup.vue";
-import CategoryPickerPopup from "./components/categoryPickerPopup.vue";
 
 import { ref, reactive, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
@@ -527,7 +530,8 @@ onMounted(() => {
   setCategoryOptions();
 });
 
-const setType = (type: number) => {
+const setType = ({ selectedValues }: { selectedValues: number[] }) => {
+  const type = selectedValues[0];
   if (ticketInfo.type !== type) {
     ticketInfo.scenicIds = [];
   }
@@ -542,8 +546,8 @@ const showScenicPickerPopup = () => {
   }
   scenicPickerPopupVisible.value = true;
 };
-const setScenicIds = (scenicIds: number[]) => {
-  ticketInfo.scenicIds = scenicIds;
+const setScenicIds = ({ selectedValues }: { selectedValues: number[] }) => {
+  ticketInfo.scenicIds = selectedValues;
   scenicPickerPopupVisible.value = false;
 };
 
@@ -552,8 +556,8 @@ const setBookTime = (bookingTime: string) => {
   bookingTimePickerPopupVisible.value = false;
 };
 
-const setRefundStatus = (status: number) => {
-  ticketInfo.refundStatus = status;
+const setRefundStatus = ({ selectedValues }: { selectedValues: number[] }) => {
+  ticketInfo.refundStatus = selectedValues[0];
   refundStatusPickerPopupVisible.value = false;
 };
 
@@ -579,7 +583,8 @@ const setEnterTime = ({
   enterTimePickerPopupVisible.value = false;
 };
 
-const addSpec = (categoryId: number) => {
+const addSpec = ({ selectedValues }: { selectedValues: number[] }) => {
+  const categoryId = selectedValues[0];
   categoryOptions.value = categoryOptions.value.map((item) =>
     item.id === categoryId
       ? {

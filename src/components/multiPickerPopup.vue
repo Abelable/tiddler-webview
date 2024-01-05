@@ -4,7 +4,7 @@
       <button class="cancel-btn" @click="cancel">取消</button>
       <button class="confirm-btn" @click="confirm">确认</button>
     </div>
-    <CheckboxGroup class="restaurant-options" v-model="pickedIds">
+    <CheckboxGroup class="options" v-model="selectedValues">
       <CellGroup>
         <Cell
           v-for="(item, index) in options"
@@ -36,13 +36,13 @@ import type { ApiOption } from "@/utils/type";
 defineProps<{ visible: boolean; options: ApiOption[] }>();
 const emit = defineEmits(["confirm", "cancel"]);
 
-const pickedIds = ref([]);
+const selectedValues = ref([]);
 const optionRefs = ref<CheckboxInstance[]>([]);
 
 const toggleSelected = (index: number) => {
   optionRefs.value[index].toggle();
 };
-const confirm = () => emit("confirm", pickedIds.value);
+const confirm = () => emit("confirm", { selectedValues: selectedValues.value });
 const cancel = () => emit("cancel");
 </script>
 
@@ -67,7 +67,7 @@ const cancel = () => emit("cancel");
     color: #576b95;
   }
 }
-.restaurant-options {
+.options {
   margin-top: 0.88rem;
   padding-bottom: 0.36rem;
   height: 8rem;

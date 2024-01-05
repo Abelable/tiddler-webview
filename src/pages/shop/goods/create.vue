@@ -350,34 +350,39 @@
 
   <button class="upload-btn" @click="save">点击提交</button>
 
-  <Popup
-    v-model:show="freightTemplatePickerPopupVisible"
-    position="bottom"
-    round
-  >
-    <Picker
-      :columns="freightTemplateOptions"
-      @confirm="selectFreightTemplate"
-      @cancel="freightTemplatePickerPopupVisible = false"
-      :columns-field-names="{ text: 'name', value: 'id' }"
-    />
-  </Popup>
-  <Popup v-model:show="categoryPickerPopupVisible" position="bottom" round>
-    <Picker
-      :columns="categoryOptions"
-      @confirm="selectCategory"
-      @cancel="categoryPickerPopupVisible = false"
-      :columns-field-names="{ text: 'name', value: 'id' }"
-    />
-  </Popup>
-  <Popup v-model:show="returnAddressPickerPopupVisible" position="bottom" round>
-    <Picker
-      :columns="returnAddressOptions"
-      @confirm="selectReturnAddress"
-      @cancel="returnAddressPickerPopupVisible = false"
-      :columns-field-names="{ text: 'addressDetail', value: 'id' }"
-    />
-  </Popup>
+  <PickerPopup
+    :visible="freightTemplatePickerPopupVisible"
+    :options="
+      freightTemplateOptions.map((item) => ({
+        text: item.name,
+        value: item.id,
+      }))
+    "
+    @confirm="selectFreightTemplate"
+    @cancel="freightTemplatePickerPopupVisible = false"
+  />
+  <PickerPopup
+    :visible="categoryPickerPopupVisible"
+    :options="
+      categoryOptions.map((item) => ({
+        text: item.name,
+        value: item.id,
+      }))
+    "
+    @confirm="selectCategory"
+    @cancel="categoryPickerPopupVisible = false"
+  />
+  <PickerPopup
+    :visible="returnAddressPickerPopupVisible"
+    :options="
+      returnAddressOptions.map((item) => ({
+        text: item.addressDetail,
+        value: item.id,
+      }))
+    "
+    @confirm="selectReturnAddress"
+    @cancel="returnAddressPickerPopupVisible = false"
+  />
 
   <Dialog
     v-model:show="specOptionModalVisible"
@@ -408,10 +413,10 @@ import {
   showToast,
   Collapse,
   CollapseItem,
-  Popup,
-  Picker,
   showDialog,
 } from "vant";
+import PickerPopup from "@/components/pickerPopup.vue";
+
 import { ref, reactive, watch, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import _ from "lodash";
@@ -512,19 +517,16 @@ const selectFreightTemplate = ({
   goodsInfo.freightTemplateId = selectedValues[0];
   freightTemplatePickerPopupVisible.value = false;
 };
-const selectCategory = ({
-  selectedOptions,
-}: {
-  selectedOptions: GoodsCategoryOption[];
-}) => {
-  goodsInfo.categoryId = selectedOptions[0].id;
-  goodsInfo.shopCategoryId = selectedOptions[0].shopCategoryId;
-  minSalesCommissionRate.value = selectedOptions[0].minSalesCommissionRate;
-  maxSalesCommissionRate.value = selectedOptions[0].maxSalesCommissionRate;
-  minPromotionCommissionRate.value =
-    selectedOptions[0].minPromotionCommissionRate;
-  maxPromotionCommissionRate.value =
-    selectedOptions[0].maxPromotionCommissionRate;
+const selectCategory = ({ selectedValues }: { selectedValues: number[] }) => {
+  const curCategoryInfo = categoryOptions.value.find(
+    (item) => item.id === selectedValues[0]
+  ) as GoodsCategoryOption;
+  goodsInfo.categoryId = curCategoryInfo.id;
+  goodsInfo.shopCategoryId = curCategoryInfo.shopCategoryId;
+  minSalesCommissionRate.value = curCategoryInfo.minSalesCommissionRate;
+  maxSalesCommissionRate.value = curCategoryInfo.maxSalesCommissionRate;
+  minPromotionCommissionRate.value = curCategoryInfo.minPromotionCommissionRate;
+  maxPromotionCommissionRate.value = curCategoryInfo.maxPromotionCommissionRate;
   categoryPickerPopupVisible.value = false;
 };
 const selectReturnAddress = ({

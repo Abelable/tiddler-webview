@@ -319,18 +319,6 @@
               >
                 {{ pickedCategoryDesc || "请选择店铺类型" }}
               </div>
-              <Popup
-                v-model:show="categoryPickerPopupVisible"
-                position="bottom"
-                round
-              >
-                <Picker
-                  :columns="categoryOptions"
-                  @confirm="categoryConfirm"
-                  @cancel="categoryPickerPopupVisible = false"
-                  :columns-field-names="{ text: 'name', value: 'id' }"
-                />
-              </Popup>
             </div>
           </div>
           <div class="btns">
@@ -420,18 +408,21 @@
       </div>
     </div>
   </div>
+
+  <PickerPopup
+    :visible="categoryPickerPopupVisible"
+    :options="
+      categoryOptions.map((item) => ({ text: item.name, value: item.id }))
+    "
+    @confirm="categoryConfirm"
+    @cancel="categoryPickerPopupVisible = false"
+  />
 </template>
 
 <script setup lang="ts">
-import {
-  Checkbox,
-  Area,
-  Popup,
-  Uploader,
-  Picker,
-  Loading,
-  showToast,
-} from "vant";
+import { Checkbox, Area, Popup, Uploader, Loading, showToast } from "vant";
+import PickerPopup from "@/components/pickerPopup.vue";
+
 import { ref, onMounted, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { areaList } from "@vant/area-data";
@@ -444,13 +435,12 @@ import {
 } from "./utils/api";
 
 import type { UploaderAfterRead } from "vant/lib/uploader/types";
-import type { ProviderInfo, ProviderStatusInfo } from "./utils/type";
-import { CreateProviderInfo, ShopTypeOption } from "./utils/type";
-interface RegionOption {
-  text: string;
-  value: string;
-  children?: RegionOption[];
-}
+import type { Option } from "@/utils/type";
+import type {
+  ProviderInfo,
+  ProviderStatusInfo,
+  CreateProviderInfo,
+} from "./utils/type";
 
 const router = useRouter();
 
@@ -628,7 +618,7 @@ const areaConfirm = ({
   selectedOptions,
 }: {
   selectedValues: string[];
-  selectedOptions: RegionOption[];
+  selectedOptions: Option[];
 }) => {
   providerInfo.regionCodeList = JSON.stringify(selectedValues);
   providerInfo.regionDesc = `${selectedOptions[0].text} ${selectedOptions[1].text} ${selectedOptions[2].text}`;
@@ -661,10 +651,10 @@ const categoryConfirm = ({
   selectedOptions,
 }: {
   selectedValues: number[];
-  selectedOptions: ShopTypeOption[];
+  selectedOptions: Option[];
 }) => {
   providerInfo.shopType = selectedValues[0];
-  pickedCategoryDesc.value = selectedOptions[0].name;
+  pickedCategoryDesc.value = selectedOptions[0].text;
   categoryPickerPopupVisible.value = false;
 };
 

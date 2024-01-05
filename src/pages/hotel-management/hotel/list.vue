@@ -127,16 +127,14 @@
     </List>
   </PullRefresh>
 
-  <Popup v-model:show="hotelPickerPopupVisible" position="bottom" round>
-    <Picker
-      :columns="hotelOptions"
-      @confirm="selectHotel"
-      @cancel="hotelPickerPopupVisible = false"
-      :columns-field-names="{ text: 'name', value: 'id' }"
-    />
-  </Popup>
-
   <button class="add-btn" @click="showHotelPickerPopup">添加酒店</button>
+
+  <PickerPopup
+    :visible="hotelPickerPopupVisible"
+    :options="hotelOptions.map((item) => ({ text: item.name, value: item.id }))"
+    @confirm="selectHotel"
+    @cancel="hotelPickerPopupVisible = false"
+  />
 </template>
 
 <script setup lang="ts">
@@ -144,14 +142,14 @@ import {
   PullRefresh,
   List,
   SwipeCell,
-  Popup,
-  Picker,
   Button,
   Icon,
   showConfirmDialog,
   Empty,
   showToast,
 } from "vant";
+import PickerPopup from "@/components/pickerPopup.vue";
+
 import { ref, reactive, onMounted } from "vue";
 import dayjs from "dayjs";
 import {
@@ -162,7 +160,7 @@ import {
   getHotelListTotals,
 } from "./utils/api";
 
-import type { Option as HotelOption } from "@/utils/type";
+import type { ApiOption as HotelOption } from "@/utils/type";
 import type { ProviderHotel } from "./utils/type";
 
 const loading = ref(false);

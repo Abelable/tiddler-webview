@@ -186,14 +186,14 @@
 
   <button class="upload-btn" @click="save">点击提交</button>
 
-  <Popup v-model:show="categoryPickerPopupVisible" position="bottom" round>
-    <Picker
-      :columns="categoryOptions"
-      @confirm="selectCategory"
-      @cancel="categoryPickerPopupVisible = false"
-      :columns-field-names="{ text: 'name', value: 'id' }"
-    />
-  </Popup>
+  <PickerPopup
+    :visible="categoryPickerPopupVisible"
+    :options="
+      categoryOptions.map((item) => ({ text: item.name, value: item.id }))
+    "
+    @confirm="selectCategory"
+    @cancel="categoryPickerPopupVisible = false"
+  />
   <MapPopup
     :visible="mapPopupVisible"
     @confirm="setLnglat"
@@ -225,13 +225,12 @@
       placeholder="请输入设施名称"
     />
   </Dialog>
-  <Popup v-model:show="monthPickerPopupVisible" position="bottom" round>
-    <Picker
-      :columns="monthOptions"
-      @confirm="selectMonth"
-      @cancel="monthPickerPopupVisible = false"
-    />
-  </Popup>
+  <PickerPopup
+    :visible="monthPickerPopupVisible"
+    :options="monthOptions"
+    @confirm="selectMonth"
+    @cancel="monthPickerPopupVisible = false"
+  />
 </template>
 
 <script setup lang="ts">
@@ -240,8 +239,6 @@ import {
   Icon,
   Popover,
   showToast,
-  Popup,
-  Picker,
   Dialog,
   Button,
   Tag,
@@ -249,7 +246,8 @@ import {
   Empty,
   showConfirmDialog,
 } from "vant";
-import MapPopup from "./components/mapPopup.vue";
+import PickerPopup from "@/components/pickerPopup.vue";
+import MapPopup from "@/components/mapPopup.vue";
 
 import { ref, reactive, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";

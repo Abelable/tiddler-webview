@@ -454,22 +454,17 @@
       </div>
     </div>
   </Popup>
-  <Popup
-    v-model:show="expressTemplateSelectPopupVisible"
-    position="bottom"
-    round
-  >
-    <Picker
-      title="选择快递"
-      :columns="expressTemplateOptions"
-      @confirm="expressTemplateConfirm"
-      @cancel="expressTemplateSelectPopupVisible = false"
-      :columns-field-names="{
-        text: 'name',
-        value: 'code',
-      }"
-    />
-  </Popup>
+  <PickerPopup
+    :visible="expressTemplateSelectPopupVisible"
+    :options="
+      expressTemplateOptions.map((item) => ({
+        text: item.name,
+        value: +item.code,
+      }))
+    "
+    @confirm="expressTemplateConfirm"
+    @cancel="expressTemplateSelectPopupVisible = false"
+  />
   <Popup
     v-model:show="expressAreaSelectPopupVisible"
     position="bottom"
@@ -572,9 +567,9 @@ import {
   Popover,
   Popup,
   Checkbox,
-  Picker,
   showToast,
 } from "vant";
+import PickerPopup from "@/components/pickerPopup.vue";
 
 import { ref, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -1319,13 +1314,15 @@ const selectExpressArea = (value: boolean) => {
 
 const expressTemplateConfirm = ({
   selectedValues,
-  selectedOptions,
 }: {
-  selectedValues: string[];
-  selectedOptions: ExpressTemplateOption[];
+  selectedValues: number[];
 }) => {
+  const curExpressTemplateInfo = expressTemplateOptions.value.find(
+    (item) => item.code === `${selectedValues[0]}`
+  ) as ExpressTemplateOption;
+
   const index = expressTemplateOptions.value.findIndex(
-    (item) => item.code === selectedValues[0]
+    (item) => item.code === `${selectedValues[0]}`
   );
   expressTemplateOptions.value[index].disabled = true;
 
@@ -1343,8 +1340,8 @@ const expressTemplateConfirm = ({
     })),
   });
   freightTemplate.value.expressTemplateLists.push({
-    expressCode: selectedOptions[0].code,
-    expressName: selectedOptions[0].name,
+    expressCode: curExpressTemplateInfo.code,
+    expressName: curExpressTemplateInfo.name,
     list: [
       {
         id: 1,
