@@ -74,7 +74,7 @@ import dayjs from "dayjs";
 import { typeOptions } from "../utils/index";
 import { deleteTicket, offShelfTicket, onShelfTicket } from "../utils/api";
 
-import type { Option } from "@/utils/type";
+import type { ApiOption } from "@/utils/type";
 import type { TicketListItem } from "../utils/type";
 
 const router = useRouter();
@@ -82,7 +82,7 @@ const router = useRouter();
 const props = defineProps<{
   status: number;
   item: TicketListItem;
-  scenicOptions: Option[];
+  scenicOptions: ApiOption[];
 }>();
 const emit = defineEmits(["refresh"]);
 

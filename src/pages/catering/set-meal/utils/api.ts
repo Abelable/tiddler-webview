@@ -1,6 +1,6 @@
 import { http } from "@/utils/http";
 
-import type { Option } from "@/utils/type";
+import type { ApiOption } from "@/utils/type";
 import type {
   SetMealListItem,
   CreateSetMealInfo,
@@ -8,7 +8,7 @@ import type {
   EditSetMealInfo,
 } from "./type";
 
-export const getRestaurantOptions = async (): Promise<Option[]> =>
+export const getRestaurantOptions = async (): Promise<ApiOption[]> =>
   await http("catering/provider/restaurant/options");
 
 export const getSetMealTotals = async (): Promise<number[]> =>

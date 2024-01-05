@@ -14,7 +14,7 @@ export interface RegionOption {
   children?: RegionOption[];
 }
 
-export interface Option {
+export interface ApiOption {
   id: number;
   name: string;
 }

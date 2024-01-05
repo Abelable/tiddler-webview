@@ -2,10 +2,10 @@ import { ref } from "vue";
 import { showToast } from "vant";
 import { getRestaurantCategoryOptions } from "./api";
 
-import type { Option } from "@/utils/type";
+import type { ApiOption } from "@/utils/type";
 import type { RestaurantInfo } from "./type";
 
-export const categoryOptions = ref<Option[]>([]);
+export const categoryOptions = ref<ApiOption[]>([]);
 export const setCategoryOptions = async () => {
   categoryOptions.value = await getRestaurantCategoryOptions();
 };

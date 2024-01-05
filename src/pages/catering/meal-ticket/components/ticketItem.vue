@@ -69,7 +69,7 @@ import { useRouter } from "vue-router";
 import dayjs from "dayjs";
 import { deleteTicket, offShelfTicket, onShelfTicket } from "../utils/api";
 
-import type { Option } from "@/utils/type";
+import type { ApiOption } from "@/utils/type";
 import type { TicketListItem } from "../utils/type";
 
 const router = useRouter();
@@ -77,7 +77,7 @@ const router = useRouter();
 const props = defineProps<{
   status: number;
   item: TicketListItem;
-  restaurantOptions: Option[];
+  restaurantOptions: ApiOption[];
 }>();
 const emit = defineEmits(["refresh"]);
 

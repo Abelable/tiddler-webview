@@ -335,6 +335,7 @@
       @cancel="weekDayPickerPopupVisible = false"
     />
   </Popup>
+  <PickerPopup :visible="weekDayPickerPopupVisible" :options="weekDayOptions" />
   <TimeRangePickerPopup
     :visible="timeFramePickerPopupVisible"
     @confirm="selectTimeFrame"
@@ -357,6 +358,7 @@ import {
   Popup,
   Picker,
 } from "vant";
+import PickerPopup from "@/components/pickerPopup.vue";
 import MultiPickerPopup from "@/components/multiPickerPopup.vue";
 import TimeRangePickerPopup from "@/components/timeRangePickerPopup.vue";
 import DateRangePickerPopup from "./components/dateRangePickerPopup.vue";

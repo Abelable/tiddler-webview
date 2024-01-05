@@ -2,7 +2,7 @@ import { ref } from "vue";
 import { showToast } from "vant";
 import { getScenicOptions, getTicketCategoryOptions } from "./api";
 
-import type { Option } from "@/utils/type";
+import type { ApiOption } from "@/utils/type";
 import type { TicketCategoryOption, TicketInfo } from "./type";
 
 export const typeOptions = [
@@ -15,7 +15,7 @@ export const refundStatusOptions = [
   { text: "不可退", value: 3 },
 ];
 
-export const scenicOptions = ref<Option[]>([]);
+export const scenicOptions = ref<ApiOption[]>([]);
 export const categoryOptions = ref<TicketCategoryOption[]>([]);
 
 export const setCategoryOptions = async () => {

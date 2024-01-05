@@ -1,6 +1,6 @@
 import { http } from "@/utils/http";
 
-import type { Option } from "@/utils/type";
+import type { ApiOption } from "@/utils/type";
 import type {
   TicketListItem,
   CreateTicketInfo,
@@ -8,7 +8,7 @@ import type {
   EditTicketInfo,
 } from "./type";
 
-export const getRestaurantOptions = async (): Promise<Option[]> =>
+export const getRestaurantOptions = async (): Promise<ApiOption[]> =>
   await http("catering/provider/restaurant/options");
 
 export const getTicketTotals = async (): Promise<number[]> =>

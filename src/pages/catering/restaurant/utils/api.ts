@@ -1,9 +1,9 @@
 import { http } from "@/utils/http";
 
-import type { Option } from "@/utils/type";
+import type { ApiOption } from "@/utils/type";
 import type { OriginalRestaurantInfo, ProviderRestaurant } from "./type";
 
-export const getRestaurantOptions = async (): Promise<Option[]> =>
+export const getRestaurantOptions = async (): Promise<ApiOption[]> =>
   await http("catering/restaurant/user_options");
 
 export const getRestaurantListTotals = async (): Promise<number[]> =>
@@ -33,7 +33,7 @@ export const deleteProviderRestaurant = async (id: number) =>
     data: { id },
   });
 
-export const getRestaurantCategoryOptions = async (): Promise<Option[]> =>
+export const getRestaurantCategoryOptions = async (): Promise<ApiOption[]> =>
   await http("catering/restaurant/category_options");
 
 export const getRestaurantInfo = async (

@@ -1,9 +1,9 @@
 import { http } from "@/utils/http";
 
 import type { ProviderHotel } from "./type";
-import type { Option } from "@/utils/type";
+import type { ApiOption } from "@/utils/type";
 
-export const getHotelOptions = async (): Promise<Option[]> =>
+export const getHotelOptions = async (): Promise<ApiOption[]> =>
   await http("hotel/options");
 
 export const getHotelListTotals = async (): Promise<number[]> =>

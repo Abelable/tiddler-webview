@@ -31,9 +31,9 @@ import { Popup, CheckboxGroup, Checkbox, CellGroup, Cell } from "vant";
 import { ref } from "vue";
 
 import type { CheckboxInstance } from "vant";
-import type { Option } from "@/utils/type";
+import type { ApiOption } from "@/utils/type";
 
-defineProps<{ visible: boolean; options: Option[] }>();
+defineProps<{ visible: boolean; options: ApiOption[] }>();
 const emit = defineEmits(["confirm", "cancel"]);
 
 const pickedIds = ref([]);

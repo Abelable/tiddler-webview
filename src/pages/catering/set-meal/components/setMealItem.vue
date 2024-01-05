@@ -71,7 +71,7 @@ import { useRouter } from "vue-router";
 import dayjs from "dayjs";
 import { deleteSetMeal, offShelfSetMeal, onShelfSetMeal } from "../utils/api";
 
-import type { Option } from "@/utils/type";
+import type { ApiOption } from "@/utils/type";
 import type { SetMealListItem } from "../utils/type";
 
 const router = useRouter();
@@ -79,7 +79,7 @@ const router = useRouter();
 const props = defineProps<{
   status: number;
   item: SetMealListItem;
-  restaurantOptions: Option[];
+  restaurantOptions: ApiOption[];
 }>();
 const emit = defineEmits(["refresh"]);
 

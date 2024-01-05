@@ -1,9 +1,9 @@
 import { http } from "@/utils/http";
 
-import type { Option } from "@/utils/type";
+import type { ApiOption } from "@/utils/type";
 import type { RoomListItem, CreateRoomInfo, EditRoomInfo } from "./type";
 
-export const getHotelOptions = async (): Promise<Option[]> =>
+export const getHotelOptions = async (): Promise<ApiOption[]> =>
   await http("hotel/provider/hotel_options");
 
 export const getRoomTotals = async (): Promise<number[]> =>
@@ -21,7 +21,9 @@ export const getRoomList = async (
   return list;
 };
 
-export const getRoomTypeOptions = async (hotelId: number): Promise<Option[]> =>
+export const getRoomTypeOptions = async (
+  hotelId: number
+): Promise<ApiOption[]> =>
   await http("hotel/room/type_options", { data: { hotelId } });
 
 export const offShelfRoom = async (id: number) =>

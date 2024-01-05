@@ -73,7 +73,7 @@ import { useRouter } from "vue-router";
 import dayjs from "dayjs";
 import { deleteRoom, offShelfRoom, onShelfRoom } from "../utils/api";
 
-import type { Option } from "@/utils/type";
+import type { ApiOption } from "@/utils/type";
 import type { RoomListItem } from "../utils/type";
 
 const router = useRouter();
@@ -81,7 +81,7 @@ const router = useRouter();
 const props = defineProps<{
   status: number;
   item: RoomListItem;
-  hotelOptions: Option[];
+  hotelOptions: ApiOption[];
 }>();
 const emit = defineEmits(["refresh"]);
 

@@ -2,7 +2,7 @@ import { ref } from "vue";
 import { showToast } from "vant";
 import { getRestaurantOptions } from "./api";
 
-import type { Option } from "@/utils/type";
+import type { ApiOption } from "@/utils/type";
 import type { SetMealInfo } from "./type";
 
 export const validityTypeOptions = [
@@ -10,7 +10,7 @@ export const validityTypeOptions = [
   { text: "范围有效期", value: 2 },
 ];
 
-export const restaurantOptions = ref<Option[]>([]);
+export const restaurantOptions = ref<ApiOption[]>([]);
 export const setRestaurantOptions = async () =>
   (restaurantOptions.value = await getRestaurantOptions());
 

@@ -11,9 +11,9 @@
 
 <script setup lang="ts">
 import { Popup, Picker } from "vant";
-import type { Option } from "@/utils/type";
+import type { ApiOption } from "@/utils/type";
 
-defineProps<{ visible: boolean; scenicOptions: Option[] }>();
+defineProps<{ visible: boolean; scenicOptions: ApiOption[] }>();
 const emit = defineEmits(["confirm", "cancel"]);
 
 const confirm = ({ selectedValues }: { selectedValues: number[] }) =>

@@ -1,6 +1,6 @@
 import { http } from "@/utils/http";
 
-import type { Option } from "@/utils/type";
+import type { ApiOption } from "@/utils/type";
 import type {
   TicketListItem,
   CreateTicketInfo,
@@ -8,7 +8,7 @@ import type {
   EditTicketInfo,
 } from "./type";
 
-export const getScenicOptions = async (): Promise<Option[]> =>
+export const getScenicOptions = async (): Promise<ApiOption[]> =>
   await http("scenic/provider/scenic_options");
 
 export const getTicketTotals = async (): Promise<number[]> =>
@@ -26,7 +26,7 @@ export const getTicketList = async (
   return list;
 };
 
-export const getTicketCategoryOptions = async (): Promise<Option[]> =>
+export const getTicketCategoryOptions = async (): Promise<ApiOption[]> =>
   await http("scenic/ticket/category_options");
 
 export const offShelfTicket = async (id: number) =>

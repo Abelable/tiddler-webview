@@ -2,11 +2,11 @@ import { ref } from "vue";
 import { showToast } from "vant";
 import { getHotelOptions, getRoomTypeOptions } from "./api";
 
-import type { Option } from "@/utils/type";
+import type { ApiOption } from "@/utils/type";
 import type { RoomInfo } from "./type";
 
-export const hotelOptions = ref<Option[]>([]);
-export const typeOptions = ref<Option[]>([]);
+export const hotelOptions = ref<ApiOption[]>([]);
+export const typeOptions = ref<ApiOption[]>([]);
 
 export const setTypeOptions = async (hotelId: number) => {
   typeOptions.value = await getRoomTypeOptions(hotelId);
