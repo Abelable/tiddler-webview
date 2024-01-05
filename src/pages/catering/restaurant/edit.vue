@@ -299,16 +299,12 @@
       @cancel="weekDayPickerPopupVisible = false"
     />
   </Popup>
-  <Popup v-model:show="timeFramePickerPopupVisible" position="bottom" round>
-    <PickerGroup
-      :tabs="['开业时间', '休息时间']"
-      @confirm="selectTimeFrame"
-      @cancel="timeFramePickerPopupVisible = false"
-    >
-      <TimePicker v-model="openTime" />
-      <TimePicker v-model="closeTime" />
-    </PickerGroup>
-  </Popup>
+  <TimeRangePickerPopup
+    :tabs="['开业时间', '休息时间']"
+    :visible="timeFramePickerPopupVisible"
+    @confirm="selectTimeFrame"
+    @cancel="timeFramePickerPopupVisible = false"
+  />
 </template>
 
 <script setup lang="ts">
@@ -318,9 +314,7 @@ import {
   Popover,
   showToast,
   Popup,
-  PickerGroup,
   Picker,
-  TimePicker,
   Dialog,
   Button,
   Tag,
@@ -328,7 +322,8 @@ import {
   Empty,
   showConfirmDialog,
 } from "vant";
-import MapPopup from "./components/mapPopup.vue";
+import TimeRangePickerPopup from "@/components/timeRangePickerPopup.vue";
+import MapPopup from "@/components/mapPopup.vue";
 
 import { ref, reactive, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -374,8 +369,6 @@ const curOpenTimeIdx = ref(0);
 const weekDayPickerPopupVisible = ref(false);
 const curWeekDayType = ref(0);
 const timeFramePickerPopupVisible = ref(false);
-const openTime = ref(["12", "00"]);
-const closeTime = ref(["12", "00"]);
 
 // 计算属性
 const selectedCategoryName = computed(
@@ -511,10 +504,16 @@ const showTimeFramePickerPopup = (index: number) => {
 const deleteTimeFrame = (index: number, timeFrameIndex: number) => {
   restaurantInfo.openTimeList[index].timeFrameList.splice(timeFrameIndex, 1);
 };
-const selectTimeFrame = () => {
+const selectTimeFrame = ({
+  startTime,
+  endTime,
+}: {
+  startTime: string[];
+  endTime: string[];
+}) => {
   restaurantInfo.openTimeList[curOpenTimeIdx.value].timeFrameList.push({
-    openTime: openTime.value.join(":"),
-    closeTime: closeTime.value.join(":"),
+    openTime: startTime.join(":"),
+    closeTime: endTime.join(":"),
   });
   timeFramePickerPopupVisible.value = false;
 };

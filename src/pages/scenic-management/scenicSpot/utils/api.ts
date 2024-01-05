@@ -30,6 +30,9 @@ export const applyScenicSpot = async (scenicId: number) =>
 export const deleteProviderScenicSpot = async (id: number) =>
   await http("scenic/provider/delete_scenic", { method: "POST", data: { id } });
 
+export const getScenicCategoryOptions = async (): Promise<Option[]> =>
+  await http("scenic/category_options");
+
 export const getScenicInfo = async (id: number): Promise<OriginalScenicInfo> =>
   await http("scenic/detail", { data: { id } });
 

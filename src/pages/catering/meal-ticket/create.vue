@@ -335,16 +335,11 @@
       @cancel="weekDayPickerPopupVisible = false"
     />
   </Popup>
-  <Popup v-model:show="timeFramePickerPopupVisible" position="bottom" round>
-    <PickerGroup
-      :tabs="['开始时间', '结束时间']"
-      @confirm="selectTimeFrame"
-      @cancel="timeFramePickerPopupVisible = false"
-    >
-      <TimePicker v-model="openTime" />
-      <TimePicker v-model="closeTime" />
-    </PickerGroup>
-  </Popup>
+  <TimeRangePickerPopup
+    :visible="timeFramePickerPopupVisible"
+    @confirm="selectTimeFrame"
+    @cancel="timeFramePickerPopupVisible = false"
+  />
 </template>
 
 <script setup lang="ts">
@@ -360,11 +355,10 @@ import {
   SwipeCell,
   Dialog,
   Popup,
-  PickerGroup,
   Picker,
-  TimePicker,
 } from "vant";
 import MultiPickerPopup from "@/components/multiPickerPopup.vue";
+import TimeRangePickerPopup from "@/components/timeRangePickerPopup.vue";
 import DateRangePickerPopup from "./components/dateRangePickerPopup.vue";
 import validityTypePickerPopup from "./components/validityTypePickerPopup.vue";
 
@@ -424,8 +418,6 @@ const curUseTimeIdx = ref(0);
 const weekDayPickerPopupVisible = ref(false);
 const curWeekDayType = ref(0);
 const timeFramePickerPopupVisible = ref(false);
-const openTime = ref(["12", "00"]);
-const closeTime = ref(["12", "00"]);
 
 // 计算属性
 const restaurantNames = computed(() =>
@@ -529,10 +521,16 @@ const showTimeFramePickerPopup = (index: number) => {
 const deleteTimeFrame = (index: number, timeFrameIndex: number) => {
   ticketInfo.useTimeList[index].timeFrameList.splice(timeFrameIndex, 1);
 };
-const selectTimeFrame = () => {
+const selectTimeFrame = ({
+  startTime,
+  endTime,
+}: {
+  startTime: string[];
+  endTime: string[];
+}) => {
   ticketInfo.useTimeList[curUseTimeIdx.value].timeFrameList.push({
-    startTime: openTime.value.join(":"),
-    endTime: closeTime.value.join(":"),
+    startTime: startTime.join(":"),
+    endTime: endTime.join(":"),
   });
   timeFramePickerPopupVisible.value = false;
 };

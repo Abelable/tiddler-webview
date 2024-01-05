@@ -14,8 +14,8 @@ export interface ProviderScenicSpot {
 }
 
 interface OpenTime {
-  openMonth: string;
-  closeMonth: string;
+  openMonth: number | undefined;
+  closeMonth: number | undefined;
   openTime: string;
   closeTime: string;
   tips: string;
@@ -30,7 +30,7 @@ interface Facility {
   content: string;
 }
 interface OriginalProject {
-  image: string;
+  image?: string;
   name: string;
 }
 interface Project {
@@ -47,7 +47,7 @@ export interface OriginalScenicInfo {
   name: string;
   level: string;
   categoryId: number;
-  video: string;
+  video?: string;
   imageList: string[];
   longitude: number;
   latitude: number;

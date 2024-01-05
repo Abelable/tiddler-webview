@@ -439,10 +439,10 @@ import {
   Calendar,
 } from "vant";
 import MultiPickerPopup from "@/components/multiPickerPopup.vue";
+import TimePickerPopup from "@/components/timePickerPopup.vue";
+import TimeRangePickerPopup from "@/components/timeRangePickerPopup.vue";
 import TypePickerPopup from "./components/typePickerPopup.vue";
 import ScenicPickerPopup from "./components/scenicPickerPopup.vue";
-import TimePickerPopup from "./components/timePickerPopup.vue";
-import TimeRangePickerPopup from "./components/timeRangePickerPopup.vue";
 import RefundStatusPickerPopup from "./components/refundStatusPickerPopup.vue";
 import CategoryPickerPopup from "./components/categoryPickerPopup.vue";
 
@@ -557,13 +557,25 @@ const setRefundStatus = (status: number) => {
   refundStatusPickerPopupVisible.value = false;
 };
 
-const setExchangeTime = (exchangeTime: string) => {
-  ticketInfo.exchangeTime = exchangeTime;
+const setExchangeTime = ({
+  startTime,
+  endTime,
+}: {
+  startTime: string[];
+  endTime: string[];
+}) => {
+  ticketInfo.exchangeTime = `${startTime.join(":")}-${endTime.join(":")}`;
   exchangeTimePickerPopupVisible.value = false;
 };
 
-const setEnterTime = (enterTime: string) => {
-  ticketInfo.enterTime = enterTime;
+const setEnterTime = ({
+  startTime,
+  endTime,
+}: {
+  startTime: string[];
+  endTime: string[];
+}) => {
+  ticketInfo.enterTime = `${startTime.join(":")}-${endTime.join(":")}`;
   enterTimePickerPopupVisible.value = false;
 };
 
