@@ -16,19 +16,7 @@ export interface TicketListItem {
   updatedAt: string;
 }
 
-export interface PriceItem {
-  startDate: number | undefined;
-  endDate: number | undefined;
-  price: number | undefined;
-  stock: number | undefined;
-}
-
-export interface FormSpecItem {
-  categoryId: number;
-  priceList: PriceItem[];
-}
-
-export interface SpecItem {
+interface SpecItem {
   categoryId: number;
   priceList: string;
 }
@@ -60,6 +48,17 @@ export interface TicketInfo {
   enterLocation: string;
   invoiceTips: string;
   reminderTips: string;
+}
+
+interface PriceItem {
+  startDate: number | undefined;
+  endDate: number | undefined;
+  price: number | undefined;
+  stock: number | undefined;
+}
+interface FormSpecItem {
+  categoryId: number;
+  priceList: PriceItem[];
 }
 
 export interface FormTicketInfo {
