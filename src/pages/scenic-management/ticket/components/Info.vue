@@ -637,11 +637,15 @@ const save = async () => {
   if (!checkTicketInfo(ticketInfo.value)) {
     return;
   }
-  const { needExchange, ...rest } = ticketInfo.value;
+  const { needExchange, specList, ...rest } = ticketInfo.value;
   emit("save", {
     ticketInfo: {
       ...cleanObject(rest),
       needExchange: needExchange ? 1 : 0,
+      specList: specList.map((item) => ({
+        ...item,
+        priceList: JSON.stringify(item.priceList),
+      })),
     },
   });
 };

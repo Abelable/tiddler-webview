@@ -28,6 +28,7 @@ const setTicketInfo = async () => {
     validityTime,
     limitNumber,
     needExchange,
+    specList,
     ...rest
   } = await getTicketInfo(+(route.query.id as string));
   ticketId.value = id;
@@ -37,13 +38,17 @@ const setTicketInfo = async () => {
     validityTime: validityTime || undefined,
     limitNumber: limitNumber || undefined,
     needExchange: !!needExchange,
+    specList: specList.map((item) => ({
+      ...item,
+      priceList: JSON.parse(item.priceList),
+    })),
     ...rest,
   };
 };
 
 const save = async ({ ticketInfo }: { ticketInfo: Omit<TicketInfo, "id"> }) => {
   try {
-    await editTicket(ticketInfo);
+    await editTicket({ id: ticketId.value, ...ticketInfo });
     router.back();
   } catch (error) {
     showToast("上传失败，请重试");

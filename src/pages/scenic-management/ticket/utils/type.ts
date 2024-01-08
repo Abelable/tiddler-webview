@@ -23,9 +23,14 @@ export interface PriceItem {
   stock: number | undefined;
 }
 
-export interface SpecItem {
+export interface FormSpecItem {
   categoryId: number;
   priceList: PriceItem[];
+}
+
+export interface SpecItem {
+  categoryId: number;
+  priceList: string;
 }
 
 export interface TicketInfo {
@@ -66,7 +71,7 @@ export interface FormTicketInfo {
   marketPrice: number | undefined;
   salesCommissionRate: number | undefined;
   promotionCommissionRate: number | undefined;
-  specList: SpecItem[];
+  specList: FormSpecItem[];
   feeIncludeTips: string;
   feeNotIncludeTips: string;
   bookingTime: string;
