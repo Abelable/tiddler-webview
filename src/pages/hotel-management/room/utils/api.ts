@@ -1,8 +1,8 @@
 import { http } from "@/utils/http";
+import { cleanObject } from "@/utils/index";
 
 import type { ApiOption } from "@/utils/type";
 import type { RoomListItem, RoomInfo } from "./type";
-import { cleanObject } from "@/utils/index";
 
 export const getHotelOptions = async (): Promise<ApiOption[]> =>
   await http("hotel/provider/hotel_options");

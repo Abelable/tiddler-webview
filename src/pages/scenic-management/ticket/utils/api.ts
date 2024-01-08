@@ -1,12 +1,8 @@
 import { http } from "@/utils/http";
+import { cleanObject } from "@/utils/index";
 
 import type { ApiOption } from "@/utils/type";
-import type {
-  TicketListItem,
-  CreateTicketInfo,
-  OriginalTicketInfo,
-  EditTicketInfo,
-} from "./type";
+import type { TicketListItem, TicketInfo } from "./type";
 
 export const getScenicOptions = async (): Promise<ApiOption[]> =>
   await http("scenic/provider/scenic_options");
@@ -38,17 +34,19 @@ export const onShelfTicket = async (id: number) =>
 export const deleteTicket = async (id: number) =>
   await http("scenic/provider/ticket/delete", { method: "POST", data: { id } });
 
-export const getTicketInfo = async (id: number): Promise<OriginalTicketInfo> =>
+export const getTicketInfo = async (id: number): Promise<TicketInfo> =>
   await http("scenic/provider/ticket/detail", { data: { id } });
 
-export const createTicket = async (ticketInfo: CreateTicketInfo) =>
+export const createTicket = async (
+  ticketInfo: Partial<Omit<TicketInfo, "id">>
+) =>
   await http("scenic/provider/ticket/add", {
     method: "POST",
-    data: ticketInfo,
+    data: cleanObject(ticketInfo),
   });
 
-export const editTicket = async (ticketInfo: EditTicketInfo) =>
+export const editTicket = async (ticketInfo: Partial<TicketInfo>) =>
   await http("scenic/provider/ticket/edit", {
     method: "POST",
-    data: ticketInfo,
+    data: cleanObject(ticketInfo),
   });

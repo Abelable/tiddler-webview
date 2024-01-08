@@ -3,7 +3,7 @@ import { showToast } from "vant";
 import { getScenicOptions, getTicketCategoryOptions } from "./api";
 
 import type { ApiOption } from "@/utils/type";
-import type { TicketCategoryOption, TicketInfo } from "./type";
+import type { FormTicketInfo, TicketCategoryOption } from "./type";
 
 export const typeOptions = [
   { text: "单景点门票", value: 1 },
@@ -14,6 +14,34 @@ export const refundStatusOptions = [
   { text: "有条件退", value: 2 },
   { text: "不可退", value: 3 },
 ];
+
+export const initialTicketInfo = {
+  type: undefined,
+  scenicIds: [],
+  name: "",
+  briefName: "",
+  price: undefined,
+  marketPrice: undefined,
+  salesCommissionRate: undefined,
+  promotionCommissionRate: undefined,
+  specList: [],
+  feeIncludeTips: "",
+  feeNotIncludeTips: "",
+  bookingTime: "",
+  effectiveTime: undefined,
+  validityTime: undefined,
+  limitNumber: undefined,
+  refundStatus: undefined,
+  refundTips: "",
+  needExchange: false,
+  exchangeTips: "",
+  exchangeTime: "",
+  exchangeLocation: "",
+  enterTime: "",
+  enterLocation: "",
+  invoiceTips: "",
+  reminderTips: "",
+};
 
 export const scenicOptions = ref<ApiOption[]>([]);
 export const categoryOptions = ref<TicketCategoryOption[]>([]);
@@ -28,9 +56,7 @@ export const setCategoryOptions = async () => {
 export const setScenicOptions = async () =>
   (scenicOptions.value = await getScenicOptions());
 
-export const checkTicketInfo = (
-  ticketInfo: TicketInfo | Omit<TicketInfo, "id">
-) => {
+export const checkTicketInfo = (ticketInfo: FormTicketInfo) => {
   if (!ticketInfo.type) {
     showToast("请选择门票类型");
     return false;

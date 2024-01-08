@@ -28,12 +28,7 @@ export interface SpecItem {
   priceList: PriceItem[];
 }
 
-export interface OriginalSpecItem {
-  categoryId: number;
-  priceList: string;
-}
-
-export interface OriginalTicketInfo {
+export interface TicketInfo {
   id: number;
   type: number;
   scenicIds: number[];
@@ -43,7 +38,7 @@ export interface OriginalTicketInfo {
   marketPrice: number;
   salesCommissionRate: number;
   promotionCommissionRate: number;
-  specList: OriginalSpecItem[];
+  specList: SpecItem[];
   feeIncludeTips: string;
   feeNotIncludeTips: string;
   bookingTime: string;
@@ -52,7 +47,7 @@ export interface OriginalTicketInfo {
   limitNumber: number;
   refundStatus: number;
   refundTips: string;
-  needExchange: boolean;
+  needExchange: 0 | 1;
   exchangeTips: string;
   exchangeTime: string;
   exchangeLocation: string;
@@ -62,8 +57,7 @@ export interface OriginalTicketInfo {
   reminderTips: string;
 }
 
-export interface TicketInfo {
-  id: number;
+export interface FormTicketInfo {
   type: number | undefined;
   scenicIds: number[];
   name: string;
@@ -89,40 +83,4 @@ export interface TicketInfo {
   enterLocation: string;
   invoiceTips: string;
   reminderTips: string;
-}
-
-interface CreateSpecItem {
-  categoryId: number;
-  priceList: string;
-}
-
-export interface CreateTicketInfo {
-  type: number;
-  scenicIds: number[];
-  name: string;
-  price: number;
-  marketPrice?: number;
-  salesCommissionRate: number;
-  promotionCommissionRate: number;
-  specList: CreateSpecItem[];
-  feeIncludeTips?: string;
-  feeNotIncludeTips?: string;
-  bookingTime: string;
-  effectiveTime?: number;
-  validityTime?: number;
-  limitNumber?: number;
-  refundStatus: number;
-  refundTips?: string;
-  needExchange: 0 | 1;
-  exchangeTips?: string;
-  exchangeTime?: string;
-  exchangeLocation?: string;
-  enterTime?: string;
-  enterLocation?: string;
-  invoiceTips?: string;
-  reminderTips?: string;
-}
-
-export interface EditTicketInfo extends CreateTicketInfo {
-  id: number;
 }
