@@ -22,7 +22,7 @@ interface OpenTime {
   timeFrameList: timeFrame[];
 }
 
-export interface OriginalRestaurantInfo {
+export interface RestaurantInfo {
   id: number;
   name: string;
   categoryId: number;
@@ -33,30 +33,23 @@ export interface OriginalRestaurantInfo {
   telList: string[];
   facilityList: string[];
   openTimeList: OpenTime[];
-  video?: string;
+  video: string;
   cover: string;
   foodImageList: string[];
   environmentImageList: string[];
   priceImageList: string[];
 }
 
-export interface RestaurantInfo
-  extends Omit<
-    OriginalRestaurantInfo,
-    | "categoryId"
-    | "price"
-    | "longitude"
-    | "latitude"
-    | "video"
-    | "cover"
-    | "foodImageList"
-    | "environmentImageList"
-    | "priceImageList"
-  > {
+export interface FormRestaurantInfo {
+  name: string;
   categoryId: number | undefined;
   price: number | undefined;
   longitude: number | undefined;
   latitude: number | undefined;
+  address: string;
+  telList: string[];
+  facilityList: string[];
+  openTimeList: OpenTime[];
   video: UploaderFileListItem[];
   cover: UploaderFileListItem[];
   foodImageList: UploaderFileListItem[];

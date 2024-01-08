@@ -3,16 +3,31 @@ import { showToast } from "vant";
 import { getRestaurantCategoryOptions } from "./api";
 
 import type { ApiOption } from "@/utils/type";
-import type { RestaurantInfo } from "./type";
+import type { FormRestaurantInfo } from "./type";
 
 export const categoryOptions = ref<ApiOption[]>([]);
 export const setCategoryOptions = async () => {
   categoryOptions.value = await getRestaurantCategoryOptions();
 };
 
-export const checkRestaurantInfo = (
-  restaurantInfo: RestaurantInfo | Omit<RestaurantInfo, "id">
-) => {
+export const initialRestaurantInfo = {
+  name: "",
+  categoryId: undefined,
+  price: undefined,
+  longitude: undefined,
+  latitude: undefined,
+  address: "",
+  telList: [],
+  facilityList: [],
+  openTimeList: [],
+  video: [],
+  cover: [],
+  foodImageList: [],
+  environmentImageList: [],
+  priceImageList: [],
+};
+
+export const checkRestaurantInfo = (restaurantInfo: FormRestaurantInfo) => {
   if (!restaurantInfo.name) {
     showToast("请输入门店名称");
     return false;

@@ -1,7 +1,8 @@
 import { http } from "@/utils/http";
+import { cleanObject } from "@/utils";
 
 import type { ApiOption } from "@/utils/type";
-import type { OriginalRestaurantInfo, ProviderRestaurant } from "./type";
+import type { ProviderRestaurant, RestaurantInfo } from "./type";
 
 export const getRestaurantOptions = async (): Promise<ApiOption[]> =>
   await http("catering/restaurant/user_options");
@@ -36,23 +37,19 @@ export const deleteProviderRestaurant = async (id: number) =>
 export const getRestaurantCategoryOptions = async (): Promise<ApiOption[]> =>
   await http("catering/restaurant/category_options");
 
-export const getRestaurantInfo = async (
-  id: number
-): Promise<OriginalRestaurantInfo> =>
+export const getRestaurantInfo = async (id: number): Promise<RestaurantInfo> =>
   await http("catering/restaurant/detail", { data: { id } });
 
 export const createRestaurant = async (
-  restaurantInfo: Partial<OriginalRestaurantInfo>
+  restaurantInfo: Partial<Omit<RestaurantInfo, "id">>
 ) =>
   await http("catering/restaurant/add", {
     method: "POST",
-    data: restaurantInfo,
+    data: cleanObject(restaurantInfo),
   });
 
-export const editRestaurant = async (
-  restaurantInfo: Partial<OriginalRestaurantInfo>
-) =>
+export const editRestaurant = async (restaurantInfo: Partial<RestaurantInfo>) =>
   await http("catering/restaurant/edit", {
     method: "POST",
-    data: restaurantInfo,
+    data: cleanObject(restaurantInfo),
   });
