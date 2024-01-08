@@ -11,7 +11,11 @@ import type { RestaurantInfo } from "./utils/type";
 
 const router = useRouter();
 
-const save = async ({ restaurantInfo }: { restaurantInfo: RestaurantInfo }) => {
+const save = async ({
+  restaurantInfo,
+}: {
+  restaurantInfo: Omit<RestaurantInfo, "id">;
+}) => {
   try {
     await createRestaurant(restaurantInfo);
     router.back();

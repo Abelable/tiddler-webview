@@ -11,7 +11,11 @@ import type { SetMealInfo } from "./utils/type";
 
 const router = useRouter();
 
-const save = async ({ setMealInfo }: { setMealInfo: SetMealInfo }) => {
+const save = async ({
+  setMealInfo,
+}: {
+  setMealInfo: Omit<SetMealInfo, "id">;
+}) => {
   try {
     await createSetMeal(setMealInfo);
     router.back();

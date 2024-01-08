@@ -1,7 +1,8 @@
 import { http } from "@/utils/http";
 
 import type { ApiOption } from "@/utils/type";
-import type { RoomListItem, CreateRoomInfo, EditRoomInfo } from "./type";
+import type { RoomListItem, RoomInfo } from "./type";
+import { cleanObject } from "@/utils/index";
 
 export const getHotelOptions = async (): Promise<ApiOption[]> =>
   await http("hotel/provider/hotel_options");
@@ -35,14 +36,17 @@ export const onShelfRoom = async (id: number) =>
 export const deleteRoom = async (id: number) =>
   await http("hotel/provider/room/delete", { method: "POST", data: { id } });
 
-export const getRoomInfo = async (id: number): Promise<EditRoomInfo> =>
+export const getRoomInfo = async (id: number): Promise<RoomInfo> =>
   await http("hotel/provider/room/detail", { data: { id } });
 
-export const createRoom = async (goodsInfo: CreateRoomInfo) =>
-  await http("hotel/provider/room/add", { method: "POST", data: goodsInfo });
+export const createRoom = async (roomInfo: Partial<Omit<RoomInfo, "id">>) =>
+  await http("hotel/provider/room/add", {
+    method: "POST",
+    data: cleanObject(roomInfo),
+  });
 
-export const editRoom = async (goodsInfo: EditRoomInfo) =>
+export const editRoom = async (roomInfo: Partial<RoomInfo>) =>
   await http("hotel/provider/room/edit", {
     method: "POST",
-    data: goodsInfo,
+    data: cleanObject(roomInfo),
   });

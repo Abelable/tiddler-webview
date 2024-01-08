@@ -21,18 +21,6 @@ export interface PriceItem {
 
 export interface RoomInfo {
   id: number;
-  hotelId: number | undefined;
-  typeId: number | undefined;
-  price: number | undefined;
-  salesCommissionRate: number | undefined;
-  promotionCommissionRate: number | undefined;
-  priceList: PriceItem[];
-  breakfastNum: number;
-  guestNum: number | undefined;
-  cancellable: boolean;
-}
-
-export interface CreateRoomInfo {
   hotelId: number;
   typeId: number;
   price: number;
@@ -44,6 +32,14 @@ export interface CreateRoomInfo {
   cancellable: 0 | 1;
 }
 
-export interface EditRoomInfo extends CreateRoomInfo {
-  id: number;
+export interface FormRoomInfo {
+  hotelId: number | undefined;
+  typeId: number | undefined;
+  price: number | undefined;
+  salesCommissionRate: number | undefined;
+  promotionCommissionRate: number | undefined;
+  priceList: PriceItem[];
+  breakfastNum: number | undefined;
+  guestNum: number | undefined;
+  cancellable: boolean;
 }

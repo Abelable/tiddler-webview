@@ -1,5 +1,5 @@
 import { http } from "@/utils/http";
-import { cleanObject } from "@/utils";
+import { cleanObject } from "@/utils/index";
 
 import type { ApiOption } from "@/utils/type";
 import type { ProviderRestaurant, RestaurantInfo } from "./type";

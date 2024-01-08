@@ -3,10 +3,22 @@ import { showToast } from "vant";
 import { getHotelOptions, getRoomTypeOptions } from "./api";
 
 import type { ApiOption } from "@/utils/type";
-import type { RoomInfo } from "./type";
+import type { FormRoomInfo } from "./type";
 
 export const hotelOptions = ref<ApiOption[]>([]);
 export const typeOptions = ref<ApiOption[]>([]);
+
+export const initialRoomInfo = {
+  hotelId: undefined,
+  typeId: undefined,
+  price: undefined,
+  salesCommissionRate: undefined,
+  promotionCommissionRate: undefined,
+  priceList: [],
+  breakfastNum: 0,
+  guestNum: undefined,
+  cancellable: true,
+};
 
 export const setTypeOptions = async (hotelId: number) => {
   typeOptions.value = await getRoomTypeOptions(hotelId);
@@ -14,7 +26,7 @@ export const setTypeOptions = async (hotelId: number) => {
 export const setHotelOptions = async () =>
   (hotelOptions.value = await getHotelOptions());
 
-export const checkRoomInfo = (roomInfo: RoomInfo | Omit<RoomInfo, "id">) => {
+export const checkRoomInfo = (roomInfo: FormRoomInfo) => {
   if (!roomInfo.hotelId) {
     showToast("请选择关联酒店");
     return false;

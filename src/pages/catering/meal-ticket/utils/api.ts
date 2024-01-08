@@ -2,7 +2,7 @@ import { http } from "@/utils/http";
 
 import type { ApiOption } from "@/utils/type";
 import type { TicketListItem, TicketInfo } from "./type";
-import { cleanObject } from "@/utils";
+import { cleanObject } from "@/utils/index";
 
 export const getRestaurantOptions = async (): Promise<ApiOption[]> =>
   await http("catering/provider/restaurant/options");
