@@ -19,65 +19,34 @@ interface UseTime {
   timeFrameList: timeFrame[];
 }
 
-export interface OriginalTicketInfo {
-  id: number;
+interface BaseInfo {
   restaurantIds: number[];
-  price: number;
-  originalPrice: number;
-  salesCommissionRate: number;
-  promotionCommissionRate: number;
-  validityDays: number;
-  validityStartTime: string;
-  validityEndTime: string;
-  buyLimit: number;
-  perTableUsageLimit: number;
-  overlayUsageLimit: number;
   useTimeList: UseTime[];
-  inapplicableProducts: string[];
-  boxAvailable: number;
-  needPreBook: number;
-  useRules: string[];
-}
-
-export interface TicketInfo {
-  id: number;
-  restaurantIds: number[];
-  price: number | undefined;
-  originalPrice: number | undefined;
-  salesCommissionRate: number | undefined;
-  promotionCommissionRate: number | undefined;
   validityDays: number | undefined;
   validityStartTime: string;
   validityEndTime: string;
   buyLimit: number | undefined;
   perTableUsageLimit: number | undefined;
   overlayUsageLimit: number | undefined;
-  useTimeList: UseTime[];
   inapplicableProducts: string[];
-  boxAvailable: boolean;
-  needPreBook: boolean;
   useRules: string[];
 }
 
-export interface CreateTicketInfo {
-  restaurantIds: number[];
+export interface TicketInfo extends BaseInfo {
+  id: number;
   price: number;
   originalPrice: number;
   salesCommissionRate: number;
   promotionCommissionRate: number;
-  validityDays?: number;
-  validityStartTime?: string;
-  validityEndTime?: string;
-  buyLimit?: number;
-  perTableUsageLimit?: number;
-  overlayUsageLimit?: number;
-  useTimeList: UseTime[];
-  inapplicableProducts: string[];
   boxAvailable: 0 | 1;
   needPreBook: 0 | 1;
-  useRules: string[];
 }
 
-export interface EditTicketInfo extends CreateTicketInfo {
-  id: number;
+export interface FormTicketInfo extends BaseInfo {
+  price: number | undefined;
+  originalPrice: number | undefined;
+  salesCommissionRate: number | undefined;
+  promotionCommissionRate: number | undefined;
+  boxAvailable: boolean;
+  needPreBook: boolean;
 }
