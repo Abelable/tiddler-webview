@@ -15,7 +15,7 @@ import type { TicketInfo, FormTicketInfo } from "./utils/type";
 const route = useRoute();
 const router = useRouter();
 
-const ticketInfoId = ref(0);
+const ticketId = ref(0);
 const editingTicketInfo = ref<FormTicketInfo>();
 
 onMounted(() => {
@@ -32,7 +32,7 @@ const setTicketInfo = async () => {
     overlayUsageLimit,
     ...rest
   } = await getTicketInfo(+(route.query.id as string));
-  ticketInfoId.value = id;
+  ticketId.value = id;
   editingTicketInfo.value = {
     ...rest,
     boxAvailable: !!boxAvailable,
@@ -45,7 +45,7 @@ const setTicketInfo = async () => {
 
 const save = async ({ ticketInfo }: { ticketInfo: Omit<TicketInfo, "id"> }) => {
   try {
-    await editTicket({ id: ticketInfoId.value, ...ticketInfo });
+    await editTicket({ id: ticketId.value, ...ticketInfo });
     router.back();
   } catch (error) {
     showToast("上传失败，请重试");

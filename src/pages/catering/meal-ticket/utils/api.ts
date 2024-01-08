@@ -43,7 +43,9 @@ export const deleteTicket = async (id: number) =>
 export const getTicketInfo = async (id: number): Promise<TicketInfo> =>
   await http("catering/provider/meal_ticket/detail", { data: { id } });
 
-export const createTicket = async (ticketInfo: Omit<TicketInfo, "id">) =>
+export const createTicket = async (
+  ticketInfo: Partial<Omit<TicketInfo, "id">>
+) =>
   await http("catering/provider/meal_ticket/add", {
     method: "POST",
     data: cleanObject(ticketInfo),

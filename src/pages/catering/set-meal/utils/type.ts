@@ -33,66 +33,34 @@ interface UseTime {
   timeFrameList: timeFrame[];
 }
 
-export interface OriginalSetMealInfo {
-  id: number;
+interface BaseInfo {
   restaurantIds: number[];
-  cover: string;
   name: string;
-  price: number;
-  originalPrice: number;
-  salesCommissionRate: number;
-  promotionCommissionRate: number;
   packageDetails: PackageDetail[];
-  validityDays: number;
-  validityStartTime: string;
-  validityEndTime: string;
-  buyLimit: number;
-  perTableUsageLimit: number;
   useTimeList: UseTime[];
-  needPreBook: number;
-  useRules: string[];
-}
-
-export interface SetMealInfo {
-  id: number;
-  restaurantIds: number[];
-  cover: UploaderFileListItem[];
-  name: string;
-  price: number | undefined;
-  originalPrice: number | undefined;
-  salesCommissionRate: number | undefined;
-  promotionCommissionRate: number | undefined;
-  packageDetails: PackageDetail[];
   validityDays: number | undefined;
   validityStartTime: string;
   validityEndTime: string;
   buyLimit: number | undefined;
   perTableUsageLimit: number | undefined;
-  useTimeList: UseTime[];
-  needPreBook: boolean;
   useRules: string[];
 }
 
-export interface CreateSetMealInfo {
-  restaurantIds: number[];
+export interface SetMealInfo extends BaseInfo {
+  id: number;
   cover: string;
-  name: string;
   price: number;
   originalPrice: number;
   salesCommissionRate: number;
   promotionCommissionRate: number;
-  packageDetails: PackageDetail[];
-  validityDays?: number;
-  validityStartTime?: string;
-  validityEndTime?: string;
-  buyLimit?: number;
-  perTableUsageLimit?: number;
-  overlayUsageLimit?: number;
-  useTimeList: UseTime[];
   needPreBook: 0 | 1;
-  useRules: string[];
 }
 
-export interface EditSetMealInfo extends CreateSetMealInfo {
-  id: number;
+export interface FormSetMealInfo extends BaseInfo {
+  cover: UploaderFileListItem[];
+  price: number | undefined;
+  originalPrice: number | undefined;
+  salesCommissionRate: number | undefined;
+  promotionCommissionRate: number | undefined;
+  needPreBook: boolean;
 }
