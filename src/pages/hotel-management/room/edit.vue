@@ -274,8 +274,8 @@ const setRoomInfo = async () => {
   roomInfo.hotelId = hotelId;
   roomInfo.typeId = typeId;
   roomInfo.price = price;
-  roomInfo.salesCommissionRate = salesCommissionRate * 100;
-  roomInfo.promotionCommissionRate = promotionCommissionRate * 100;
+  roomInfo.salesCommissionRate = salesCommissionRate;
+  roomInfo.promotionCommissionRate = promotionCommissionRate;
   roomInfo.priceList = priceList;
   roomInfo.breakfastNum = breakfastNum;
   roomInfo.guestNum = guestNum;
@@ -336,12 +336,9 @@ const save = async () => {
     return;
   }
 
-  const { salesCommissionRate, promotionCommissionRate, cancellable, ...rest } =
-    roomInfo;
+  const { cancellable, ...rest } = roomInfo;
   const editRoomInfo = {
     ...cleanObject(rest),
-    salesCommissionRate: (salesCommissionRate as number) / 100,
-    promotionCommissionRate: (promotionCommissionRate as number) / 100,
     cancellable: cancellable ? 1 : 0,
   };
   try {

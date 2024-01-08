@@ -570,8 +570,8 @@ const setTicketInfo = async () => {
   ticketInfo.briefName = briefName;
   ticketInfo.price = price;
   ticketInfo.marketPrice = marketPrice || undefined;
-  ticketInfo.salesCommissionRate = salesCommissionRate * 100;
-  ticketInfo.promotionCommissionRate = promotionCommissionRate * 100;
+  ticketInfo.salesCommissionRate = salesCommissionRate;
+  ticketInfo.promotionCommissionRate = promotionCommissionRate;
   specList.forEach((item) =>
     ticketInfo.specList.push(
       _.cloneDeep({ ...item, priceList: JSON.parse(item.priceList) })
@@ -698,17 +698,9 @@ const save = async () => {
     return;
   }
 
-  const {
-    specList,
-    salesCommissionRate,
-    promotionCommissionRate,
-    needExchange,
-    ...rest
-  } = ticketInfo;
+  const { specList, needExchange, ...rest } = ticketInfo;
   const editTicketInfo = {
     ...cleanObject(rest),
-    salesCommissionRate: (salesCommissionRate as number) / 100,
-    promotionCommissionRate: (promotionCommissionRate as number) / 100,
     specList: specList.map((item) => ({
       ...item,
       priceList: JSON.stringify(item.priceList),

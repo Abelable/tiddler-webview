@@ -542,8 +542,8 @@ const setSetMealInfo = async () => {
   setMealInfo.name = name;
   setMealInfo.price = price;
   setMealInfo.originalPrice = originalPrice;
-  setMealInfo.salesCommissionRate = salesCommissionRate * 100;
-  setMealInfo.promotionCommissionRate = promotionCommissionRate * 100;
+  setMealInfo.salesCommissionRate = salesCommissionRate;
+  setMealInfo.promotionCommissionRate = promotionCommissionRate;
   setMealInfo.packageDetails = packageDetails;
   if (validityDays) {
     validityType.value = 1;
@@ -678,18 +678,10 @@ const save = async () => {
     return;
   }
 
-  const {
-    cover,
-    needPreBook,
-    salesCommissionRate,
-    promotionCommissionRate,
-    ...rest
-  } = setMealInfo;
+  const { cover, needPreBook, ...rest } = setMealInfo;
   const editSetMealInfo = {
     ...cleanObject(rest),
     cover: cover[0].url as string,
-    salesCommissionRate: (salesCommissionRate as number) / 100,
-    promotionCommissionRate: (promotionCommissionRate as number) / 100,
     needPreBook: needPreBook ? 1 : 0,
   };
   try {

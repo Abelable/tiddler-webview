@@ -636,18 +636,10 @@ const save = async () => {
     return;
   }
 
-  const {
-    cover,
-    needPreBook,
-    salesCommissionRate,
-    promotionCommissionRate,
-    ...rest
-  } = setMealInfo;
+  const { cover, needPreBook, ...rest } = setMealInfo;
   const createSetMealInfo = {
     ...cleanObject(rest),
     cover: cover[0].url as string,
-    salesCommissionRate: (salesCommissionRate as number) / 100,
-    promotionCommissionRate: (promotionCommissionRate as number) / 100,
     needPreBook: needPreBook ? 1 : 0,
   };
   try {

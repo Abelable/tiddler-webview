@@ -307,12 +307,9 @@ const save = async () => {
     return;
   }
 
-  const { salesCommissionRate, promotionCommissionRate, cancellable, ...rest } =
-    roomInfo;
+  const { cancellable, ...rest } = roomInfo;
   const createRoomInfo = {
     ...cleanObject(rest),
-    salesCommissionRate: (salesCommissionRate as number) / 100,
-    promotionCommissionRate: (promotionCommissionRate as number) / 100,
     cancellable: cancellable ? 1 : 0,
   };
   try {

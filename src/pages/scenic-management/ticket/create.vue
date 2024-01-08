@@ -649,17 +649,9 @@ const save = async () => {
     return;
   }
 
-  const {
-    specList,
-    salesCommissionRate,
-    promotionCommissionRate,
-    needExchange,
-    ...rest
-  } = ticketInfo;
+  const { specList, needExchange, ...rest } = ticketInfo;
   const createTicketInfo = {
     ...cleanObject(rest),
-    salesCommissionRate: (salesCommissionRate as number) / 100,
-    promotionCommissionRate: (promotionCommissionRate as number) / 100,
     specList: specList.map((item) => ({
       ...item,
       priceList: JSON.stringify(item.priceList),
