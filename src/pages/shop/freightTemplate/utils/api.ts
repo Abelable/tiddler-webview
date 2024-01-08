@@ -2,9 +2,7 @@ import { http } from "@/utils/http";
 import type {
   SingleExpressOption,
   FreightTemplateListItem,
-  ExistFreightTemplate,
-  AddFreightTemplate,
-  EditFreightTemplate,
+  FreightTemplate,
 } from "./type";
 
 export const getExpressOptions = async (): Promise<SingleExpressOption[]> =>
@@ -16,20 +14,18 @@ export const getFreightTemplateList = async (): Promise<
 
 export const getFreightTemplate = async (
   id: number
-): Promise<ExistFreightTemplate> =>
+): Promise<FreightTemplate> =>
   await http("shop/freight_template/detail", { data: { id } });
 
 export const createFreightTemplate = async (
-  freightTemplate: AddFreightTemplate
+  freightTemplate: Omit<FreightTemplate, "id">
 ) =>
   await http("shop/freight_template/add", {
     method: "POST",
     data: freightTemplate,
   });
 
-export const editFreightTemplate = async (
-  freightTemplate: EditFreightTemplate
-) =>
+export const editFreightTemplate = async (freightTemplate: FreightTemplate) =>
   await http("shop/freight_template/edit", {
     method: "POST",
     data: freightTemplate,
