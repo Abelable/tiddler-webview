@@ -1,10 +1,7 @@
 import { http } from "@/utils/http";
-import type {
-  AddressListItem,
-  AddressDetail,
-  CreateAddress,
-  EditAddress,
-} from "./type";
+import { cleanObject } from "@/utils/index";
+
+import type { AddressListItem, AddressDetail } from "./type";
 
 export const getAddressList = async (): Promise<AddressListItem[]> =>
   await http("shop/goods_return_address/list");
@@ -12,16 +9,18 @@ export const getAddressList = async (): Promise<AddressListItem[]> =>
 export const getAddress = async (id: number): Promise<AddressDetail> =>
   await http("shop/goods_return_address/detail", { data: { id } });
 
-export const createAddress = async (address: CreateAddress) =>
+export const createAddress = async (
+  address: Partial<Omit<AddressDetail, "id">>
+) =>
   await http("shop/goods_return_address/add", {
     method: "POST",
-    data: address,
+    data: cleanObject(address),
   });
 
-export const editAddress = async (address: EditAddress) =>
+export const editAddress = async (address: Partial<AddressDetail>) =>
   await http("shop/goods_return_address/edit", {
     method: "POST",
-    data: address,
+    data: cleanObject(address),
   });
 
 export const deleteAddress = async (id: number) =>

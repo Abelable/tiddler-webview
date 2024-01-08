@@ -1,54 +1,13 @@
 <template>
-  <div class="container">
-    <div class="card">
-      <ul class="form">
-        <li class="form-item flex">
-          <div class="name required">收件人姓名</div>
-          <input
-            class="input"
-            v-model="addressInfo.consigneeName"
-            type="text"
-            placeholder="请输入收件人姓名"
-          />
-        </li>
-        <li class="form-item flex">
-          <div class="name required">手机号</div>
-          <input
-            class="input"
-            v-model="addressInfo.mobile"
-            type="tel"
-            placeholder="请输入手机号"
-          />
-        </li>
-        <li class="form-item flex">
-          <div class="name required">收货地址</div>
-          <input
-            class="input"
-            v-model="addressInfo.addressDetail"
-            type="text"
-            placeholder="请输入收货地址"
-          />
-        </li>
-        <li class="form-item flex">
-          <div class="name">补充说明</div>
-          <input
-            class="input"
-            v-model="addressInfo.supplement"
-            type="text"
-            placeholder="选填，例：只收顺丰快递"
-          />
-        </li>
-      </ul>
-    </div>
-
-    <div class="btns">
-      <button class="delete-btn" @click="deleteCurAddress">删除</button>
-      <button class="save-btn" @click="save">保存</button>
-    </div>
-  </div>
+  <Info
+    :editingAddressInfo="editingAddressInfo"
+    @save="save"
+    @delete="_delete"
+  />
 </template>
 
 <script setup lang="ts">
+import Info from "./components/Info.vue";
 import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { showConfirmDialog, showToast } from "vant";
@@ -57,48 +16,34 @@ import type { AddressDetail } from "./utils/type";
 
 const route = useRoute();
 const router = useRouter();
-const addressInfo = ref<AddressDetail>({
-  id: 0,
-  consigneeName: "",
-  mobile: "",
-  addressDetail: "",
-  supplement: "",
-});
+
+const addressId = ref(0);
+const editingAddressInfo = ref<Omit<AddressDetail, "id">>();
 
 onMounted(async () => {
-  addressInfo.value = await getAddress(+(route.query.id as string));
+  const { id, ...rest } = await getAddress(+(route.query.id as string));
+  addressId.value = id;
+  editingAddressInfo.value = rest;
 });
 
-const save = async () => {
-  if (!addressInfo.value.consigneeName) {
-    showToast("请输入收件人姓名");
-    return;
-  }
-  if (
-    !addressInfo.value.mobile ||
-    !/^1[345789][0-9]{9}$/.test(addressInfo.value.mobile)
-  ) {
-    showToast("请输入正确手机号");
-    return;
-  }
-  if (!addressInfo.value.addressDetail) {
-    showToast("请输入收货地址");
-    return;
-  }
-  const { supplement, ...rest } = addressInfo.value;
+const save = async ({
+  addressInfo,
+}: {
+  addressInfo: Omit<AddressDetail, "id">;
+}) => {
   try {
-    await editAddress(supplement ? addressInfo.value : rest);
+    await editAddress(addressInfo);
     router.back();
   } catch (error) {
     showToast("保存失败，请重试");
   }
 };
 
-const deleteCurAddress = () =>
+const _delete = () =>
   showConfirmDialog({ title: "确定删除该退货地址吗？" })
     .then(async () => {
       try {
-        await deleteAddress(addressInfo.value.id);
+        await deleteAddress(addressId.value);
         router.back();
       } catch (error) {
         showToast("删除失败，请重试");
@@ -107,73 +52,4 @@ const deleteCurAddress = () =>
     .catch(() => true);
 </script>
 
-<style lang="scss" scoped>
-.container {
-  padding: 0.32rem;
-  .card {
-    padding: 0 0.32rem;
-    background: #fff;
-    border-radius: 0.24rem;
-    overflow: hidden;
-    .form {
-      .form-item {
-        padding: 0.32rem 0;
-        font-size: 0.26rem;
-        border-bottom: 1px solid #eee;
-        &:last-child {
-          border-bottom: none;
-        }
-        &.flex {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
-        .name {
-          margin-right: 0.2rem;
-          color: #333;
-          font-weight: 500;
-          line-height: 1;
-          &.required {
-            position: relative;
-            &::before {
-              position: absolute;
-              top: -0.06rem;
-              left: -0.16rem;
-              content: "*";
-              color: #ee0d23;
-              font-size: 0.24rem;
-            }
-          }
-        }
-        .input {
-          color: #333;
-          flex: 1;
-          text-align: right;
-        }
-      }
-    }
-  }
-  .btns {
-    display: flex;
-    margin-top: 1.28rem;
-    .save-btn,
-    .delete-btn {
-      flex: 1;
-      height: 0.88rem;
-      font-size: 0.3rem;
-      font-weight: 550;
-      border-radius: 0.18rem;
-    }
-    .save-btn {
-      margin-left: 0.2rem;
-      color: #fff;
-      background: #212121;
-    }
-    .delete-btn {
-      margin-right: 0.2rem;
-      color: #333;
-      border: 1px solid #ddd;
-    }
-  }
-}
-</style>
+<style lang="scss" scoped></style>
