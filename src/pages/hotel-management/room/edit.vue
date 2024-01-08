@@ -203,7 +203,7 @@ import {
   SwipeCell,
   Calendar,
 } from "vant";
-import PickerPopup from "@/components/pickerPopup.vue";
+import PickerPopup from "@/components/PickerPopup.vue";
 
 import { ref, reactive, computed, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";

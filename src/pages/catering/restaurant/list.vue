@@ -139,7 +139,7 @@ import {
   Empty,
   showToast,
 } from "vant";
-import MultiPickerPopup from "@/components/multiPickerPopup.vue";
+import MultiPickerPopup from "@/components/MultiPickerPopup.vue";
 
 import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";

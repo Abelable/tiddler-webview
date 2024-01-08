@@ -319,9 +319,9 @@ import {
   Empty,
   showConfirmDialog,
 } from "vant";
-import PickerPopup from "@/components/pickerPopup.vue";
-import TimeRangePickerPopup from "@/components/timeRangePickerPopup.vue";
-import MapPopup from "@/components/mapPopup.vue";
+import PickerPopup from "@/components/PickerPopup.vue";
+import TimeRangePickerPopup from "@/components/TimeRangePickerPopup.vue";
+import MapPopup from "@/components/MapPopup.vue";
 
 import { ref, reactive, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";

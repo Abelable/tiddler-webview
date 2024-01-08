@@ -568,7 +568,7 @@ import {
   Checkbox,
   showToast,
 } from "vant";
-import PickerPopup from "@/components/pickerPopup.vue";
+import PickerPopup from "@/components/PickerPopup.vue";
 
 import { ref, reactive, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";

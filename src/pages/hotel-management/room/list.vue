@@ -40,7 +40,7 @@
 
 <script setup lang="ts">
 import { PullRefresh, List, Empty } from "vant";
-import RoomItem from "./components/roomItem.vue";
+import RoomItem from "./components/RoomItem.vue";
 
 import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";

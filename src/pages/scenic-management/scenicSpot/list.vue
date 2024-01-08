@@ -144,7 +144,7 @@ import {
   Empty,
   showToast,
 } from "vant";
-import PickerPopup from "@/components/pickerPopup.vue";
+import PickerPopup from "@/components/PickerPopup.vue";
 
 import { ref, reactive, onMounted } from "vue";
 import dayjs from "dayjs";

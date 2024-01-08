@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 import { PullRefresh, List, Empty } from "vant";
-import SetMealItem from "./components/setMealItem.vue";
+import SetMealItem from "./components/SetMealItem.vue";
 
 import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";

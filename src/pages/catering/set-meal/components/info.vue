@@ -436,10 +436,10 @@ import {
   SwipeCell,
   Dialog,
 } from "vant";
-import PickerPopup from "@/components/pickerPopup.vue";
-import MultiPickerPopup from "@/components/multiPickerPopup.vue";
-import TimeRangePickerPopup from "@/components/timeRangePickerPopup.vue";
-import DateRangePickerPopup from "@/components/dateRangePickerPopup.vue";
+import PickerPopup from "@/components/PickerPopup.vue";
+import MultiPickerPopup from "@/components/MultiPickerPopup.vue";
+import TimeRangePickerPopup from "@/components/TimeRangePickerPopup.vue";
+import DateRangePickerPopup from "@/components/DateRangePickerPopup.vue";
 
 import { ref, computed, onMounted, watch } from "vue";
 import { weekDayOptions } from "@/utils/index";

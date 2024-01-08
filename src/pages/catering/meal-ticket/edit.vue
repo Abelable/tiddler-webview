@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import Info from "./components/info.vue";
+import Info from "./components/Info.vue";
 import { showToast } from "vant";
 
 import { ref, onMounted } from "vue";

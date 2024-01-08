@@ -413,8 +413,8 @@
 
 <script setup lang="ts">
 import { Checkbox, Uploader, Loading, showToast } from "vant";
-import PickerPopup from "@/components/pickerPopup.vue";
-import AreaPickerPopup from "@/components/areaPickerPopup.vue";
+import PickerPopup from "@/components/PickerPopup.vue";
+import AreaPickerPopup from "@/components/AreaPickerPopup.vue";
 
 import { ref, onMounted, reactive } from "vue";
 import { useRouter } from "vue-router";

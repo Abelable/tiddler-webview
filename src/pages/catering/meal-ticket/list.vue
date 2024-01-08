@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 import { PullRefresh, List, Empty } from "vant";
-import TicketItem from "./components/ticketItem.vue";
+import TicketItem from "./components/TicketItem.vue";
 
 import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";

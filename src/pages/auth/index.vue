@@ -161,7 +161,7 @@
 import { getAuthInfo, addAuthInfo, editAuthInfo } from "./utils/api";
 import { onMounted, reactive } from "vue";
 import { Toast, showLoadingToast, closeToast } from "vant";
-import Uploader from "@/components/uploader.vue";
+import Uploader from "@/components/Uploader.vue";
 
 import type { AuthInfo } from "./utils/type";
 

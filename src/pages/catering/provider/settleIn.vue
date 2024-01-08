@@ -339,7 +339,7 @@
 
 <script setup lang="ts">
 import { Checkbox, Area, Popup, showToast } from "vant";
-import Uploader from "@/components/uploader.vue";
+import Uploader from "@/components/Uploader.vue";
 
 import { ref, onMounted, reactive } from "vue";
 import { useRouter } from "vue-router";

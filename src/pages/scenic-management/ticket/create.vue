@@ -446,10 +446,10 @@ import {
   SwipeCell,
   Calendar,
 } from "vant";
-import PickerPopup from "@/components/pickerPopup.vue";
-import MultiPickerPopup from "@/components/multiPickerPopup.vue";
-import TimePickerPopup from "@/components/timePickerPopup.vue";
-import TimeRangePickerPopup from "@/components/timeRangePickerPopup.vue";
+import PickerPopup from "@/components/PickerPopup.vue";
+import MultiPickerPopup from "@/components/MultiPickerPopup.vue";
+import TimePickerPopup from "@/components/TimePickerPopup.vue";
+import TimeRangePickerPopup from "@/components/TimeRangePickerPopup.vue";
 
 import { ref, reactive, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";

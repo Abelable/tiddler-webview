@@ -597,7 +597,7 @@
 
 <script setup lang="ts">
 import { Checkbox, Area, Popup, Uploader, Loading, showToast } from "vant";
-import MultiPickerPopup from "@/components/multiPickerPopup.vue";
+import MultiPickerPopup from "@/components/MultiPickerPopup.vue";
 
 import { ref, onMounted, reactive } from "vue";
 import { useRouter } from "vue-router";

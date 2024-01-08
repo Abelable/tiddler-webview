@@ -415,7 +415,7 @@ import {
   CollapseItem,
   showDialog,
 } from "vant";
-import PickerPopup from "@/components/pickerPopup.vue";
+import PickerPopup from "@/components/PickerPopup.vue";
 
 import { ref, watch, computed, onMounted, reactive } from "vue";
 import { useRouter, useRoute } from "vue-router";
