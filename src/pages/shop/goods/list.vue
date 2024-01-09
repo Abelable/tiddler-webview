@@ -45,7 +45,7 @@
             @click.stop="offShelf(index)"
             square
             text="下架"
-            type="danger"
+            type="primary"
           />
         </template>
       </SwipeCell>
@@ -73,6 +73,13 @@
             @click.stop="onShelf(index)"
             square
             text="上架"
+            type="primary"
+          />
+          <Button
+            class="delete-btn"
+            @click.stop="deleteCurGoods(index)"
+            square
+            text="删除"
             type="danger"
           />
         </template>

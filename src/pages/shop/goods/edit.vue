@@ -60,7 +60,7 @@ const setGoodsInfo = async () => {
 
 const save = async ({ goodsInfo }: { goodsInfo: Omit<GoodsInfo, "id"> }) => {
   try {
-    await editGoods(goodsInfo);
+    await editGoods({ id: goodsId.value, ...goodsInfo });
     router.back();
   } catch (error) {
     showToast("上传失败，请重试");
