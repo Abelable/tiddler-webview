@@ -238,19 +238,15 @@ const offShelf = (index: number) =>
     })
     .catch(() => true);
 
-const onShelf = (index: number) =>
-  showConfirmDialog({ title: "确定上架该商品吗？" })
-    .then(async () => {
-      try {
-        await onShelfGoods(goodsLists[curMenuIndex.value][index].id);
-        goodsLists[curMenuIndex.value].splice(index, 1);
-        setTotals();
-      } catch (error) {
-        showToast("上架失败，请重试");
-      }
-      return true;
-    })
-    .catch(() => true);
+const onShelf = async (index: number) => {
+  try {
+    await onShelfGoods(goodsLists[curMenuIndex.value][index].id);
+    goodsLists[curMenuIndex.value].splice(index, 1);
+    setTotals();
+  } catch (error) {
+    showToast("上架失败，请重试");
+  }
+};
 
 const deleteCurGoods = (index: number) =>
   showConfirmDialog({ title: "确定删除该商品吗？" })

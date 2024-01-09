@@ -26,13 +26,13 @@ export interface SpecItem {
   options: string[];
 }
 
-export interface OriginalSkuItem {
+export interface SkuItem {
   name: string;
   image: string;
   price: number;
   stock: number;
 }
-export interface OriginalGoodsInfo {
+export interface GoodsInfo {
   id: number;
   image: string;
   video: string;
@@ -50,18 +50,17 @@ export interface OriginalGoodsInfo {
   salesCommissionRate: number;
   promotionCommissionRate: number;
   specList: SpecItem[];
-  skuList: OriginalSkuItem[];
+  skuList: SkuItem[];
 }
 
-export interface SkuItem {
+export interface FormSkuItem {
   name: string;
   image: UploaderFileListItem[];
   price: number | undefined;
   stock: number | undefined;
 }
 
-export interface GoodsInfo {
-  id: number;
+export interface FormGoodsInfo {
   image: UploaderFileListItem[];
   video: UploaderFileListItem[];
   imageList: UploaderFileListItem[];
@@ -78,32 +77,5 @@ export interface GoodsInfo {
   salesCommissionRate: number | undefined;
   promotionCommissionRate: number | undefined;
   specList: SpecItem[];
-  skuList: SkuItem[];
-}
-
-export interface CreateGoodsInfo
-  extends Omit<
-    GoodsInfo,
-    | "id"
-    | "image"
-    | "video"
-    | "imageList"
-    | "detailImageList"
-    | "defaultSpecImage"
-    | "marketPrice"
-    | "specList"
-    | "skuList"
-  > {
-  image: string;
-  video?: string;
-  imageList: string;
-  detailImageList: string;
-  defaultSpecImage: string;
-  marketPrice?: number;
-  specList: string;
-  skuList: string;
-}
-
-export interface EditGoodsInfo extends CreateGoodsInfo {
-  id: number;
+  skuList: FormSkuItem[];
 }
