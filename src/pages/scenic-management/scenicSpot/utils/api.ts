@@ -1,6 +1,7 @@
 import { http } from "@/utils/http";
+import { cleanObject } from "@/utils";
 
-import type { OriginalScenicInfo, ProviderScenicSpot } from "./type";
+import type { ScenicInfo, ProviderScenicSpot } from "./type";
 import type { ApiOption } from "@/utils/type";
 
 export const getScenicOptions = async (): Promise<ApiOption[]> =>
@@ -33,19 +34,19 @@ export const deleteProviderScenicSpot = async (id: number) =>
 export const getScenicCategoryOptions = async (): Promise<ApiOption[]> =>
   await http("scenic/category_options");
 
-export const getScenicInfo = async (id: number): Promise<OriginalScenicInfo> =>
+export const getScenicInfo = async (id: number): Promise<ScenicInfo> =>
   await http("scenic/detail", { data: { id } });
 
 export const createScenic = async (
-  restaurantInfo: Partial<OriginalScenicInfo>
+  scenicInfo: Partial<Omit<ScenicInfo, "id">>
 ) =>
   await http("scenic/add", {
     method: "POST",
-    data: restaurantInfo,
+    data: cleanObject(scenicInfo),
   });
 
-export const editScenic = async (restaurantInfo: Partial<OriginalScenicInfo>) =>
+export const editScenic = async (scenicInfo: Partial<ScenicInfo>) =>
   await http("scenic/edit", {
     method: "POST",
-    data: restaurantInfo,
+    data: cleanObject(scenicInfo),
   });
