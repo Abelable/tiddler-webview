@@ -37,7 +37,7 @@ export const setCategoryOptions = async () => {
 
 export const checkScenicInfo = (scenicInfo: FormScenicInfo) => {
   if (!scenicInfo.imageList.length) {
-    showToast("请上传景点封面");
+    showToast("请上传景点照片");
     return false;
   }
   if (!scenicInfo.name) {
@@ -56,21 +56,53 @@ export const checkScenicInfo = (scenicInfo: FormScenicInfo) => {
     showToast("请输入景点具体位置");
     return false;
   }
+  if (!scenicInfo.brief) {
+    showToast("请输入景点简介");
+    return false;
+  }
   if (!scenicInfo.hotlineList.length) {
-    showToast("请添加联系电话");
+    showToast("请添加质询热线");
     return false;
   }
   if (!scenicInfo.openTimeList.length) {
     showToast("请添加营业时间");
     return false;
   }
-  // const incompleteOpenTimeIndex = scenicInfo.openTimeList.findIndex(
-  //   (item) =>
-  //     !item.startWeekDay || !item.endWeekDay || !item.timeFrameList.length
-  // );
-  // if (incompleteOpenTimeIndex !== -1) {
-  //   showToast("请完善营业时间必填项");
-  //   return false;
-  // }
+  const incompleteOpenTimeIndex = scenicInfo.openTimeList.findIndex(
+    (item) =>
+      !item.openMonth || !item.closeMonth || !item.openTime || !item.closeTime
+  );
+  if (incompleteOpenTimeIndex !== -1) {
+    showToast("请完善开放时间必填项");
+    return false;
+  }
+  const incompletePolicyIndex = scenicInfo.policyList.findIndex(
+    (item) => !item.condition || !item.content || !item.crowd
+  );
+  if (incompletePolicyIndex !== -1) {
+    showToast("请完善优待政策必填项");
+    return false;
+  }
+  const incompleteProjectIndex = scenicInfo.projectList.findIndex(
+    (item) => !item.image || !item.name
+  );
+  if (incompleteProjectIndex !== -1) {
+    showToast("请完善景区项目必填项");
+    return false;
+  }
+  const incompleteFacilityIndex = scenicInfo.facilityList.findIndex(
+    (item) => !item.facilityId || !item.content
+  );
+  if (incompleteFacilityIndex !== -1) {
+    showToast("请完善景区设施必填项");
+    return false;
+  }
+  const incompleteTipsIndex = scenicInfo.tipsList.findIndex(
+    (item) => !item.title || !item.content
+  );
+  if (incompleteTipsIndex !== -1) {
+    showToast("请完善游玩贴士必填项");
+    return false;
+  }
   return true;
 };
