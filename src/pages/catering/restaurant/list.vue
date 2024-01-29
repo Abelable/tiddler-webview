@@ -56,7 +56,7 @@
         :key="index"
         v-show="curMenuIndex === 1"
       >
-        <div class="inner">
+        <div class="inner" @click="editRestaurant(item.id)">
           <img class="image" :src="item.restaurantImage" alt="" />
           <div class="content">
             <div class="name">{{ item.restaurantName }}</div>
@@ -112,6 +112,8 @@
     </List>
   </PullRefresh>
 
+  <button class="add-btn" @click="showRestaurantPickerPopup">添加门店</button>
+
   <MultiPickerPopup
     :visible="restaurantPickerPopupVisible"
     :options="
@@ -124,8 +126,6 @@
       没有找到您的门店？<span style="color: #1182fb">点此创建</span>
     </div>
   </MultiPickerPopup>
-
-  <button class="add-btn" @click="showRestaurantPickerPopup">添加门店</button>
 </template>
 
 <script setup lang="ts">

@@ -270,7 +270,7 @@
         />
       </template>
     </SwipeCell>
-    <div class="card" v-if="!scenicInfo.openTimeList.length">
+    <div class="card" v-if="!scenicInfo.policyList.length">
       <Empty image-size="1.8rem" description="暂未添加优待政策" />
     </div>
 
@@ -316,7 +316,7 @@
         />
       </template>
     </SwipeCell>
-    <div class="card" v-if="!scenicInfo.openTimeList.length">
+    <div class="card" v-if="!scenicInfo.projectList.length">
       <Empty image-size="1.8rem" description="暂未添加景区项目" />
     </div>
 
@@ -339,7 +339,9 @@
               <div class="content" :class="{ active: item.facilityId }">
                 {{
                   item.facilityId
-                    ? facilityOptions[item.facilityId].text
+                    ? facilityOptions.find(
+                        (_item) => _item.value === item.facilityId
+                      )?.text
                     : "请选择设施"
                 }}
               </div>
@@ -366,7 +368,7 @@
         />
       </template>
     </SwipeCell>
-    <div class="card" v-if="!scenicInfo.openTimeList.length">
+    <div class="card" v-if="!scenicInfo.facilityList.length">
       <Empty image-size="1.8rem" description="暂未添加景区设施" />
     </div>
 
@@ -411,7 +413,7 @@
         />
       </template>
     </SwipeCell>
-    <div class="card" v-if="!scenicInfo.openTimeList.length">
+    <div class="card" v-if="!scenicInfo.tipsList.length">
       <Empty image-size="1.8rem" description="暂未添加游玩贴士" />
     </div>
   </div>
@@ -748,8 +750,14 @@ const save = async () => {
           text-align: right;
         }
         .textarea {
+          margin-top: 0.24rem;
+          padding: 0.24rem;
+          width: 100%;
+          height: 3rem;
           background: #f7f8fa;
           border-radius: 0.12rem;
+          border-color: #eee;
+          box-sizing: border-box;
         }
         .picker {
           display: flex;

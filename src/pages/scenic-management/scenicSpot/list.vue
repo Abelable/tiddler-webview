@@ -29,7 +29,7 @@
         :key="index"
         v-show="curMenuIndex === 0"
       >
-        <div class="inner">
+        <div class="inner" @click="editScenic(item.scenicId)">
           <img class="image" :src="item.scenicImage" alt="" />
           <div class="content">
             <div class="row">
@@ -59,7 +59,7 @@
         :key="index"
         v-show="curMenuIndex === 1"
       >
-        <div class="inner">
+        <div class="inner" @click="editScenic(item.scenicId)">
           <img class="image" :src="item.scenicImage" alt="" />
           <div class="content">
             <div class="row">
@@ -90,7 +90,7 @@
         :key="index"
         v-show="curMenuIndex === 2"
       >
-        <div class="inner">
+        <div class="inner" @click="editScenic(item.scenicId)">
           <img class="image" :src="item.scenicImage" alt="" />
           <div class="content">
             <div class="row">
@@ -123,14 +123,18 @@
 
   <button class="add-btn" @click="showScenicPickerPopup">添加景点</button>
 
-  <PickerPopup
+  <MultiPickerPopup
     :visible="scenicPickerPopupVisible"
     :options="
       scenicOptions.map((item) => ({ text: item.name, value: item.id }))
     "
     @confirm="selectScenic"
     @cancel="scenicPickerPopupVisible = false"
-  />
+  >
+    <div class="no-tips row center" @click="createScenic">
+      没有找到您的景点？<span style="color: #1182fb">点此创建</span>
+    </div>
+  </MultiPickerPopup>
 </template>
 
 <script setup lang="ts">
@@ -144,9 +148,10 @@ import {
   Empty,
   showToast,
 } from "vant";
-import PickerPopup from "@/components/PickerPopup.vue";
+import MultiPickerPopup from "@/components/MultiPickerPopup.vue";
 
 import { ref, reactive, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import dayjs from "dayjs";
 import {
   getScenicOptions,
@@ -184,6 +189,8 @@ const spotLists = reactive<ProviderScenicSpot[][]>([[], [], []]);
 const pageList = [0, 0, 0];
 const scenicOptions = ref<ScenicOption[]>([]);
 const scenicPickerPopupVisible = ref(false);
+
+const router = useRouter();
 
 onMounted(() => {
   setTotals();
@@ -240,7 +247,7 @@ const selectScenic = async ({
   selectedValues: number[];
 }) => {
   try {
-    await applyScenicSpot(selectedValues[0]);
+    await applyScenicSpot(selectedValues);
     setTotals();
   } catch (error) {
     showToast((error as { code: number; message: string }).message);
@@ -261,6 +268,13 @@ const deleteSpot = (index: number) =>
       return true;
     })
     .catch(() => true);
+
+const createScenic = () => router.push("/scenic/spot/create");
+const editScenic = (id: number) =>
+  router.push({
+    path: "/scenic/spot/edit",
+    query: { id },
+  });
 </script>
 
 <style lang="scss" scoped>
@@ -275,6 +289,9 @@ const deleteSpot = (index: number) =>
 .row {
   display: flex;
   align-items: center;
+  &.center {
+    justify-content: center;
+  }
 }
 .menu-list {
   position: fixed;
@@ -381,6 +398,11 @@ const deleteSpot = (index: number) =>
       height: 100%;
     }
   }
+}
+.no-tips {
+  height: 1.2rem;
+  color: #333;
+  font-size: 0.26rem;
 }
 .add-btn {
   position: fixed;
