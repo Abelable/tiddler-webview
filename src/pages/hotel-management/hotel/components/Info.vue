@@ -85,25 +85,6 @@
             placeholder="请输入联系电话"
           />
         </li>
-        <li class="form-item">
-          <div class="name required">特色标签</div>
-          <div class="tags">
-            <TagList
-              :list="hotelInfo.featureTagList"
-              title="特色标签"
-              @addTag="addFeatureTag"
-              @deleteTag="deleteFeatureTag"
-            />
-          </div>
-        </li>
-        <li class="form-item">
-          <div class="name">酒店简介</div>
-          <textarea
-            class="textarea"
-            v-model="hotelInfo.brief"
-            placeholder="请输入酒店简介"
-          />
-        </li>
         <li class="form-item flex">
           <div class="name required">经纬度</div>
           <div class="picker" @click="mapPopupVisible = true">
@@ -124,6 +105,25 @@
             v-model="hotelInfo.address"
             type="text"
             placeholder="请输入酒店具体地址"
+          />
+        </li>
+        <li class="form-item">
+          <div class="name">特色标签</div>
+          <div class="tags">
+            <TagList
+              :list="hotelInfo.featureTagList"
+              title="特色标签"
+              @addTag="addFeatureTag"
+              @deleteTag="deleteFeatureTag"
+            />
+          </div>
+        </li>
+        <li class="form-item">
+          <div class="name">酒店简介</div>
+          <textarea
+            class="textarea"
+            v-model="hotelInfo.brief"
+            placeholder="请输入酒店简介"
           />
         </li>
       </ul>
@@ -161,7 +161,7 @@
           />
         </li>
         <li class="form-item">
-          <div class="name flex">
+          <div class="name flex required">
             <div>酒店封面照片</div>
             <Popover
               v-model:show="imageListTipsVisible"
@@ -439,7 +439,7 @@ import {
 import type { FormHotel } from "../utils/type";
 
 const props = defineProps<{
-  editingScenicInfo?: FormHotel;
+  editingHotelInfo?: FormHotel;
 }>();
 const emit = defineEmits(["save"]);
 
@@ -461,8 +461,8 @@ const selectedCategoryName = computed(
 );
 
 watch(props, (props) => {
-  if (props.editingScenicInfo) {
-    hotelInfo.value = props.editingScenicInfo;
+  if (props.editingHotelInfo) {
+    hotelInfo.value = props.editingHotelInfo;
   }
 });
 
@@ -599,11 +599,6 @@ const save = async () => {
     border-radius: 0.32rem;
     overflow: hidden;
     .form {
-      &.unit {
-        padding: 0 0.32rem;
-        border: 1px solid #eee;
-        border-radius: 0.24rem;
-      }
       .form-item {
         padding: 0.32rem 0;
         font-size: 0.26rem;
@@ -672,19 +667,8 @@ const save = async () => {
             }
           }
         }
-        .tags {
-          .tag {
-            margin-top: 0.32rem;
-            margin-right: 0.32rem;
-          }
-        }
       }
     }
-  }
-  .delete-btn {
-    height: 100%;
-    border: none;
-    background-color: transparent;
   }
 }
 .upload-btn {
@@ -705,15 +689,6 @@ const save = async () => {
   font-size: 0.24rem;
   line-height: 1.5;
   white-space: wrap;
-}
-.dialog-input {
-  margin: 0.32rem 0.32rem 0.5rem;
-  padding: 0.24rem;
-  width: calc(100% - 0.64rem);
-  height: 0.88rem;
-  font-size: 0.26rem;
-  border: 1px solid #ddd;
-  border-radius: 0.12rem;
 }
 </style>
 <style>

@@ -45,12 +45,12 @@ const emit = defineEmits(["deleteTag", "addTag"]);
 const tag = ref("");
 const tagModalVisible = ref(false);
 
-const deleteTag = (index: number) => emit("deleteTag", { index });
+const deleteTag = (index: number) => emit("deleteTag", index);
 const addTag = (action: string) => {
   if (action === "cancel") {
     return true;
   }
-  emit("addTag", { tag: tag.value });
+  emit("addTag", tag.value);
   tag.value = "";
   tagModalVisible.value = false;
 };
@@ -60,5 +60,14 @@ const addTag = (action: string) => {
 .tag {
   margin-top: 0.32rem;
   margin-right: 0.32rem;
+}
+.dialog-input {
+  margin: 0.32rem 0.32rem 0.5rem;
+  padding: 0.24rem;
+  width: calc(100% - 0.64rem);
+  height: 0.88rem;
+  font-size: 0.26rem;
+  border: 1px solid #ddd;
+  border-radius: 0.12rem;
 }
 </style>
