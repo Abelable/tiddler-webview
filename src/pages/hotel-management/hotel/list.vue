@@ -136,7 +136,7 @@
     @cancel="hotelPickerPopupVisible = false"
   >
     <div class="no-tips row center" @click="createHotel">
-      没有找到您的景点？<span style="color: #1182fb">点此创建</span>
+      没有找到您的酒店？<span style="color: #1182fb">点此创建</span>
     </div>
   </MultiPickerPopup>
 </template>
