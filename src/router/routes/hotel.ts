@@ -27,6 +27,22 @@ const hotel: Array<RouteRecordRaw> = [
     component: () => import("@/pages/hotel-management/hotel/list.vue"),
   },
   {
+    path: "/hotel/create",
+    name: "hotel_create",
+    meta: {
+      title: "新增酒店",
+    },
+    component: () => import("@/pages/hotel-management/hotel/create.vue"),
+  },
+  {
+    path: "/hotel/edit",
+    name: "hotel_edit",
+    meta: {
+      title: "编辑酒店",
+    },
+    component: () => import("@/pages/hotel-management/hotel/edit.vue"),
+  },
+  {
     path: "/hotel/room/list",
     name: "room_list",
     meta: {

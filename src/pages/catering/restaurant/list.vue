@@ -56,7 +56,7 @@
         :key="index"
         v-show="curMenuIndex === 1"
       >
-        <div class="inner" @click="editRestaurant(item.id)">
+        <div class="inner">
           <img class="image" :src="item.restaurantImage" alt="" />
           <div class="content">
             <div class="name">{{ item.restaurantName }}</div>
@@ -84,7 +84,7 @@
         :key="index"
         v-show="curMenuIndex === 2"
       >
-        <div class="inner" @click="editRestaurant(item.id)">
+        <div class="inner">
           <img class="image" :src="item.restaurantImage" alt="" />
           <div class="content">
             <div class="name">{{ item.restaurantName }}</div>

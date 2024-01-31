@@ -59,7 +59,7 @@
         :key="index"
         v-show="curMenuIndex === 1"
       >
-        <div class="inner" @click="editScenic(item.scenicId)">
+        <div class="inner">
           <img class="image" :src="item.scenicImage" alt="" />
           <div class="content">
             <div class="row">
@@ -90,7 +90,7 @@
         :key="index"
         v-show="curMenuIndex === 2"
       >
-        <div class="inner" @click="editScenic(item.scenicId)">
+        <div class="inner">
           <img class="image" :src="item.scenicImage" alt="" />
           <div class="content">
             <div class="row">
