@@ -458,7 +458,7 @@
     :options="
       expressTemplateOptions.map((item) => ({
         text: item.name,
-        value: +item.code,
+        value: item.code,
       }))
     "
     @confirm="expressTemplateConfirm"

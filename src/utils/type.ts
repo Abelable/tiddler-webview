@@ -21,6 +21,6 @@ export interface ApiOption {
 
 export interface Option {
   text: string;
-  value: number;
+  value: number | string;
   children?: Option[];
 }
