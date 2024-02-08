@@ -14,11 +14,9 @@ export const initialFreightTemplate = {
   name: "",
   title: "",
   computeMode: 1,
-  freeQuota: 0,
-  areaList: [{ id: 1, pickedCityCodes: [], pickedCityDescs: [], fee: 0 }],
-  expressList: [
-    { id: 1, pickedExpressCodes: [], pickedExpressDescs: [], fee: 0 },
-  ],
+  freeQuota: undefined,
+  areaList: [],
+  expressList: [],
   expressTemplateLists: [],
 };
 

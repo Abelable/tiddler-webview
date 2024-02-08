@@ -39,24 +39,24 @@ interface AreaItem {
   id: number;
   pickedCityCodes: string[];
   pickedCityDescs: string[];
-  fee: number;
+  fee: number | undefined;
 }
 
 interface ExpressItem {
   id: number;
   pickedExpressCodes: string[];
   pickedExpressDescs: string[];
-  fee: number;
+  fee: number | undefined;
 }
 
 interface ExpressTemplate {
   id: number;
   areaName: string;
   computeMode: number;
-  baseFee?: number;
-  stepFee?: number;
-  singleFee?: number;
-  freeQuota: number;
+  baseFee: number | undefined;
+  stepFee: number | undefined;
+  singleFee: number | undefined;
+  freeQuota: number | undefined;
   pickedCityCodes: string[];
   pickedCityDescs: string[];
 }
@@ -84,37 +84,8 @@ export interface FormFreightTemplate {
   name: string;
   title: string;
   computeMode: number;
-  freeQuota: number;
+  freeQuota: number | undefined;
   areaList: AreaItem[];
   expressList: ExpressItem[];
   expressTemplateLists: ExpressTemplateList[];
 }
-
-// export interface FreightTemplate {
-//   mode: number;
-//   name: string;
-//   title: string;
-//   computeMode: number;
-//   freeQuota: number;
-//   areaList: AreaItem[];
-//   expressList: ExpressItem[];
-//   expressTemplateLists: ExpressTemplateList[];
-// }
-
-// export interface ExistFreightTemplate extends FreightTemplate {
-//   id: number;
-// }
-
-// export interface AddFreightTemplate
-//   extends Omit<
-//     FreightTemplate,
-//     "areaList" | "expressList" | "expressTemplateLists"
-//   > {
-//   areaList: string;
-//   expressList: string;
-//   expressTemplateLists: string;
-// }
-
-// export interface EditFreightTemplate extends AddFreightTemplate {
-//   id: number;
-// }

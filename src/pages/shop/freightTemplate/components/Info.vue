@@ -122,6 +122,10 @@
           />
         </template>
       </SwipeCell>
+      <div class="card" v-if="!freightTemplate.areaList.length">
+        <Empty image-size="1.8rem" description="暂未添加配送地区" />
+      </div>
+
       <div class="title">
         <div>快递方式</div>
         <Button
@@ -177,6 +181,9 @@
           />
         </template>
       </SwipeCell>
+      <div class="card" v-if="!freightTemplate.expressList.length">
+        <Empty image-size="1.8rem" description="暂未添加快递方式" />
+      </div>
     </div>
     <div class="main" v-if="freightTemplate.mode === 2">
       <div class="title">
@@ -332,6 +339,9 @@
             />
           </template>
         </SwipeCell>
+      </div>
+      <div class="card" v-if="!freightTemplate.expressTemplateLists.length">
+        <Empty image-size="1.8rem" description="暂未添加快递模板" />
       </div>
     </div>
     <div class="btns">
@@ -567,6 +577,7 @@ import {
   Popup,
   Checkbox,
   showToast,
+  Empty,
 } from "vant";
 import PickerPopup from "@/components/PickerPopup.vue";
 
@@ -894,7 +905,7 @@ const addArea = () =>
       : 1,
     pickedCityCodes: [],
     pickedCityDescs: [],
-    fee: 0,
+    fee: undefined,
   });
 const deleteArea = (index: number) => {
   showConfirmDialog({ title: "确定删除该配送地区配置吗？" })
@@ -1027,7 +1038,7 @@ const addExpress = () =>
       : 1,
     pickedExpressCodes: [],
     pickedExpressDescs: [],
-    fee: 0,
+    fee: undefined,
   });
 const deleteExpress = (index: number) => {
   showConfirmDialog({ title: "确定删除该快递方式配置吗？" })
@@ -1298,10 +1309,10 @@ const expressTemplateConfirm = ({
         id: 1,
         areaName: "",
         computeMode: 1,
-        baseFee: 0,
-        stepFee: 0,
-        singleFee: 0,
-        freeQuota: 0,
+        baseFee: undefined,
+        stepFee: undefined,
+        singleFee: undefined,
+        freeQuota: undefined,
         pickedCityCodes: [],
         pickedCityDescs: [],
       },
@@ -1317,10 +1328,10 @@ const addExpressTemplateList = (index: number) => {
     id: curList.length ? curList[curList.length - 1].id + 1 : 1,
     areaName: "",
     computeMode: 1,
-    baseFee: 0,
-    stepFee: 0,
-    singleFee: 0,
-    freeQuota: 0,
+    baseFee: undefined,
+    stepFee: undefined,
+    singleFee: undefined,
+    freeQuota: undefined,
     pickedCityCodes: [],
     pickedCityDescs: [],
   });
