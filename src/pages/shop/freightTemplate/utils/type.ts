@@ -28,7 +28,7 @@ interface AreaItem {
   id: number;
   pickedCityCodes: string;
   pickedCityDescs: string;
-  fee: number | undefined;
+  fee: number;
 }
 
 export interface FormFreightTemplate {

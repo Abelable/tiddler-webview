@@ -480,8 +480,15 @@ const deleteArea = (index: number) => {
 
 const save = async () => {
   if (checkFreightTemplateInfo(freightTemplate.value)) {
+    const { areaList, ...rest } = freightTemplate.value;
     emit("save", {
-      freightTemplate: freightTemplate.value,
+      freightTemplate: {
+        ...rest,
+        areaList: areaList.map((item) => ({
+          pickedCityCodes: item.pickedCityCodes.join(),
+          pickedCityDescs: item.pickedCityDescs.join(),
+        })),
+      },
     });
   }
 };
