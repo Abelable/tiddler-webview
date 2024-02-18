@@ -485,6 +485,7 @@ const save = async () => {
       freightTemplate: {
         ...rest,
         areaList: areaList.map((item) => ({
+          ...item,
           pickedCityCodes: item.pickedCityCodes.join(),
           pickedCityDescs: item.pickedCityDescs.join(),
         })),

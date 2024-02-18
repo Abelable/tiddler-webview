@@ -1,5 +1,6 @@
 import { http } from "@/utils/http";
 import type { FreightTemplateListItem, FreightTemplate } from "./type";
+import { cleanObject } from "@/utils";
 
 export const getFreightTemplateList = async (): Promise<
   FreightTemplateListItem[]
@@ -15,13 +16,15 @@ export const createFreightTemplate = async (
 ) =>
   await http("shop/freight_template/add", {
     method: "POST",
-    data: freightTemplate,
+    data: cleanObject(freightTemplate),
   });
 
-export const editFreightTemplate = async (freightTemplate: FreightTemplate) =>
+export const editFreightTemplate = async (
+  freightTemplate: Partial<FreightTemplate>
+) =>
   await http("shop/freight_template/edit", {
     method: "POST",
-    data: freightTemplate,
+    data: cleanObject(freightTemplate),
   });
 
 export const deleteFreightTemplate = async (id: number) =>
