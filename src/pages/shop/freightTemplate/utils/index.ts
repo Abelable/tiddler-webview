@@ -44,7 +44,7 @@ export const checkFreightTemplateInfo = (
   }
   if (
     freightTemplate.areaList.findIndex(
-      (item) => !item.pickedCityCodes.length || !item.fee
+      (item) => !item.pickedCityCodes.length || item.fee === undefined
     ) !== -1
   ) {
     showToast("请完善商品规格信息");
