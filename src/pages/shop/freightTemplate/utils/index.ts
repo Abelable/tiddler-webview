@@ -1,23 +1,16 @@
 import { ref } from "vue";
+import { showToast } from "vant";
 import { getCityRegionOptions } from "@/utils/region-options";
-import { getExpressOptions } from "./api";
 
 import type { Option } from "@/utils/type";
-import type {
-  ExpressOption,
-  ExpressTemplateOption,
-  RegionOption,
-} from "./type";
+import type { FormFreightTemplate, RegionOption } from "./type";
 
 export const initialFreightTemplate = {
-  mode: 1,
   name: "",
   title: "",
   computeMode: 1,
   freeQuota: undefined,
   areaList: [],
-  expressList: [],
-  expressTemplateLists: [],
 };
 
 export const regionOptions = ref<RegionOption[]>([]);
@@ -34,21 +27,28 @@ export const setRegionOptions = () => {
   }));
 };
 
-export const expressOptions = ref<ExpressOption[]>([]);
-export const setExpressOptions = async () => {
-  const options = await getExpressOptions();
-  expressOptions.value = options.map((item) => ({
-    ...item,
-    expressId: 0,
-    selected: false,
-  }));
-};
-
-export const expressTemplateOptions = ref<ExpressTemplateOption[]>([]);
-export const setExpressTemplateOptions = async () => {
-  const options = await getExpressOptions();
-  expressTemplateOptions.value = options.map((item) => ({
-    ...item,
-    disabled: false,
-  }));
+export const checkFreightTemplateInfo = (
+  freightTemplate: FormFreightTemplate
+) => {
+  if (!freightTemplate.name) {
+    showToast("请输入模板名称");
+    return false;
+  }
+  if (!freightTemplate.title) {
+    showToast("请输入模板标题");
+    return false;
+  }
+  if (!freightTemplate.areaList.length) {
+    showToast("请添加配送地区");
+    return false;
+  }
+  if (
+    freightTemplate.areaList.findIndex(
+      (item) => !item.pickedCityCodes.length || !item.fee
+    ) !== -1
+  ) {
+    showToast("请完善商品规格信息");
+    return false;
+  }
+  return true;
 };

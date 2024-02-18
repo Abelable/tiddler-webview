@@ -1,12 +1,5 @@
 import { http } from "@/utils/http";
-import type {
-  SingleExpressOption,
-  FreightTemplateListItem,
-  FreightTemplate,
-} from "./type";
-
-export const getExpressOptions = async (): Promise<SingleExpressOption[]> =>
-  await http("shop/express_options");
+import type { FreightTemplateListItem, FreightTemplate } from "./type";
 
 export const getFreightTemplateList = async (): Promise<
   FreightTemplateListItem[]
