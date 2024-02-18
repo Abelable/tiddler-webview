@@ -31,7 +31,7 @@ export const initialGoodsInfo = {
 export const freightTemplateOptions = ref<FreightTemplateListItem[]>([]);
 export const setFreightTemplateOptions = async () =>
   (freightTemplateOptions.value = [
-    { id: 0, name: "包邮" },
+    { id: 0, name: "全国包邮" },
     ...(await getFreightTemplateList()),
   ]);
 
