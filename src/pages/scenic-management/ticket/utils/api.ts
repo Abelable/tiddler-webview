@@ -5,7 +5,7 @@ import type { ApiOption } from "@/utils/type";
 import type { TicketListItem, TicketInfo } from "./type";
 
 export const getScenicOptions = async (): Promise<ApiOption[]> =>
-  await http("scenic/provider/scenic_options");
+  await http("scenic/provider/scenic/options");
 
 export const getTicketTotals = async (): Promise<number[]> =>
   await http("scenic/provider/ticket/totals");
