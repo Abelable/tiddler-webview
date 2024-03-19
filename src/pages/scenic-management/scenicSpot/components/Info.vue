@@ -85,6 +85,16 @@
           </div>
         </li>
         <li class="form-item flex">
+          <div class="name required">门票起始价格</div>
+          <input
+            class="input"
+            v-model="scenicInfo.price"
+            type="number"
+            step="0.01"
+            placeholder="请输入门票起始价格"
+          />
+        </li>
+        <li class="form-item flex">
           <div class="name required">经纬度</div>
           <div class="picker" @click="mapPopupVisible = true">
             <div class="content" :class="{ active: scenicInfo.longitude }">

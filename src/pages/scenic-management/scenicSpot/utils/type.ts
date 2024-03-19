@@ -57,6 +57,7 @@ export interface FormScenicInfo {
   name: string;
   level: string;
   categoryId: number | undefined;
+  price: number | undefined;
   video: UploaderFileListItem[];
   imageList: UploaderFileListItem[];
   longitude: number | undefined;
@@ -76,6 +77,7 @@ export interface ScenicInfo {
   name: string;
   level: string;
   categoryId: number;
+  price: number;
   video: string;
   imageList: string[];
   longitude: number;

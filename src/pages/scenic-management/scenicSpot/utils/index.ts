@@ -48,6 +48,10 @@ export const checkScenicInfo = (scenicInfo: FormScenicInfo) => {
     showToast("请选择景点分类");
     return false;
   }
+  if (!scenicInfo.price) {
+    showToast("请输入门票起始价格");
+    return false;
+  }
   if (!scenicInfo.longitude || !scenicInfo.latitude) {
     showToast("请选择经纬度");
     return false;
