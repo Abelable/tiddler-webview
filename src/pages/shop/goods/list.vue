@@ -30,7 +30,7 @@
         v-show="curMenuIndex === 0"
       >
         <div class="inner">
-          <img class="image" :src="item.image" alt="" />
+          <img class="image" :src="item.cover" alt="" />
           <div class="content">
             <div class="name">{{ item.name }}</div>
             <div class="row">
@@ -57,7 +57,7 @@
         v-show="curMenuIndex === 1"
       >
         <div class="inner" @click="editGoods(item.id)">
-          <img class="image" :src="item.image" alt="" />
+          <img class="image" :src="item.cover" alt="" />
           <div class="content">
             <div class="name omit">{{ item.name }}</div>
             <div class="time">
@@ -92,7 +92,7 @@
         v-show="curMenuIndex === 2"
       >
         <div class="inner">
-          <img class="image" :src="item.image" alt="" />
+          <img class="image" :src="item.cover" alt="" />
           <div class="content">
             <div class="name">{{ item.name }}</div>
             <div class="time">
@@ -111,7 +111,7 @@
         v-show="curMenuIndex === 3"
       >
         <div class="inner" @click="editGoods(item.id)">
-          <img class="image" :src="item.image" alt="" />
+          <img class="image" :src="item.cover" alt="" />
           <div class="content">
             <div class="name">{{ item.name }}</div>
             <div class="failure-reason">

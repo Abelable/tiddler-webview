@@ -18,7 +18,7 @@
             </Popover>
           </div>
           <Uploader
-            v-model="goodsInfo.image"
+            v-model="goodsInfo.cover"
             :after-read="uploadFile"
             style="margin-top: 0.32rem"
             max-count="1"
@@ -317,7 +317,7 @@
             <li class="form-item">
               <div class="name">图片</div>
               <Uploader
-                v-model="item.image"
+                v-model="item.cover"
                 :after-read="uploadFile"
                 style="margin-top: 0.32rem"
                 max-count="1"
@@ -546,7 +546,7 @@ watch(goodsInfo.value.specList, () => {
     return (
       sku || {
         name: item.join(),
-        image: [],
+        cover: [],
         price: undefined,
         stock: undefined,
       }
@@ -600,7 +600,7 @@ const save = async () => {
 
   const {
     video,
-    image,
+    cover,
     imageList,
     detailImageList,
     defaultSpecImage,
@@ -613,14 +613,14 @@ const save = async () => {
     goodsInfo: {
       ...rest,
       video: video.length ? video[0].url : "",
-      image: image[0].url,
+      cover: cover[0].url,
       imageList: imageList.map((item) => item.url),
       detailImageList: detailImageList.map((item) => item.url),
       defaultSpecImage: defaultSpecImage[0].url,
       specList: specList,
       skuList: skuList.map((item) => ({
         ...item,
-        image: item.image.length ? item.image[0].url : "",
+        cover: item.cover.length ? item.cover[0].url : "",
       })),
     },
   });

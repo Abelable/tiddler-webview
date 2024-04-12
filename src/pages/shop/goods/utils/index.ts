@@ -9,7 +9,7 @@ import type { AddressListItem } from "../../goodsReturnAddress/utils/type";
 import type { FormGoodsInfo, GoodsCategoryOption } from "./type";
 
 export const initialGoodsInfo = {
-  image: [],
+  cover: [],
   video: [],
   imageList: [],
   detailImageList: [],
@@ -50,7 +50,7 @@ export const checkGoodsInfo = (
   minPromotionCommissionRate: number,
   maxPromotionCommissionRate: number
 ) => {
-  if (!goodsInfo.image.length) {
+  if (!goodsInfo.cover.length) {
     showToast("请上传列表图片");
     return false;
   }

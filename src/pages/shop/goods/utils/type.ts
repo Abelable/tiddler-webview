@@ -12,7 +12,7 @@ export interface GoodsCategoryOption {
 
 export interface GoodsListItem {
   id: number;
-  image: string;
+  cover: string;
   name: string;
   price: number;
   salesVolume: number;
@@ -28,13 +28,13 @@ export interface SpecItem {
 
 export interface SkuItem {
   name: string;
-  image: string;
+  cover: string;
   price: number;
   stock: number;
 }
 export interface GoodsInfo {
   id: number;
-  image: string;
+  cover: string;
   video: string;
   imageList: string[];
   detailImageList: string[];
@@ -55,13 +55,13 @@ export interface GoodsInfo {
 
 export interface FormSkuItem {
   name: string;
-  image: UploaderFileListItem[];
+  cover: UploaderFileListItem[];
   price: number | undefined;
   stock: number | undefined;
 }
 
 export interface FormGoodsInfo {
-  image: UploaderFileListItem[];
+  cover: UploaderFileListItem[];
   video: UploaderFileListItem[];
   imageList: UploaderFileListItem[];
   detailImageList: UploaderFileListItem[];

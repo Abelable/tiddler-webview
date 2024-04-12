@@ -33,7 +33,7 @@ onMounted(async () => {
 const setGoodsInfo = async () => {
   const {
     id,
-    image,
+    cover,
     video,
     imageList,
     detailImageList,
@@ -45,7 +45,7 @@ const setGoodsInfo = async () => {
   goodsId.value = id;
   editingGoodsInfo.value = {
     ...rest,
-    image: [{ url: image }],
+    cover: [{ url: cover }],
     video: video ? [{ url: video }] : [],
     imageList: imageList.map((item) => ({ url: item })),
     detailImageList: detailImageList.map((item) => ({ url: item })),
@@ -53,7 +53,7 @@ const setGoodsInfo = async () => {
     marketPrice: marketPrice || undefined,
     skuList: skuList.map((item) => ({
       ...item,
-      image: item.image ? [{ url: item.image }] : [],
+      cover: item.cover ? [{ url: item.cover }] : [],
     })),
   };
 };
