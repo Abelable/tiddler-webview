@@ -147,6 +147,17 @@
             >
           </div>
         </li>
+        <li class="form-item">
+          <div class="name">特色标签</div>
+          <div class="tags">
+            <TagList
+              :list="scenicInfo.featureTagList"
+              title="特色标签"
+              @addTag="addFeatureTag"
+              @deleteTag="deleteFeatureTag"
+            />
+          </div>
+        </li>
       </ul>
     </div>
 
@@ -491,6 +502,7 @@ import {
 import PickerPopup from "@/components/PickerPopup.vue";
 import MapPopup from "@/components/MapPopup.vue";
 import TimePickerPopup from "@/components/TimePickerPopup.vue";
+import TagList from "@/components/TagList.vue";
 
 import { ref, computed, onMounted, watch } from "vue";
 import { monthOptions } from "@/utils/index";
@@ -580,6 +592,11 @@ const addHotline = (action: string) => {
   hotline.value = "";
   hotlineModalVisible.value = false;
 };
+
+const addFeatureTag = (tag: string) =>
+  scenicInfo.value.featureTagList.push(tag);
+const deleteFeatureTag = (index: number) =>
+  scenicInfo.value.featureTagList.splice(index, 1);
 
 const addOpenTime = () => {
   scenicInfo.value.openTimeList.push({

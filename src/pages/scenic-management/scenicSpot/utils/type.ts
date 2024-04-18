@@ -70,6 +70,7 @@ export interface FormScenicInfo {
   facilityList: Facility[];
   projectList: FormProject[];
   tipsList: Tips[];
+  featureTagList: string[];
 }
 
 export interface ScenicInfo {
@@ -90,4 +91,5 @@ export interface ScenicInfo {
   facilityList: Facility[];
   projectList: Project[];
   tipsList: Tips[];
+  featureTagList: string[];
 }

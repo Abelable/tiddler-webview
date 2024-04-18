@@ -16,6 +16,7 @@ export const initialScenicInfo = {
   name: "",
   level: "",
   categoryId: undefined,
+  price: undefined,
   video: [],
   imageList: [],
   longitude: undefined,
@@ -28,6 +29,7 @@ export const initialScenicInfo = {
   facilityList: [],
   projectList: [],
   tipsList: [],
+  featureTagList: [],
 };
 
 export const categoryOptions = ref<ApiOption[]>([]);
