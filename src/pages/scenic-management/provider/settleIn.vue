@@ -703,7 +703,7 @@ const back = () => {
     .home {
       position: relative;
       height: 100vh;
-      background-image: url("./images/bg.jpeg");
+      background-image: url("./images/bg.webp");
       background-repeat: no-repeat;
       background-size: cover;
       .main {
