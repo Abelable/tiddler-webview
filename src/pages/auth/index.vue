@@ -160,7 +160,7 @@
 <script setup lang="ts">
 import { getAuthInfo, addAuthInfo, editAuthInfo } from "./utils/api";
 import { onMounted, reactive } from "vue";
-import { Toast, showLoadingToast, closeToast } from "vant";
+import { showToast, showLoadingToast, closeToast } from "vant";
 import Uploader from "@/components/Uploader.vue";
 
 import type { AuthInfo } from "./utils/type";
@@ -216,28 +216,28 @@ const setAuthInfo = async () => {
 
 const submit = async () => {
   if (!authInfo.name) {
-    Toast("姓名不能为空");
+    showToast("姓名不能为空");
     return;
   }
   if (!authInfo.idCardNumber) {
-    Toast("身份证号不能为空");
+    showToast("身份证号不能为空");
     return;
   }
   const mobile = authInfo.mobile;
   if (!mobile || (mobile && !/^[1][3,4,5,6,7,8,9][0-9]{9}$/.test(mobile))) {
-    Toast("请输入正确手机号");
+    showToast("请输入正确手机号");
     return;
   }
   if (!authInfo.idCardFrontPhoto) {
-    Toast("请上传身份证正面照片");
+    showToast("请上传身份证正面照片");
     return;
   }
   if (!authInfo.idCardBackPhoto) {
-    Toast("请上传身份证反面照片");
+    showToast("请上传身份证反面照片");
     return;
   }
   if (!authInfo.holdIdCardPhoto) {
-    Toast("请上传手持身份证照片");
+    showToast("请上传手持身份证照片");
     return;
   }
 
@@ -257,7 +257,7 @@ const submit = async () => {
   } catch (error) {
     closeToast();
     if ((error as { message: string })?.message) {
-      Toast((error as { message: string }).message);
+      showToast((error as { message: string }).message);
     }
   }
 };
