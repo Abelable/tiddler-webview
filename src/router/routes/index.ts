@@ -14,6 +14,14 @@ const routes: Array<RouteRecordRaw> = [
     },
     component: () => import("@/pages/auth/index.vue"),
   },
+  {
+    path: "/promoter",
+    name: "promoter",
+    meta: {
+      title: "家乡推广",
+    },
+    component: () => import("@/pages/promoter/index.vue"),
+  },
   ...agreements,
   ...shop,
   ...scenic,
