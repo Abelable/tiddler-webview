@@ -90,7 +90,7 @@ const setGoodsList = async (init = false) => {
     &.active {
       position: relative;
       color: #333;
-      font-weight: 500;
+      font-weight: bold;
       &::after {
         position: absolute;
         left: 0;
