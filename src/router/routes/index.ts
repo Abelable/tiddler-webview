@@ -15,12 +15,12 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/pages/auth/index.vue"),
   },
   {
-    path: "/promoter",
-    name: "promoter",
+    path: "/gift_goods",
+    name: "gift_goods",
     meta: {
       title: "家乡推广",
     },
-    component: () => import("@/pages/promoter/index.vue"),
+    component: () => import("@/pages/gift-goods/index.vue"),
   },
   ...agreements,
   ...shop,

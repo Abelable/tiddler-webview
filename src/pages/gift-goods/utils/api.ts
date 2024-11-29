@@ -3,13 +3,13 @@ import { http } from "@/utils/http";
 import type { GoodsListItem } from "./type";
 
 export const getGoodsList = async (
-  status: number,
+  type: number,
   page: number,
   limit = 10
 ): Promise<GoodsListItem[]> => {
   const { list = [] } =
-    (await http("shop/goods/list", {
-      data: { status, page, limit },
+    (await http("gift_goods_list", {
+      data: { type, page, limit },
     })) || {};
   return list;
 };
