@@ -240,6 +240,10 @@
           />
           <div class="unit">%</div>
         </li>
+        <li class="form-item flex">
+          <div class="name required">7天无理由退换货</div>
+          <Switch v-model="goodsInfo.refundSupport" size="18px" />
+        </li>
       </ul>
     </div>
 
@@ -606,6 +610,7 @@ const save = async () => {
     defaultSpecImage,
     specList,
     skuList,
+    refundSupport,
     ...rest
   } = goodsInfo.value;
 
@@ -622,6 +627,7 @@ const save = async () => {
         ...item,
         cover: item.cover.length ? item.cover[0].url : "",
       })),
+      refundSupport: refundSupport ? 1 : 0,
     },
   });
 };

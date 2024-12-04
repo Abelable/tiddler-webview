@@ -51,6 +51,7 @@ export interface GoodsInfo {
   promotionCommissionRate: number;
   specList: SpecItem[];
   skuList: SkuItem[];
+  refundSupport: 0 | 1;
 }
 
 export interface FormSkuItem {
@@ -78,4 +79,5 @@ export interface FormGoodsInfo {
   promotionCommissionRate: number | undefined;
   specList: SpecItem[];
   skuList: FormSkuItem[];
+  refundSupport: boolean;
 }

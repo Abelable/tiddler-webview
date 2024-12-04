@@ -26,6 +26,7 @@ export const initialGoodsInfo = {
   promotionCommissionRate: undefined,
   specList: [],
   skuList: [],
+  refundSupport: false,
 };
 
 export const freightTemplateOptions = ref<FreightTemplateListItem[]>([]);
