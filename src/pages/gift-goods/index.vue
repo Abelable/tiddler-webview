@@ -19,6 +19,11 @@
       @load="onLoadMore"
       :finished-text="goodsLists[curMenuIndex].length ? '没有更多了' : ''"
     >
+      <GoodsItem
+        v-for="(item, index) in goodsLists[curMenuIndex]"
+        :key="index"
+        :info="item"
+      />
       <Empty
         v-if="!goodsLists[curMenuIndex].length"
         description="暂无商品列表"
@@ -29,6 +34,8 @@
 
 <script setup lang="ts">
 import { PullRefresh, List, Empty } from "vant";
+import GoodsItem from "./components/GoodsItem.vue";
+
 import { reactive, ref } from "vue";
 import { GoodsListItem } from "./utils/type";
 import { getGoodsList } from "./utils/api";
@@ -102,5 +109,8 @@ const setGoodsList = async (init = false) => {
       }
     }
   }
+}
+.goods-list {
+  padding: 0.2rem;
 }
 </style>

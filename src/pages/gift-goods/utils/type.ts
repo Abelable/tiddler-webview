@@ -15,10 +15,8 @@ export interface GoodsListItem {
   cover: string;
   name: string;
   price: number;
+  marketPrice: number;
   salesVolume: number;
-  failureReason?: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface SpecItem {
