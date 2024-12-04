@@ -417,6 +417,7 @@ import {
   showToast,
   Collapse,
   CollapseItem,
+  Switch,
 } from "vant";
 import PickerPopup from "@/components/PickerPopup.vue";
 
