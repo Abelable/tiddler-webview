@@ -15,7 +15,6 @@ export const initialTicketInfo = {
   price: undefined,
   originalPrice: undefined,
   salesCommissionRate: undefined,
-  promotionCommissionRate: undefined,
   validityDays: undefined,
   validityStartTime: "",
   validityEndTime: "",
@@ -57,15 +56,7 @@ export const checkTicketInfo = (ticketInfo: FormTicketInfo) => {
     ticketInfo.salesCommissionRate < 10 ||
     ticketInfo.salesCommissionRate > 70
   ) {
-    showToast("请输入范围为10%~70%的销售佣金比例");
-    return false;
-  }
-  if (
-    !ticketInfo.promotionCommissionRate ||
-    ticketInfo.promotionCommissionRate < 2 ||
-    ticketInfo.promotionCommissionRate > 70
-  ) {
-    showToast("请输入范围为2%~70%的推广佣金比例");
+    showToast("请输入范围为10%~70%的佣金比例");
     return false;
   }
   if (!ticketInfo.validityDays && !ticketInfo.validityStartTime) {

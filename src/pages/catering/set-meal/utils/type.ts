@@ -52,7 +52,6 @@ export interface SetMealInfo extends BaseInfo {
   price: number;
   originalPrice: number;
   salesCommissionRate: number;
-  promotionCommissionRate: number;
   needPreBook: 0 | 1;
 }
 
@@ -61,6 +60,5 @@ export interface FormSetMealInfo extends BaseInfo {
   price: number | undefined;
   originalPrice: number | undefined;
   salesCommissionRate: number | undefined;
-  promotionCommissionRate: number | undefined;
   needPreBook: boolean;
 }

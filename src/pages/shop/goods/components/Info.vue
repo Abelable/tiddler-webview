@@ -190,7 +190,7 @@
         </li>
         <li class="form-item flex" v-if="goodsInfo.categoryId">
           <div class="name flex required">
-            <div>销售佣金比例</div>
+            <div>佣金比例</div>
             <Popover
               v-model:show="salesCommissionRateTipsVisible"
               placement="bottom-start"
@@ -210,33 +210,7 @@
             class="input"
             v-model="goodsInfo.salesCommissionRate"
             type="number"
-            placeholder="请输入销售佣金比例"
-          />
-          <div class="unit">%</div>
-        </li>
-        <li class="form-item flex" v-if="goodsInfo.categoryId">
-          <div class="name flex required">
-            <div>推广佣金比例</div>
-            <Popover
-              v-model:show="promotionCommissionRateTipsVisible"
-              placement="bottom-start"
-              theme="dark"
-            >
-              <div class="warning">
-                {{
-                  `范围：${minPromotionCommissionRate}%～${maxPromotionCommissionRate}%`
-                }}
-              </div>
-              <template #reference>
-                <Icon style="margin-left: 0.06rem" name="question-o" />
-              </template>
-            </Popover>
-          </div>
-          <input
-            class="input"
-            v-model="goodsInfo.promotionCommissionRate"
-            type="number"
-            placeholder="请输入推广佣金比例"
+            placeholder="请输入佣金比例"
           />
           <div class="unit">%</div>
         </li>
@@ -456,10 +430,7 @@ const detailImageListTipsVisible = ref(false);
 const defaultSpecImageTipsVisible = ref(false);
 const minSalesCommissionRate = ref(0);
 const maxSalesCommissionRate = ref(0);
-const minPromotionCommissionRate = ref(0);
-const maxPromotionCommissionRate = ref(0);
 const salesCommissionRateTipsVisible = ref(false);
-const promotionCommissionRateTipsVisible = ref(false);
 const activeSkuNames = ref([0]);
 
 // 计算属性
@@ -488,10 +459,6 @@ onMounted(() => {
     ) as GoodsCategoryOption;
     minSalesCommissionRate.value = curCategoryOption.minSalesCommissionRate;
     maxSalesCommissionRate.value = curCategoryOption.maxSalesCommissionRate;
-    minPromotionCommissionRate.value =
-      curCategoryOption.minPromotionCommissionRate;
-    maxPromotionCommissionRate.value =
-      curCategoryOption.maxPromotionCommissionRate;
   }
 });
 
@@ -511,8 +478,6 @@ const selectCategory = ({ selectedValues }: { selectedValues: number[] }) => {
   goodsInfo.value.shopCategoryId = curCategoryInfo.shopCategoryId;
   minSalesCommissionRate.value = curCategoryInfo.minSalesCommissionRate;
   maxSalesCommissionRate.value = curCategoryInfo.maxSalesCommissionRate;
-  minPromotionCommissionRate.value = curCategoryInfo.minPromotionCommissionRate;
-  maxPromotionCommissionRate.value = curCategoryInfo.maxPromotionCommissionRate;
   categoryPickerPopupVisible.value = false;
 };
 const selectReturnAddress = ({
@@ -595,9 +560,7 @@ const save = async () => {
     !checkGoodsInfo(
       goodsInfo.value,
       minSalesCommissionRate.value,
-      maxSalesCommissionRate.value,
-      minPromotionCommissionRate.value,
-      maxPromotionCommissionRate.value
+      maxSalesCommissionRate.value
     )
   ) {
     return;

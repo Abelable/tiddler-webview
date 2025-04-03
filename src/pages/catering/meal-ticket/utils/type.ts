@@ -37,7 +37,6 @@ export interface TicketInfo extends BaseInfo {
   price: number;
   originalPrice: number;
   salesCommissionRate: number;
-  promotionCommissionRate: number;
   boxAvailable: 0 | 1;
   needPreBook: 0 | 1;
 }
@@ -46,7 +45,6 @@ export interface FormTicketInfo extends BaseInfo {
   price: number | undefined;
   originalPrice: number | undefined;
   salesCommissionRate: number | undefined;
-  promotionCommissionRate: number | undefined;
   boxAvailable: boolean;
   needPreBook: boolean;
 }

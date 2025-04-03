@@ -6,8 +6,6 @@ export interface GoodsCategoryOption {
   name: string;
   minSalesCommissionRate: number;
   maxSalesCommissionRate: number;
-  minPromotionCommissionRate: number;
-  maxPromotionCommissionRate: number;
 }
 
 export interface GoodsListItem {
@@ -48,7 +46,6 @@ export interface GoodsInfo {
   marketPrice: number;
   stock: number;
   salesCommissionRate: number;
-  promotionCommissionRate: number;
   specList: SpecItem[];
   skuList: SkuItem[];
   refundSupport: 0 | 1;
@@ -76,7 +73,6 @@ export interface FormGoodsInfo {
   marketPrice: number | undefined;
   stock: number | undefined;
   salesCommissionRate: number | undefined;
-  promotionCommissionRate: number | undefined;
   specList: SpecItem[];
   skuList: FormSkuItem[];
   refundSupport: boolean;

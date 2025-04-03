@@ -61,7 +61,7 @@
         </li>
         <li class="form-item flex">
           <div class="name flex required">
-            <div>销售佣金比例</div>
+            <div>佣金比例</div>
             <Popover
               v-model:show="salesCommissionRateTipsVisible"
               placement="bottom-start"
@@ -77,29 +77,7 @@
             class="input"
             v-model="ticketInfo.salesCommissionRate"
             type="number"
-            placeholder="请输入销售佣金比例"
-          />
-          <div class="unit">%</div>
-        </li>
-        <li class="form-item flex">
-          <div class="name flex required">
-            <div>推广佣金比例</div>
-            <Popover
-              v-model:show="promotionCommissionRateTipsVisible"
-              placement="bottom-start"
-              theme="dark"
-            >
-              <div class="warning">范围：2%～70%</div>
-              <template #reference>
-                <Icon style="margin-left: 0.06rem" name="question-o" />
-              </template>
-            </Popover>
-          </div>
-          <input
-            class="input"
-            v-model="ticketInfo.promotionCommissionRate"
-            type="number"
-            placeholder="请输入推广佣金比例"
+            placeholder="请输入佣金比例"
           />
           <div class="unit">%</div>
         </li>
@@ -486,7 +464,6 @@ const exchangeTimePickerPopupVisible = ref(false);
 const enterTimePickerPopupVisible = ref(false);
 const scenicPickerPopupVisible = ref(false);
 const salesCommissionRateTipsVisible = ref(false);
-const promotionCommissionRateTipsVisible = ref(false);
 
 // 计算属性
 const scenicNames = computed(() =>

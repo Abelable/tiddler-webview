@@ -13,7 +13,6 @@ export const initialRoomInfo = {
   typeId: undefined,
   price: undefined,
   salesCommissionRate: undefined,
-  promotionCommissionRate: undefined,
   priceList: [],
   breakfastNum: 0,
   guestNum: undefined,
@@ -44,15 +43,7 @@ export const checkRoomInfo = (roomInfo: FormRoomInfo) => {
     roomInfo.salesCommissionRate < 10 ||
     roomInfo.salesCommissionRate > 70
   ) {
-    showToast("请输入范围为10%~70%的销售佣金比例");
-    return false;
-  }
-  if (
-    !roomInfo.promotionCommissionRate ||
-    roomInfo.promotionCommissionRate < 2 ||
-    roomInfo.promotionCommissionRate > 70
-  ) {
-    showToast("请输入范围为2%~70%的推广佣金比例");
+    showToast("请输入范围为10%~70%的佣金比例");
     return false;
   }
   if (!roomInfo.priceList.length) {

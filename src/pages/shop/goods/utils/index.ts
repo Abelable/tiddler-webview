@@ -23,7 +23,6 @@ export const initialGoodsInfo = {
   marketPrice: undefined,
   stock: undefined,
   salesCommissionRate: undefined,
-  promotionCommissionRate: undefined,
   specList: [],
   skuList: [],
   refundSupport: false,
@@ -47,9 +46,7 @@ export const setReturnAddressOptions = async () =>
 export const checkGoodsInfo = (
   goodsInfo: FormGoodsInfo,
   minSalesCommissionRate: number,
-  maxSalesCommissionRate: number,
-  minPromotionCommissionRate: number,
-  maxPromotionCommissionRate: number
+  maxSalesCommissionRate: number
 ) => {
   if (!goodsInfo.cover.length) {
     showToast("请上传列表图片");
@@ -96,16 +93,7 @@ export const checkGoodsInfo = (
     goodsInfo.salesCommissionRate < minSalesCommissionRate
   ) {
     showToast(
-      `请输入范围为${minSalesCommissionRate}%～${maxSalesCommissionRate}%的销售佣金比例`
-    );
-    return false;
-  }
-  if (
-    goodsInfo.promotionCommissionRate === undefined ||
-    goodsInfo.promotionCommissionRate < minPromotionCommissionRate
-  ) {
-    showToast(
-      `请输入范围为${minPromotionCommissionRate}%～${maxPromotionCommissionRate}%的推广佣金比例`
+      `请输入范围为${minSalesCommissionRate}%～${maxSalesCommissionRate}%的佣金比例`
     );
     return false;
   }

@@ -17,7 +17,6 @@ export const initialSetMealInfo = {
   price: undefined,
   originalPrice: undefined,
   salesCommissionRate: undefined,
-  promotionCommissionRate: undefined,
   packageDetails: [],
   validityDays: undefined,
   validityStartTime: "",
@@ -65,15 +64,7 @@ export const checkSetMealInfo = (setMealInfo: FormSetMealInfo) => {
     setMealInfo.salesCommissionRate < 10 ||
     setMealInfo.salesCommissionRate > 70
   ) {
-    showToast("请输入范围为10%~70%的销售佣金比例");
-    return false;
-  }
-  if (
-    !setMealInfo.promotionCommissionRate ||
-    setMealInfo.promotionCommissionRate < 2 ||
-    setMealInfo.promotionCommissionRate > 70
-  ) {
-    showToast("请输入范围为2%~70%的推广佣金比例");
+    showToast("请输入范围为10%~70%的佣金比例");
     return false;
   }
   if (!setMealInfo.packageDetails.length) {

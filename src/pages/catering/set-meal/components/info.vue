@@ -64,7 +64,7 @@
         </li>
         <li class="form-item flex">
           <div class="name flex required">
-            <div>销售佣金比例</div>
+            <div>佣金比例</div>
             <Popover
               v-model:show="salesCommissionRateTipsVisible"
               placement="bottom-start"
@@ -80,29 +80,7 @@
             class="input"
             v-model="setMealInfo.salesCommissionRate"
             type="number"
-            placeholder="请输入销售佣金比例"
-          />
-          <div class="unit">%</div>
-        </li>
-        <li class="form-item flex">
-          <div class="name flex required">
-            <div>推广佣金比例</div>
-            <Popover
-              v-model:show="promotionCommissionRateTipsVisible"
-              placement="bottom-start"
-              theme="dark"
-            >
-              <div class="warning">范围：2%～70%</div>
-              <template #reference>
-                <Icon style="margin-left: 0.06rem" name="question-o" />
-              </template>
-            </Popover>
-          </div>
-          <input
-            class="input"
-            v-model="setMealInfo.promotionCommissionRate"
-            type="number"
-            placeholder="请输入推广佣金比例"
+            placeholder="请输入佣金比例"
           />
           <div class="unit">%</div>
         </li>
@@ -468,7 +446,6 @@ const validityTypePickerPopupVisible = ref(false);
 const dateRangePickerPopupVisible = ref(false);
 const validityPeriod = ref("");
 const salesCommissionRateTipsVisible = ref(false);
-const promotionCommissionRateTipsVisible = ref(false);
 const packageDetailModalVisible = ref(false);
 const packageDetailName = ref("");
 const useRuleModalVisible = ref(false);

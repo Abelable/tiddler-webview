@@ -25,7 +25,6 @@ export interface RoomInfo {
   typeId: number;
   price: number;
   salesCommissionRate: number;
-  promotionCommissionRate: number;
   priceList: PriceItem[];
   breakfastNum: number;
   guestNum: number;
@@ -37,7 +36,6 @@ export interface FormRoomInfo {
   typeId: number | undefined;
   price: number | undefined;
   salesCommissionRate: number | undefined;
-  promotionCommissionRate: number | undefined;
   priceList: PriceItem[];
   breakfastNum: number | undefined;
   guestNum: number | undefined;

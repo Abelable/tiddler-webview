@@ -30,7 +30,6 @@ export interface TicketInfo {
   price: number;
   marketPrice: number;
   salesCommissionRate: number;
-  promotionCommissionRate: number;
   specList: SpecItem[];
   feeIncludeTips: string;
   feeNotIncludeTips: string;
@@ -69,7 +68,6 @@ export interface FormTicketInfo {
   price: number | undefined;
   marketPrice: number | undefined;
   salesCommissionRate: number | undefined;
-  promotionCommissionRate: number | undefined;
   specList: FormSpecItem[];
   feeIncludeTips: string;
   feeNotIncludeTips: string;
