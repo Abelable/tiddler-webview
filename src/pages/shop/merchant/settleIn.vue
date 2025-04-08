@@ -458,7 +458,7 @@
             <div class="form-item">
               <div class="form-title">店铺头像</div>
               <Uploader
-                v-model="merchantInfo.shopAvatar"
+                v-model="merchantInfo.shopLogo"
                 :after-read="uploadFile"
                 style="margin-top: 0.32rem"
                 max-count="1"
@@ -642,7 +642,7 @@ const merchantInfo = reactive<MerchantInfo>({
   bankCardOwnerName: "",
   bankCardNumber: "",
   bankName: "",
-  shopAvatar: [],
+  shopLogo: [],
   shopName: "",
   shopCategoryIds: [],
   shopCover: [],
@@ -806,7 +806,7 @@ const nextStep = () => {
       break;
 
     case 3:
-      if (!merchantInfo.shopAvatar.length) {
+      if (!merchantInfo.shopLogo.length) {
         showToast("请上传店铺头像");
         return;
       }
@@ -833,9 +833,9 @@ const setStatusInfo = async () => {
 
 const submit = async () => {
   try {
-    const { shopAvatar, shopCover, ...rest } = merchantInfo;
+    const { shopLogo, shopCover, ...rest } = merchantInfo;
     await uploadMerchantInfo({
-      shopAvatar: shopAvatar[0].url as string,
+      shopLogo: shopLogo[0].url as string,
       shopCover: shopCover.length ? (shopCover[0].url as string) : "",
       ...rest,
     });
