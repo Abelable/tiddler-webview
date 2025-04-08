@@ -6,7 +6,7 @@
 import Info from "./components/Info.vue";
 import { showToast } from "vant";
 import { onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { createGoods } from "./utils/api";
 import {
   setFreightTemplateOptions,
@@ -15,12 +15,13 @@ import {
 } from "./utils/index";
 import type { GoodsInfo } from "./utils/type";
 
+const route = useRoute();
 const router = useRouter();
 
 onMounted(() => {
   setFreightTemplateOptions();
   setCategoryOptions();
-  setReturnAddressOptions();
+  setReturnAddressOptions(route.query.shop_id);
 });
 
 const save = async ({ goodsInfo }: { goodsInfo: Omit<GoodsInfo, "id"> }) => {

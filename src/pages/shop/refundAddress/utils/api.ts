@@ -3,8 +3,10 @@ import { cleanObject } from "@/utils/index";
 
 import type { AddressListItem, AddressDetail } from "./type";
 
-export const getAddressList = async (id: number): Promise<AddressListItem[]> =>
-  await http("shop/refund_address/list", { data: { id } });
+export const getAddressList = async (
+  shopId: number
+): Promise<AddressListItem[]> =>
+  await http("shop/refund_address/list", { data: { shopId } });
 
 export const getAddress = async (id: number): Promise<AddressDetail> =>
   await http("shop/refund_address/detail", { data: { id } });

@@ -25,7 +25,7 @@ const visible = ref(false);
 onMounted(async () => {
   await setFreightTemplateOptions();
   await setCategoryOptions();
-  await setReturnAddressOptions();
+  await setReturnAddressOptions(route.query.shop_id);
   await setGoodsInfo();
   visible.value = true;
 });

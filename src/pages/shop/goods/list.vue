@@ -148,7 +148,7 @@ import {
   showToast,
 } from "vant";
 import { ref, reactive, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import dayjs from "dayjs";
 import {
   getGoodsTotals,
@@ -160,6 +160,7 @@ import {
 
 import type { GoodsListItem } from "./utils/type";
 
+const route = useRoute();
 const router = useRouter();
 
 const loading = ref(false);
@@ -270,9 +271,16 @@ const deleteCurGoods = (index: number) =>
     .catch(() => true);
 
 const editGoods = (id: number) =>
-  router.push({ path: "/shop/goods/edit", query: { id } });
+  router.push({
+    path: "/shop/goods/edit",
+    query: { id, shop_id: route.query.shop_id },
+  });
 
-const addGoods = () => router.push("/shop/goods/create");
+const addGoods = () =>
+  router.push({
+    path: "/shop/goods/create",
+    query: { shop_id: route.query.shop_id },
+  });
 </script>
 
 <style lang="scss" scoped>

@@ -40,8 +40,8 @@ export const setCategoryOptions = async () =>
   (categoryOptions.value = await getGoodsCategoryOptions());
 
 export const returnAddressOptions = ref<AddressListItem[]>([]);
-export const setReturnAddressOptions = async () =>
-  (returnAddressOptions.value = await getAddressList());
+export const setReturnAddressOptions = async (shopId: number) =>
+  (returnAddressOptions.value = await getAddressList(shopId));
 
 export const checkGoodsInfo = (
   goodsInfo: FormGoodsInfo,
