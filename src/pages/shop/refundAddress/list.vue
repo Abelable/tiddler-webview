@@ -50,10 +50,10 @@ onMounted(async () => {
   addressList.value = await getAddressList();
 });
 
-const addAddress = () => router.push("/shop/goods_return_address/create");
+const addAddress = () => router.push("/shop/refund_address/create");
 const editAddress = (id: number) =>
   router.push({
-    path: "/shop/goods_return_address/edit",
+    path: "/shop/refund_address/edit",
     query: { id },
   });
 

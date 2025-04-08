@@ -42,28 +42,28 @@ const shop: Array<RouteRecordRaw> = [
     component: () => import("@/pages/shop/freightTemplate/edit.vue"),
   },
   {
-    path: "/shop/goods_return_address/list",
-    name: "goods_return_address_list",
+    path: "/shop/refund_address/list",
+    name: "shop_refund_address_list",
     meta: {
       title: "退货地址列表",
     },
-    component: () => import("@/pages/shop/goodsReturnAddress/list.vue"),
+    component: () => import("@/pages/shop/refundAddress/list.vue"),
   },
   {
-    path: "/shop/goods_return_address/create",
-    name: "goods_return_address_create",
+    path: "/shop/refund_address/create",
+    name: "shop_refund_address_create",
     meta: {
       title: "新增退货地址",
     },
-    component: () => import("@/pages/shop/goodsReturnAddress/create.vue"),
+    component: () => import("@/pages/shop/refundAddress/create.vue"),
   },
   {
-    path: "/shop/goods_return_address/edit",
-    name: "goods_return_address_edit",
+    path: "/shop/refund_address/edit",
+    name: "shop_refund_address_edit",
     meta: {
       title: "编辑退货地址",
     },
-    component: () => import("@/pages/shop/goodsReturnAddress/edit.vue"),
+    component: () => import("@/pages/shop/refundAddress/edit.vue"),
   },
   {
     path: "/shop/goods/list",

@@ -1,11 +1,11 @@
 import { ref } from "vue";
 import { showDialog, showToast } from "vant";
 import { getFreightTemplateList } from "../../freightTemplate/utils/api";
-import { getAddressList } from "../../goodsReturnAddress/utils/api";
+import { getAddressList } from "../../refundAddress/utils/api";
 import { getGoodsCategoryOptions } from "./api";
 
 import type { FreightTemplateListItem } from "../../freightTemplate/utils/type";
-import type { AddressListItem } from "../../goodsReturnAddress/utils/type";
+import type { AddressListItem } from "../../refundAddress/utils/type";
 import type { FormGoodsInfo, GoodsCategoryOption } from "./type";
 
 export const initialGoodsInfo = {
