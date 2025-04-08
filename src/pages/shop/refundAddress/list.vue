@@ -37,17 +37,18 @@ import {
   showToast,
 } from "vant";
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { getAddressList, deleteAddress } from "./utils/api";
 
 import type { AddressListItem } from "./utils/type";
 
+const route = useRoute();
 const router = useRouter();
 
 const addressList = ref<AddressListItem[]>([]);
 
 onMounted(async () => {
-  addressList.value = await getAddressList();
+  addressList.value = await getAddressList(route.query.shop_id);
 });
 
 const addAddress = () => router.push("/shop/refund_address/create");

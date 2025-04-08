@@ -210,7 +210,6 @@ const setAuthInfo = async () => {
     authInfo.idCardFrontPhoto = idCardFrontPhoto;
     authInfo.idCardBackPhoto = idCardBackPhoto;
     authInfo.holdIdCardPhoto = holdIdCardPhoto;
-    console.log("authInfo", authInfo);
   }
 };
 
