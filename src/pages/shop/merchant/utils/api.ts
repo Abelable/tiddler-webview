@@ -14,10 +14,10 @@ export const getShopCategoryOptions = async (): Promise<ShopCategoryOption[]> =>
 export const getMerchantStatusInfo = async (): Promise<MerchantStatusInfo> =>
   await http("shop/merchant/status");
 
-export const payMerchantDeposit = async (orderId: number) =>
+export const payMerchantDeposit = async (shopId: number) =>
   await http("shop/merchant/pay_deposit", {
     method: "POST",
-    data: { orderId },
+    data: { shopId },
   });
 
 export const deleteMerchant = async () =>

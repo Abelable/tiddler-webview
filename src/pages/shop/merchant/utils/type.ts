@@ -42,5 +42,5 @@ export interface MerchantStatusInfo {
   deposit: number;
   status: number;
   failureReason: string;
-  orderId: number;
+  shopId: number;
 }

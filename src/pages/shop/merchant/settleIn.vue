@@ -901,7 +901,7 @@ const checkAgreement = () => router.push("/shop/agreements/merchant_service");
 
 const pay = async () => {
   if (statusInfo.value) {
-    const payParams = await payMerchantDeposit(statusInfo.value.orderId);
+    const payParams = await payMerchantDeposit(statusInfo.value.shopId);
     Object.keys(payParams).forEach(
       (key) => (payParams[key] = encodeURIComponent(payParams[key]))
     );
