@@ -16,15 +16,15 @@ export interface ProviderInfo {
   bankCardOwnerName: string;
   bankCardNumber: string;
   bankName: string;
-  shopAvatar: UploaderFileListItem[];
+  shopLogo: UploaderFileListItem[];
   shopName: string;
   shopType: number;
   shopCover: UploaderFileListItem[];
 }
 
 export interface CreateProviderInfo
-  extends Omit<ProviderInfo, "shopAvatar" | "shopCover"> {
-  shopAvatar: string;
+  extends Omit<ProviderInfo, "shopLogo" | "shopCover"> {
+  shopLogo: string;
   shopCover?: string;
 }
 
