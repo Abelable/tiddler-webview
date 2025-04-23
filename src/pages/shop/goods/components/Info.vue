@@ -216,7 +216,7 @@
         </li>
         <li class="form-item flex">
           <div class="name required">7天无理由退换货</div>
-          <Switch v-model="goodsInfo.refundSupport" size="18px" />
+          <Switch v-model="goodsInfo.refundStatus" size="18px" />
         </li>
       </ul>
     </div>
@@ -448,7 +448,7 @@ const selectedCategoryName = computed(
 const selectedReturnAddress = computed(
   () =>
     returnAddressOptions.value.find(
-      (item) => item.id === goodsInfo.value.returnAddressId
+      (item) => item.id === goodsInfo.value.refundAddressIds
     )?.addressDetail
 );
 
@@ -485,7 +485,7 @@ const selectReturnAddress = ({
 }: {
   selectedValues: number[];
 }) => {
-  goodsInfo.value.returnAddressId = selectedValues[0];
+  goodsInfo.value.refundAddressIds = selectedValues[0];
   returnAddressPickerPopupVisible.value = false;
 };
 
@@ -574,7 +574,7 @@ const save = async () => {
     defaultSpecImage,
     specList,
     skuList,
-    refundSupport,
+    refundStatus,
     ...rest
   } = goodsInfo.value;
 
@@ -591,7 +591,7 @@ const save = async () => {
         ...item,
         cover: item.cover.length ? item.cover[0].url : "",
       })),
-      refundSupport: refundSupport ? 1 : 0,
+      refundStatus: refundStatus ? 1 : 0,
     },
   });
 };

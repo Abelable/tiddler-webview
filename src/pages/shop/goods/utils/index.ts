@@ -18,14 +18,14 @@ export const initialGoodsInfo = {
   freightTemplateId: undefined,
   shopCategoryId: undefined,
   categoryId: undefined,
-  returnAddressId: undefined,
+  refundAddressIds: undefined,
   price: undefined,
   marketPrice: undefined,
   stock: undefined,
   salesCommissionRate: undefined,
   specList: [],
   skuList: [],
-  refundSupport: false,
+  refundStatus: false,
 };
 
 export const freightTemplateOptions = ref<FreightTemplateListItem[]>([]);
@@ -76,7 +76,7 @@ export const checkGoodsInfo = (
     showToast("请选择商品分类");
     return false;
   }
-  if (!goodsInfo.returnAddressId) {
+  if (!goodsInfo.refundAddressIds) {
     showToast("请选择退货地址");
     return false;
   }

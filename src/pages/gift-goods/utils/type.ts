@@ -39,7 +39,7 @@ export interface GoodsInfo {
   freightTemplateId: number;
   shopCategoryId: number;
   categoryId: number;
-  returnAddressId: number;
+  refundAddressIds: number;
   price: number;
   marketPrice: number;
   stock: number;
@@ -65,7 +65,7 @@ export interface FormGoodsInfo {
   freightTemplateId: number | undefined;
   shopCategoryId: number | undefined;
   categoryId: number | undefined;
-  returnAddressId: number | undefined;
+  refundAddressIds: number | undefined;
   price: number | undefined;
   marketPrice: number | undefined;
   stock: number | undefined;

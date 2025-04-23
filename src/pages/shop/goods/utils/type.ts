@@ -28,52 +28,64 @@ export interface SkuItem {
   name: string;
   cover: string;
   price: number;
+  salesCommissionRate: number;
   stock: number;
+  numberLimit: number;
 }
 export interface GoodsInfo {
   id: number;
+  shopCategoryId: number;
+  categoryId: number;
   cover: string;
   video: string;
   imageList: string[];
   detailImageList: string[];
   defaultSpecImage: string;
   name: string;
-  freightTemplateId: number;
-  shopCategoryId: number;
-  categoryId: number;
-  returnAddressId: number;
+  introduction: string;
   price: number;
   marketPrice: number;
-  stock: number;
   salesCommissionRate: number;
+  stock: number;
+  numberLimit: number;
   specList: SpecItem[];
   skuList: SkuItem[];
-  refundSupport: 0 | 1;
+  deliveryMode: number;
+  freightTemplateId: number;
+  pickupAddressIds: number[];
+  refundStatus: 0 | 1;
+  refundAddressIds: number[];
 }
 
 export interface FormSkuItem {
   name: string;
   cover: UploaderFileListItem[];
   price: number | undefined;
+  salesCommissionRate: number | undefined;
   stock: number | undefined;
+  numberLimit: number | undefined;
 }
 
 export interface FormGoodsInfo {
+  shopCategoryId: number | undefined;
+  categoryId: number | undefined;
   cover: UploaderFileListItem[];
   video: UploaderFileListItem[];
   imageList: UploaderFileListItem[];
   detailImageList: UploaderFileListItem[];
   defaultSpecImage: UploaderFileListItem[];
   name: string;
-  freightTemplateId: number | undefined;
-  shopCategoryId: number | undefined;
-  categoryId: number | undefined;
-  returnAddressId: number | undefined;
+  introduction: string;
   price: number | undefined;
   marketPrice: number | undefined;
-  stock: number | undefined;
   salesCommissionRate: number | undefined;
+  stock: number | undefined;
+  numberLimit: number | undefined;
   specList: SpecItem[];
   skuList: FormSkuItem[];
-  refundSupport: boolean;
+  deliveryMode: number | undefined;
+  freightTemplateId: number | undefined;
+  pickupAddressIds: number[];
+  refundStatus: boolean;
+  refundAddressIds: number[];
 }
