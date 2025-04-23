@@ -20,8 +20,8 @@
       </template>
     </SwipeCell>
   </div>
-  <Empty v-if="!addressList.length" description="暂无退货地址列表" />
-  <button class="add-btn" @click="addAddress">新增退货地址</button>
+  <Empty v-if="!addressList.length" description="暂无提货地址列表" />
+  <button class="add-btn" @click="addAddress">新增提货地址</button>
 </template>
 
 <script setup lang="ts">
@@ -48,15 +48,15 @@ onMounted(async () => {
   addressList.value = await getAddressList(Number(route.query.shop_id || 0));
 });
 
-const addAddress = () => router.push("/shop/refund_address/create");
+const addAddress = () => router.push("/shop/pickup_address/create");
 const editAddress = (id: number) =>
   router.push({
-    path: "/shop/refund_address/edit",
+    path: "/shop/pickup_address/edit",
     query: { id },
   });
 
 const deleteTempalte = (index: number) =>
-  showConfirmDialog({ title: "确定删除该退货地址吗？" })
+  showConfirmDialog({ title: "确定删除该提货地址吗？" })
     .then(async () => {
       try {
         await deleteAddress(addressList.value[index].id);
