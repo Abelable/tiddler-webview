@@ -23,26 +23,32 @@ export const getGoodsCategoryOptions = async (): Promise<
   GoodsCategoryOption[]
 > => await http("shop/goods/category_options");
 
-export const offShelfGoods = async (id: number) =>
+export const offShelfGoods = async (shopId: number, id: number) =>
   await http("shop/goods/down", { method: "POST", data: { id } });
 
-export const onShelfGoods = async (id: number) =>
+export const onShelfGoods = async (shopId: number, id: number) =>
   await http("shop/goods/up", { method: "POST", data: { id } });
 
-export const deleteGoods = async (id: number) =>
+export const deleteGoods = async (shopId: number, id: number) =>
   await http("shop/goods/delete", { method: "POST", data: { id } });
 
 export const getGoodsInfo = async (id: number): Promise<GoodsInfo> =>
   await http("shop/goods/info", { data: { id } });
 
-export const createGoods = async (goodsInfo: Partial<Omit<GoodsInfo, "id">>) =>
+export const createGoods = async (
+  shopId: number,
+  goodsInfo: Partial<Omit<GoodsInfo, "id">>
+) =>
   await http("shop/goods/add", {
     method: "POST",
-    data: cleanObject(goodsInfo),
+    data: { shopId, ...cleanObject(goodsInfo) },
   });
 
-export const editGoods = async (goodsInfo: Partial<GoodsInfo>) =>
+export const editGoods = async (
+  shopId: number,
+  goodsInfo: Partial<GoodsInfo>
+) =>
   await http("shop/goods/edit", {
     method: "POST",
-    data: cleanObject(goodsInfo),
+    data: { shopId, ...cleanObject(goodsInfo) },
   });

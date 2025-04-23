@@ -19,15 +19,17 @@ import type { GoodsInfo, FormGoodsInfo } from "./utils/type";
 const route = useRoute();
 const router = useRouter();
 
+const shopId = ref(0);
 const goodsId = ref(0);
 const editingGoodsInfo = ref<FormGoodsInfo>();
 const visible = ref(false);
 
 onMounted(async () => {
+  shopId.value = +(route.query.shop_id as string);
   await setFreightTemplateOptions();
   await setCategoryOptions();
-  await setPickupAddressOptions(+(route.query.shop_id as string));
-  await setRefundAddressOptions(+(route.query.shop_id as string));
+  await setPickupAddressOptions(shopId.value);
+  await setRefundAddressOptions(shopId.value);
   await setGoodsInfo();
   visible.value = true;
 });
@@ -64,7 +66,7 @@ const setGoodsInfo = async () => {
 
 const save = async ({ goodsInfo }: { goodsInfo: Omit<GoodsInfo, "id"> }) => {
   try {
-    await editGoods({ id: goodsId.value, ...goodsInfo });
+    await editGoods(shopId.value, { id: goodsId.value, ...goodsInfo });
     router.back();
   } catch (error) {
     showToast("上传失败，请重试");

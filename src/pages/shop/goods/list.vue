@@ -239,7 +239,10 @@ const offShelf = (index: number) =>
   showConfirmDialog({ title: "确定下架该商品吗？" })
     .then(async () => {
       try {
-        await offShelfGoods(goodsLists[curMenuIndex.value][index].id);
+        await offShelfGoods(
+          shopId.value,
+          goodsLists[curMenuIndex.value][index].id
+        );
         goodsLists[curMenuIndex.value].splice(index, 1);
         setTotals();
       } catch (error) {
@@ -251,7 +254,7 @@ const offShelf = (index: number) =>
 
 const onShelf = async (index: number) => {
   try {
-    await onShelfGoods(goodsLists[curMenuIndex.value][index].id);
+    await onShelfGoods(shopId.value, goodsLists[curMenuIndex.value][index].id);
     goodsLists[curMenuIndex.value].splice(index, 1);
     setTotals();
   } catch (error) {
@@ -263,7 +266,10 @@ const deleteCurGoods = (index: number) =>
   showConfirmDialog({ title: "确定删除该商品吗？" })
     .then(async () => {
       try {
-        await deleteGoods(goodsLists[curMenuIndex.value][index].id);
+        await deleteGoods(
+          shopId.value,
+          goodsLists[curMenuIndex.value][index].id
+        );
         goodsLists[curMenuIndex.value].splice(index, 1);
         setTotals();
       } catch (error) {
@@ -276,13 +282,13 @@ const deleteCurGoods = (index: number) =>
 const editGoods = (id: number) =>
   router.push({
     path: "/shop/goods/edit",
-    query: { id, shop_id: route.query.shop_id },
+    query: { id, shop_id: shopId.value },
   });
 
 const addGoods = () =>
   router.push({
     path: "/shop/goods/create",
-    query: { shop_id: route.query.shop_id },
+    query: { shop_id: shopId.value },
   });
 </script>
 
