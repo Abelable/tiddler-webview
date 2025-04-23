@@ -66,6 +66,30 @@ const shop: Array<RouteRecordRaw> = [
     component: () => import("@/pages/shop/refundAddress/edit.vue"),
   },
   {
+    path: "/shop/pickup_address/list",
+    name: "shop_pickup_address_list",
+    meta: {
+      title: "提货地址列表",
+    },
+    component: () => import("@/pages/shop/pickupAddress/list.vue"),
+  },
+  {
+    path: "/shop/pickup_address/create",
+    name: "shop_pickup_address_create",
+    meta: {
+      title: "新增提货地址",
+    },
+    component: () => import("@/pages/shop/pickupAddress/create.vue"),
+  },
+  {
+    path: "/shop/pickup_address/edit",
+    name: "shop_pickup_address_edit",
+    meta: {
+      title: "编辑提货地址",
+    },
+    component: () => import("@/pages/shop/pickupAddress/edit.vue"),
+  },
+  {
     path: "/shop/goods/list",
     name: "goods_list",
     meta: {

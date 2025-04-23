@@ -12,14 +12,14 @@ export interface ProviderRestaurant {
   updatedAt: string;
 }
 
-interface timeFrame {
+interface TimeFrame {
   openTime: string;
   closeTime: string;
 }
 interface OpenTime {
   startWeekDay: number | undefined;
   endWeekDay: number | undefined;
-  timeFrameList: timeFrame[];
+  timeFrameList: TimeFrame[];
 }
 
 export interface RestaurantInfo {

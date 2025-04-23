@@ -4,10 +4,7 @@
       <div class="address row" @click="editAddress(item.id)">
         <Icon name="location-o" size="0.32rem" />
         <div class="content">
-          <div class="row">
-            <div class="name">{{ item.consigneeName }}</div>
-            <div class="mobile">{{ item.mobile }}</div>
-          </div>
+          <div class="name">{{ item.name }}</div>
           <div class="detail limit">{{ item.addressDetail }}</div>
         </div>
         <Icon name="edit" size="0.32rem" />
@@ -40,12 +37,12 @@ import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { getAddressList, deleteAddress } from "./utils/api";
 
-import type { AddressListItem } from "./utils/type";
+import type { PickupAddressItem } from "./utils/type";
 
 const route = useRoute();
 const router = useRouter();
 
-const addressList = ref<AddressListItem[]>([]);
+const addressList = ref<PickupAddressItem[]>([]);
 
 onMounted(async () => {
   addressList.value = await getAddressList(Number(route.query.shop_id || 0));
