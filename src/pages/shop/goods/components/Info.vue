@@ -1,124 +1,7 @@
 <template>
   <div class="container">
-    <div class="title">上传视频及图片</div>
-    <div class="card">
-      <ul class="form">
-        <li class="form-item">
-          <div class="name flex required">
-            <div>商品封面</div>
-            <Popover
-              v-model:show="imageTipsVisible"
-              placement="bottom-start"
-              theme="dark"
-            >
-              <div class="warning">用于商品列表展示</div>
-              <template #reference>
-                <Icon style="margin-left: 0.06rem" name="question-o" />
-              </template>
-            </Popover>
-          </div>
-          <Uploader
-            v-model="goodsInfo.cover"
-            :after-read="uploadFile"
-            style="margin-top: 0.32rem"
-            max-count="1"
-          />
-        </li>
-        <li class="form-item">
-          <div class="name flex">
-            <div>主图视频</div>
-            <Popover
-              v-model:show="videoTipsVisible"
-              placement="bottom-start"
-              theme="dark"
-            >
-              <div class="warning">
-                <p>时长：建议不超过60s</p>
-                <p>大小：建议不超过50M</p>
-                <p>尺寸：建议比例16:9或3:4</p>
-                <p>格式：mp4</p>
-                <p>内容：建议突出商品1-2个核心卖点</p>
-              </div>
-              <template #reference>
-                <Icon style="margin-left: 0.06rem" name="question-o" />
-              </template>
-            </Popover>
-          </div>
-          <Uploader
-            v-model="goodsInfo.video"
-            :after-read="uploadFile"
-            style="margin-top: 0.32rem"
-            max-count="1"
-            accept="video/*"
-          />
-        </li>
-        <li class="form-item">
-          <div class="name flex required">
-            <div>主图图片列表</div>
-            <Popover
-              v-model:show="imageListTipsVisible"
-              placement="bottom-start"
-              theme="dark"
-            >
-              <div class="warning">数量：最多不超过10张</div>
-              <template #reference>
-                <Icon style="margin-left: 0.06rem" name="question-o" />
-              </template>
-            </Popover>
-          </div>
-          <Uploader
-            v-model="goodsInfo.imageList"
-            :after-read="uploadFile"
-            style="margin-top: 0.32rem"
-            max-count="10"
-          />
-        </li>
-        <li class="form-item">
-          <div class="name flex required">
-            <div>详情图片列表</div>
-            <Popover
-              v-model:show="detailImageListTipsVisible"
-              placement="bottom-start"
-              theme="dark"
-            >
-              <div class="warning">注意图片顺序</div>
-              <template #reference>
-                <Icon style="margin-left: 0.06rem" name="question-o" />
-              </template>
-            </Popover>
-          </div>
-          <Uploader
-            v-model="goodsInfo.detailImageList"
-            :after-read="uploadFile"
-            style="margin-top: 0.32rem"
-          />
-        </li>
-        <li class="form-item">
-          <div class="name flex required">
-            <div>默认规格图片</div>
-            <Popover
-              v-model:show="defaultSpecImageTipsVisible"
-              placement="bottom-start"
-              theme="dark"
-            >
-              <div class="warning">未设置或未选择规格时，展示的默认图片</div>
-              <template #reference>
-                <Icon style="margin-left: 0.06rem" name="question-o" />
-              </template>
-            </Popover>
-          </div>
-          <Uploader
-            v-model="goodsInfo.defaultSpecImage"
-            :after-read="uploadFile"
-            style="margin-top: 0.32rem"
-            max-count="1"
-          />
-        </li>
-      </ul>
-    </div>
-
-    <div class="title">填写基本信息</div>
-    <div class="card">
+    <div class="title" v-show="step === 0">填写基本信息</div>
+    <div class="card" v-show="step === 0">
       <ul class="form">
         <li class="form-item flex">
           <div class="name required">商品分类</div>
@@ -263,7 +146,124 @@
       </ul>
     </div>
 
-    <div class="title flex">
+    <div class="title" v-show="step === 1">上传视频及图片</div>
+    <div class="card" v-show="step === 1">
+      <ul class="form">
+        <li class="form-item">
+          <div class="name flex required">
+            <div>商品封面</div>
+            <Popover
+              v-model:show="imageTipsVisible"
+              placement="bottom-start"
+              theme="dark"
+            >
+              <div class="warning">用于商品列表展示</div>
+              <template #reference>
+                <Icon style="margin-left: 0.06rem" name="question-o" />
+              </template>
+            </Popover>
+          </div>
+          <Uploader
+            v-model="goodsInfo.cover"
+            :after-read="uploadFile"
+            style="margin-top: 0.32rem"
+            max-count="1"
+          />
+        </li>
+        <li class="form-item">
+          <div class="name flex">
+            <div>主图视频</div>
+            <Popover
+              v-model:show="videoTipsVisible"
+              placement="bottom-start"
+              theme="dark"
+            >
+              <div class="warning">
+                <p>时长：建议不超过60s</p>
+                <p>大小：建议不超过50M</p>
+                <p>尺寸：建议比例16:9或3:4</p>
+                <p>格式：mp4</p>
+                <p>内容：建议突出商品1-2个核心卖点</p>
+              </div>
+              <template #reference>
+                <Icon style="margin-left: 0.06rem" name="question-o" />
+              </template>
+            </Popover>
+          </div>
+          <Uploader
+            v-model="goodsInfo.video"
+            :after-read="uploadFile"
+            style="margin-top: 0.32rem"
+            max-count="1"
+            accept="video/*"
+          />
+        </li>
+        <li class="form-item">
+          <div class="name flex required">
+            <div>主图图片列表</div>
+            <Popover
+              v-model:show="imageListTipsVisible"
+              placement="bottom-start"
+              theme="dark"
+            >
+              <div class="warning">数量：最多不超过10张</div>
+              <template #reference>
+                <Icon style="margin-left: 0.06rem" name="question-o" />
+              </template>
+            </Popover>
+          </div>
+          <Uploader
+            v-model="goodsInfo.imageList"
+            :after-read="uploadFile"
+            style="margin-top: 0.32rem"
+            max-count="10"
+          />
+        </li>
+        <li class="form-item">
+          <div class="name flex required">
+            <div>详情图片列表</div>
+            <Popover
+              v-model:show="detailImageListTipsVisible"
+              placement="bottom-start"
+              theme="dark"
+            >
+              <div class="warning">注意图片顺序</div>
+              <template #reference>
+                <Icon style="margin-left: 0.06rem" name="question-o" />
+              </template>
+            </Popover>
+          </div>
+          <Uploader
+            v-model="goodsInfo.detailImageList"
+            :after-read="uploadFile"
+            style="margin-top: 0.32rem"
+          />
+        </li>
+        <li class="form-item">
+          <div class="name flex required">
+            <div>默认规格图片</div>
+            <Popover
+              v-model:show="defaultSpecImageTipsVisible"
+              placement="bottom-start"
+              theme="dark"
+            >
+              <div class="warning">未设置或未选择规格时，展示的默认图片</div>
+              <template #reference>
+                <Icon style="margin-left: 0.06rem" name="question-o" />
+              </template>
+            </Popover>
+          </div>
+          <Uploader
+            v-model="goodsInfo.defaultSpecImage"
+            :after-read="uploadFile"
+            style="margin-top: 0.32rem"
+            max-count="1"
+          />
+        </li>
+      </ul>
+    </div>
+
+    <div class="title flex" v-show="step === 2">
       <div>编辑商品规格</div>
       <Button
         @click="addSpec"
@@ -273,102 +273,112 @@
         size="mini"
       />
     </div>
-    <SwipeCell v-for="(item, index) in goodsInfo.specList" :key="index">
-      <div class="card">
-        <ul class="form">
-          <li class="form-item flex">
-            <div class="name required">规格名称</div>
-            <input
-              class="input"
-              v-model="item.name"
-              type="text"
-              placeholder="请输入规格名称"
-            />
-          </li>
-          <li class="form-item">
-            <div class="name required">规格选项</div>
-            <div class="sku-options">
-              <Tag
-                v-for="(option, optionIndex) in item.options"
-                :key="optionIndex"
-                @close="deleteSpecOption(index, optionIndex)"
-                class="sku-option"
-                color="#DBEFFD"
-                text-color="#2A3664"
-                closeable
-                size="medium"
-                >{{ option }}</Tag
-              >
-              <Tag
-                class="sku-option"
-                @click="showSpecOptionModal(index)"
-                type="primary"
-                size="medium"
-                >+ 新增选项</Tag
-              >
-            </div>
-          </li>
-        </ul>
-      </div>
-      <template #right>
-        <Button
-          class="delete-btn"
-          @click.stop="deleteSpec(index)"
-          icon="delete"
-          color="#EE0D23"
-          plain
-        />
-      </template>
-    </SwipeCell>
-    <div class="card" v-if="!goodsInfo.specList.length">
-      <Empty image-size="1.8rem" description="暂无规格" />
-    </div>
-
-    <div class="title" v-if="goodsInfo.skuList.length">补充规格信息</div>
-    <div class="card" v-if="goodsInfo.skuList.length" style="padding: 0">
-      <Collapse v-model="activeSkuNames">
-        <CollapseItem
-          v-for="(item, index) in goodsInfo.skuList"
-          :key="index"
-          :title="item.name"
-          :name="index"
-        >
-          <ul class="form unit">
+    <div v-show="step === 2">
+      <SwipeCell v-for="(item, index) in goodsInfo.specList" :key="index">
+        <div class="card">
+          <ul class="form">
+            <li class="form-item flex">
+              <div class="name required">规格名称</div>
+              <input
+                class="input"
+                v-model="item.name"
+                type="text"
+                placeholder="请输入规格名称"
+              />
+            </li>
             <li class="form-item">
-              <div class="name">图片</div>
-              <Uploader
-                v-model="item.cover"
-                :after-read="uploadFile"
-                style="margin-top: 0.32rem"
-                max-count="1"
-              />
-            </li>
-            <li class="form-item flex">
-              <div class="name required">价格</div>
-              <input
-                class="input"
-                v-model="item.price"
-                type="number"
-                step="0.01"
-                placeholder="请输入价格"
-              />
-            </li>
-            <li class="form-item flex">
-              <div class="name required">库存</div>
-              <input
-                class="input"
-                v-model="item.stock"
-                type="number"
-                placeholder="请输入库存"
-              />
+              <div class="name required">规格选项</div>
+              <div class="sku-options">
+                <Tag
+                  v-for="(option, optionIndex) in item.options"
+                  :key="optionIndex"
+                  @close="deleteSpecOption(index, optionIndex)"
+                  class="sku-option"
+                  color="#DBEFFD"
+                  text-color="#2A3664"
+                  closeable
+                  size="medium"
+                  >{{ option }}</Tag
+                >
+                <Tag
+                  class="sku-option"
+                  @click="showSpecOptionModal(index)"
+                  type="primary"
+                  size="medium"
+                  >+ 新增选项</Tag
+                >
+              </div>
             </li>
           </ul>
-        </CollapseItem>
-      </Collapse>
+        </div>
+        <template #right>
+          <Button
+            class="delete-btn"
+            @click.stop="deleteSpec(index)"
+            icon="delete"
+            color="#EE0D23"
+            plain
+          />
+        </template>
+      </SwipeCell>
+      <div class="card" v-if="!goodsInfo.specList.length">
+        <Empty image-size="1.8rem" description="暂无规格" />
+      </div>
+
+      <div class="title" v-if="goodsInfo.skuList.length">补充规格信息</div>
+      <div class="card" v-if="goodsInfo.skuList.length" style="padding: 0">
+        <Collapse v-model="activeSkuNames">
+          <CollapseItem
+            v-for="(item, index) in goodsInfo.skuList"
+            :key="index"
+            :title="item.name"
+            :name="index"
+          >
+            <ul class="form unit">
+              <li class="form-item">
+                <div class="name">图片</div>
+                <Uploader
+                  v-model="item.cover"
+                  :after-read="uploadFile"
+                  style="margin-top: 0.32rem"
+                  max-count="1"
+                />
+              </li>
+              <li class="form-item flex">
+                <div class="name required">价格</div>
+                <input
+                  class="input"
+                  v-model="item.price"
+                  type="number"
+                  step="0.01"
+                  placeholder="请输入价格"
+                />
+              </li>
+              <li class="form-item flex">
+                <div class="name required">库存</div>
+                <input
+                  class="input"
+                  v-model="item.stock"
+                  type="number"
+                  placeholder="请输入库存"
+                />
+              </li>
+            </ul>
+          </CollapseItem>
+        </Collapse>
+      </div>
+    </div>
+  </div>
+  <div class="btns">
+    <div class="btn previous-step" @click="step = step - 1" v-if="step !== 0">
+      上一步
+    </div>
+    <div class="btn next-step" @click="nextStep">
+      {{ step === 2 ? "点击提交" : "下一步" }}
     </div>
   </div>
 
-  <button class="upload-btn" @click="save">点击提交</button>
+  <!-- <button class="upload-btn" @click="save">点击提交</button> -->
 
   <PickerPopup
     :visible="freightTemplatePickerPopupVisible"
@@ -478,6 +488,7 @@ const goodsInfo = ref<FormGoodsInfo>(
   props.editingGoodsInfo || initialGoodsInfo
 );
 
+const step = ref(0);
 const specOptionModalVisible = ref(false);
 const curSpecIndex = ref(0);
 const specOptionName = ref("");
@@ -656,7 +667,150 @@ const deleteSpecOption = (index: number, optionIndex: number) => {
   goodsInfo.value.specList[index].options.splice(optionIndex, 1);
 };
 
-const save = async () => {
+const nextStep = () => {
+  switch (step.value) {
+    case 0:
+      // if (!agreementsChecked.value) {
+      //   showToast("请阅读并同意商家协议");
+      //   return;
+      // }
+      step.value = 1;
+      break;
+    case 1:
+      // if (merchantInfo.type === 1) {
+      //   if (!merchantInfo.name) {
+      //     showToast("请输入姓名");
+      //     return;
+      //   }
+      //   if (
+      //     !merchantInfo.idCardNumber ||
+      //     !/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(
+      //       merchantInfo.idCardNumber
+      //     )
+      //   ) {
+      //     showToast("请输入正确身份证号");
+      //     return;
+      //   }
+      //   if (!merchantInfo.idCardFrontPhoto) {
+      //     showToast("请上传身份证正面照片");
+      //     return;
+      //   }
+      //   if (!merchantInfo.idCardBackPhoto) {
+      //     showToast("请上传身份证反面照片");
+      //     return;
+      //   }
+      //   if (!merchantInfo.holdIdCardPhoto) {
+      //     showToast("请上传手持身份证照片");
+      //     return;
+      //   }
+      //   if (
+      //     !merchantInfo.mobile ||
+      //     !/^1[345789][0-9]{9}$/.test(merchantInfo.mobile)
+      //   ) {
+      //     showToast("请输入正确手机号");
+      //     return;
+      //   }
+      //   if (
+      //     !merchantInfo.email ||
+      //     !/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(
+      //       merchantInfo.email
+      //     )
+      //   ) {
+      //     showToast("请输入正确电子邮箱");
+      //     return;
+      //   }
+      //   if (!merchantInfo.regionCodeList) {
+      //     showToast("请选择省市区");
+      //     return;
+      //   }
+      //   if (!merchantInfo.addressDetail) {
+      //     showToast("请输入详细地址");
+      //     return;
+      //   }
+      // } else {
+      //   if (!merchantInfo.companyName) {
+      //     showToast("请输入企业名称");
+      //     return;
+      //   }
+      //   if (!merchantInfo.regionCodeList) {
+      //     showToast("请选择省市区");
+      //     return;
+      //   }
+      //   if (!merchantInfo.addressDetail) {
+      //     showToast("请输入详细地址");
+      //     return;
+      //   }
+      //   if (!merchantInfo.businessLicensePhoto) {
+      //     showToast("请上传营业执照照片");
+      //     return;
+      //   }
+      //   if (!merchantInfo.name) {
+      //     showToast("请输入法人姓名");
+      //     return;
+      //   }
+      //   if (
+      //     !merchantInfo.mobile ||
+      //     !/^1[345789][0-9]{9}$/.test(merchantInfo.mobile)
+      //   ) {
+      //     showToast("请输入正确手机号");
+      //     return;
+      //   }
+      //   if (
+      //     !merchantInfo.email ||
+      //     !/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(
+      //       merchantInfo.email
+      //     )
+      //   ) {
+      //     showToast("请输入正确电子邮箱");
+      //     return;
+      //   }
+      //   if (
+      //     !merchantInfo.idCardNumber ||
+      //     !/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(
+      //       merchantInfo.idCardNumber
+      //     )
+      //   ) {
+      //     showToast("请输入正确身份证号");
+      //     return;
+      //   }
+      //   if (!merchantInfo.idCardFrontPhoto) {
+      //     showToast("请上传身份证正面照片");
+      //     return;
+      //   }
+      //   if (!merchantInfo.idCardBackPhoto) {
+      //     showToast("请上传身份证反面照片");
+      //     return;
+      //   }
+      //   if (!merchantInfo.holdIdCardPhoto) {
+      //     showToast("请上传手持身份证照片");
+      //     return;
+      //   }
+      // }
+      step.value = 2;
+      break;
+
+    case 2:
+      // if (!merchantInfo.bankCardOwnerName) {
+      //   showToast("请输入持卡人姓名");
+      //   return;
+      // }
+      // if (
+      //   !merchantInfo.bankCardNumber ||
+      //   !/^([1-9]{1})(\d{15}|\d{16}|\d{18})$/.test(merchantInfo.bankCardNumber)
+      // ) {
+      //   showToast("请输入正确银行卡号");
+      //   return;
+      // }
+      // if (!merchantInfo.bankName) {
+      //   showToast("请输入开户银行及支行名称");
+      //   return;
+      // }
+      submit();
+      break;
+  }
+};
+
+const submit = async () => {
   if (
     !checkGoodsInfo(
       goodsInfo.value,
@@ -796,6 +950,37 @@ const save = async () => {
     height: 100%;
     border: none;
     background-color: transparent;
+  }
+}
+.btns {
+  position: fixed;
+  left: 50%;
+  bottom: 0.32rem;
+  transform: translateX(-50%);
+  display: flex;
+  padding: 0.32rem;
+  width: 100%;
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 0.88rem;
+    font-size: 0.3rem;
+    font-weight: 550;
+    border-radius: 0.18rem;
+  }
+  .previous-step {
+    margin-right: 0.32rem;
+    flex: 1;
+    color: #333;
+    font-weight: 550;
+    border: 1px solid #ddd;
+  }
+  .next-step {
+    flex: 3;
+    color: #fff;
+    font-weight: 550;
+    background: #212121;
   }
 }
 .upload-btn {
