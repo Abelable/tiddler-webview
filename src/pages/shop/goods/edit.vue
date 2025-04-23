@@ -12,6 +12,7 @@ import {
   setFreightTemplateOptions,
   setRefundAddressOptions,
   setCategoryOptions,
+  setPickupAddressOptions,
 } from "./utils/index";
 import type { GoodsInfo, FormGoodsInfo } from "./utils/type";
 
@@ -25,7 +26,8 @@ const visible = ref(false);
 onMounted(async () => {
   await setFreightTemplateOptions();
   await setCategoryOptions();
-  await setRefundAddressOptions(route.query.shop_id);
+  await setPickupAddressOptions(+(route.query.shop_id as string));
+  await setRefundAddressOptions(+(route.query.shop_id as string));
   await setGoodsInfo();
   visible.value = true;
 });
@@ -40,6 +42,7 @@ const setGoodsInfo = async () => {
     defaultSpecImage,
     marketPrice,
     skuList,
+    refundStatus,
     ...rest
   } = await getGoodsInfo(+(route.query.id as string));
   goodsId.value = id;
@@ -55,6 +58,7 @@ const setGoodsInfo = async () => {
       ...item,
       cover: item.cover ? [{ url: item.cover }] : [],
     })),
+    refundStatus: refundStatus === 1,
   };
 };
 

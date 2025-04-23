@@ -35,7 +35,7 @@ import {
 } from "vant";
 import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { getAddressList, deleteAddress } from "./utils/api";
+import { getPickupAddressList, deleteAddress } from "./utils/api";
 
 import type { PickupAddressItem } from "./utils/type";
 
@@ -47,7 +47,7 @@ const addressList = ref<PickupAddressItem[]>([]);
 
 onMounted(async () => {
   shopId.value = +(route.query.shop_id as string);
-  addressList.value = await getAddressList(shopId.value);
+  addressList.value = await getPickupAddressList(shopId.value);
 });
 
 const addAddress = () =>

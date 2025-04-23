@@ -121,27 +121,6 @@
     <div class="card">
       <ul class="form">
         <li class="form-item flex">
-          <div class="name required">商品名称</div>
-          <input
-            class="input"
-            v-model="goodsInfo.name"
-            type="text"
-            placeholder="请输入名称，最长30字"
-          />
-        </li>
-        <li class="form-item flex">
-          <div class="name required">运费模板</div>
-          <div class="picker" @click="freightTemplatePickerPopupVisible = true">
-            <div
-              class="content"
-              :class="{ active: selectedFreightTemplateName }"
-            >
-              {{ selectedFreightTemplateName || "请选择运费模板" }}
-            </div>
-            <Icon name="arrow" />
-          </div>
-        </li>
-        <li class="form-item flex">
           <div class="name required">商品分类</div>
           <div class="picker" @click="categoryPickerPopupVisible = true">
             <div class="content" :class="{ active: selectedCategoryName }">
@@ -151,13 +130,22 @@
           </div>
         </li>
         <li class="form-item flex">
-          <div class="name required">退货地址</div>
-          <div class="picker" @click="refundAddressPickerPopupVisible = true">
-            <div class="content" :class="{ active: selectedRefundAddress }">
-              {{ selectedRefundAddress || "请选择退货地址" }}
-            </div>
-            <Icon name="arrow" />
-          </div>
+          <div class="name required">商品名称</div>
+          <input
+            class="input"
+            v-model="goodsInfo.name"
+            type="text"
+            placeholder="请输入名称，最长30字"
+          />
+        </li>
+        <li class="form-item flex">
+          <div class="name">商品介绍</div>
+          <input
+            class="input"
+            v-model="goodsInfo.introduction"
+            type="text"
+            placeholder="请输入商品介绍"
+          />
         </li>
         <li class="form-item flex">
           <div class="name required">店铺价格</div>
@@ -177,15 +165,6 @@
             type="number"
             step="0.01"
             placeholder="请输入市场价格"
-          />
-        </li>
-        <li class="form-item flex">
-          <div class="name required">商品总库存</div>
-          <input
-            class="input"
-            v-model="goodsInfo.stock"
-            type="number"
-            placeholder="请输入商品总库存"
           />
         </li>
         <li class="form-item flex" v-if="goodsInfo.categoryId">
@@ -215,8 +194,71 @@
           <div class="unit">%</div>
         </li>
         <li class="form-item flex">
+          <div class="name required">商品总库存</div>
+          <input
+            class="input"
+            v-model="goodsInfo.stock"
+            type="number"
+            placeholder="请输入商品总库存"
+          />
+        </li>
+        <li class="form-item flex">
+          <div class="name">限购数量</div>
+          <input
+            class="input"
+            v-model="goodsInfo.numberLimit"
+            type="number"
+            placeholder="请输入限购数量"
+          />
+        </li>
+        <li class="form-item flex">
+          <div class="name required">配送方式</div>
+          <div class="picker" @click="deliveryModePickerPopupVisible = true">
+            <div class="content" :class="{ active: selectedDeliveryModeDesc }">
+              {{ selectedDeliveryModeDesc || "请选择配送方式" }}
+            </div>
+            <Icon name="arrow" />
+          </div>
+        </li>
+        <li
+          class="form-item flex"
+          v-if="goodsInfo.deliveryMode === 1 || goodsInfo.deliveryMode === 3"
+        >
+          <div class="name required">运费模板</div>
+          <div class="picker" @click="freightTemplatePickerPopupVisible = true">
+            <div
+              class="content"
+              :class="{ active: selectedFreightTemplateName }"
+            >
+              {{ selectedFreightTemplateName || "请选择运费模板" }}
+            </div>
+            <Icon name="arrow" />
+          </div>
+        </li>
+        <li
+          class="form-item flex"
+          v-if="goodsInfo.deliveryMode === 2 || goodsInfo.deliveryMode === 3"
+        >
+          <div class="name required">提货地址</div>
+          <div class="picker" @click="pickupAddressPickerPopupVisible = true">
+            <div class="content" :class="{ active: selectedPickupAddress }">
+              {{ selectedRefundAddress || "请选择提货地址" }}
+            </div>
+            <Icon name="arrow" />
+          </div>
+        </li>
+        <li class="form-item flex">
           <div class="name required">7天无理由退换货</div>
           <Switch v-model="goodsInfo.refundStatus" size="18px" />
+        </li>
+        <li class="form-item flex" v-if="goodsInfo.refundStatus">
+          <div class="name required">退货地址</div>
+          <div class="picker" @click="refundAddressPickerPopupVisible = true">
+            <div class="content" :class="{ active: selectedRefundAddress }">
+              {{ selectedRefundAddress || "请选择退货地址" }}
+            </div>
+            <Icon name="arrow" />
+          </div>
         </li>
       </ul>
     </div>
@@ -351,6 +393,23 @@
     @cancel="categoryPickerPopupVisible = false"
   />
   <PickerPopup
+    :visible="deliveryModePickerPopupVisible"
+    :options="deliveryModeOptions"
+    @confirm="selectDeliveryMode"
+    @cancel="deliveryModePickerPopupVisible = false"
+  />
+  <MultiPickerPopup
+    :visible="pickupAddressPickerPopupVisible"
+    :options="
+      pickupAddressOptions.map((item) => ({
+        text: item.name,
+        value: item.id,
+      }))
+    "
+    @confirm="selectPickupAddress"
+    @cancel="pickupAddressPickerPopupVisible = false"
+  />
+  <MultiPickerPopup
     :visible="refundAddressPickerPopupVisible"
     :options="
       refundAddressOptions.map((item) => ({
@@ -394,6 +453,7 @@ import {
   Switch,
 } from "vant";
 import PickerPopup from "@/components/PickerPopup.vue";
+import MultiPickerPopup from "@/components/MultiPickerPopup.vue";
 
 import { ref, watch, computed, onMounted } from "vue";
 import _ from "lodash";
@@ -401,12 +461,13 @@ import { uploadFile } from "@/utils/upload";
 import {
   freightTemplateOptions,
   categoryOptions,
+  pickupAddressOptions,
   refundAddressOptions,
   initialGoodsInfo,
+  checkGoodsInfo,
 } from "../utils/index";
 
 import type { GoodsCategoryOption, FormGoodsInfo } from "../utils/type";
-import { checkGoodsInfo } from "../utils/index";
 
 const props = defineProps<{
   editingGoodsInfo?: FormGoodsInfo;
@@ -422,6 +483,13 @@ const curSpecIndex = ref(0);
 const specOptionName = ref("");
 const freightTemplatePickerPopupVisible = ref(false);
 const categoryPickerPopupVisible = ref(false);
+const deliveryModeOptions = ref([
+  { text: "快递", value: 1 },
+  { text: "自提", value: 2 },
+  { text: "快递/自提", value: 3 },
+]);
+const deliveryModePickerPopupVisible = ref(false);
+const pickupAddressPickerPopupVisible = ref(false);
 const refundAddressPickerPopupVisible = ref(false);
 const imageTipsVisible = ref(false);
 const videoTipsVisible = ref(false);
@@ -440,18 +508,31 @@ const selectedFreightTemplateName = computed(
       (item) => item.id === goodsInfo.value.freightTemplateId
     )?.name
 );
+const selectedDeliveryModeDesc = computed(
+  () =>
+    deliveryModeOptions.value.find(
+      (item) => item.value === goodsInfo.value.deliveryMode
+    )?.text
+);
 const selectedCategoryName = computed(
   () =>
     categoryOptions.value.find((item) => item.id === goodsInfo.value.categoryId)
       ?.name
 );
-
-// todo 有问题
-const selectedRefundAddress = computed(
-  () =>
-    refundAddressOptions.value.find((item) =>
-      goodsInfo.value.refundAddressIds.includes(item.id)
-    )?.addressDetail
+const selectedPickupAddress = computed(() =>
+  goodsInfo.value.pickupAddressIds
+    .map(
+      (id) => pickupAddressOptions.value.find((item) => item.id === id)?.name
+    )
+    .join()
+);
+const selectedRefundAddress = computed(() =>
+  goodsInfo.value.refundAddressIds
+    .map(
+      (id) =>
+        refundAddressOptions.value.find((item) => item.id === id)?.addressDetail
+    )
+    .join()
 );
 
 onMounted(() => {
@@ -481,6 +562,22 @@ const selectCategory = ({ selectedValues }: { selectedValues: number[] }) => {
   minSalesCommissionRate.value = curCategoryInfo.minSalesCommissionRate;
   maxSalesCommissionRate.value = curCategoryInfo.maxSalesCommissionRate;
   categoryPickerPopupVisible.value = false;
+};
+const selectDeliveryMode = ({
+  selectedValues,
+}: {
+  selectedValues: number[];
+}) => {
+  goodsInfo.value.deliveryMode = selectedValues[0];
+  deliveryModePickerPopupVisible.value = false;
+};
+const selectPickupAddress = ({
+  selectedValues,
+}: {
+  selectedValues: number[];
+}) => {
+  goodsInfo.value.pickupAddressIds = selectedValues;
+  pickupAddressPickerPopupVisible.value = false;
 };
 const selectRefundAddress = ({
   selectedValues,

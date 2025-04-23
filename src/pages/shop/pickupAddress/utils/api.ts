@@ -3,7 +3,7 @@ import { cleanObject } from "@/utils/index";
 
 import type { PickupAddressItem, PickupAddress } from "./type";
 
-export const getAddressList = async (
+export const getPickupAddressList = async (
   shopId: number
 ): Promise<PickupAddressItem[]> =>
   await http("shop/pickup_address/list", { data: { shopId } });

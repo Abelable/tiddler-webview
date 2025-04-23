@@ -11,6 +11,7 @@ import { createGoods } from "./utils/api";
 import {
   setFreightTemplateOptions,
   setCategoryOptions,
+  setPickupAddressOptions,
   setRefundAddressOptions,
 } from "./utils/index";
 import type { GoodsInfo } from "./utils/type";
@@ -21,7 +22,8 @@ const router = useRouter();
 onMounted(() => {
   setFreightTemplateOptions();
   setCategoryOptions();
-  setRefundAddressOptions(route.query.shop_id);
+  setPickupAddressOptions(+(route.query.shop_id as string));
+  setRefundAddressOptions(+(route.query.shop_id as string));
 });
 
 const save = async ({ goodsInfo }: { goodsInfo: Omit<GoodsInfo, "id"> }) => {

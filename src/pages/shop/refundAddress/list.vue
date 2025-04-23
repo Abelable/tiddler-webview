@@ -38,19 +38,19 @@ import {
 } from "vant";
 import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { getAddressList, deleteAddress } from "./utils/api";
+import { getRefundAddressList, deleteAddress } from "./utils/api";
 
-import type { AddressListItem } from "./utils/type";
+import type { RefundAddressItem } from "./utils/type";
 
 const route = useRoute();
 const router = useRouter();
 
 const shopId = ref(0);
-const addressList = ref<AddressListItem[]>([]);
+const addressList = ref<RefundAddressItem[]>([]);
 
 onMounted(async () => {
   shopId.value = +(route.query.shop_id as string);
-  addressList.value = await getAddressList(shopId.value);
+  addressList.value = await getRefundAddressList(shopId.value);
 });
 
 const addAddress = () =>

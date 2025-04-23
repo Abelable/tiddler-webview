@@ -1,11 +1,13 @@
 import { ref } from "vue";
 import { showDialog, showToast } from "vant";
 import { getFreightTemplateList } from "../../freightTemplate/utils/api";
-import { getAddressList } from "../../refundAddress/utils/api";
+import { getPickupAddressList } from "../../pickupAddress/utils/api";
+import { getRefundAddressList } from "../../refundAddress/utils/api";
 import { getGoodsCategoryOptions } from "./api";
 
 import type { FreightTemplateListItem } from "../../freightTemplate/utils/type";
-import type { AddressListItem } from "../../refundAddress/utils/type";
+import type { PickupAddressItem } from "../../pickupAddress/utils/type";
+import type { RefundAddressItem } from "../../refundAddress/utils/type";
 import type { FormGoodsInfo, GoodsCategoryOption } from "./type";
 
 export const initialGoodsInfo = {
@@ -43,9 +45,13 @@ export const categoryOptions = ref<GoodsCategoryOption[]>([]);
 export const setCategoryOptions = async () =>
   (categoryOptions.value = await getGoodsCategoryOptions());
 
-export const refundAddressOptions = ref<AddressListItem[]>([]);
+export const pickupAddressOptions = ref<PickupAddressItem[]>([]);
+export const setPickupAddressOptions = async (shopId: number) =>
+  (pickupAddressOptions.value = await getPickupAddressList(shopId));
+
+export const refundAddressOptions = ref<RefundAddressItem[]>([]);
 export const setRefundAddressOptions = async (shopId: number) =>
-  (refundAddressOptions.value = await getAddressList(shopId));
+  (refundAddressOptions.value = await getRefundAddressList(shopId));
 
 export const checkGoodsInfo = (
   goodsInfo: FormGoodsInfo,

@@ -1,11 +1,11 @@
 import { http } from "@/utils/http";
 import { cleanObject } from "@/utils/index";
 
-import type { AddressListItem, AddressDetail } from "./type";
+import type { RefundAddressItem, AddressDetail } from "./type";
 
-export const getAddressList = async (
+export const getRefundAddressList = async (
   shopId: number
-): Promise<AddressListItem[]> =>
+): Promise<RefundAddressItem[]> =>
   await http("shop/refund_address/list", { data: { shopId } });
 
 export const getAddress = async (id: number): Promise<AddressDetail> =>
