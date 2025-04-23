@@ -163,6 +163,7 @@ import type { GoodsListItem } from "./utils/type";
 const route = useRoute();
 const router = useRouter();
 
+const shopId = ref(0);
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
@@ -193,6 +194,7 @@ const goodsLists = reactive<GoodsListItem[][]>([[], [], [], []]);
 const pageList = [0, 0, 0, 0];
 
 onMounted(() => {
+  shopId.value = +(route.query.shop_id as string);
   setTotals();
 });
 
@@ -209,7 +211,7 @@ const selectMenu = (index: number) => {
 };
 
 const setTotals = async () => {
-  const totals = await getGoodsTotals();
+  const totals = await getGoodsTotals(shopId.value);
   totals.forEach((item, index) => (menuList.value[index].total = item));
 };
 
@@ -220,6 +222,7 @@ const setGoodsList = async (init = false) => {
   }
   const list =
     (await getGoodsList(
+      shopId.value,
       menuList.value[curMenuIndex.value].status,
       ++pageList[curMenuIndex.value]
     )) || {};

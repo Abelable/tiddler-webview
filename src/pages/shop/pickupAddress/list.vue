@@ -46,7 +46,7 @@ const shopId = ref(0);
 const addressList = ref<PickupAddressItem[]>([]);
 
 onMounted(async () => {
-  shopId.value = Number(route.query.shop_id || 0);
+  shopId.value = +(route.query.shop_id as string);
   addressList.value = await getAddressList(shopId.value);
 });
 

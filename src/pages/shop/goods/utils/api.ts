@@ -3,17 +3,18 @@ import { cleanObject } from "@/utils";
 
 import type { GoodsCategoryOption, GoodsListItem, GoodsInfo } from "./type";
 
-export const getGoodsTotals = async (): Promise<number[]> =>
-  await http("shop/goods/totals");
+export const getGoodsTotals = async (shopId: number): Promise<number[]> =>
+  await http("shop/goods/totals", { data: { shopId } });
 
 export const getGoodsList = async (
+  shopId: number,
   status: number,
   page: number,
   limit = 10
 ): Promise<GoodsListItem[]> => {
   const { list = [] } =
     (await http("shop/goods/list", {
-      data: { status, page, limit },
+      data: { shopId, status, page, limit },
     })) || {};
   return list;
 };

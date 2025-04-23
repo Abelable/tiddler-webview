@@ -5,7 +5,7 @@
       <ul class="form">
         <li class="form-item">
           <div class="name flex required">
-            <div>列表图片</div>
+            <div>商品封面</div>
             <Popover
               v-model:show="imageTipsVisible"
               placement="bottom-start"
