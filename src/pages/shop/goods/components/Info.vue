@@ -152,9 +152,9 @@
         </li>
         <li class="form-item flex">
           <div class="name required">退货地址</div>
-          <div class="picker" @click="returnAddressPickerPopupVisible = true">
-            <div class="content" :class="{ active: selectedReturnAddress }">
-              {{ selectedReturnAddress || "请选择退货地址" }}
+          <div class="picker" @click="refundAddressPickerPopupVisible = true">
+            <div class="content" :class="{ active: selectedRefundAddress }">
+              {{ selectedRefundAddress || "请选择退货地址" }}
             </div>
             <Icon name="arrow" />
           </div>
@@ -351,15 +351,15 @@
     @cancel="categoryPickerPopupVisible = false"
   />
   <PickerPopup
-    :visible="returnAddressPickerPopupVisible"
+    :visible="refundAddressPickerPopupVisible"
     :options="
-      returnAddressOptions.map((item) => ({
+      refundAddressOptions.map((item) => ({
         text: item.addressDetail,
         value: item.id,
       }))
     "
-    @confirm="selectReturnAddress"
-    @cancel="returnAddressPickerPopupVisible = false"
+    @confirm="selectRefundAddress"
+    @cancel="refundAddressPickerPopupVisible = false"
   />
 
   <Dialog
@@ -401,7 +401,7 @@ import { uploadFile } from "@/utils/upload";
 import {
   freightTemplateOptions,
   categoryOptions,
-  returnAddressOptions,
+  refundAddressOptions,
   initialGoodsInfo,
 } from "../utils/index";
 
@@ -422,7 +422,7 @@ const curSpecIndex = ref(0);
 const specOptionName = ref("");
 const freightTemplatePickerPopupVisible = ref(false);
 const categoryPickerPopupVisible = ref(false);
-const returnAddressPickerPopupVisible = ref(false);
+const refundAddressPickerPopupVisible = ref(false);
 const imageTipsVisible = ref(false);
 const videoTipsVisible = ref(false);
 const imageListTipsVisible = ref(false);
@@ -445,10 +445,12 @@ const selectedCategoryName = computed(
     categoryOptions.value.find((item) => item.id === goodsInfo.value.categoryId)
       ?.name
 );
-const selectedReturnAddress = computed(
+
+// todo 有问题
+const selectedRefundAddress = computed(
   () =>
-    returnAddressOptions.value.find(
-      (item) => item.id === goodsInfo.value.refundAddressIds
+    refundAddressOptions.value.find((item) =>
+      goodsInfo.value.refundAddressIds.includes(item.id)
     )?.addressDetail
 );
 
@@ -480,13 +482,13 @@ const selectCategory = ({ selectedValues }: { selectedValues: number[] }) => {
   maxSalesCommissionRate.value = curCategoryInfo.maxSalesCommissionRate;
   categoryPickerPopupVisible.value = false;
 };
-const selectReturnAddress = ({
+const selectRefundAddress = ({
   selectedValues,
 }: {
   selectedValues: number[];
 }) => {
-  goodsInfo.value.refundAddressIds = selectedValues[0];
-  returnAddressPickerPopupVisible.value = false;
+  goodsInfo.value.refundAddressIds = selectedValues;
+  refundAddressPickerPopupVisible.value = false;
 };
 
 watch(goodsInfo.value.specList, () => {
@@ -518,7 +520,9 @@ watch(goodsInfo.value.specList, () => {
         name: item.join(),
         cover: [],
         price: undefined,
+        salesCommissionRate: undefined,
         stock: undefined,
+        numberLimit: undefined,
       }
     );
   });

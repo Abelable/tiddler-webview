@@ -10,7 +10,7 @@ import { useRouter, useRoute } from "vue-router";
 import { editGoods, getGoodsInfo } from "./utils/api";
 import {
   setFreightTemplateOptions,
-  setReturnAddressOptions,
+  setRefundAddressOptions,
   setCategoryOptions,
 } from "./utils/index";
 import type { GoodsInfo, FormGoodsInfo } from "./utils/type";
@@ -25,7 +25,7 @@ const visible = ref(false);
 onMounted(async () => {
   await setFreightTemplateOptions();
   await setCategoryOptions();
-  await setReturnAddressOptions(route.query.shop_id);
+  await setRefundAddressOptions(route.query.shop_id);
   await setGoodsInfo();
   visible.value = true;
 });

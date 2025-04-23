@@ -15,17 +15,21 @@ export const initialGoodsInfo = {
   detailImageList: [],
   defaultSpecImage: [],
   name: "",
-  freightTemplateId: undefined,
+  introduction: "",
   shopCategoryId: undefined,
   categoryId: undefined,
-  refundAddressIds: undefined,
   price: undefined,
   marketPrice: undefined,
-  stock: undefined,
   salesCommissionRate: undefined,
+  stock: undefined,
+  numberLimit: undefined,
   specList: [],
   skuList: [],
+  deliveryMode: undefined,
+  freightTemplateId: undefined,
+  pickupAddressIds: [],
   refundStatus: false,
+  refundAddressIds: [],
 };
 
 export const freightTemplateOptions = ref<FreightTemplateListItem[]>([]);
@@ -39,9 +43,9 @@ export const categoryOptions = ref<GoodsCategoryOption[]>([]);
 export const setCategoryOptions = async () =>
   (categoryOptions.value = await getGoodsCategoryOptions());
 
-export const returnAddressOptions = ref<AddressListItem[]>([]);
-export const setReturnAddressOptions = async (shopId: number) =>
-  (returnAddressOptions.value = await getAddressList(shopId));
+export const refundAddressOptions = ref<AddressListItem[]>([]);
+export const setRefundAddressOptions = async (shopId: number) =>
+  (refundAddressOptions.value = await getAddressList(shopId));
 
 export const checkGoodsInfo = (
   goodsInfo: FormGoodsInfo,
