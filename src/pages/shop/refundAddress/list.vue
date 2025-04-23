@@ -45,13 +45,19 @@ import type { AddressListItem } from "./utils/type";
 const route = useRoute();
 const router = useRouter();
 
+const shopId = ref(0);
 const addressList = ref<AddressListItem[]>([]);
 
 onMounted(async () => {
-  addressList.value = await getAddressList(Number(route.query.shop_id || 0));
+  shopId.value = +(route.query.shop_id as string);
+  addressList.value = await getAddressList(shopId.value);
 });
 
-const addAddress = () => router.push("/shop/refund_address/create");
+const addAddress = () =>
+  router.push({
+    path: "/shop/refund_address/create",
+    query: { shop_id: shopId.value },
+  });
 const editAddress = (id: number) =>
   router.push({
     path: "/shop/refund_address/edit",

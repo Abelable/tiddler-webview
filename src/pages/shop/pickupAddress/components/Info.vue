@@ -7,7 +7,7 @@
           <div class="name required">门店名称</div>
           <input
             class="input"
-            v-model="restaurantInfo.name"
+            v-model="pickupAddress.name"
             type="text"
             placeholder="请输入名称，最长30字"
           />
@@ -15,10 +15,10 @@
         <li class="form-item flex">
           <div class="name required">经纬度</div>
           <div class="picker" @click="mapPopupVisible = true">
-            <div class="content" :class="{ active: restaurantInfo.longitude }">
+            <div class="content" :class="{ active: pickupAddress.longitude }">
               {{
-                restaurantInfo.longitude
-                  ? `${restaurantInfo.longitude},${restaurantInfo.latitude}`
+                pickupAddress.longitude
+                  ? `${pickupAddress.longitude},${pickupAddress.latitude}`
                   : "打开地图选择"
               }}
             </div>
@@ -29,7 +29,7 @@
           <div class="name required">具体地址</div>
           <input
             class="input"
-            v-model="restaurantInfo.addressDetail"
+            v-model="pickupAddress.addressDetail"
             type="text"
             placeholder="请输入门店具体地址"
           />
@@ -47,10 +47,7 @@
         size="mini"
       />
     </div>
-    <SwipeCell
-      v-for="(item, index) in restaurantInfo.openTimeList"
-      :key="index"
-    >
+    <SwipeCell v-for="(item, index) in pickupAddress.openTimeList" :key="index">
       <div class="card">
         <ul class="form">
           <li class="form-item flex">
@@ -114,7 +111,7 @@
         />
       </template>
     </SwipeCell>
-    <div class="card" v-if="!restaurantInfo.openTimeList.length">
+    <div class="card" v-if="!pickupAddress.openTimeList.length">
       <Empty image-size="1.8rem" description="暂未添加营业时间" />
     </div>
   </div>
@@ -157,7 +154,7 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(["save"]);
 
-const restaurantInfo = ref<FormPickupAddress>(initialPickupAddress);
+const pickupAddress = ref<FormPickupAddress>(initialPickupAddress);
 const mapPopupVisible = ref(false);
 const curOpenTimeIdx = ref(0);
 const weekDayPickerPopupVisible = ref(false);
@@ -166,7 +163,7 @@ const timeFramePickerPopupVisible = ref(false);
 
 watch(props, (props) => {
   if (props.editingPickupAddress) {
-    restaurantInfo.value = props.editingPickupAddress;
+    pickupAddress.value = props.editingPickupAddress;
   }
 });
 
@@ -177,13 +174,13 @@ const setLnglat = ({
   longitude: number;
   latitude: number;
 }) => {
-  restaurantInfo.value.longitude = longitude;
-  restaurantInfo.value.latitude = latitude;
+  pickupAddress.value.longitude = longitude;
+  pickupAddress.value.latitude = latitude;
   mapPopupVisible.value = false;
 };
 
 const addOpenTime = () => {
-  restaurantInfo.value.openTimeList.push({
+  pickupAddress.value.openTimeList.push({
     startWeekDay: undefined,
     endWeekDay: undefined,
     timeFrameList: [],
@@ -191,7 +188,7 @@ const addOpenTime = () => {
 };
 const deleteOpenTime = (index: number) => {
   showConfirmDialog({ title: "确定删除该营业时间吗？" })
-    .then(() => restaurantInfo.value.openTimeList.splice(index, 1))
+    .then(() => pickupAddress.value.openTimeList.splice(index, 1))
     .catch(() => true);
 };
 
@@ -202,10 +199,10 @@ const pickWeekDay = (index: number, type: number) => {
 };
 const selectWeekDay = ({ selectedValues }: { selectedValues: number[] }) => {
   if (curWeekDayType.value) {
-    restaurantInfo.value.openTimeList[curOpenTimeIdx.value].endWeekDay =
+    pickupAddress.value.openTimeList[curOpenTimeIdx.value].endWeekDay =
       selectedValues[0];
   } else {
-    restaurantInfo.value.openTimeList[curOpenTimeIdx.value].startWeekDay =
+    pickupAddress.value.openTimeList[curOpenTimeIdx.value].startWeekDay =
       selectedValues[0];
   }
   weekDayPickerPopupVisible.value = false;
@@ -216,7 +213,7 @@ const showTimeFramePickerPopup = (index: number) => {
   timeFramePickerPopupVisible.value = true;
 };
 const deleteTimeFrame = (index: number, timeFrameIndex: number) => {
-  restaurantInfo.value.openTimeList[index].timeFrameList.splice(
+  pickupAddress.value.openTimeList[index].timeFrameList.splice(
     timeFrameIndex,
     1
   );
@@ -228,7 +225,7 @@ const selectTimeFrame = ({
   startTime: string[];
   endTime: string[];
 }) => {
-  restaurantInfo.value.openTimeList[curOpenTimeIdx.value].timeFrameList.push({
+  pickupAddress.value.openTimeList[curOpenTimeIdx.value].timeFrameList.push({
     openTime: startTime.join(":"),
     closeTime: endTime.join(":"),
   });
@@ -236,9 +233,9 @@ const selectTimeFrame = ({
 };
 
 const save = async () => {
-  if (checkPickupAddress(restaurantInfo.value)) {
+  if (checkPickupAddress(pickupAddress.value)) {
     emit("save", {
-      restaurantInfo: restaurantInfo.value,
+      pickupAddress: pickupAddress.value,
     });
   }
 };

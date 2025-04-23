@@ -42,13 +42,19 @@ import type { PickupAddressItem } from "./utils/type";
 const route = useRoute();
 const router = useRouter();
 
+const shopId = ref(0);
 const addressList = ref<PickupAddressItem[]>([]);
 
 onMounted(async () => {
-  addressList.value = await getAddressList(Number(route.query.shop_id || 0));
+  shopId.value = Number(route.query.shop_id || 0);
+  addressList.value = await getAddressList(shopId.value);
 });
 
-const addAddress = () => router.push("/shop/pickup_address/create");
+const addAddress = () =>
+  router.push({
+    path: "/shop/pickup_address/create",
+    query: { shop_id: shopId.value },
+  });
 const editAddress = (id: number) =>
   router.push({
     path: "/shop/pickup_address/edit",

@@ -12,13 +12,13 @@ import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { showConfirmDialog, showToast } from "vant";
 import { editAddress, getAddress, deleteAddress } from "./utils/api";
-import type { AddressDetail } from "./utils/type";
+import type { PickupAddress } from "./utils/type";
 
 const route = useRoute();
 const router = useRouter();
 
 const addressId = ref(0);
-const editingAddressInfo = ref<Omit<AddressDetail, "id">>();
+const editingAddressInfo = ref<Omit<PickupAddress, "id">>();
 
 onMounted(async () => {
   const { id, ...rest } = await getAddress(+(route.query.id as string));
@@ -27,12 +27,12 @@ onMounted(async () => {
 });
 
 const save = async ({
-  addressInfo,
+  pickupAddress,
 }: {
-  addressInfo: Omit<AddressDetail, "id">;
+  pickupAddress: Omit<PickupAddress, "id">;
 }) => {
   try {
-    await editAddress(addressInfo);
+    await editAddress(pickupAddress);
     router.back();
   } catch (error) {
     showToast("保存失败，请重试");

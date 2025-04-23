@@ -12,11 +12,12 @@ export const getAddress = async (id: number): Promise<PickupAddress> =>
   await http("shop/pickup_address/detail", { data: { id } });
 
 export const createAddress = async (
+  shopId: number,
   address: Partial<Omit<PickupAddress, "id">>
 ) =>
   await http("shop/pickup_address/add", {
     method: "POST",
-    data: cleanObject(address),
+    data: { shopId, ...cleanObject(address) },
   });
 
 export const editAddress = async (address: Partial<PickupAddress>) =>
