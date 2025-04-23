@@ -125,13 +125,13 @@
           <div class="name required">提货地址</div>
           <div class="picker" @click="pickupAddressPickerPopupVisible = true">
             <div class="content" :class="{ active: selectedPickupAddress }">
-              {{ selectedRefundAddress || "请选择提货地址" }}
+              {{ selectedPickupAddress || "请选择提货地址" }}
             </div>
             <Icon name="arrow" />
           </div>
         </li>
         <li class="form-item flex">
-          <div class="name required">7天无理由退换货</div>
+          <div class="name">7天无理由退换货</div>
           <Switch v-model="goodsInfo.refundStatus" size="18px" />
         </li>
         <li class="form-item flex" v-if="goodsInfo.refundStatus">
@@ -370,15 +370,13 @@
     </div>
   </div>
   <div class="btns">
-    <div class="btn previous-step" @click="step = step - 1" v-if="step !== 0">
+    <div class="btn previous-step" v-if="step !== 0" @click="step = step - 1">
       上一步
     </div>
     <div class="btn next-step" @click="nextStep">
       {{ step === 2 ? "点击提交" : "下一步" }}
     </div>
   </div>
-
-  <!-- <button class="upload-btn" @click="save">点击提交</button> -->
 
   <PickerPopup
     :visible="freightTemplatePickerPopupVisible"
@@ -461,6 +459,7 @@ import {
   Collapse,
   CollapseItem,
   Switch,
+  showDialog,
 } from "vant";
 import PickerPopup from "@/components/PickerPopup.vue";
 import MultiPickerPopup from "@/components/MultiPickerPopup.vue";
@@ -474,7 +473,6 @@ import {
   pickupAddressOptions,
   refundAddressOptions,
   initialGoodsInfo,
-  checkGoodsInfo,
 } from "../utils/index";
 
 import type { GoodsCategoryOption, FormGoodsInfo } from "../utils/type";
@@ -670,157 +668,120 @@ const deleteSpecOption = (index: number, optionIndex: number) => {
 const nextStep = () => {
   switch (step.value) {
     case 0:
-      // if (!agreementsChecked.value) {
-      //   showToast("请阅读并同意商家协议");
-      //   return;
-      // }
+      if (!goodsInfo.value.categoryId) {
+        showToast("请选择商品分类");
+        return false;
+      }
+      if (!goodsInfo.value.name) {
+        showToast("请输入商品名称");
+        return false;
+      }
+      if (!goodsInfo.value.price) {
+        showToast("请输入商品店铺价格");
+        return false;
+      }
+      if (
+        goodsInfo.value.salesCommissionRate === undefined ||
+        goodsInfo.value.salesCommissionRate < minSalesCommissionRate.value
+      ) {
+        showToast(
+          `请输入范围为${minSalesCommissionRate.value}%～${maxSalesCommissionRate.value}%的佣金比例`
+        );
+        return false;
+      }
+      if (!goodsInfo.value.stock) {
+        showToast("请输入商品总库存");
+        return false;
+      }
+      if (!goodsInfo.value.deliveryMode) {
+        showToast("请选择配送方式");
+        return false;
+      }
+      if (
+        (goodsInfo.value.deliveryMode === 1 ||
+          goodsInfo.value.deliveryMode === 3) &&
+        goodsInfo.value.freightTemplateId === undefined
+      ) {
+        showToast("请选择运费模板");
+        return false;
+      }
+      if (
+        (goodsInfo.value.deliveryMode === 2 ||
+          goodsInfo.value.deliveryMode === 3) &&
+        !goodsInfo.value.pickupAddressIds.length
+      ) {
+        showToast("请选择提货地址");
+        return false;
+      }
+      if (
+        goodsInfo.value.refundStatus &&
+        !goodsInfo.value.refundAddressIds.length
+      ) {
+        showToast("请选择退货地址");
+        return false;
+      }
       step.value = 1;
       break;
+
     case 1:
-      // if (merchantInfo.type === 1) {
-      //   if (!merchantInfo.name) {
-      //     showToast("请输入姓名");
-      //     return;
-      //   }
-      //   if (
-      //     !merchantInfo.idCardNumber ||
-      //     !/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(
-      //       merchantInfo.idCardNumber
-      //     )
-      //   ) {
-      //     showToast("请输入正确身份证号");
-      //     return;
-      //   }
-      //   if (!merchantInfo.idCardFrontPhoto) {
-      //     showToast("请上传身份证正面照片");
-      //     return;
-      //   }
-      //   if (!merchantInfo.idCardBackPhoto) {
-      //     showToast("请上传身份证反面照片");
-      //     return;
-      //   }
-      //   if (!merchantInfo.holdIdCardPhoto) {
-      //     showToast("请上传手持身份证照片");
-      //     return;
-      //   }
-      //   if (
-      //     !merchantInfo.mobile ||
-      //     !/^1[345789][0-9]{9}$/.test(merchantInfo.mobile)
-      //   ) {
-      //     showToast("请输入正确手机号");
-      //     return;
-      //   }
-      //   if (
-      //     !merchantInfo.email ||
-      //     !/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(
-      //       merchantInfo.email
-      //     )
-      //   ) {
-      //     showToast("请输入正确电子邮箱");
-      //     return;
-      //   }
-      //   if (!merchantInfo.regionCodeList) {
-      //     showToast("请选择省市区");
-      //     return;
-      //   }
-      //   if (!merchantInfo.addressDetail) {
-      //     showToast("请输入详细地址");
-      //     return;
-      //   }
-      // } else {
-      //   if (!merchantInfo.companyName) {
-      //     showToast("请输入企业名称");
-      //     return;
-      //   }
-      //   if (!merchantInfo.regionCodeList) {
-      //     showToast("请选择省市区");
-      //     return;
-      //   }
-      //   if (!merchantInfo.addressDetail) {
-      //     showToast("请输入详细地址");
-      //     return;
-      //   }
-      //   if (!merchantInfo.businessLicensePhoto) {
-      //     showToast("请上传营业执照照片");
-      //     return;
-      //   }
-      //   if (!merchantInfo.name) {
-      //     showToast("请输入法人姓名");
-      //     return;
-      //   }
-      //   if (
-      //     !merchantInfo.mobile ||
-      //     !/^1[345789][0-9]{9}$/.test(merchantInfo.mobile)
-      //   ) {
-      //     showToast("请输入正确手机号");
-      //     return;
-      //   }
-      //   if (
-      //     !merchantInfo.email ||
-      //     !/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(
-      //       merchantInfo.email
-      //     )
-      //   ) {
-      //     showToast("请输入正确电子邮箱");
-      //     return;
-      //   }
-      //   if (
-      //     !merchantInfo.idCardNumber ||
-      //     !/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(
-      //       merchantInfo.idCardNumber
-      //     )
-      //   ) {
-      //     showToast("请输入正确身份证号");
-      //     return;
-      //   }
-      //   if (!merchantInfo.idCardFrontPhoto) {
-      //     showToast("请上传身份证正面照片");
-      //     return;
-      //   }
-      //   if (!merchantInfo.idCardBackPhoto) {
-      //     showToast("请上传身份证反面照片");
-      //     return;
-      //   }
-      //   if (!merchantInfo.holdIdCardPhoto) {
-      //     showToast("请上传手持身份证照片");
-      //     return;
-      //   }
-      // }
+      if (!goodsInfo.value.cover.length) {
+        showToast("请上传商品封面图片");
+        return false;
+      }
+      if (!goodsInfo.value.imageList.length) {
+        showToast("请上传至少一张主图图片");
+        return false;
+      }
+      if (!goodsInfo.value.detailImageList.length) {
+        showToast("请上传至少一张详情图片");
+        return false;
+      }
+      if (!goodsInfo.value.defaultSpecImage.length) {
+        showToast("请上传默认规格图片");
+        return false;
+      }
       step.value = 2;
       break;
 
     case 2:
-      // if (!merchantInfo.bankCardOwnerName) {
-      //   showToast("请输入持卡人姓名");
-      //   return;
-      // }
-      // if (
-      //   !merchantInfo.bankCardNumber ||
-      //   !/^([1-9]{1})(\d{15}|\d{16}|\d{18})$/.test(merchantInfo.bankCardNumber)
-      // ) {
-      //   showToast("请输入正确银行卡号");
-      //   return;
-      // }
-      // if (!merchantInfo.bankName) {
-      //   showToast("请输入开户银行及支行名称");
-      //   return;
-      // }
+      if (
+        goodsInfo.value.specList.length &&
+        goodsInfo.value.specList.findIndex(
+          (item) => !item.name || !item.options.length
+        ) !== -1
+      ) {
+        showToast("请完善商品规格信息");
+        return false;
+      }
+      if (goodsInfo.value.skuList.length) {
+        if (
+          goodsInfo.value.skuList.findIndex(
+            (item) => !item.price || !item.stock
+          ) !== -1
+        ) {
+          showToast("部分商品规格未填写价格或库存");
+          return false;
+        }
+        if (
+          (goodsInfo.value.stock || 0) <
+          goodsInfo.value.skuList.reduce(
+            (stock, sku) => stock + (sku.stock as number),
+            0
+          )
+        ) {
+          showDialog({
+            title: "请核对库存设置",
+            message: "商品总库存，小于商品各规格库存总和",
+          });
+          return false;
+        }
+      }
       submit();
       break;
   }
 };
 
 const submit = async () => {
-  if (
-    !checkGoodsInfo(
-      goodsInfo.value,
-      minSalesCommissionRate.value,
-      maxSalesCommissionRate.value
-    )
-  ) {
-    return;
-  }
-
   const {
     video,
     cover,
@@ -982,18 +943,6 @@ const submit = async () => {
     font-weight: 550;
     background: #212121;
   }
-}
-.upload-btn {
-  position: fixed;
-  left: 0.32rem;
-  bottom: 0.32rem;
-  width: calc(100vw - 0.64rem);
-  height: 0.88rem;
-  color: #fff;
-  font-size: 0.3rem;
-  font-weight: 550;
-  border-radius: 0.18rem;
-  background: #212121;
 }
 .warning {
   padding: 0.24rem;

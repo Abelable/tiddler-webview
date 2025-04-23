@@ -1,5 +1,4 @@
 import { ref } from "vue";
-import { showDialog, showToast } from "vant";
 import { getFreightTemplateList } from "../../freightTemplate/utils/api";
 import { getPickupAddressList } from "../../pickupAddress/utils/api";
 import { getRefundAddressList } from "../../refundAddress/utils/api";
@@ -8,7 +7,7 @@ import { getGoodsCategoryOptions } from "./api";
 import type { FreightTemplateListItem } from "../../freightTemplate/utils/type";
 import type { PickupAddressItem } from "../../pickupAddress/utils/type";
 import type { RefundAddressItem } from "../../refundAddress/utils/type";
-import type { FormGoodsInfo, GoodsCategoryOption } from "./type";
+import type { GoodsCategoryOption } from "./type";
 
 export const initialGoodsInfo = {
   cover: [],
@@ -52,87 +51,3 @@ export const setPickupAddressOptions = async (shopId: number) =>
 export const refundAddressOptions = ref<RefundAddressItem[]>([]);
 export const setRefundAddressOptions = async (shopId: number) =>
   (refundAddressOptions.value = await getRefundAddressList(shopId));
-
-export const checkGoodsInfo = (
-  goodsInfo: FormGoodsInfo,
-  minSalesCommissionRate: number,
-  maxSalesCommissionRate: number
-) => {
-  if (!goodsInfo.cover.length) {
-    showToast("请上传列表图片");
-    return false;
-  }
-  if (!goodsInfo.imageList.length) {
-    showToast("请上传至少一张主图图片");
-    return false;
-  }
-  if (!goodsInfo.detailImageList.length) {
-    showToast("请上传至少一张详情图片");
-    return false;
-  }
-  if (!goodsInfo.defaultSpecImage.length) {
-    showToast("请上传默认规格图片");
-    return false;
-  }
-  if (!goodsInfo.name) {
-    showToast("请输入商品名称");
-    return false;
-  }
-  if (goodsInfo.freightTemplateId === undefined) {
-    showToast("请选择运费模板");
-    return false;
-  }
-  if (!goodsInfo.categoryId) {
-    showToast("请选择商品分类");
-    return false;
-  }
-  if (!goodsInfo.refundAddressIds) {
-    showToast("请选择退货地址");
-    return false;
-  }
-  if (!goodsInfo.price) {
-    showToast("请输入商品店铺价格");
-    return false;
-  }
-  if (!goodsInfo.stock) {
-    showToast("请输入商品总库存");
-    return false;
-  }
-  if (
-    goodsInfo.salesCommissionRate === undefined ||
-    goodsInfo.salesCommissionRate < minSalesCommissionRate
-  ) {
-    showToast(
-      `请输入范围为${minSalesCommissionRate}%～${maxSalesCommissionRate}%的佣金比例`
-    );
-    return false;
-  }
-  if (
-    goodsInfo.specList.length &&
-    goodsInfo.specList.findIndex(
-      (item) => !item.name || !item.options.length
-    ) !== -1
-  ) {
-    showToast("请完善商品规格信息");
-    return false;
-  }
-  if (goodsInfo.skuList.length) {
-    if (
-      goodsInfo.skuList.findIndex((item) => !item.price || !item.stock) !== -1
-    ) {
-      showToast("部分商品规格未填写价格或库存");
-      return false;
-    }
-    if (
-      goodsInfo.stock <
-      goodsInfo.skuList.reduce((stock, sku) => stock + (sku.stock as number), 0)
-    ) {
-      showDialog({
-        title: "请核对库存设置",
-        message: "商品总库存，小于商品各规格库存总和",
-      });
-      return false;
-    }
-  }
-  return true;
-};
