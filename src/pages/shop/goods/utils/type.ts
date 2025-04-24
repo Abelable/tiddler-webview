@@ -28,6 +28,7 @@ export interface SkuItem {
   name: string;
   cover: string;
   price: number;
+  marketPrice: number;
   salesCommissionRate: number;
   stock: number;
   numberLimit: number;
@@ -61,6 +62,7 @@ export interface FormSkuItem {
   name: string;
   cover: UploaderFileListItem[];
   price: number | undefined;
+  marketPrice: number | undefined;
   salesCommissionRate: number | undefined;
   stock: number | undefined;
   numberLimit: number | undefined;

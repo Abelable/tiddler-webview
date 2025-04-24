@@ -345,14 +345,34 @@
                 />
               </li>
               <li class="form-item flex">
-                <div class="name required">价格</div>
+                <div class="name required">店铺价格</div>
                 <input
                   class="input"
                   v-model="item.price"
                   type="number"
                   step="0.01"
-                  placeholder="请输入价格"
+                  placeholder="请输入店铺价格"
                 />
+              </li>
+              <li class="form-item flex">
+                <div class="name">市场价格</div>
+                <input
+                  class="input"
+                  v-model="item.marketPrice"
+                  type="number"
+                  step="0.01"
+                  placeholder="请输入市场价格"
+                />
+              </li>
+              <li class="form-item flex">
+                <div class="name">佣金比例</div>
+                <input
+                  class="input"
+                  v-model="item.salesCommissionRate"
+                  type="number"
+                  placeholder="请输入佣金比例"
+                />
+                <div class="unit">%</div>
               </li>
               <li class="form-item flex">
                 <div class="name required">库存</div>
@@ -361,6 +381,15 @@
                   v-model="item.stock"
                   type="number"
                   placeholder="请输入库存"
+                />
+              </li>
+              <li class="form-item flex">
+                <div class="name">限购数量</div>
+                <input
+                  class="input"
+                  v-model="item.numberLimit"
+                  type="number"
+                  placeholder="请输入限购数量"
                 />
               </li>
             </ul>
@@ -549,8 +578,10 @@ onMounted(() => {
     const curCategoryOption = categoryOptions.value.find(
       (item) => item.id === props.editingGoodsInfo?.categoryId
     ) as GoodsCategoryOption;
-    minSalesCommissionRate.value = curCategoryOption.minSalesCommissionRate;
-    maxSalesCommissionRate.value = curCategoryOption.maxSalesCommissionRate;
+    if (curCategoryOption) {
+      minSalesCommissionRate.value = curCategoryOption.minSalesCommissionRate;
+      maxSalesCommissionRate.value = curCategoryOption.maxSalesCommissionRate;
+    }
   }
 });
 
@@ -626,6 +657,7 @@ watch(goodsInfo.value.specList, () => {
         name: item.join(),
         cover: [],
         price: undefined,
+        marketPrice: undefined,
         salesCommissionRate: undefined,
         stock: undefined,
         numberLimit: undefined,
