@@ -345,7 +345,7 @@ const submit = async () => {
 .container {
   padding-bottom: 0.6rem;
   min-height: 100vh;
-  background-image: url("../images/certification_bg.png");
+  background-image: url("./images/certification_bg.png");
   background-size: 100% calc(100% + 1.2rem);
   background-position: 0 -1.2rem;
   background-repeat: no-repeat;

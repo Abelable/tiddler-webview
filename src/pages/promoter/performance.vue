@@ -6,7 +6,7 @@
       @click="timePickerPopupVisible = true"
     >
       <span>{{ timeOptions[curTimeIdx].text }}</span>
-      <img class="picker-arrow" src="../images/down.png" alt="" />
+      <img class="picker-arrow" src="./images/down.png" alt="" />
     </div>
     <div class="month-data">
       <span style="font-size: 0.24rem">¥</span>
@@ -44,7 +44,7 @@
       <img
         class="selected-icon"
         v-if="curMenuIdx === index"
-        src="../images/selected_icon.png"
+        src="./images/selected_icon.png"
         alt=""
       />
     </div>
@@ -68,7 +68,7 @@
             <img
               class="check-icon"
               v-if="curMenuIdx === 0"
-              src="../images/arrow.png"
+              src="./images/arrow.png"
               alt=""
             />
           </div>
@@ -201,7 +201,7 @@ const checkOrderDetail = (id: number) => {
   position: relative;
   margin-top: 0.16rem;
   height: 3.06rem;
-  background-image: url("../images//performance_bg.png");
+  background-image: url("./images/performance_bg.png");
   background-size: 100%;
   background-repeat: no-repeat;
   overflow: hidden;
