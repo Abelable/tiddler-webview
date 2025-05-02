@@ -15,19 +15,17 @@
           Number(achievementInfo?.curMonthGMV).toFixed(2),
           Number(achievementInfo?.lastMonthGMV).toFixed(2),
           Number(achievementInfo?.beforeLastMonthGMV).toFixed(2),
-        ][curTimeIdx]
+        ].slice(-((achievementInfo?.monthDifference || 2) + 1))[curTimeIdx]
       }}</span>
     </div>
     <div class="total-data">
-      <span>近三月累计</span>
+      <span
+        >近{{
+          ["一", "二", "三"][achievementInfo?.monthDifference || 2]
+        }}月累计</span
+      >
       <span style="font-weight: bold">{{
-        achievementInfo
-          ? (
-              +achievementInfo?.beforeLastMonthGMV +
-              +achievementInfo?.lastMonthGMV +
-              +achievementInfo?.curMonthGMV
-            ).toFixed(2)
-          : "0.00"
+        achievementInfo ? (+achievementInfo?.totalGMV).toFixed(2) : "0.00"
       }}</span>
       <span>元</span>
     </div>
@@ -94,11 +92,7 @@ import PickerPopup from "@/components/PickerPopup.vue";
 
 import dayjs from "dayjs";
 import { onMounted, ref } from "vue";
-import {
-  getCommissionOrderList,
-  getTeamOrderList,
-  getPromoterAchievement,
-} from "./utils/api";
+import { getCommissionOrderList, getPromoterAchievement } from "./utils/api";
 
 import type { Option } from "@/utils/type";
 import type { Achievement, Order } from "./utils/type";
@@ -114,7 +108,7 @@ const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
 
-onMounted(() => {
+onMounted(async () => {
   const curYear = dayjs().year();
   const curMount = dayjs().month();
   timeOptions.value = [
@@ -132,13 +126,34 @@ onMounted(() => {
       value: 5,
     },
   ];
-  setAchievementInfo();
+  await setAchievementInfo();
+  setTimeOptions();
 });
 const onRefresh = () => setOrderList(true);
 const onLoadMore = () => setOrderList();
 
 const setAchievementInfo = async () => {
   achievementInfo.value = await getPromoterAchievement();
+};
+
+const setTimeOptions = () => {
+  const curYear = dayjs().year();
+  const curMount = dayjs().month();
+  timeOptions.value = [
+    {
+      text: `${curYear}年${curMount + 1}月`,
+      value: 3,
+    },
+
+    {
+      text: `${curYear}年${curMount}月`,
+      value: 4,
+    },
+    {
+      text: `${curYear}年${curMount - 1}月`,
+      value: 5,
+    },
+  ].slice(-((achievementInfo.value?.monthDifference || 2) + 1));
 };
 
 const setCurTime = ({ selectedValues }: { selectedValues: number[] }) => {
@@ -164,19 +179,11 @@ const setOrderList = async (init = true) => {
     page = 0;
     finished.value = false;
   }
-  let list = [];
-  if (curMenuIdx.value === 0) {
-    list = await getCommissionOrderList(
-      +timeOptions.value[curTimeIdx.value].value,
-      ++page
-    );
-  } else {
-    list = await getTeamOrderList(
-      +timeOptions.value[curTimeIdx.value].value,
-      [2, 3],
-      ++page
-    );
-  }
+  const list = await getCommissionOrderList(
+    +timeOptions.value[curTimeIdx.value].value,
+    curMenuIdx.value + 1,
+    ++page
+  );
   orderList.value = init ? list : [...orderList.value, ...list];
   if (!list.length) {
     finished.value = true;

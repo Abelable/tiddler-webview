@@ -8,25 +8,7 @@ export interface UserInfo {
   enterpriseInfoId: number;
 }
 
-export interface CommissionSumInfo {
-  cashAmount: number;
-  pendingAmount: number;
-  settledAmount: number;
-}
-
-export interface CommissionCashInfo {
-  share: number;
-  team: number;
-}
-
-export interface CommissionTimeData {
-  orderCount: number;
-  salesVolume: number;
-  pendingAmount: number;
-  settledAmount: number;
-}
-
-interface Coods {
+interface Goods {
   cover: string;
   name: string;
   selectedSkuName: string;
@@ -41,14 +23,8 @@ export interface Order {
   commission: number;
   commissionBase: number;
   commissionAmount: number;
-  goodsList?: Coods[];
-  goods?: Coods;
-}
-
-export interface PromoterData {
-  todayNewCount: number;
-  todayOrderingCount: number;
-  totalCount: number;
+  goodsList?: Goods[];
+  goods?: Goods;
 }
 
 export interface Promoter {
@@ -63,9 +39,11 @@ export interface Promoter {
 }
 
 export interface Achievement {
+  monthDifference: number;
   beforeLastMonthGMV: number;
   lastMonthGMV: number;
   curMonthGMV: number;
+  totalGMV: number;
   percent: number;
 }
 
