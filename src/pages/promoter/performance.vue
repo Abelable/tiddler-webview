@@ -10,13 +10,7 @@
     </div>
     <div class="month-data">
       <span style="font-size: 0.24rem">¥</span>
-      <span>{{
-        [
-          Number(achievementInfo?.curMonthGMV).toFixed(2),
-          Number(achievementInfo?.lastMonthGMV).toFixed(2),
-          Number(achievementInfo?.beforeLastMonthGMV).toFixed(2),
-        ].slice(-((achievementInfo?.monthDifference || 2) + 1))[curTimeIdx]
-      }}</span>
+      <span>{{ achievementOptions[curTimeIdx] }}</span>
     </div>
     <div class="total-data">
       <span
@@ -102,6 +96,7 @@ const curMenuIdx = ref(0);
 const orderList = ref<Order[]>([]);
 const timePickerPopupVisible = ref(false);
 const timeOptions = ref<Option[]>([]);
+const achievementOptions = ref<string[]>([]);
 const curTimeIdx = ref(0);
 
 const loading = ref(false);
@@ -134,6 +129,14 @@ const onLoadMore = () => setOrderList();
 
 const setAchievementInfo = async () => {
   achievementInfo.value = await getPromoterAchievement();
+
+  const { curMonthGMV, lastMonthGMV, beforeLastMonthGMV, monthDifference } =
+    achievementInfo.value;
+  achievementOptions.value = [
+    curMonthGMV.toFixed(2),
+    lastMonthGMV.toFixed(2),
+    beforeLastMonthGMV.toFixed(2),
+  ].slice(-((monthDifference || 2) + 1));
 };
 
 const setTimeOptions = () => {
