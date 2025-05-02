@@ -184,7 +184,7 @@ const setOrderList = async (init = true) => {
   }
   const list = await getCommissionOrderList(
     +timeOptions.value[curTimeIdx.value].value,
-    curMenuIdx.value + 1,
+    curMenuIdx.value === 0 ? 1 : 4,
     ++page
   );
   orderList.value = init ? list : [...orderList.value, ...list];
