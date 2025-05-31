@@ -5,7 +5,7 @@ const agreements: Array<RouteRecordRaw> = [
     path: "/promoter/performance",
     name: "promoter_performance",
     meta: {
-      title: "升级数据",
+      title: "我的荣誉值",
     },
     component: () => import("@/pages/promoter/performance.vue"),
   },
