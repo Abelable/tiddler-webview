@@ -261,10 +261,10 @@
           class="illus"
           :src="
             statusInfo.status === 0
-              ? require('@/assets/images/wait.png')
+              ? 'https://static.tiddler.cn/mp/default_illus/waiting.png'
               : statusInfo.status === 2
-              ? require('@/assets/images/success.png')
-              : require('@/assets/images/fail.png')
+              ? 'https://static.tiddler.cn/mp/default_illus/success.png'
+              : 'https://static.tiddler.cn/mp/default_illus/fail.png'
           "
           alt=""
         />
