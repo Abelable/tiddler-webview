@@ -36,7 +36,7 @@
       <img
         class="selected-icon"
         v-if="curMenuIdx === index"
-        src="./images/selected_icon.png"
+        src="https://static.tiddler.cn/mp/promoter/selected_sign.png"
         alt=""
       />
     </div>
@@ -209,8 +209,8 @@ const checkOrderDetail = (id: number) => {
 <style lang="scss" scoped>
 .performance-data-wrap {
   position: relative;
-  margin-top: 0.16rem;
-  height: 3.06rem;
+  margin: 0.24rem 0.24rem 0;
+  height: 2.54rem;
   background-image: url("./images/performance_bg.png");
   background-size: 100%;
   background-repeat: no-repeat;
@@ -218,7 +218,7 @@ const checkOrderDetail = (id: number) => {
   .month-picker {
     display: flex;
     align-items: center;
-    margin-top: 0.88rem;
+    margin-top: 0.68rem;
     margin-left: 0.68rem;
     color: #6a6f75;
     font-size: 0.24rem;
@@ -237,8 +237,8 @@ const checkOrderDetail = (id: number) => {
   }
   .total-data {
     position: absolute;
-    top: 0.52rem;
-    right: 0.6rem;
+    top: 0.32rem;
+    right: 0.32rem;
     padding: 0.02rem 0.12rem;
     color: #110e4b;
     font-size: 0.24rem;
@@ -248,7 +248,6 @@ const checkOrderDetail = (id: number) => {
 }
 .menu {
   display: flex;
-  margin-top: -0.3rem;
   .menu-item {
     display: flex;
     align-items: center;
@@ -267,7 +266,7 @@ const checkOrderDetail = (id: number) => {
         left: 50%;
         bottom: 0;
         transform: translateX(-50%);
-        width: 0.4rem;
+        width: 0.84rem;
         height: 0.16rem;
       }
     }
