@@ -59,3 +59,14 @@ export interface EnterpriseInfo {
   idCardFrontPhoto: string;
   idCardBackPhoto: string;
 }
+
+export interface WithdrawRecord {
+  status: number;
+  path: number;
+  scene: number;
+  withdrawAmount: number;
+  handlingFee: number;
+  taxFee: number;
+  actualAmount: number;
+  createdAt: string;
+}

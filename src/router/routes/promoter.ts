@@ -17,6 +17,14 @@ const agreements: Array<RouteRecordRaw> = [
     },
     component: () => import("@/pages/promoter/certification.vue"),
   },
+  {
+    path: "/promoter/withdraw_record",
+    name: "promoter_withdraw_record",
+    meta: {
+      title: "提现明细",
+    },
+    component: () => import("@/pages/promoter/withdrawRecord.vue"),
+  },
 ];
 
 export default agreements;

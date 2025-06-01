@@ -1,5 +1,11 @@
 import { http } from "@/utils/http";
-import type { UserInfo, Order, Achievement, EnterpriseInfo } from "./type";
+import type {
+  UserInfo,
+  Order,
+  Achievement,
+  EnterpriseInfo,
+  WithdrawRecord,
+} from "./type";
 
 export const getUserInfo = async (): Promise<UserInfo> =>
   await http("user/info");
@@ -38,3 +44,13 @@ export const editEnterpriseInfo = async (
     method: "POST",
     data: enterpriseInfo,
   });
+
+export const getWithdrawRecordList = async (
+  page: number,
+  limit = 10
+): Promise<WithdrawRecord[]> => {
+  const { list = [] } = await http("withdraw/record_list", {
+    data: { page, limit },
+  });
+  return list;
+};
