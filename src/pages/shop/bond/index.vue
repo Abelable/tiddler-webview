@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <div class="bond-overdiv">
-      <div class="overdiv-title">保证金(元)</div>
+    <div class="bond-overview">
+      <div class="overview-title">保证金(元)</div>
       <div class="bond-amount">18828.92</div>
       <div class="supplement">
         <div class="supplement-tips">还需补缴(元)</div>
@@ -37,7 +37,7 @@
               {{ dayjs(item.createdAt).format("YYYY-MM-DD HH:mm:ss") }}
             </div>
           </div>
-          <div class="change-amount {{item.amount > 0 ? 'income' : ''}}">
+          <div class="change-amount" :class="{ income: item.amount > 0 }">
             {{ item.amount > 0 ? "+" + item.amount : item.amount }}
           </div>
         </div>
@@ -99,7 +99,7 @@ const setRecordList = async (init = true) => {
   background-size: 5.5rem 5.5rem, 100% 100vh;
   background-repeat: no-repeat, no-repeat;
   background-position: top left, top;
-  .bond-overdiv {
+  .bond-overview {
     padding: 0.24rem;
     height: 2.54rem;
     color: #110e4b;
@@ -107,7 +107,7 @@ const setRecordList = async (init = true) => {
     background-size: 100% 100%;
     background-repeat: no-repeat;
     overflow: hidden;
-    .overdiv-title {
+    .overview-title {
       font-size: 0.28rem;
       font-weight: 600;
     }
@@ -143,12 +143,44 @@ const setRecordList = async (init = true) => {
     .pay-btn {
       margin-right: 0.12rem;
       color: #fff;
-      background: #00a5ff;
+      background: #09afff;
     }
     .refund-btn {
       margin-left: 0.12rem;
       color: #333;
       background: #fff;
+    }
+  }
+  .change-log {
+    margin-top: 0.24rem;
+    padding: 0.24rem;
+    background: #fff;
+    border-radius: 0.24rem;
+    .log-info {
+      flex: 1;
+      .log-title {
+        color: #333;
+        font-size: 0.32rem;
+        font-weight: bold;
+      }
+      .log-content {
+        margin-top: 0.04rem;
+        color: #37588b;
+        font-size: 0.26rem;
+      }
+      .log-time {
+        margin-top: 0.24rem;
+        color: #999;
+        font-size: 0.24rem;
+      }
+    }
+    .change-amount {
+      color: #3abd85;
+      font-size: 0.36rem;
+      font-weight: bold;
+      &.income {
+        color: #09afff;
+      }
     }
   }
 }
