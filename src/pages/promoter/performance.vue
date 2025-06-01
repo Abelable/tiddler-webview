@@ -1,79 +1,81 @@
 <template>
-  <div class="performance-data-wrap">
-    <div
-      class="month-picker"
-      v-if="timeOptions.length"
-      @click="timePickerPopupVisible = true"
-    >
-      <span>{{ timeOptions[curTimeIdx].text }}</span>
-      <img class="picker-arrow" src="./images/down.png" alt="" />
-    </div>
-    <div class="month-data">
-      <span style="font-size: 0.24rem">¥</span>
-      <span>{{ achievementOptions[curTimeIdx] }}</span>
-    </div>
-    <div class="total-data">
-      <span
-        >近{{
-          ["一", "二", "三"][achievementInfo?.monthDifference || 2]
-        }}月累计</span
+  <div class="container">
+    <div class="performance-data-wrap">
+      <div
+        class="month-picker"
+        v-if="timeOptions.length"
+        @click="timePickerPopupVisible = true"
       >
-      <span style="font-weight: bold">{{
-        achievementInfo ? (+achievementInfo?.totalGMV).toFixed(2) : "0.00"
-      }}</span>
-      <span>元</span>
-    </div>
-  </div>
-  <div class="menu">
-    <div
-      class="menu-item"
-      :class="{ active: curMenuIdx === index }"
-      v-for="(item, index) in ['个人业绩', '团队业绩']"
-      :key="index"
-      @click="selectMenu(index)"
-    >
-      <div class="menu-name">{{ item }}</div>
-      <img
-        class="selected-icon"
-        v-if="curMenuIdx === index"
-        src="https://static.tiddler.cn/mp/promoter/selected_sign.png"
-        alt=""
-      />
-    </div>
-  </div>
-  <PullRefresh class="container" v-model="refreshing" @refresh="onRefresh">
-    <List
-      v-model="loading"
-      :finished="finished"
-      @load="onLoadMore"
-      :finished-text="orderList.length ? '没有更多了' : ''"
-    >
-      <div class="record-list" v-if="orderList.length">
-        <div
-          class="record-item"
-          v-for="(item, index) in orderList"
-          :key="index"
-        >
-          <div class="order-info" @click="checkOrderDetail(item.id)">
-            <div>订单编号</div>
-            <div class="order-sn">{{ item.orderSn }}</div>
-            <img
-              class="check-icon"
-              v-if="curMenuIdx === 0"
-              src="./images/arrow.png"
-              alt=""
-            />
-          </div>
-          <div class="record-amount">+{{ item.commissionBase }}</div>
-        </div>
+        <span>{{ timeOptions[curTimeIdx].text }}</span>
+        <img class="picker-arrow" src="./images/down.png" alt="" />
       </div>
-    </List>
-    <Empty
-      v-if="!orderList.length"
-      image="https://static.tiddler.cn/mp/default_illus/empty.png"
-      description="暂无业绩记录"
-    />
-  </PullRefresh>
+      <div class="month-data">
+        <span style="font-size: 0.24rem">¥</span>
+        <span>{{ achievementOptions[curTimeIdx] }}</span>
+      </div>
+      <div class="total-data">
+        <span
+          >近{{
+            ["一", "二", "三"][achievementInfo?.monthDifference || 2]
+          }}月累计</span
+        >
+        <span style="font-weight: bold">{{
+          achievementInfo ? (+achievementInfo?.totalGMV).toFixed(2) : "0.00"
+        }}</span>
+        <span>元</span>
+      </div>
+    </div>
+    <div class="menu">
+      <div
+        class="menu-item"
+        :class="{ active: curMenuIdx === index }"
+        v-for="(item, index) in ['个人业绩', '团队业绩']"
+        :key="index"
+        @click="selectMenu(index)"
+      >
+        <div class="menu-name">{{ item }}</div>
+        <img
+          class="selected-icon"
+          v-if="curMenuIdx === index"
+          src="https://static.tiddler.cn/mp/promoter/selected_sign.png"
+          alt=""
+        />
+      </div>
+    </div>
+    <PullRefresh v-model="refreshing" @refresh="onRefresh">
+      <List
+        v-model="loading"
+        :finished="finished"
+        @load="onLoadMore"
+        :finished-text="orderList.length ? '没有更多了' : ''"
+      >
+        <div class="record-list" v-if="orderList.length">
+          <div
+            class="record-item"
+            v-for="(item, index) in orderList"
+            :key="index"
+          >
+            <div class="order-info" @click="checkOrderDetail(item.id)">
+              <div>订单编号</div>
+              <div class="order-sn">{{ item.orderSn }}</div>
+              <img
+                class="check-icon"
+                v-if="curMenuIdx === 0"
+                src="./images/arrow.png"
+                alt=""
+              />
+            </div>
+            <div class="record-amount">+{{ item.commissionBase }}</div>
+          </div>
+        </div>
+      </List>
+      <Empty
+        v-if="!orderList.length"
+        image="https://static.tiddler.cn/mp/default_illus/empty.png"
+        description="暂无业绩记录"
+      />
+    </PullRefresh>
+  </div>
 
   <PickerPopup
     v-if="timeOptions.length"
@@ -211,12 +213,20 @@ const checkOrderDetail = (id: number) => {
 </script>
 
 <style lang="scss" scoped>
+.container {
+  padding: 0.24rem;
+  min-height: 100vh;
+  background-image: url("https://static.tiddler.cn/mp/promoter/account/bg.png"),
+    linear-gradient(180deg, #edf6fe 20%, #f6f6f6 55%);
+  background-size: 5.5rem 5.5rem, 100% 100vh;
+  background-repeat: no-repeat, no-repeat;
+  background-position: top left, top;
+}
 .performance-data-wrap {
   position: relative;
-  margin: 0.24rem 0.24rem 0;
   height: 2.54rem;
-  background-image: url("./images/performance_bg.png");
-  background-size: 100%;
+  background-image: url("@/assets/images/card_bg.png");
+  background-size: 100% 100%;
   background-repeat: no-repeat;
   overflow: hidden;
   .month-picker {
