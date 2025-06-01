@@ -187,7 +187,11 @@
           </template>
         </SwipeCell>
         <div class="card" v-if="!item.foodList.length">
-          <Empty image-size="1.8rem" description="暂无菜品列表" />
+          <Empty
+            image="https://static.tiddler.cn/mp/default_illus/empty.png"
+            image-size="1.8rem"
+            description="暂无菜品列表"
+          />
         </div>
       </div>
       <template #right>
@@ -201,7 +205,11 @@
       </template>
     </SwipeCell>
     <div class="card" v-if="!setMealInfo.packageDetails.length">
-      <Empty image-size="1.8rem" description="暂未设置套餐详情" />
+      <Empty
+        image="https://static.tiddler.cn/mp/default_illus/empty.png"
+        image-size="1.8rem"
+        description="暂未设置套餐详情"
+      />
     </div>
 
     <div class="title">填写购买须知</div>
@@ -336,7 +344,11 @@
       </SwipeCell>
     </template>
     <div class="card" v-if="customUseTime && !setMealInfo.useTimeList.length">
-      <Empty image-size="1.8rem" description="暂未添加使用时间" />
+      <Empty
+        image="https://static.tiddler.cn/mp/default_illus/empty.png"
+        image-size="1.8rem"
+        description="暂未添加使用时间"
+      />
     </div>
   </div>
 

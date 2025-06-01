@@ -32,7 +32,11 @@
         @refresh="onRefresh"
       />
     </List>
-    <Empty v-if="!roomLists[curMenuIndex].length" description="暂无房间列表" />
+    <Empty
+      v-if="!roomLists[curMenuIndex].length"
+      image="https://static.tiddler.cn/mp/default_illus/empty.png"
+      description="暂无房间列表"
+    />
   </PullRefresh>
 
   <button class="add-btn" @click="addRoom">添加房间</button>

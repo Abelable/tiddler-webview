@@ -68,7 +68,11 @@
         </div>
       </div>
     </List>
-    <Empty v-if="!orderList.length" description="暂无业绩记录" />
+    <Empty
+      v-if="!orderList.length"
+      image="https://static.tiddler.cn/mp/default_illus/empty.png"
+      description="暂无业绩记录"
+    />
   </PullRefresh>
 
   <PickerPopup

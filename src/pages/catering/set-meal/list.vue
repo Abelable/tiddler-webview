@@ -34,6 +34,7 @@
     </List>
     <Empty
       v-if="!setMealLists[curMenuIndex].length"
+      image="https://static.tiddler.cn/mp/default_illus/empty.png"
       description="暂无套餐列表"
     />
   </PullRefresh>

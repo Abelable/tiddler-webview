@@ -258,7 +258,11 @@
       </SwipeCell>
     </template>
     <div class="card" v-if="customUseTime && !ticketInfo.useTimeList.length">
-      <Empty image-size="1.8rem" description="暂未添加使用时间" />
+      <Empty
+        image="https://static.tiddler.cn/mp/default_illus/empty.png"
+        image-size="1.8rem"
+        description="暂未添加使用时间"
+      />
     </div>
   </div>
 

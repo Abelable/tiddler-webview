@@ -16,7 +16,11 @@
       </template>
     </SwipeCell>
   </div>
-  <Empty v-if="!templateList.length" description="暂无运费模板列表" />
+  <Empty
+    v-if="!templateList.length"
+    image="https://static.tiddler.cn/mp/default_illus/empty.png"
+    description="暂无运费模板列表"
+  />
   <button class="add-btn" @click="addTemplate">新增运费模板</button>
 </template>
 

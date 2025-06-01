@@ -132,7 +132,11 @@
     </List>
   </PullRefresh>
 
-  <Empty v-if="!goodsLists[curMenuIndex].length" description="暂无商品列表" />
+  <Empty
+    v-if="!goodsLists[curMenuIndex].length"
+    image="https://static.tiddler.cn/mp/default_illus/empty.png"
+    description="暂无商品列表"
+  />
 
   <button class="add-btn" @click="addGoods">添加商品</button>
 </template>

@@ -322,7 +322,11 @@
         </template>
       </SwipeCell>
       <div class="card" v-if="!goodsInfo.specList.length">
-        <Empty image-size="1.8rem" description="暂无规格" />
+        <Empty
+          image="https://static.tiddler.cn/mp/default_illus/empty.png"
+          image-size="1.8rem"
+          description="暂无规格"
+        />
       </div>
 
       <div class="title" v-if="goodsInfo.skuList.length">补充规格信息</div>

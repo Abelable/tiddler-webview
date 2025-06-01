@@ -23,7 +23,11 @@
       </template>
     </SwipeCell>
   </div>
-  <Empty v-if="!addressList.length" description="暂无退货地址列表" />
+  <Empty
+    v-if="!addressList.length"
+    image="https://static.tiddler.cn/mp/default_illus/empty.png"
+    description="暂无退货地址列表"
+  />
   <button class="add-btn" @click="addAddress">新增退货地址</button>
 </template>
 

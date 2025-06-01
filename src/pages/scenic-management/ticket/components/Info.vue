@@ -167,7 +167,11 @@
           </template>
         </SwipeCell>
         <div class="card" v-if="!item.priceList.length">
-          <Empty image-size="1.8rem" description="暂无价格列表" />
+          <Empty
+            image="https://static.tiddler.cn/mp/default_illus/empty.png"
+            image-size="1.8rem"
+            description="暂无价格列表"
+          />
         </div>
       </div>
       <template #right>
@@ -181,7 +185,11 @@
       </template>
     </SwipeCell>
     <div class="card" v-if="!ticketInfo.specList.length">
-      <Empty image-size="1.8rem" description="暂无规格" />
+      <Empty
+        image="https://static.tiddler.cn/mp/default_illus/empty.png"
+        image-size="1.8rem"
+        description="暂无规格"
+      />
     </div>
 
     <div class="title">填写费用说明</div>

@@ -34,6 +34,7 @@
     </List>
     <Empty
       v-if="!ticketLists[curMenuIndex].length"
+      image="https://static.tiddler.cn/mp/default_illus/empty.png"
       description="暂无门票列表"
     />
   </PullRefresh>

@@ -108,7 +108,11 @@
       </template>
     </SwipeCell>
     <div class="card" v-if="!freightTemplate.areaList.length">
-      <Empty image-size="1.8rem" description="暂未添加配送地区" />
+      <Empty
+        image="https://static.tiddler.cn/mp/default_illus/empty.png"
+        image-size="1.8rem"
+        description="暂未添加配送地区"
+      />
     </div>
 
     <button class="save-btn" @click="save">保存</button>

@@ -122,6 +122,7 @@
       <Empty
         v-if="!hotelLists[curMenuIndex].length"
         style="margin-top: 1rem"
+        image="https://static.tiddler.cn/mp/default_illus/empty.png"
         description="暂无酒店列表"
       />
     </List>
