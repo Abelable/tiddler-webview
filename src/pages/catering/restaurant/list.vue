@@ -42,7 +42,7 @@
         <template #right>
           <Button
             class="delete-btn"
-            @click.stop="deleteRestaurant(index)"
+            @click.stop="confirmDelete(index)"
             square
             text="删除"
             type="danger"
@@ -70,7 +70,7 @@
         <template #right>
           <Button
             class="delete-btn"
-            @click.stop="deleteRestaurant(index)"
+            @click.stop="confirmDelete(index)"
             square
             text="删除"
             type="danger"
@@ -96,7 +96,7 @@
         <template #right>
           <Button
             class="delete-btn"
-            @click.stop="deleteRestaurant(index)"
+            @click.stop="confirmDelete(index)"
             square
             text="删除"
             type="danger"
@@ -249,7 +249,7 @@ const selectRestaurant = async ({
   restaurantPickerPopupVisible.value = false;
 };
 
-const deleteRestaurant = (index: number) =>
+const confirmDelete = (index: number) =>
   showConfirmDialog({ title: "确定删除门店吗？" })
     .then(async () => {
       try {

@@ -34,6 +34,30 @@ const shop: Array<RouteRecordRaw> = [
     component: () => import("@/pages/shop/shopInfo/index.vue"),
   },
   {
+    path: "/shop/staff/list",
+    name: "shop_staff_list",
+    meta: {
+      title: "人员管理",
+    },
+    component: () => import("@/pages/shop/staff/list.vue"),
+  },
+  {
+    path: "/shop/staff/create",
+    name: "shop_staff_create",
+    meta: {
+      title: "新增人员",
+    },
+    component: () => import("@/pages/shop/staff/create.vue"),
+  },
+  {
+    path: "/shop/staff/edit",
+    name: "shop_staff_edit",
+    meta: {
+      title: "编辑人员",
+    },
+    component: () => import("@/pages/shop/staff/edit.vue"),
+  },
+  {
     path: "/shop/freight_template/list",
     name: "freight_template_list",
     meta: {

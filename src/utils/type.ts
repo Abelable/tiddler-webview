@@ -24,3 +24,10 @@ export interface Option {
   value: number | string;
   children?: Option[];
 }
+
+export interface User {
+  id: number;
+  avatar: string;
+  nickname: string;
+  mobile: string;
+}

@@ -53,7 +53,7 @@
       />
       <Button
         class="delete-btn"
-        @click.stop="deleteCurTicket"
+        @click.stop="confirmDelete"
         text="删除"
         type="danger"
         square
@@ -104,7 +104,7 @@ const onShelf = async () => {
   return true;
 };
 
-const deleteCurTicket = () =>
+const confirmDelete = () =>
   showConfirmDialog({ title: "确定删除该门票吗？" })
     .then(async () => {
       try {

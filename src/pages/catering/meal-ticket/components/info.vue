@@ -249,7 +249,7 @@
         <template #right>
           <Button
             class="delete-btn"
-            @click.stop="deleteUseTime(index)"
+            @click.stop="confirmDelete(index)"
             icon="delete"
             color="#EE0D23"
             plain
@@ -471,7 +471,7 @@ const addUseTime = () => {
     timeFrameList: [],
   });
 };
-const deleteUseTime = (index: number) => {
+const confirmDelete = (index: number) => {
   showConfirmDialog({ title: "确定删除该使用时间吗？" })
     .then(() => ticketInfo.value.useTimeList.splice(index, 1))
     .catch(() => true);

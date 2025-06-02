@@ -172,7 +172,7 @@
       <template #right>
         <Button
           class="delete-btn"
-          @click.stop="deleteOpenTime(index)"
+          @click.stop="confirmDelete(index)"
           icon="delete"
           color="#EE0D23"
           plain
@@ -433,7 +433,7 @@ const addOpenTime = () => {
     timeFrameList: [],
   });
 };
-const deleteOpenTime = (index: number) => {
+const confirmDelete = (index: number) => {
   showConfirmDialog({ title: "确定删除该营业时间吗？" })
     .then(() => restaurantInfo.value.openTimeList.splice(index, 1))
     .catch(() => true);

@@ -1,14 +1,16 @@
 <template>
-  <div class="address-list">
-    <SwipeCell v-for="(item, index) in addressList" :key="index">
-      <div class="address row" @click="editAddress(item.id)">
-        <Icon name="location-o" size="0.32rem" />
+  <div class="staff-list">
+    <SwipeCell v-for="(item, index) in staffList" :key="index">
+      <div class="staff row" @click="editStaff(item.id)">
+        <img class="avatar" :src="item.avatar" alt="" />
         <div class="content">
-          <div class="row">
-            <div class="name">{{ item.consigneeName }}</div>
-            <div class="mobile">{{ item.mobile }}</div>
+          <div class="name-wrap row">
+            <div class="name">{{ item.nickname }}</div>
+            <div class="role-tag row">
+              {{ roleOptions.find((role) => role.id === item.roleId)?.name }}
+            </div>
           </div>
-          <div class="detail limit">{{ item.addressDetail }}</div>
+          <div class="mobile">{{ item.mobile }}</div>
         </div>
         <Icon name="edit" size="0.32rem" />
       </div>
@@ -24,11 +26,11 @@
     </SwipeCell>
   </div>
   <Empty
-    v-if="!addressList.length"
+    v-if="!staffList.length"
     image="https://static.tiddler.cn/mp/default_illus/empty.png"
-    description="暂无退货地址列表"
+    description="暂无人员"
   />
-  <button class="add-btn" @click="addAddress">新增退货地址</button>
+  <button class="add-btn" @click="addStaff">新增人员</button>
 </template>
 
 <script setup lang="ts">
@@ -42,38 +44,39 @@ import {
 } from "vant";
 import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { getRefundAddressList, deleteAddress } from "./utils/api";
+import { getStaffList, deleteStaff } from "./utils/api";
 
-import type { RefundAddressItem } from "./utils/type";
+import type { Staff } from "./utils/type";
+import { roleOptions } from "./utils/index";
 
 const route = useRoute();
 const router = useRouter();
 
 const shopId = ref(0);
-const addressList = ref<RefundAddressItem[]>([]);
+const staffList = ref<Staff[]>([]);
 
 onMounted(async () => {
   shopId.value = +(route.query.shop_id as string);
-  addressList.value = await getRefundAddressList(shopId.value);
+  staffList.value = await getStaffList(shopId.value);
 });
 
-const addAddress = () =>
+const addStaff = () =>
   router.push({
-    path: "/shop/refund_address/create",
+    path: "/shop/staff/create",
     query: { shop_id: shopId.value },
   });
-const editAddress = (id: number) =>
+const editStaff = (id: number) =>
   router.push({
-    path: "/shop/refund_address/edit",
+    path: "/shop/staff/edit",
     query: { id },
   });
 
 const confirmDelete = (index: number) =>
-  showConfirmDialog({ title: "确定删除该退货地址吗？" })
+  showConfirmDialog({ title: "确定删除该人员吗？" })
     .then(async () => {
       try {
-        await deleteAddress(addressList.value[index].id);
-        addressList.value.splice(index, 1);
+        await deleteStaff(staffList.value[index].id);
+        staffList.value.splice(index, 1);
       } catch (error) {
         showToast("删除失败，请重试");
       }
@@ -95,28 +98,39 @@ const confirmDelete = (index: number) =>
   display: flex;
   align-items: center;
 }
-.address-list {
+.staff-list {
   padding-bottom: 1.52rem;
   font-size: 0;
-  .address {
+  .staff {
     margin-bottom: 1px;
     padding: 0 0.24rem;
     height: 1.5rem;
     background: #fff;
+    .avatar {
+      width: 0.8rem;
+      height: 0.8rem;
+      border-radius: 50%;
+    }
     .content {
       position: relative;
       padding: 0 0.2rem;
       flex: 1;
-      .name,
-      .mobile {
+      .name {
         color: #333;
         font-size: 0.28rem;
+        font-weight: 500;
+      }
+      .role-tag {
+        margin-left: 0.12rem;
+        height: 0.36rem;
+        padding: 0 0.1rem;
+        color: #e0d6cb;
+        font-size: 0.18rem;
+        background: linear-gradient(180deg, #0d61d7 0%, #063e82 100%);
+        border-radius: 0.08rem;
       }
       .mobile {
-        margin-left: 0.2rem;
-      }
-      .detail {
-        margin-top: 0.2rem;
+        margin-top: 0.12rem;
         width: 100%;
         color: #666;
         font-size: 0.26rem;

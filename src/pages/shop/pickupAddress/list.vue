@@ -12,7 +12,7 @@
       <template #right>
         <Button
           class="delete-btn"
-          @click.stop="deleteTempalte(index)"
+          @click.stop="confirmDelete(index)"
           square
           text="删除"
           type="danger"
@@ -65,7 +65,7 @@ const editAddress = (id: number) =>
     query: { id },
   });
 
-const deleteTempalte = (index: number) =>
+const confirmDelete = (index: number) =>
   showConfirmDialog({ title: "确定删除该提货地址吗？" })
     .then(async () => {
       try {
