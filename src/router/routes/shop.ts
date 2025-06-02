@@ -26,6 +26,14 @@ const shop: Array<RouteRecordRaw> = [
     component: () => import("@/pages/shop/bond/index.vue"),
   },
   {
+    path: "/shop/shop_info",
+    name: "shop_info",
+    meta: {
+      title: "店铺信息",
+    },
+    component: () => import("@/pages/shop/shopInfo/index.vue"),
+  },
+  {
     path: "/shop/freight_template/list",
     name: "freight_template_list",
     meta: {

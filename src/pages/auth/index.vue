@@ -142,17 +142,19 @@
       <div class="card-tips">请保证照片中身份证信息清晰，漏出手臂。</div>
     </div>
 
-    <div class="warning">温馨提示：小鱼游承诺所有信息严格保密</div>
-
-    <div
-      class="submit-btn"
-      v-if="
-        !authInfo ||
-        (authInfo && (authInfo?.status === undefined || authInfo?.status === 2))
-      "
-      @click="submit"
-    >
-      提交审核
+    <div class="submit-btn-wrap">
+      <div
+        class="submit-btn"
+        v-if="
+          !authInfo ||
+          (authInfo &&
+            (authInfo?.status === undefined || authInfo?.status === 2))
+        "
+        @click="submit"
+      >
+        提交审核
+      </div>
+      <div class="warning">温馨提示：小鱼游承诺所有信息严格保密</div>
     </div>
   </div>
 </template>
@@ -291,14 +293,15 @@ const submit = async () => {
 }
 
 .title {
-  margin: 0.24rem 0 0.2rem;
+  margin: 0.24rem 0;
   color: #333;
-  font-size: 0.32rem;
+  font-size: 0.28rem;
+  font-weight: 500;
 }
 
 .form {
-  padding: 0 0.3rem;
-  border-radius: 0.12rem;
+  padding: 0 0.32rem;
+  border-radius: 0.32rem;
   background: #fff;
 }
 .form-item {
@@ -312,17 +315,17 @@ const submit = async () => {
 }
 .label {
   color: #242424;
-  font-size: 0.28rem;
+  font-size: 0.26rem;
 }
 .input {
-  margin-left: 0.8rem;
+  margin-left: 0.4rem;
   flex: 1;
-  font-size: 0.28rem;
+  font-size: 0.26rem;
 }
 
 .card {
-  padding: 0.3rem;
-  border-radius: 0.12rem;
+  padding: 0.32rem;
+  border-radius: 0.32rem;
   background: #fff;
 }
 
@@ -337,38 +340,43 @@ const submit = async () => {
 .upload-desc {
   margin-top: 0.16rem;
   color: #242424;
-  font-size: 0.28rem;
+  font-size: 0.24rem;
 }
 
 .photo {
-  width: 3.3rem;
-  height: 2.14rem;
+  width: 3rem;
+  height: 2rem;
+  border-radius: 0.24rem;
 }
 
 .card-tips {
   margin-top: 0.2rem;
   color: #999;
-  font-size: 0.24rem;
+  font-size: 0.22rem;
 }
 
-.warning {
-  margin-top: 0.24rem;
-  color: #ba9243;
-  font-size: 0.28rem;
-  text-align: center;
+.submit-btn-wrap {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  padding: 0.24rem;
+  padding-bottom: 0.32rem;
+  width: 100%;
 }
-
 .submit-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0.5rem auto 0;
-  width: 6rem;
-  height: 0.88rem;
-  color: #ffe5bd;
-  font-size: 0.32rem;
-  font-weight: 500;
-  background: linear-gradient(128deg, #404a5c 0%, #0f131a 100%);
-  border-radius: 0.44rem;
+  height: 0.8rem;
+  color: #fff;
+  font-size: 0.28rem;
+  border-radius: 0.24rem;
+  background: #00b2ff;
+}
+.warning {
+  margin-top: 0.24rem;
+  color: #f66969;
+  font-size: 0.24rem;
+  text-align: center;
 }
 </style>
