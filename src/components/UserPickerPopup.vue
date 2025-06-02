@@ -1,5 +1,11 @@
 <template>
-  <Popup :show="visible" @click-overlay="cancel" position="bottom" round>
+  <Popup
+    :show="visible"
+    @click-overlay="cancel"
+    position="bottom"
+    round
+    safe-area-inset-bottom
+  >
     <div class="container">
       <div class="title">选择人员</div>
       <form action="/">
@@ -51,15 +57,7 @@ defineProps<{ visible: boolean }>();
 const emit = defineEmits(["confirm", "cancel"]);
 
 const keywords = ref("");
-const userOptions = ref<User[]>([
-  {
-    id: 1,
-    avatar:
-      "https://static.tiddler.cn/tiddler/20250526/c33b552813d5b35435595b029f7ef3df.png",
-    nickname: "funguy",
-    mobile: "15869035014",
-  },
-]);
+const userOptions = ref<User[]>([]);
 const userId = ref(0);
 
 const confirm = () => {
