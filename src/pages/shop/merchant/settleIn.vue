@@ -503,25 +503,17 @@
       </div>
     </div>
     <div class="status" v-else>
-      <div class="status-illus" v-if="statusInfo.status !== 1">
+      <div class="status-illus">
         <img
           class="illus"
-          :src="
-            statusInfo.status === 0
-              ? 'https://static.tiddler.cn/mp/default_illus/waiting.png'
-              : statusInfo.status === 2
-              ? 'https://static.tiddler.cn/mp/default_illus/success.png'
-              : 'https://static.tiddler.cn/mp/default_illus/fail.png'
-          "
+          :src="`https://static.tiddler.cn/mp/default_illus/${
+            ['waiting', 'success', 'success', 'fail'][statusInfo.status]
+          }.png`"
           alt=""
         />
         <div class="title">
           {{
-            statusInfo.status === 0
-              ? "等待审核"
-              : statusInfo.status === 2
-              ? "缴纳成功"
-              : "审核失败"
+            ["等待审核", "审核通过", "缴纳成功", "审核失败"][statusInfo.status]
           }}
         </div>
         <div class="desc" :class="{ err: statusInfo.status === 3 }">
@@ -540,7 +532,7 @@
           重新申请
         </div>
       </div>
-      <div class="payment" v-else>
+      <div class="payment" v-if="statusInfo.status === 1">
         <div class="title">审核通过</div>
         <div class="pay-amount">
           缴纳保证金：<span style="color: #eaab63"
@@ -608,7 +600,7 @@ import {
   getShopCategoryOptions,
   uploadMerchantInfo,
   getMerchantStatusInfo,
-  deleteMerchant,
+  getMerchantInfo,
   payMerchantDeposit,
 } from "./utils/api";
 
@@ -642,10 +634,10 @@ const merchantInfo = reactive<MerchantInfo>({
   bankCardOwnerName: "",
   bankCardNumber: "",
   bankName: "",
+  shopCover: [],
   shopLogo: [],
   shopName: "",
   shopCategoryIds: [],
-  shopCover: [],
 });
 const areaPickerPopupVisible = ref(false);
 const uploadIdCardFrontPhotoLoading = ref(false);
@@ -814,6 +806,7 @@ const nextStep = () => {
         showToast("请输入店铺名称");
         return;
       }
+      console.log("merchantInfo", merchantInfo);
       if (!merchantInfo.shopCategoryIds.length) {
         showToast("请选择店铺分类");
         return;
@@ -829,6 +822,23 @@ const setCategoryOptions = async () => {
 
 const setStatusInfo = async () => {
   statusInfo.value = await getMerchantStatusInfo();
+};
+
+const setMerchantInfo = async () => {
+  const { shopLogo, shopCover, shopCategoryIds, ...rest } =
+    await getMerchantInfo();
+  const selectedShopCategoryOptions = categoryOptions.value.filter((item) =>
+    shopCategoryIds.includes(item.id)
+  );
+  pickedCategoryDesc.value = selectedShopCategoryOptions
+    .map((item) => item.name)
+    .join();
+  Object.assign(merchantInfo, {
+    shopLogo: [{ url: shopLogo }],
+    shopCover: [{ url: shopCover }],
+    shopCategoryIds,
+    ...rest,
+  });
 };
 
 const submit = async () => {
@@ -915,8 +925,10 @@ const pay = async () => {
 
 const reApply = async () => {
   try {
-    await deleteMerchant();
-    setStatusInfo();
+    await setCategoryOptions();
+    setMerchantInfo();
+    statusInfo.value = undefined;
+    step.value = 1;
   } catch (error) {
     showToast("操作失败请重试");
   }

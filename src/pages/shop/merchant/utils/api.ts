@@ -1,6 +1,7 @@
 import { http } from "@/utils/http";
-import {
+import type {
   CreateMerchantInfo,
+  MerchantInfo,
   MerchantStatusInfo,
   ShopCategoryOption,
 } from "./type";
@@ -19,6 +20,9 @@ export const payMerchantDeposit = async (shopId: number) =>
     method: "POST",
     data: { shopId },
   });
+
+export const getMerchantInfo = async (): Promise<MerchantInfo> =>
+  await http("shop/merchant/info");
 
 export const deleteMerchant = async () =>
   await http("shop/merchant/delete", { method: "POST" });
