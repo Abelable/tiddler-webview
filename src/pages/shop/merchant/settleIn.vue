@@ -516,61 +516,53 @@
             ["等待审核", "审核通过", "缴纳成功", "审核失败"][statusInfo.status]
           }}
         </div>
-        <div class="desc" :class="{ err: statusInfo.status === 3 }">
+        <div
+          class="desc"
+          :class="{ err: statusInfo.status === 3 }"
+          v-if="statusInfo.status !== 1"
+        >
           {{
-            statusInfo.status === 0
-              ? "已提交申请，请耐心等待平台人员处理"
-              : statusInfo.status === 2
-              ? "店铺已开通"
-              : `失败原因：${statusInfo.failureReason}`
+            [
+              "已提交申请，请耐心等待平台人员处理",
+              "",
+              "店铺已开通",
+              `失败原因：${statusInfo.failureReason}`,
+            ][statusInfo.status]
           }}
         </div>
-        <div class="btn back" v-if="statusInfo.status !== 3" @click="back">
+        <div class="pay-amount" v-if="statusInfo.status === 1">
+          缴纳保证金：<span style="color: #eaab63"
+            >{{ statusInfo.deposit }}元</span
+          >
+        </div>
+        <div
+          class="btn back"
+          v-if="[0, 2].includes(statusInfo.status)"
+          @click="back"
+        >
           返回
         </div>
         <div class="btn back" v-if="statusInfo.status === 3" @click="reApply">
           重新申请
         </div>
-      </div>
-      <div class="payment" v-if="statusInfo.status === 1">
-        <div class="title">审核通过</div>
-        <div class="pay-amount">
-          缴纳保证金：<span style="color: #eaab63"
-            >{{ statusInfo.deposit }}元</span
+        <div class="btn-wrap" v-if="statusInfo.status === 1">
+          <div
+            class="btn confirm"
+            :class="{ active: bondAgreementsChecked }"
+            @click="pay"
           >
+            点击缴纳
+          </div>
+          <div class="agreements">
+            <Checkbox v-model="bondAgreementsChecked" icon-size="16px" />
+            <div style="margin-left: 0.1rem">
+              我已阅读并同意
+              <span style="color: #1b89fa" @click="checkBondAgreement"
+                >《小鱼游电商商家保证金协议》</span
+              >
+            </div>
+          </div>
         </div>
-        <div class="agreement">
-          <p>缴纳保证金默认接受以下条款:</p>
-          <p>
-            1.
-            商家在小鱼游参与经营活动必须缴纳服务保证金，保证金主要用于保证商家商品销售符合法律法规及小鱼游的平台规定。
-          </p>
-          <p>
-            2.
-            商家在入驻申请通过后需一次性足额缴纳保证金，不同店铺分类下，保证金金额会有所不同。
-          </p>
-          <p>
-            3.
-            小鱼游有权根据商家的业务变化及实际违约赔付情况通知商家调整保证金金额，商家应在收到小鱼游通知后的3个工作日内补足保证金，如果没有及时补足保证金金额的，小鱼游有权中止合作。
-          </p>
-          <p>
-            4.
-            商家缴纳的保证金将冻结在商家的小鱼游企业账户中，在冻结期内保证金不产生利息，小鱼游不开具发票。
-          </p>
-          <p>
-            5.
-            商家需要退出小鱼游，终止合作，需向小鱼游提出保证金退还申请，小鱼游审核通过后会在30天内将保证金原路退回到您缴纳保证金时的支付账户。商家退出时存在前期违约金尚未支付的情况的，小鱼游从保证金余额中扣取。
-          </p>
-          <p>
-            6.
-            因重大违规被清退的商家将不退还保证金，因违规行为扣取的保证金不退还，作为商家违约金赔偿给用户及小鱼游，具体保证金扣取情况参见《平台商家违规管理规则》。
-          </p>
-          <p>
-            7.
-            小鱼游将根据国家经济情况、市场状况及小鱼游经营情况，适时适当调整保证金制度。保证金制度的调整会按相关规定提前公示予以所有商家。
-          </p>
-        </div>
-        <div class="btn pay" @click="pay">点击缴纳</div>
       </div>
     </div>
   </div>
@@ -648,6 +640,7 @@ const categoryOptions = ref<ShopCategoryOption[]>([]);
 const categoryPickerPopupVisible = ref(false);
 const pickedCategoryDesc = ref("");
 const statusInfo = ref<MerchantStatusInfo | undefined>();
+const bondAgreementsChecked = ref(false);
 
 onMounted(async () => {
   await setStatusInfo();
@@ -909,6 +902,9 @@ const categoryConfirm = ({
 
 const checkAgreement = () => router.push("/shop/agreements/merchant_service");
 
+const checkBondAgreement = () =>
+  router.push("/shop/agreements/merchant_service");
+
 const pay = async () => {
   if (statusInfo.value) {
     const payParams = await payMerchantDeposit(statusInfo.value.shopId);
@@ -949,6 +945,27 @@ const back = () => {
     font-size: 0.3rem;
     font-weight: 550;
     border-radius: 0.18rem;
+  }
+  .btn-wrap {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding: 0 0.32rem 0.48rem;
+    width: 100%;
+    .confirm {
+      margin-top: 1.6rem;
+      color: #fff;
+      background: #e6e6e6;
+      &.active {
+        background: #212121;
+      }
+    }
+    .agreements {
+      display: flex;
+      justify-content: center;
+      margin-top: 0.24rem;
+      font-size: 0.24rem;
+    }
   }
   .settle-in {
     .home {
@@ -1005,27 +1022,6 @@ const back = () => {
               font-size: 0.28rem;
               font-weight: 550;
             }
-          }
-        }
-        .btn-wrap {
-          position: absolute;
-          left: 0;
-          bottom: 0;
-          padding: 0 0.32rem 0.48rem;
-          width: 100%;
-          .confirm {
-            margin-top: 1.6rem;
-            color: #fff;
-            background: #e6e6e6;
-            &.active {
-              background: #212121;
-            }
-          }
-          .agreements {
-            display: flex;
-            justify-content: center;
-            margin-top: 0.24rem;
-            font-size: 0.24rem;
           }
         }
       }
@@ -1229,25 +1225,10 @@ const back = () => {
         }
       }
     }
-    .payment {
-      height: 100%;
-      overflow-y: scroll;
-      .title {
-        color: #333;
-        font-size: 0.36rem;
-        font-weight: 550;
-      }
-      .pay-amount {
-        margin-top: 0.12rem;
-        color: #333;
-        font-size: 0.3rem;
-      }
-      .agreement {
-        margin-top: 0.24rem;
-        color: #666;
-        font-size: 0.26rem;
-        line-height: 1.6;
-      }
+    .pay-amount {
+      margin-top: 0.12rem;
+      color: #333;
+      font-size: 0.3rem;
     }
   }
 }
