@@ -18,12 +18,12 @@ const shop: Array<RouteRecordRaw> = [
     component: () => import("@/pages/shop/merchant/settleIn.vue"),
   },
   {
-    path: "/shop/bond",
-    name: "shop_bond",
+    path: "/shop/deposit",
+    name: "shop_deposit",
     meta: {
       title: "保证金记录",
     },
-    component: () => import("@/pages/shop/bond/index.vue"),
+    component: () => import("@/pages/shop/deposit/index.vue"),
   },
   {
     path: "/shop/shop_info",

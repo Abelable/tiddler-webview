@@ -2,10 +2,12 @@
   <div class="container">
     <div class="bond-overview">
       <div class="overview-title">保证金(元)</div>
-      <div class="bond-amount">18828.92</div>
+      <div class="bond-amount">
+        {{ depositInfo ? depositInfo.balance.toFixed(2) : "0.00" }}
+      </div>
       <div class="supplement">
         <div class="supplement-tips">还需补缴(元)</div>
-        <div>1882.92</div>
+        <div>{{ depositInfo ? depositInfo?.dueAmount : "0.00" }}</div>
       </div>
     </div>
 
@@ -28,17 +30,21 @@
         >
           <div class="log-info">
             <div class="log-title">
-              {{ ["保证金扣款", "保证金补缴", "保证金退款"][item.type - 1] }}
+              {{ ["商家缴纳", "平台代扣"][item.changeType - 1] }}
             </div>
-            <div class="log-content" wx:if="{{item.referenceId}}">
+            <div class="log-content" v-if="item.referenceId">
               订单号：{{ item.referenceId }}
             </div>
             <div class="log-time">
               {{ dayjs(item.createdAt).format("YYYY-MM-DD HH:mm:ss") }}
             </div>
           </div>
-          <div class="change-amount" :class="{ income: item.amount > 0 }">
-            {{ item.amount > 0 ? "+" + item.amount : item.amount }}
+          <div class="change-amount" :class="{ income: item.changeAmount > 0 }">
+            {{
+              item.changeAmount > 0
+                ? "+" + item.changeAmount.toFixed(2)
+                : item.changeAmount.toFixed(2)
+            }}
           </div>
         </div>
       </List>
@@ -52,24 +58,38 @@
 </template>
 
 <script setup lang="ts">
-import dayjs from "dayjs";
 import { Empty, PullRefresh, List, showLoadingToast, closeToast } from "vant";
 
-import { ref } from "vue";
-import { getBondChangeRecordList } from "./utils/api";
+import { onMounted, ref } from "vue";
+import { useRoute } from "vue-router";
+import dayjs from "dayjs";
+import { getDepositInfo, getDepositLogList } from "./utils/api";
 
-import type { BondChangeRecord } from "./utils/type";
+import type { Deposit, DepositLog } from "./utils/type";
 
-const recordList = ref<BondChangeRecord[]>([]);
+const route = useRoute();
+
+const shopId = ref(0);
+const depositInfo = ref<Deposit>();
+const recordList = ref<DepositLog[]>([]);
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
 
-const onRefresh = () => setRecordList(true);
-const onLoadMore = () => setRecordList();
+onMounted(() => {
+  shopId.value = +(route.query.shop_id as string);
+  setDepositInfo();
+});
+
+const onRefresh = () => setLogList(true);
+const onLoadMore = () => setLogList();
+
+const setDepositInfo = async () => {
+  depositInfo.value = await getDepositInfo(shopId.value);
+};
 
 let page = 0;
-const setRecordList = async (init = true) => {
+const setLogList = async (init = true) => {
   showLoadingToast({
     message: "加载中...",
     duration: 0,
@@ -79,7 +99,7 @@ const setRecordList = async (init = true) => {
     page = 0;
     finished.value = false;
   }
-  const list = await getBondChangeRecordList(++page);
+  const list = await getDepositLogList(shopId.value, ++page);
   recordList.value = init ? list : [...recordList.value, ...list];
   if (!list.length) {
     finished.value = true;
@@ -91,6 +111,10 @@ const setRecordList = async (init = true) => {
 </script>
 
 <style lang="scss" scoped>
+.row {
+  display: flex;
+  align-items: center;
+}
 .container {
   padding: 0.24rem;
   min-height: 100vh;
