@@ -102,6 +102,10 @@ const updateBg = (bg: string) => {
 const save = () => {
   try {
     updateShopInfo(shopInfo);
+    showToast("保存成功");
+    setTimeout(() => {
+      window.wx.miniProgram.navigateBack();
+    }, 2000);
   } catch (error) {
     showToast("信息保存失败，请重试");
   }
