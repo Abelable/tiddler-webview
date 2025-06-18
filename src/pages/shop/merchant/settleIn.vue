@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" v-if="statusInfo">
     <div class="settle-in" v-if="!statusInfo">
       <div class="home" v-if="step === 0">
         <div class="main">
@@ -583,7 +583,7 @@
 import { Checkbox, Area, Popup, Uploader, Loading, showToast } from "vant";
 import MultiPickerPopup from "@/components/MultiPickerPopup.vue";
 
-import { ref, onMounted, reactive } from "vue";
+import { ref, onMounted, reactive, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
 import { areaList } from "@vant/area-data";
 import _ from "lodash";
@@ -648,6 +648,23 @@ onMounted(async () => {
     setCategoryOptions();
   }
 });
+
+onMounted(() => {
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("visibilitychange", handleVisibilityChange);
+});
+
+const handleVisibilityChange = async () => {
+  if (document.visibilityState === "visible") {
+    await setStatusInfo();
+    if (!statusInfo.value) {
+      setCategoryOptions();
+    }
+  }
+};
 
 const nextStep = () => {
   switch (step.value) {
