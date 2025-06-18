@@ -9,12 +9,16 @@
         <div class="supplement-tips">还需补缴(元)</div>
         <div>{{ depositInfo ? depositInfo?.dueAmount : "0.00" }}</div>
       </div>
+      <div class="btn-wrap">
+        <div class="pay-btn">点击补缴</div>
+        <div class="refund-btn">申请退款</div>
+      </div>
     </div>
 
-    <div class="btn-wrap">
+    <!-- <div class="btn-wrap">
       <div class="pay-btn">点击补缴</div>
       <div class="refund-btn">申请退款</div>
-    </div>
+    </div> -->
 
     <PullRefresh v-model="refreshing" @refresh="onRefresh">
       <List
@@ -125,7 +129,6 @@ const setLogList = async (init = true) => {
   background-position: top left, top;
   .bond-overview {
     padding: 0.24rem;
-    height: 2.54rem;
     color: #110e4b;
     background-image: url("@/assets/images/card_bg.png");
     background-size: 100% 100%;
@@ -150,29 +153,29 @@ const setLogList = async (init = true) => {
       font-size: 0.2rem;
       font-weight: 400;
     }
-  }
-  .btn-wrap {
-    display: flex;
-    margin-top: 0.24rem;
-    .pay-btn,
-    .refund-btn {
+    .btn-wrap {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      flex: 1;
-      height: 0.8rem;
-      font-size: 0.28rem;
-      border-radius: 0.24rem;
-    }
-    .pay-btn {
-      margin-right: 0.12rem;
-      color: #fff;
-      background: #09afff;
-    }
-    .refund-btn {
-      margin-left: 0.12rem;
-      color: #333;
-      background: #fff;
+      margin-top: 0.24rem;
+      .pay-btn,
+      .refund-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        height: 0.8rem;
+        font-size: 0.28rem;
+        border-radius: 0.24rem;
+      }
+      .pay-btn {
+        margin-right: 0.12rem;
+        color: #fff;
+        background: #09afff;
+      }
+      .refund-btn {
+        margin-left: 0.12rem;
+        color: #333;
+        background: #fff;
+      }
     }
   }
   .change-log {
