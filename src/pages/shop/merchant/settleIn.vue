@@ -467,7 +467,7 @@
             <div class="form-item">
               <div class="form-title">店铺封面</div>
               <Uploader
-                v-model="merchantInfo.shopCover"
+                v-model="merchantInfo.shopBg"
                 :after-read="uploadFile"
                 style="margin-top: 0.32rem"
                 max-count="1"
@@ -626,7 +626,7 @@ const merchantInfo = reactive<MerchantInfo>({
   bankCardOwnerName: "",
   bankCardNumber: "",
   bankName: "",
-  shopCover: [],
+  shopBg: [],
   shopLogo: [],
   shopName: "",
   shopCategoryIds: [],
@@ -835,7 +835,7 @@ const setStatusInfo = async () => {
 };
 
 const setMerchantInfo = async () => {
-  const { shopLogo, shopCover, shopCategoryIds, ...rest } =
+  const { shopLogo, shopBg, shopCategoryIds, ...rest } =
     await getMerchantInfo();
   const selectedShopCategoryOptions = categoryOptions.value.filter((item) =>
     shopCategoryIds.includes(item.id)
@@ -845,7 +845,7 @@ const setMerchantInfo = async () => {
     .join();
   Object.assign(merchantInfo, {
     shopLogo: [{ url: shopLogo }],
-    shopCover: [{ url: shopCover }],
+    shopBg: [{ url: shopBg }],
     shopCategoryIds,
     ...rest,
   });
@@ -853,10 +853,10 @@ const setMerchantInfo = async () => {
 
 const submit = async () => {
   try {
-    const { shopLogo, shopCover, ...rest } = merchantInfo;
+    const { shopLogo, shopBg, ...rest } = merchantInfo;
     await uploadMerchantInfo({
       shopLogo: shopLogo[0].url as string,
-      shopCover: shopCover.length ? (shopCover[0].url as string) : "",
+      shopBg: shopBg.length ? (shopBg[0].url as string) : "",
       ...rest,
     });
     setStatusInfo();
