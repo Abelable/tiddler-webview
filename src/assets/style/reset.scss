@@ -125,3 +125,9 @@ button {
 	outline: none;
 	background: transparent;
 }
+
+:root {
+	--van-empty-padding: 2.18rem 0 !important;
+	--van-empty-image-size: 2.18rem !important;
+	--van-empty-description-margin-top: 0	!important;
+}
