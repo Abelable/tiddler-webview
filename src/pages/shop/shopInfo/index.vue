@@ -43,7 +43,7 @@
         <div class="form-label">店主姓名：</div>
         <input
           class="form-input"
-          v-model="shopInfo.contactName"
+          v-model="shopInfo.ownerName"
           placeholder="未设置"
         />
       </div>
@@ -68,8 +68,10 @@
 
 <script setup lang="ts">
 import Uploader from "@/components/Uploader.vue";
-import { reactive } from "vue";
+import { onMounted, reactive } from "vue";
+import { getShopInfo, updateShopInfo } from "./utils/api";
 import type { ShopInfo } from "./utils/type";
+import { showToast } from "vant";
 
 const shopInfo = reactive<ShopInfo>({
   id: undefined,
@@ -77,9 +79,19 @@ const shopInfo = reactive<ShopInfo>({
   logo: "",
   name: "",
   brief: "",
-  contactName: "",
+  ownerName: "",
   mobile: "",
+  openTimeList: [],
 });
+
+onMounted(() => {
+  setShopInfo();
+});
+
+const setShopInfo = async () => {
+  const info = await getShopInfo();
+  Object.assign(shopInfo, info);
+};
 
 const updateLogo = (logo: string) => {
   shopInfo.logo = logo;
@@ -88,7 +100,11 @@ const updateBg = (bg: string) => {
   shopInfo.bg = bg;
 };
 const save = () => {
-  console.log("updateLogo");
+  try {
+    updateShopInfo(shopInfo);
+  } catch (error) {
+    showToast("信息保存失败，请重试");
+  }
 };
 </script>
 
