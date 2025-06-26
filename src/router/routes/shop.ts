@@ -26,6 +26,14 @@ const shop: Array<RouteRecordRaw> = [
     component: () => import("@/pages/shop/deposit/index.vue"),
   },
   {
+    path: "/shop/withdrawal_record",
+    name: "shop_withdrawal_record",
+    meta: {
+      title: "收益提现记录",
+    },
+    component: () => import("@/pages/shop/withdrawal/record.vue"),
+  },
+  {
     path: "/shop/shop_info",
     name: "shop_info",
     meta: {

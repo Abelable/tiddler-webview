@@ -49,7 +49,7 @@ export const getWithdrawRecordList = async (
   page: number,
   limit = 10
 ): Promise<WithdrawRecord[]> => {
-  const { list = [] } = await http("withdraw/record_list", {
+  const { list = [] } = await http("commission/withdraw/record_list", {
     data: { page, limit },
   });
   return list;
