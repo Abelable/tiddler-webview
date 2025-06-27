@@ -19,9 +19,10 @@ export const getGoodsList = async (
   return list;
 };
 
-export const getGoodsCategoryOptions = async (): Promise<
-  GoodsCategoryOption[]
-> => await http("shop/goods/category_options");
+export const getGoodsCategoryOptions = async (
+  shopId: number
+): Promise<GoodsCategoryOption[]> =>
+  await http("shop/goods/category_options", { data: { shopId } });
 
 export const getGoodsInfo = async (id: number): Promise<GoodsInfo> =>
   await http("shop/goods/info", { data: { id } });

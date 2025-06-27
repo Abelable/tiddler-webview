@@ -23,8 +23,8 @@ const shopId = ref(0);
 
 onMounted(() => {
   shopId.value = +(route.query.shop_id as string);
-  setFreightTemplateOptions();
-  setCategoryOptions();
+  setFreightTemplateOptions(shopId.value);
+  setCategoryOptions(shopId.value);
   setPickupAddressOptions(shopId.value);
   setRefundAddressOptions(shopId.value);
 });

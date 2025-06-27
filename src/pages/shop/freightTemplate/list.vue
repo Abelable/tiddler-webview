@@ -34,21 +34,28 @@ import {
   showToast,
 } from "vant";
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 import { getFreightTemplateList, deleteFreightTemplate } from "./utils/api";
 
 import { FreightTemplateListItem } from "./utils/type";
 
+const route = useRoute();
 const router = useRouter();
 
+const shopId = ref(0);
 const templateList = ref<FreightTemplateListItem[]>([]);
 
 onMounted(async () => {
-  templateList.value = await getFreightTemplateList();
+  shopId.value = +(route.query.shop_id as string);
+  templateList.value = await getFreightTemplateList(shopId.value);
 });
 
-const addTemplate = () => router.push("/shop/freight_template/create");
+const addTemplate = () =>
+  router.push({
+    path: "/shop/freight_template/create",
+    query: { shop_id: shopId.value },
+  });
 const editTemplate = (id: number) =>
   router.push({
     path: "/shop/freight_template/edit",

@@ -34,15 +34,15 @@ export const initialGoodsInfo = {
 };
 
 export const freightTemplateOptions = ref<FreightTemplateListItem[]>([]);
-export const setFreightTemplateOptions = async () =>
+export const setFreightTemplateOptions = async (shopId: number) =>
   (freightTemplateOptions.value = [
     { id: 0, name: "全国包邮" },
-    ...(await getFreightTemplateList()),
+    ...(await getFreightTemplateList(shopId)),
   ]);
 
 export const categoryOptions = ref<GoodsCategoryOption[]>([]);
-export const setCategoryOptions = async () =>
-  (categoryOptions.value = await getGoodsCategoryOptions());
+export const setCategoryOptions = async (shopId: number) =>
+  (categoryOptions.value = await getGoodsCategoryOptions(shopId));
 
 export const pickupAddressOptions = ref<PickupAddressItem[]>([]);
 export const setPickupAddressOptions = async (shopId: number) =>

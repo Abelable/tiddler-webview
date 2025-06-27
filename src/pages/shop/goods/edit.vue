@@ -26,8 +26,8 @@ const visible = ref(false);
 
 onMounted(async () => {
   shopId.value = +(route.query.shop_id as string);
-  await setFreightTemplateOptions();
-  await setCategoryOptions();
+  await setFreightTemplateOptions(shopId.value);
+  await setCategoryOptions(shopId.value);
   await setPickupAddressOptions(shopId.value);
   await setRefundAddressOptions(shopId.value);
   await setGoodsInfo();
