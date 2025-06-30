@@ -115,7 +115,6 @@
 
       <Empty
         v-if="!spotLists[curMenuIndex].length"
-        style="margin-top: 1rem"
         image="https://static.tiddler.cn/mp/default_illus/empty.png"
         description="暂无景点列表"
       />

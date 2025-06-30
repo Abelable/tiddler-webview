@@ -118,7 +118,6 @@
     <div class="card" v-if="!roomInfo.priceList.length">
       <Empty
         image="https://static.tiddler.cn/mp/default_illus/empty.png"
-        image-size="1.8rem"
         description="暂无价格列表"
       />
     </div>

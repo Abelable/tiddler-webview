@@ -161,6 +161,14 @@ const shop: Array<RouteRecordRaw> = [
     },
     component: () => import("@/pages/shop/goods/edit.vue"),
   },
+  {
+    path: "/shop/delivery",
+    name: "shop_delivery",
+    meta: {
+      title: "订单发货",
+    },
+    component: () => import("@/pages/shop/delivery/index.vue"),
+  },
 ];
 
 export default shop;

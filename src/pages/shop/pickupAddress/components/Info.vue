@@ -114,7 +114,6 @@
     <div class="card" v-if="!pickupAddress.openTimeList.length">
       <Empty
         image="https://static.tiddler.cn/mp/default_illus/empty.png"
-        image-size="1.8rem"
         description="暂未添加营业时间"
       />
     </div>

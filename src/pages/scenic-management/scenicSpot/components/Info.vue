@@ -241,7 +241,6 @@
     <div class="card" v-if="!scenicInfo.openTimeList.length">
       <Empty
         image="https://static.tiddler.cn/mp/default_illus/empty.png"
-        image-size="1.8rem"
         description="暂未添加开放时间"
       />
     </div>
@@ -298,7 +297,6 @@
     <div class="card" v-if="!scenicInfo.policyList.length">
       <Empty
         image="https://static.tiddler.cn/mp/default_illus/empty.png"
-        image-size="1.8rem"
         description="暂未添加优待政策"
       />
     </div>
@@ -348,7 +346,6 @@
     <div class="card" v-if="!scenicInfo.projectList.length">
       <Empty
         image="https://static.tiddler.cn/mp/default_illus/empty.png"
-        image-size="1.8rem"
         description="暂未添加景区项目"
       />
     </div>
@@ -404,7 +401,6 @@
     <div class="card" v-if="!scenicInfo.facilityList.length">
       <Empty
         image="https://static.tiddler.cn/mp/default_illus/empty.png"
-        image-size="1.8rem"
         description="暂未添加景区设施"
       />
     </div>
@@ -453,7 +449,6 @@
     <div class="card" v-if="!scenicInfo.tipsList.length">
       <Empty
         image="https://static.tiddler.cn/mp/default_illus/empty.png"
-        image-size="1.8rem"
         description="暂未添加游玩贴士"
       />
     </div>

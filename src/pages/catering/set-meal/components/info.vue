@@ -189,7 +189,6 @@
         <div class="card" v-if="!item.foodList.length">
           <Empty
             image="https://static.tiddler.cn/mp/default_illus/empty.png"
-            image-size="1.8rem"
             description="暂无菜品列表"
           />
         </div>
@@ -207,7 +206,6 @@
     <div class="card" v-if="!setMealInfo.packageDetails.length">
       <Empty
         image="https://static.tiddler.cn/mp/default_illus/empty.png"
-        image-size="1.8rem"
         description="暂未设置套餐详情"
       />
     </div>
@@ -346,7 +344,6 @@
     <div class="card" v-if="customUseTime && !setMealInfo.useTimeList.length">
       <Empty
         image="https://static.tiddler.cn/mp/default_illus/empty.png"
-        image-size="1.8rem"
         description="暂未添加使用时间"
       />
     </div>

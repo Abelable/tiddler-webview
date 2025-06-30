@@ -324,7 +324,6 @@
       <div class="card" v-if="!goodsInfo.specList.length">
         <Empty
           image="https://static.tiddler.cn/mp/default_illus/empty.png"
-          image-size="1.8rem"
           description="暂无规格"
         />
       </div>
@@ -998,11 +997,7 @@ const submit = async () => {
 }
 </style>
 <style>
-.van-empty__description {
-  font-size: 0.24rem;
-}
-.van-collapse-item__title {
-  font-size: 0.26rem;
-  font-weight: 500;
+.van-empty {
+  padding: 1rem 0;
 }
 </style>

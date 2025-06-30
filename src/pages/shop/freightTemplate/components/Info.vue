@@ -110,7 +110,6 @@
     <div class="card" v-if="!freightTemplate.areaList.length">
       <Empty
         image="https://static.tiddler.cn/mp/default_illus/empty.png"
-        image-size="1.8rem"
         description="暂未添加配送地区"
       />
     </div>
@@ -656,5 +655,10 @@ const save = async () => {
       }
     }
   }
+}
+</style>
+<style>
+.van-empty {
+  padding: 1rem 0;
 }
 </style>
