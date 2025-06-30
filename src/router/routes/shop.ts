@@ -162,12 +162,12 @@ const shop: Array<RouteRecordRaw> = [
     component: () => import("@/pages/shop/goods/edit.vue"),
   },
   {
-    path: "/shop/delivery",
-    name: "shop_delivery",
+    path: "/shop/ship",
+    name: "shop_ship",
     meta: {
       title: "订单发货",
     },
-    component: () => import("@/pages/shop/delivery/index.vue"),
+    component: () => import("@/pages/shop/ship/index.vue"),
   },
 ];
 

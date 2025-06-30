@@ -38,7 +38,7 @@
         <ul class="form">
           <li class="form-item row between">
             <div class="name required">物流公司</div>
-            <div class="picker row" @click="showExpressPickPopup(index)">
+            <div class="picker row" @click="showExpressPickerPopup(index)">
               <div class="content" :class="{ active: item.shipChannel }">
                 {{ item.shipChannel || "请选择物流公司" }}
               </div>
@@ -71,13 +71,16 @@
             >
               <ul class="form unit">
                 <li class="form-item row between">
-                  <div class="name required">商品数量</div>
-                  <input
-                    class="input"
-                    v-model="_item.number"
-                    type="number"
-                    placeholder="请输入商品数量"
-                  />
+                  <div class="name required">商品</div>
+                  <div
+                    class="picker row"
+                    @click="showGoodsPickerPopup(index, _index)"
+                  >
+                    <div class="content" :class="{ active: _item.goodsId }">
+                      {{ _item.name || "请选择商品" }}
+                    </div>
+                    <Icon name="arrow" />
+                  </div>
                 </li>
                 <li class="form-item row between">
                   <div class="name required">商品数量</div>
@@ -125,18 +128,7 @@
       />
     </div>
 
-    <div class="btns">
-      <button class="delete-btn" v-if="editingStaffInfo" @click="_delete">
-        删除
-      </button>
-      <button
-        class="save-btn"
-        :class="{ 'create-mode': !editingStaffInfo }"
-        @click="save"
-      >
-        发货
-      </button>
-    </div>
+    <button class="save-btn" @click="save">发货</button>
   </div>
 
   <PickerPopup
@@ -149,6 +141,12 @@
     :visible="expressPickerPopupVisible"
     @confirm="selectExpress"
     @cancel="expressPickerPopupVisible = false"
+  />
+  <GoodsPickerPopup
+    :visible="goodsPickerPopupVisible"
+    :goodsOptions="goodsOptions"
+    @confirm="selectGoods"
+    @cancel="goodsPickerPopupVisible = false"
   />
 </template>
 
@@ -163,27 +161,36 @@ import {
 } from "vant";
 import PickerPopup from "@/components/PickerPopup.vue";
 import ExpressPickerPopup from "@/components/ExpressPickerPopup.vue";
+import GoodsPickerPopup from "./components/GoodsPickerPopup.vue";
 
-import { ref, watch } from "vue";
+import { onMounted, ref } from "vue";
+import { useRoute } from "vue-router";
 import { initialDeliveryInfo, statusOptions } from "./utils/index";
+import { getUnshippedGoodsList, ship } from "./utils/api";
 
-import type { DeliveryInfo } from "./utils/type";
+import type { DeliveryInfo, Goods } from "./utils/type";
 
-const props = defineProps<{
-  editingStaffInfo?: Omit<DeliveryInfo, "id">;
-}>();
-const emit = defineEmits(["save", "delete"]);
+const route = useRoute();
 
+const shopId = ref(0);
+const orderId = ref(0);
 const deliveryInfo = ref<Omit<DeliveryInfo, "id">>(initialDeliveryInfo);
+const goodsOptions = ref<Goods[]>([]);
 const curPackageIndex = ref(0);
-const expressPickerPopupVisible = ref(false);
+const curGoodsIndex = ref(0);
 const statusPickerPopupVisible = ref(false);
+const expressPickerPopupVisible = ref(false);
+const goodsPickerPopupVisible = ref(false);
 
-watch(props, (props) => {
-  if (props.editingStaffInfo) {
-    deliveryInfo.value = props.editingStaffInfo;
-  }
+onMounted(() => {
+  shopId.value = +(route.query.shop_id as string);
+  orderId.value = +(route.query.order_id as string);
+  setGoodsOptions();
 });
+
+const setGoodsOptions = async () => {
+  goodsOptions.value = await getUnshippedGoodsList(shopId.value, orderId.value);
+};
 
 const pickStatus = () => {
   statusPickerPopupVisible.value = true;
@@ -193,7 +200,7 @@ const selectStatus = ({ selectedValues }: { selectedValues: number[] }) => {
   statusPickerPopupVisible.value = false;
 };
 
-const showExpressPickPopup = (index: number) => {
+const showExpressPickerPopup = (index: number) => {
   curPackageIndex.value = index;
   expressPickerPopupVisible.value = true;
 };
@@ -235,35 +242,50 @@ const addGoodsItem = (index: number) => {
     number: undefined,
   });
 };
-const deleteGoodsItem = (index: number, goodsItemIndex: number) =>
+const deleteGoodsItem = (index: number, _index: number) =>
   showConfirmDialog({ title: "确定删除该商品吗？" })
     .then(() =>
-      deliveryInfo.value.packageList[index].goodsList.splice(goodsItemIndex, 1)
+      deliveryInfo.value.packageList[index].goodsList.splice(_index, 1)
     )
     .catch(() => true);
 
-// const pickUser = () => {
-//   userPickerPopupVisible.value = true;
-// };
-// const selectUser = ({ userId, avatar }: { userId: number; avatar: string }) => {
-//   deliveryInfo.value.userId = userId;
-//   deliveryInfo.value.avatar = avatar;
-//   userPickerPopupVisible.value = false;
-// };
+const showGoodsPickerPopup = (index: number, _index: number) => {
+  curPackageIndex.value = index;
+  curGoodsIndex.value = _index;
+  goodsPickerPopupVisible.value = true;
+};
+const selectGoods = (goods: Goods) => {
+  deliveryInfo.value.packageList[curPackageIndex.value].goodsList[
+    curGoodsIndex.value
+  ] = goods;
+  goodsPickerPopupVisible.value = false;
+};
 
 const save = () => {
   if (!deliveryInfo.value.isAllDelivered) {
     showToast("请选择发货状态");
     return;
   }
-  // if (!deliveryInfo.value.roleId) {
-  //   showToast("请选择职位");
-  //   return;
-  // }
-  emit("save", { deliveryInfo: deliveryInfo.value });
-};
+  if (!deliveryInfo.value.packageList.length) {
+    showToast("请添加包裹列表");
+    return;
+  }
 
-const _delete = () => emit("delete");
+  try {
+    ship(
+      shopId.value,
+      orderId.value,
+      deliveryInfo.value.isAllDelivered,
+      deliveryInfo.value.packageList
+    );
+    showToast("发货成功");
+    setTimeout(() => {
+      window.wx.miniProgram.navigateBack();
+    }, 2000);
+  } catch (error) {
+    showToast("发货失败，请重试");
+  }
+};
 </script>
 
 <style lang="scss" scoped>
