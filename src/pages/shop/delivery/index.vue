@@ -229,8 +229,10 @@ const addGoodsItem = (index: number) => {
   curPackageIndex.value = index;
   deliveryInfo.value.packageList[curPackageIndex.value].goodsList.push({
     goodsId: undefined,
-    number: undefined,
+    cover: "",
+    name: "",
     selectedSkuName: "",
+    number: undefined,
   });
 };
 const deleteGoodsItem = (index: number, goodsItemIndex: number) =>
