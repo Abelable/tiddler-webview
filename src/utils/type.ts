@@ -31,3 +31,9 @@ export interface User {
   nickname: string;
   mobile: string;
 }
+
+export interface Express {
+  id: number;
+  code: string;
+  name: string;
+}

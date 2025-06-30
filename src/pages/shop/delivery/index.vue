@@ -38,18 +38,9 @@
         <ul class="form">
           <li class="form-item row between">
             <div class="name required">物流公司</div>
-            <div class="picker row" @click="pickStatus">
-              <div
-                class="content"
-                :class="{ active: deliveryInfo.isAllDelivered }"
-              >
-                {{
-                  deliveryInfo.isAllDelivered
-                    ? statusOptions.find(
-                        (status) => status.value === deliveryInfo.isAllDelivered
-                      )?.text
-                    : "请选择物流公司"
-                }}
+            <div class="picker row" @click="showExpressPickPopup(index)">
+              <div class="content" :class="{ active: item.shipChannel }">
+                {{ item.shipChannel || "请选择物流公司" }}
               </div>
               <Icon name="arrow" />
             </div>
@@ -154,11 +145,11 @@
     @confirm="selectStatus"
     @cancel="statusPickerPopupVisible = false"
   />
-  <!-- <UserPickerPopup
-    :visible="userPickerPopupVisible"
-    @confirm="selectUser"
-    @cancel="userPickerPopupVisible = false"
-  /> -->
+  <ExpressPickerPopup
+    :visible="expressPickerPopupVisible"
+    @confirm="selectExpress"
+    @cancel="expressPickerPopupVisible = false"
+  />
 </template>
 
 <script setup lang="ts">
@@ -171,7 +162,7 @@ import {
   SwipeCell,
 } from "vant";
 import PickerPopup from "@/components/PickerPopup.vue";
-// import UserPickerPopup from "@/components/UserPickerPopup.vue";
+import ExpressPickerPopup from "@/components/ExpressPickerPopup.vue";
 
 import { ref, watch } from "vue";
 import { initialDeliveryInfo, statusOptions } from "./utils/index";
@@ -185,7 +176,7 @@ const emit = defineEmits(["save", "delete"]);
 
 const deliveryInfo = ref<Omit<DeliveryInfo, "id">>(initialDeliveryInfo);
 const curPackageIndex = ref(0);
-const userPickerPopupVisible = ref(false);
+const expressPickerPopupVisible = ref(false);
 const statusPickerPopupVisible = ref(false);
 
 watch(props, (props) => {
@@ -202,8 +193,26 @@ const selectStatus = ({ selectedValues }: { selectedValues: number[] }) => {
   statusPickerPopupVisible.value = false;
 };
 
+const showExpressPickPopup = (index: number) => {
+  curPackageIndex.value = index;
+  expressPickerPopupVisible.value = true;
+};
+const selectExpress = ({
+  expressCode,
+  expressName,
+}: {
+  expressCode: string;
+  expressName: string;
+}) => {
+  deliveryInfo.value.packageList[curPackageIndex.value].shipCode = expressCode;
+  deliveryInfo.value.packageList[curPackageIndex.value].shipChannel =
+    expressName;
+  expressPickerPopupVisible.value = false;
+};
+
 const addPackage = () => {
   deliveryInfo.value.packageList.push({
+    shipChannel: "",
     shipCode: "",
     shipSn: "",
     goodsList: [],
