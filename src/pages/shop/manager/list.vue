@@ -68,14 +68,14 @@ const addManager = () =>
 const editManager = (id: number) =>
   router.push({
     path: "/shop/manager/edit",
-    query: { id },
+    query: { id, shop_id: shopId.value },
   });
 
 const confirmDelete = (index: number) =>
   showConfirmDialog({ title: "确定删除该人员吗？" })
     .then(async () => {
       try {
-        await deleteManager(managerList.value[index].id);
+        await deleteManager(managerList.value[index].id, shopId.value);
         managerList.value.splice(index, 1);
       } catch (error) {
         showToast("删除失败，请重试");

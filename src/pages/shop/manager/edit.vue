@@ -12,27 +12,25 @@ import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { showConfirmDialog, showToast } from "vant";
 import { editManager, getManager, deleteManager } from "./utils/api";
-import type { ManagerDetail } from "./utils/type";
+import type { Manager, ManagerDetail } from "./utils/type";
 
 const route = useRoute();
 const router = useRouter();
 
+const shopId = ref(0);
 const managerId = ref(0);
 const editingManagerInfo = ref<Omit<ManagerDetail, "id">>();
 
 onMounted(async () => {
-  const { id, ...rest } = await getManager(+(route.query.id as string));
-  managerId.value = id;
-  editingManagerInfo.value = rest;
+  shopId.value = +(route.query.shop_id as string);
+  managerId.value = +(route.query.id as string);
+  editingManagerInfo.value = await getManager(managerId.value, shopId.value);
 });
 
-const save = async ({
-  managerInfo,
-}: {
-  managerInfo: Omit<ManagerDetail, "id">;
-}) => {
+const save = async ({ managerInfo }: { managerInfo: Omit<Manager, "id"> }) => {
   try {
-    await editManager(managerInfo);
+    const { userId, roleId } = managerInfo;
+    await editManager(managerId.value, shopId.value, userId, roleId);
     router.back();
   } catch (error) {
     showToast("保存失败，请重试");
@@ -43,7 +41,7 @@ const _delete = () =>
   showConfirmDialog({ title: "确定删除该退货地址吗？" })
     .then(async () => {
       try {
-        await deleteManager(managerId.value);
+        await deleteManager(managerId.value, shopId.value);
         router.back();
       } catch (error) {
         showToast("删除失败，请重试");

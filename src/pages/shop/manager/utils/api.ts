@@ -1,31 +1,39 @@
 import { http } from "@/utils/http";
-import { cleanObject } from "@/utils/index";
 
 import type { Manager } from "./type";
 
 export const getManagerList = async (shopId: number): Promise<Manager[]> =>
   await http("shop/manager/list", { data: { shopId } });
 
-export const getManager = async (id: number): Promise<Manager> =>
-  await http("shop/manager/detail", { data: { id } });
+export const getManager = async (
+  id: number,
+  shopId: number
+): Promise<Manager> =>
+  await http("shop/manager/detail", { data: { id, shopId } });
 
 export const createManager = async (
   shopId: number,
-  managerInfo: Partial<Omit<Manager, "id">>
+  userId: number,
+  roleId: number
 ) =>
   await http("shop/manager/add", {
     method: "POST",
-    data: { shopId, ...cleanObject(managerInfo) },
+    data: { shopId, userId, roleId },
   });
 
-export const editManager = async (managerInfo: Partial<Manager>) =>
+export const editManager = async (
+  id: number,
+  shopId: number,
+  userId: number,
+  roleId: number
+) =>
   await http("shop/manager/edit", {
     method: "POST",
-    data: cleanObject(managerInfo),
+    data: { id, shopId, userId, roleId },
   });
 
-export const deleteManager = async (id: number) =>
+export const deleteManager = async (id: number, shopId: number) =>
   await http("shop/manager/delete", {
     method: "POST",
-    data: { id },
+    data: { id, shopId },
   });
