@@ -1,7 +1,7 @@
 <template>
-  <div class="staff-list">
-    <SwipeCell v-for="(item, index) in staffList" :key="index">
-      <div class="staff row" @click="editStaff(item.id)">
+  <div class="manager-list">
+    <SwipeCell v-for="(item, index) in managerList" :key="index">
+      <div class="manager row" @click="editManager(item.id)">
         <img class="avatar" :src="item.avatar" alt="" />
         <div class="content">
           <div class="name-wrap row">
@@ -26,11 +26,11 @@
     </SwipeCell>
   </div>
   <Empty
-    v-if="!staffList.length"
+    v-if="!managerList.length"
     image="https://static.tiddler.cn/mp/default_illus/empty.png"
     description="暂无人员"
   />
-  <button class="add-btn" @click="addStaff">新增人员</button>
+  <button class="add-btn" @click="addManager">新增人员</button>
 </template>
 
 <script setup lang="ts">
@@ -44,30 +44,30 @@ import {
 } from "vant";
 import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { getStaffList, deleteStaff } from "./utils/api";
+import { getManagerList, deleteManager } from "./utils/api";
 
-import type { Staff } from "./utils/type";
+import type { Manager } from "./utils/type";
 import { roleOptions } from "./utils/index";
 
 const route = useRoute();
 const router = useRouter();
 
 const shopId = ref(0);
-const staffList = ref<Staff[]>([]);
+const managerList = ref<Manager[]>([]);
 
 onMounted(async () => {
   shopId.value = +(route.query.shop_id as string);
-  staffList.value = await getStaffList(shopId.value);
+  managerList.value = await getManagerList(shopId.value);
 });
 
-const addStaff = () =>
+const addManager = () =>
   router.push({
-    path: "/shop/staff/create",
+    path: "/shop/manager/create",
     query: { shop_id: shopId.value },
   });
-const editStaff = (id: number) =>
+const editManager = (id: number) =>
   router.push({
-    path: "/shop/staff/edit",
+    path: "/shop/manager/edit",
     query: { id },
   });
 
@@ -75,8 +75,8 @@ const confirmDelete = (index: number) =>
   showConfirmDialog({ title: "确定删除该人员吗？" })
     .then(async () => {
       try {
-        await deleteStaff(staffList.value[index].id);
-        staffList.value.splice(index, 1);
+        await deleteManager(managerList.value[index].id);
+        managerList.value.splice(index, 1);
       } catch (error) {
         showToast("删除失败，请重试");
       }
@@ -98,10 +98,10 @@ const confirmDelete = (index: number) =>
   display: flex;
   align-items: center;
 }
-.staff-list {
+.manager-list {
   padding-bottom: 1.52rem;
   font-size: 0;
-  .staff {
+  .manager {
     margin-bottom: 1px;
     padding: 0 0.24rem;
     height: 1.5rem;

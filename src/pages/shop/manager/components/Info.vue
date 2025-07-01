@@ -5,11 +5,11 @@
         <li class="form-item row between">
           <div class="name">人员</div>
           <div class="picker row" @click="pickUser">
-            <div class="content" v-if="!staffInfo.avatar">请选择人员</div>
+            <div class="content" v-if="!managerInfo.avatar">请选择人员</div>
             <img
               class="avatar"
-              v-if="staffInfo.avatar"
-              :src="staffInfo.avatar"
+              v-if="managerInfo.avatar"
+              :src="managerInfo.avatar"
               alt=""
             />
             <Icon name="arrow" />
@@ -18,10 +18,10 @@
         <li class="form-item row between">
           <div class="name">职位</div>
           <div class="picker row" @click="pickRole">
-            <div class="content" :class="{ active: staffInfo.roleId }">
+            <div class="content" :class="{ active: managerInfo.roleId }">
               {{
-                staffInfo.roleId
-                  ? roleOptions.find((role) => role.id === staffInfo.roleId)
+                managerInfo.roleId
+                  ? roleOptions.find((role) => role.id === managerInfo.roleId)
                       ?.name
                   : "请选择职位"
               }}
@@ -33,12 +33,12 @@
     </div>
 
     <div class="btns">
-      <button class="delete-btn" v-if="editingStaffInfo" @click="_delete">
+      <button class="delete-btn" v-if="editingManagerInfo" @click="_delete">
         删除
       </button>
       <button
         class="save-btn"
-        :class="{ 'create-mode': !editingStaffInfo }"
+        :class="{ 'create-mode': !editingManagerInfo }"
         @click="save"
       >
         保存
@@ -65,22 +65,22 @@ import PickerPopup from "@/components/PickerPopup.vue";
 import UserPickerPopup from "@/components/UserPickerPopup.vue";
 
 import { ref, watch } from "vue";
-import { initialStaffInfo, roleOptions } from "../utils/index";
+import { initialManagerInfo, roleOptions } from "../utils/index";
 
-import type { StaffDetail } from "../utils/type";
+import type { ManagerDetail } from "../utils/type";
 
 const props = defineProps<{
-  editingStaffInfo?: Omit<StaffDetail, "id">;
+  editingManagerInfo?: Omit<ManagerDetail, "id">;
 }>();
 const emit = defineEmits(["save", "delete"]);
 
-const staffInfo = ref<Omit<StaffDetail, "id">>(initialStaffInfo);
+const managerInfo = ref<Omit<ManagerDetail, "id">>(initialManagerInfo);
 const userPickerPopupVisible = ref(false);
 const rolePickerPopupVisible = ref(false);
 
 watch(props, (props) => {
-  if (props.editingStaffInfo) {
-    staffInfo.value = props.editingStaffInfo;
+  if (props.editingManagerInfo) {
+    managerInfo.value = props.editingManagerInfo;
   }
 });
 
@@ -88,8 +88,8 @@ const pickUser = () => {
   userPickerPopupVisible.value = true;
 };
 const selectUser = ({ userId, avatar }: { userId: number; avatar: string }) => {
-  staffInfo.value.userId = userId;
-  staffInfo.value.avatar = avatar;
+  managerInfo.value.userId = userId;
+  managerInfo.value.avatar = avatar;
   userPickerPopupVisible.value = false;
 };
 
@@ -97,20 +97,20 @@ const pickRole = () => {
   rolePickerPopupVisible.value = true;
 };
 const selectRole = ({ selectedValues }: { selectedValues: number[] }) => {
-  staffInfo.value.roleId = selectedValues[0];
+  managerInfo.value.roleId = selectedValues[0];
   rolePickerPopupVisible.value = false;
 };
 
 const save = () => {
-  if (!staffInfo.value.userId) {
+  if (!managerInfo.value.userId) {
     showToast("请选择人员");
     return;
   }
-  if (!staffInfo.value.roleId) {
+  if (!managerInfo.value.roleId) {
     showToast("请选择职位");
     return;
   }
-  emit("save", { staffInfo: staffInfo.value });
+  emit("save", { managerInfo: managerInfo.value });
 };
 
 const _delete = () => emit("delete");

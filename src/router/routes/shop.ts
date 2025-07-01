@@ -42,28 +42,28 @@ const shop: Array<RouteRecordRaw> = [
     component: () => import("@/pages/shop/shopInfo/index.vue"),
   },
   {
-    path: "/shop/staff/list",
-    name: "shop_staff_list",
+    path: "/shop/manager/list",
+    name: "shop_manager_list",
     meta: {
       title: "人员管理",
     },
-    component: () => import("@/pages/shop/staff/list.vue"),
+    component: () => import("@/pages/shop/manager/list.vue"),
   },
   {
-    path: "/shop/staff/create",
-    name: "shop_staff_create",
+    path: "/shop/manager/create",
+    name: "shop_manager_create",
     meta: {
       title: "新增人员",
     },
-    component: () => import("@/pages/shop/staff/create.vue"),
+    component: () => import("@/pages/shop/manager/create.vue"),
   },
   {
-    path: "/shop/staff/edit",
-    name: "shop_staff_edit",
+    path: "/shop/manager/edit",
+    name: "shop_manager_edit",
     meta: {
       title: "编辑人员",
     },
-    component: () => import("@/pages/shop/staff/edit.vue"),
+    component: () => import("@/pages/shop/manager/edit.vue"),
   },
   {
     path: "/shop/freight_template/list",

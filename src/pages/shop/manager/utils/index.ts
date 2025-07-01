@@ -1,4 +1,4 @@
-export const initialStaffInfo = {
+export const initialManagerInfo = {
   roleId: undefined,
   userId: undefined,
   avatar: "",

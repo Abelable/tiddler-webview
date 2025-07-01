@@ -1,4 +1,4 @@
-export interface Staff {
+export interface Manager {
   id: number;
   roleId: number;
   userId: number;
@@ -7,7 +7,7 @@ export interface Staff {
   mobile: string;
 }
 
-export interface StaffDetail {
+export interface ManagerDetail {
   id: number | undefined;
   roleId: number | undefined;
   userId: number | undefined;

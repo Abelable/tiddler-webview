@@ -153,4 +153,7 @@ const cancel = () => {
 .van-radio__label--left {
   width: 100% !important;
 }
+.van-empty {
+  padding: 1rem 0;
+}
 </style>
