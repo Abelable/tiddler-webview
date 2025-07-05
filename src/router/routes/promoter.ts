@@ -2,20 +2,12 @@ import { RouteRecordRaw } from "vue-router";
 
 const agreements: Array<RouteRecordRaw> = [
   {
-    path: "/promoter/performance",
-    name: "promoter_performance",
+    path: "/promoter/achievement",
+    name: "promoter_achievement",
     meta: {
       title: "我的荣誉值",
     },
-    component: () => import("@/pages/promoter/performance.vue"),
-  },
-  {
-    path: "/promoter/certification",
-    name: "promoter_certification",
-    meta: {
-      title: "升级认证",
-    },
-    component: () => import("@/pages/promoter/certification.vue"),
+    component: () => import("@/pages/promoter/achievement.vue"),
   },
   {
     path: "/promoter/withdrawal_record",

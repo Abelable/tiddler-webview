@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="performance-data-wrap">
+    <div class="achievement-data-wrap">
       <div
         class="month-picker"
         v-if="timeOptions.length"
@@ -11,12 +11,14 @@
       </div>
       <div class="month-data">
         <span style="font-size: 0.24rem">¥</span>
-        <span>{{ achievementOptions[curTimeIdx] }}</span>
+        <span>{{
+          achievementOptions.length ? achievementOptions[curTimeIdx] : "0.00"
+        }}</span>
       </div>
       <div class="total-data">
         <span
           >近{{
-            ["一", "二", "三"][achievementInfo?.monthDifference || 2]
+            ["一", "二", "三"][achievementInfo?.monthDifference || 0]
           }}月累计</span
         >
         <span style="font-weight: bold">{{
@@ -29,9 +31,9 @@
       <div
         class="menu-item"
         :class="{ active: curMenuIdx === index }"
-        v-for="(item, index) in ['个人业绩', '团队业绩']"
+        v-for="(item, index) in ['个人荣誉值', '团队荣誉值']"
         :key="index"
-        @click="selectMenu(index)"
+        @click="curMenuIdx = index"
       >
         <div class="menu-name">{{ item }}</div>
         <img
@@ -47,32 +49,62 @@
         v-model="loading"
         :finished="finished"
         @load="onLoadMore"
-        :finished-text="orderList.length ? '没有更多了' : ''"
+        :finished-text="orderLists[curMenuIdx].length ? '没有更多了' : ''"
       >
-        <div class="record-list" v-if="orderList.length">
+        <div class="record-list" v-if="orderLists[curMenuIdx].length">
           <div
             class="record-item"
-            v-for="(item, index) in orderList"
+            v-for="(item, index) in orderLists[curMenuIdx]"
             :key="index"
           >
-            <div class="order-info" @click="checkOrderDetail(item.id)">
-              <div>订单编号</div>
-              <div class="order-sn">{{ item.orderSn }}</div>
-              <img
-                class="check-icon"
-                v-if="curMenuIdx === 0"
-                src="./images/arrow.png"
-                alt=""
-              />
+            <div class="order-info">
+              <div class="order-sn-wrap">
+                <div class="order-sn" @click="checkOrderDetail(item.orderId)">
+                  <div>订单编号：{{ item.orderSn }}</div>
+                  <img
+                    class="order-sn-arrow"
+                    v-if="curMenuIdx === 0"
+                    src="./images/arrow.png"
+                  />
+                </div>
+                <div class="order-status-wrap">
+                  <div class="order-status">
+                    {{ item.status === 1 ? "待结算" : "已结算" }}
+                  </div>
+                  <div class="order-time">
+                    下单时间：{{ dayjs(item.createdAt).format("YYYY.MM.DD") }}
+                  </div>
+                </div>
+              </div>
+              <div class="order-payment-amount">
+                +{{ item.paymentAmount.toFixed(2) }}
+              </div>
             </div>
-            <div class="record-amount">+{{ item.commissionBase }}</div>
+            <div class="goods-list">
+              <div
+                class="goods-info-wrap"
+                v-for="(goods, goodsIdx) in item.productList"
+                :key="goodsIdx"
+              >
+                <img class="goods-cover" :src="goods.cover" />
+                <div class="goods-info">
+                  <div class="goods-name omit">{{ goods.name }}</div>
+                  <div class="goods-spec omit single">
+                    {{ goods.selectedSkuName }}
+                  </div>
+                  <div class="goods-payment-amount">
+                    ¥{{ goods.paymentAmount.toFixed(2) }}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </List>
       <Empty
-        v-if="!orderList.length"
+        v-if="!orderLists[curMenuIdx].length"
         image="https://static.tiddler.cn/mp/default_illus/empty.png"
-        description="暂无业绩记录"
+        description="暂无荣誉值记录"
       />
     </PullRefresh>
   </div>
@@ -95,11 +127,11 @@ import { onMounted, ref } from "vue";
 import { getCommissionOrderList, getPromoterAchievement } from "./utils/api";
 
 import type { Option } from "@/utils/type";
-import type { Achievement, Order } from "./utils/type";
+import type { Achievement, CommissionOrder } from "./utils/type";
 
 const achievementInfo = ref<Achievement>();
 const curMenuIdx = ref(0);
-const orderList = ref<Order[]>([]);
+const orderLists = ref<CommissionOrder[][]>([[], []]);
 const timePickerPopupVisible = ref(false);
 const timeOptions = ref<Option[]>([]);
 const achievementOptions = ref<string[]>([]);
@@ -142,7 +174,7 @@ const setAchievementInfo = async () => {
     curMonthGMV.toFixed(2),
     lastMonthGMV.toFixed(2),
     beforeLastMonthGMV.toFixed(2),
-  ].slice(-((monthDifference || 2) + 1));
+  ].slice(0, monthDifference + 1);
 };
 
 const setTimeOptions = () => {
@@ -162,7 +194,7 @@ const setTimeOptions = () => {
       text: `${curYear}年${curMount - 1}月`,
       value: 5,
     },
-  ].slice(-((achievementInfo.value?.monthDifference || 2) + 1));
+  ].slice(0, (achievementInfo.value?.monthDifference || 0) + 1);
 };
 
 const setCurTime = ({ selectedValues }: { selectedValues: number[] }) => {
@@ -170,10 +202,6 @@ const setCurTime = ({ selectedValues }: { selectedValues: number[] }) => {
     (item) => item.value === selectedValues[0]
   );
   timePickerPopupVisible.value = false;
-  setOrderList(true);
-};
-const selectMenu = (index: number) => {
-  curMenuIdx.value = index;
   setOrderList(true);
 };
 
@@ -186,15 +214,39 @@ const setOrderList = async (init = true) => {
   });
   if (init) {
     page = 0;
+    orderLists.value[curMenuIdx.value] = [];
     finished.value = false;
   }
-  const list = await getCommissionOrderList(
+
+  const commissionList = await getCommissionOrderList(
     +timeOptions.value[curTimeIdx.value].value,
     curMenuIdx.value === 0 ? 1 : 4,
     ++page
   );
-  orderList.value = init ? list : [...orderList.value, ...list];
-  if (!list.length) {
+
+  const orderList = [...orderLists.value[curMenuIdx.value]];
+  for (const item of commissionList) {
+    const { orderId, productType, product, paymentAmount, ...rest } = item;
+    const existingOrder = orderList.find(
+      (order) => order.orderId === orderId && order.productType === productType
+    );
+
+    if (existingOrder) {
+      existingOrder.paymentAmount += paymentAmount;
+      existingOrder.productList.push({ ...product, paymentAmount });
+    } else {
+      orderList.push({
+        ...rest,
+        orderId,
+        productType,
+        paymentAmount,
+        productList: [{ ...product, paymentAmount }],
+      });
+    }
+  }
+
+  orderLists.value[curMenuIdx.value] = orderList;
+  if (!commissionList.length) {
     finished.value = true;
   }
   loading.value = false;
@@ -213,6 +265,16 @@ const checkOrderDetail = (id: number) => {
 </script>
 
 <style lang="scss" scoped>
+.omit {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  &.single {
+    -webkit-line-clamp: 1;
+  }
+}
 .container {
   padding: 0.24rem;
   min-height: 100vh;
@@ -222,7 +284,7 @@ const checkOrderDetail = (id: number) => {
   background-repeat: no-repeat, no-repeat;
   background-position: top left, top;
 }
-.performance-data-wrap {
+.achievement-data-wrap {
   position: relative;
   height: 2.54rem;
   background-image: url("@/assets/images/card_bg.png");
@@ -287,40 +349,75 @@ const checkOrderDetail = (id: number) => {
   }
 }
 .record-list {
-  margin: 0.24rem;
+  margin-top: 0.24rem;
+}
+.record-item {
+  margin-bottom: 0.24rem;
   padding: 0.24rem;
   background: #fff;
   border-radius: 0.16rem;
-  .record-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.24rem;
-    padding: 0 0.24rem;
-    height: 0.8rem;
-    background: #f8f8f8;
-    border-radius: 0.16rem;
-    &:last-child {
-      margin-bottom: 0;
-    }
-    .order-info {
+}
+.order-info {
+  display: flex;
+  align-items: center;
+  padding: 0.24rem;
+  background: #f8f8f8;
+  border-radius: 0.16rem;
+  .order-sn-wrap {
+    flex: 1;
+    color: #6a6f75;
+    font-size: 0.24rem;
+    .order-sn {
       display: flex;
       align-items: center;
-      color: #6a6f75;
-      font-size: 0.24rem;
-      .order-sn {
-        margin-left: 0.2rem;
-      }
-      .check-icon {
-        margin-left: 0.04rem;
+      .order-sn-arrow {
         width: 0.24rem;
         height: 0.24rem;
       }
     }
-    .record-amount {
+    .order-status-wrap {
+      display: flex;
+      margin-top: 0.12rem;
+      .order-time {
+        margin-left: 0.48rem;
+      }
+    }
+  }
+  .order-payment-amount {
+    color: #14191f;
+    font-size: 0.32rem;
+    font-weight: 550;
+  }
+}
+.goods-info-wrap {
+  display: flex;
+  align-items: center;
+  margin-top: 0.24rem;
+  .goods-cover {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 0.16rem;
+  }
+  .goods-info {
+    display: flex;
+    flex-direction: column;
+    margin-left: 0.16rem;
+    flex: 1;
+    height: 1.5rem;
+    .goods-name {
       color: #14191f;
-      font-size: 0.32rem;
-      font-weight: 500;
+      font-size: 0.26rem;
+      font-weight: 550;
+    }
+    .goods-spec {
+      margin: 0.04rem;
+      flex: 1;
+      color: #6a6f75;
+      font-size: 0.22rem;
+    }
+    .goods-payment-amount {
+      color: #09afff;
+      font-size: 0.24rem;
     }
   }
 }

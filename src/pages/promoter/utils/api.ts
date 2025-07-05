@@ -1,7 +1,7 @@
 import { http } from "@/utils/http";
 import type {
   UserInfo,
-  Order,
+  OrderCommission,
   Achievement,
   EnterpriseInfo,
   WithdrawRecord,
@@ -18,7 +18,7 @@ export const getCommissionOrderList = async (
   scene: number,
   page: number,
   limit = 10
-): Promise<Order[]> => {
+): Promise<OrderCommission[]> => {
   const { list = [] } = await http("commission/order_list", {
     method: "POST",
     data: { timeType, scene, statusList: [2, 3, 4], page, limit },
