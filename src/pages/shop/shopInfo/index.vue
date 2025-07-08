@@ -68,10 +68,15 @@
 
 <script setup lang="ts">
 import Uploader from "@/components/Uploader.vue";
-import { onMounted, reactive } from "vue";
-import { getShopInfo, updateShopInfo } from "./utils/api";
-import type { ShopInfo } from "./utils/type";
 import { showToast } from "vant";
+
+import { onMounted, reactive } from "vue";
+import { useRoute } from "vue-router";
+import { getShopInfo, updateShopInfo } from "./utils/api";
+
+import type { ShopInfo } from "./utils/type";
+
+const route = useRoute();
 
 const shopInfo = reactive<ShopInfo>({
   id: undefined,
@@ -89,7 +94,8 @@ onMounted(() => {
 });
 
 const setShopInfo = async () => {
-  const info = await getShopInfo();
+  const shopId = +(route.query.shop_id as string);
+  const info = await getShopInfo(shopId);
   Object.assign(shopInfo, info);
 };
 
