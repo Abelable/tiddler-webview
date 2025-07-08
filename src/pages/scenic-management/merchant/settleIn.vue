@@ -407,7 +407,7 @@
 import { Checkbox, Area, Popup, Uploader, Loading, showToast } from "vant";
 import PickerPopup from "@/components/PickerPopup.vue";
 
-import { ref, onMounted, reactive } from "vue";
+import { ref, onMounted, reactive, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
 import { areaList } from "@vant/area-data";
 import { upload, uploadFile } from "@/utils/upload";
@@ -468,9 +468,21 @@ const bondAgreementsChecked = ref(false);
 const mounted = ref(false);
 
 onMounted(async () => {
+  document.addEventListener("visibilitychange", handleVisibilityChange);
   await setStatusInfo();
   mounted.value = true;
 });
+
+onBeforeUnmount(() => {
+  document.removeEventListener("visibilitychange", handleVisibilityChange);
+});
+
+const handleVisibilityChange = async () => {
+  if (document.visibilityState === "visible") {
+    await setStatusInfo();
+    mounted.value = true;
+  }
+};
 
 const nextStep = () => {
   switch (step.value) {
