@@ -34,7 +34,7 @@ const shop: Array<RouteRecordRaw> = [
     component: () => import("@/pages/shop/withdrawal/record.vue"),
   },
   {
-    path: "/shop/shop_info",
+    path: "/shop/info",
     name: "shop_info",
     meta: {
       title: "店铺信息",
