@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" v-if="mounted">
     <div class="settle-in" v-if="!statusInfo">
       <div class="home" v-if="step === 0">
         <div class="main">
@@ -641,9 +641,11 @@ const categoryPickerPopupVisible = ref(false);
 const pickedCategoryDesc = ref("");
 const statusInfo = ref<MerchantStatusInfo | undefined>();
 const bondAgreementsChecked = ref(false);
+const mounted = ref(false);
 
 onMounted(async () => {
   await setStatusInfo();
+  mounted.value = true;
   if (!statusInfo.value) {
     setCategoryOptions();
   }

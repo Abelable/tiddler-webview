@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" v-if="mounted">
     <div class="settle-in" v-if="!statusInfo">
       <div class="home" v-if="step === 0">
         <div class="main">
@@ -465,9 +465,11 @@ const typePickerPopupVisible = ref(false);
 const pickedCategoryDesc = ref("");
 const statusInfo = ref<MerchantStatusInfo | undefined>();
 const bondAgreementsChecked = ref(false);
+const mounted = ref(false);
 
 onMounted(async () => {
   await setStatusInfo();
+  mounted.value = true;
 });
 
 const nextStep = () => {
@@ -582,10 +584,13 @@ const setStatusInfo = async () => {
 };
 
 const setMerchantInfo = async () => {
-  const { shopLogo, shopBg, ...rest } = await getMerchantInfo();
+  const { shopLogo, shopBg, shopType, ...rest } = await getMerchantInfo();
+  pickedCategoryDesc.value =
+    typeOptions.find((item) => item.id === shopType)?.name || "";
   Object.assign(merchantInfo, {
     shopLogo: [{ url: shopLogo }],
     shopBg: [{ url: shopBg }],
+    shopType,
     ...rest,
   });
 };
