@@ -644,12 +644,15 @@ const bondAgreementsChecked = ref(false);
 const mounted = ref(false);
 
 onMounted(async () => {
-  document.addEventListener("visibilitychange", handleVisibilityChange);
   await setStatusInfo();
   mounted.value = true;
   if (!statusInfo.value) {
     setCategoryOptions();
   }
+});
+
+onMounted(() => {
+  document.addEventListener("visibilitychange", handleVisibilityChange);
 });
 
 onBeforeUnmount(() => {
@@ -659,6 +662,7 @@ onBeforeUnmount(() => {
 const handleVisibilityChange = async () => {
   if (document.visibilityState === "visible") {
     await setStatusInfo();
+    mounted.value = true;
     if (!statusInfo.value) {
       setCategoryOptions();
     }

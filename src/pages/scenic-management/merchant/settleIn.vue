@@ -468,9 +468,12 @@ const bondAgreementsChecked = ref(false);
 const mounted = ref(false);
 
 onMounted(async () => {
-  document.addEventListener("visibilitychange", handleVisibilityChange);
   await setStatusInfo();
   mounted.value = true;
+});
+
+onMounted(() => {
+  document.addEventListener("visibilitychange", handleVisibilityChange);
 });
 
 onBeforeUnmount(() => {
