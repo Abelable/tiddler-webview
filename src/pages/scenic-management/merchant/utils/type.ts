@@ -17,6 +17,7 @@ export interface MerchantInfo {
   bankCardNumber: string;
   bankName: string;
   shopType: number;
+  deposit: number;
   shopBg: UploaderFileListItem[];
   shopLogo: UploaderFileListItem[];
   shopName: string;

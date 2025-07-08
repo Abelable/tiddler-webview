@@ -315,7 +315,7 @@
               <div
                 class="picker"
                 :class="{ active: pickedCategoryDesc }"
-                @click="categoryPickerPopupVisible = true"
+                @click="typePickerPopupVisible = true"
               >
                 {{ pickedCategoryDesc || "请选择店铺类型" }}
               </div>
@@ -396,12 +396,10 @@
   </div>
 
   <PickerPopup
-    :visible="categoryPickerPopupVisible"
-    :options="
-      categoryOptions.map((item) => ({ text: item.name, value: item.id }))
-    "
-    @confirm="categoryConfirm"
-    @cancel="categoryPickerPopupVisible = false"
+    :visible="typePickerPopupVisible"
+    :options="typeOptions.map((item) => ({ text: item.name, value: item.id }))"
+    @confirm="typeConfirm"
+    @cancel="typePickerPopupVisible = false"
   />
 </template>
 
@@ -449,6 +447,7 @@ const merchantInfo = reactive<MerchantInfo>({
   bankCardNumber: "",
   bankName: "",
   shopType: 0,
+  deposit: 0,
   shopBg: [],
   shopLogo: [],
   shopName: "",
@@ -458,11 +457,11 @@ const uploadIdCardFrontPhotoLoading = ref(false);
 const uploadIdCardBackPhotoLoading = ref(false);
 const uploadHoldIdCardPhotoLoading = ref(false);
 const uploadBusinessLicensePhotoLoading = ref(false);
-const categoryOptions = [
+const typeOptions = [
   { id: 1, name: "景区官方", deposit: 10000 },
   { id: 2, name: "旅行社", deposit: 10000 },
 ];
-const categoryPickerPopupVisible = ref(false);
+const typePickerPopupVisible = ref(false);
 const pickedCategoryDesc = ref("");
 const statusInfo = ref<MerchantStatusInfo | undefined>();
 const bondAgreementsChecked = ref(false);
@@ -641,16 +640,19 @@ const uploadBusinessLicensePhoto = (async ({ file }: { file: File }) => {
   uploadBusinessLicensePhotoLoading.value = false;
 }) as UploaderAfterRead;
 
-const categoryConfirm = ({
+const typeConfirm = ({
   selectedValues,
   selectedOptions,
 }: {
   selectedValues: number[];
   selectedOptions: Option[];
 }) => {
-  merchantInfo.shopType = selectedValues[0];
+  const type = selectedValues[0];
+  merchantInfo.shopType = type;
+  merchantInfo.deposit =
+    typeOptions.find((item) => item.id === type)?.deposit || 0;
   pickedCategoryDesc.value = selectedOptions[0].text;
-  categoryPickerPopupVisible.value = false;
+  typePickerPopupVisible.value = false;
 };
 
 const checkAgreement = () => router.push("/scenic/agreements/merchant_service");
