@@ -1,5 +1,5 @@
 <template>
-  <div class="container" v-if="statusInfo">
+  <div class="container">
     <div class="settle-in" v-if="!statusInfo">
       <div class="home" v-if="step === 0">
         <div class="main">
