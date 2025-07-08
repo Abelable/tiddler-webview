@@ -428,25 +428,25 @@ import { useRouter } from "vue-router";
 import { areaList } from "@vant/area-data";
 import { upload, uploadFile } from "@/utils/upload";
 import {
-  uploadProviderInfo,
-  getProviderStatusInfo,
-  deleteProvider,
-  payProviderDeposit,
+  uploadMerchantInfo,
+  getMerchantStatusInfo,
+  deleteMerchant,
+  getShopDepositPayParams,
 } from "./utils/api";
 
 import type { UploaderAfterRead } from "vant/lib/uploader/types";
 import type { Option } from "@/utils/type";
 import type {
-  ProviderInfo,
-  ProviderStatusInfo,
-  CreateProviderInfo,
+  MerchantInfo,
+  MerchantStatusInfo,
+  CreateMerchantInfo,
 } from "./utils/type";
 
 const router = useRouter();
 
 const step = ref(0);
 const agreementsChecked = ref(false);
-const providerInfo = reactive<ProviderInfo>({
+const providerInfo = reactive<MerchantInfo>({
   companyName: "",
   businessLicensePhoto: "",
   regionDesc: "",
@@ -473,13 +473,12 @@ const uploadIdCardBackPhotoLoading = ref(false);
 const uploadHoldIdCardPhotoLoading = ref(false);
 const uploadBusinessLicensePhotoLoading = ref(false);
 const categoryOptions = [
-  { id: 1, name: "景区官方" },
-  { id: 2, name: "旅行社" },
-  { id: 3, name: "平台自营" },
+  { id: 1, name: "景区官方", deposit: 10000 },
+  { id: 2, name: "旅行社", deposit: 10000 },
 ];
 const categoryPickerPopupVisible = ref(false);
 const pickedCategoryDesc = ref("");
-const statusInfo = ref<ProviderStatusInfo | undefined>();
+const statusInfo = ref<MerchantStatusInfo | undefined>();
 
 onMounted(async () => {
   await setStatusInfo();
@@ -593,20 +592,20 @@ const nextStep = () => {
 };
 
 const setStatusInfo = async () => {
-  statusInfo.value = await getProviderStatusInfo();
+  statusInfo.value = await getMerchantStatusInfo();
 };
 
 const submit = async () => {
   try {
     const { shopLogo, shopCover, ...rest } = providerInfo;
-    const createProviderInfo: CreateProviderInfo = {
+    const createMerchantInfo: CreateMerchantInfo = {
       shopLogo: shopLogo[0].url as string,
       ...rest,
     };
     if (shopCover.length) {
-      createProviderInfo.shopCover = shopCover[0].url;
+      createMerchantInfo.shopCover = shopCover[0].url;
     }
-    await uploadProviderInfo(createProviderInfo);
+    await uploadMerchantInfo(createMerchantInfo);
     setStatusInfo();
   } catch (error) {
     showToast("审核提交失败，请重试");
@@ -662,7 +661,7 @@ const checkAgreement = () => router.push("/scenic/agreements/merchant_service");
 
 const pay = async () => {
   if (statusInfo.value) {
-    const payParams = await payProviderDeposit(statusInfo.value.orderId);
+    const payParams = await getShopDepositPayParams(statusInfo.value.shopId);
     Object.keys(payParams).forEach(
       (key) => (payParams[key] = encodeURIComponent(payParams[key]))
     );
@@ -676,7 +675,7 @@ const pay = async () => {
 
 const reApply = async () => {
   try {
-    await deleteProvider();
+    await deleteMerchant();
     setStatusInfo();
   } catch (error) {
     showToast("操作失败请重试");

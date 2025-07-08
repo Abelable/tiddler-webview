@@ -7,22 +7,22 @@ import type {
 } from "./type";
 
 export const uploadMerchantInfo = async (info: CreateMerchantInfo) =>
-  await http("shop/merchant/settle_in", { method: "POST", data: info });
-
-export const getShopCategoryOptions = async (): Promise<ShopCategoryOption[]> =>
-  await http("shop/category_options");
+  await http("merchant/settle_in", { method: "POST", data: info });
 
 export const getMerchantStatusInfo = async (): Promise<MerchantStatusInfo> =>
-  await http("shop/merchant/status");
+  await http("merchant/status");
 
-export const payMerchantDeposit = async (shopId: number) =>
-  await http("shop/merchant/pay_deposit", {
+export const getShopDepositPayParams = async (shopId: number) =>
+  await http("shop/deposit/pay_params", {
     method: "POST",
     data: { shopId },
   });
 
 export const getMerchantInfo = async (): Promise<MerchantInfo> =>
-  await http("shop/merchant/info");
+  await http("merchant/info");
 
 export const deleteMerchant = async () =>
-  await http("shop/merchant/delete", { method: "POST" });
+  await http("merchant/delete", { method: "POST" });
+
+export const getShopCategoryOptions = async (): Promise<ShopCategoryOption[]> =>
+  await http("shop/category_options");

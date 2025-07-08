@@ -593,7 +593,7 @@ import {
   uploadMerchantInfo,
   getMerchantStatusInfo,
   getMerchantInfo,
-  payMerchantDeposit,
+  getShopDepositPayParams,
 } from "./utils/api";
 
 import type { UploaderAfterRead } from "vant/lib/uploader/types";
@@ -924,7 +924,7 @@ const checkBondAgreement = () =>
 
 const pay = async () => {
   if (statusInfo.value) {
-    const payParams = await payMerchantDeposit(statusInfo.value.shopId);
+    const payParams = await getShopDepositPayParams(statusInfo.value.shopId);
     Object.keys(payParams).forEach(
       (key) => (payParams[key] = encodeURIComponent(payParams[key]))
     );

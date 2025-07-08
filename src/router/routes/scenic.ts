@@ -16,7 +16,7 @@ const scenic: Array<RouteRecordRaw> = [
     meta: {
       title: "景区服务商入驻",
     },
-    component: () => import("@/pages/scenic-management/provider/settleIn.vue"),
+    component: () => import("@/pages/scenic-management/merchant/settleIn.vue"),
   },
   {
     path: "/scenic/spot/list",
