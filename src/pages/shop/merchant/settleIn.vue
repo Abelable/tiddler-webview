@@ -456,18 +456,18 @@
           <div class="form-wrap" v-show="step === 3">
             <div class="title">店铺信息</div>
             <div class="form-item">
-              <div class="form-title">店铺头像</div>
+              <div class="form-title">店铺封面</div>
               <Uploader
-                v-model="merchantInfo.shopLogo"
+                v-model="merchantInfo.shopBg"
                 :after-read="uploadFile"
                 style="margin-top: 0.32rem"
                 max-count="1"
               />
             </div>
             <div class="form-item">
-              <div class="form-title">店铺封面</div>
+              <div class="form-title">店铺头像</div>
               <Uploader
-                v-model="merchantInfo.shopBg"
+                v-model="merchantInfo.shopLogo"
                 :after-read="uploadFile"
                 style="margin-top: 0.32rem"
                 max-count="1"
@@ -479,7 +479,7 @@
                 class="input"
                 v-model="merchantInfo.shopName"
                 type="text"
-                placeholder="例：小明的店"
+                placeholder="请输入店铺名称"
               />
             </div>
             <div class="form-item">

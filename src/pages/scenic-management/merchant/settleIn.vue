@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" v-if="statusInfo">
     <div class="settle-in" v-if="!statusInfo">
       <div class="home" v-if="step === 0">
         <div class="main">
@@ -60,7 +60,7 @@
               <div class="form-title">公司名称</div>
               <input
                 class="input"
-                v-model="providerInfo.companyName"
+                v-model="merchantInfo.companyName"
                 type="text"
                 placeholder="请输入公司名称"
               />
@@ -69,10 +69,10 @@
               <div class="form-title">公司经营地址</div>
               <div
                 class="picker"
-                :class="{ active: providerInfo.regionDesc }"
+                :class="{ active: merchantInfo.regionDesc }"
                 @click="areaPickerPopupVisible = true"
               >
-                {{ providerInfo.regionDesc || "请选择省、市、区" }}
+                {{ merchantInfo.regionDesc || "请选择省、市、区" }}
               </div>
               <Popup
                 v-model:show="areaPickerPopupVisible"
@@ -90,7 +90,7 @@
               <div class="form-title">公司地址详情</div>
               <input
                 class="input"
-                v-model="providerInfo.addressDetail"
+                v-model="merchantInfo.addressDetail"
                 type="text"
                 placeholder="请输入详细地址"
               />
@@ -106,16 +106,16 @@
                     class="photo"
                     v-if="
                       !uploadBusinessLicensePhotoLoading &&
-                      providerInfo.businessLicensePhoto
+                      merchantInfo.businessLicensePhoto
                     "
-                    :src="providerInfo.businessLicensePhoto"
+                    :src="merchantInfo.businessLicensePhoto"
                     alt=""
                   />
                   <div
                     class="default-img"
                     v-if="
                       !uploadBusinessLicensePhotoLoading &&
-                      !providerInfo.businessLicensePhoto
+                      !merchantInfo.businessLicensePhoto
                     "
                   >
                     <div class="img-wrap">
@@ -146,7 +146,7 @@
               <div class="form-title">姓名</div>
               <input
                 class="input"
-                v-model="providerInfo.name"
+                v-model="merchantInfo.name"
                 type="text"
                 placeholder="例：小明"
               />
@@ -155,7 +155,7 @@
               <div class="form-title">手机号</div>
               <input
                 class="input"
-                v-model="providerInfo.mobile"
+                v-model="merchantInfo.mobile"
                 type="tel"
                 placeholder="请输入手机号"
               />
@@ -164,7 +164,7 @@
               <div class="form-title">电子邮箱</div>
               <input
                 class="input"
-                v-model="providerInfo.email"
+                v-model="merchantInfo.email"
                 type="email"
                 placeholder="请输入电子邮箱"
               />
@@ -173,7 +173,7 @@
               <div class="form-title">身份证号</div>
               <input
                 class="input"
-                v-model="providerInfo.idCardNumber"
+                v-model="merchantInfo.idCardNumber"
                 type="text"
                 placeholder="请输入18位身份证号"
               />
@@ -186,7 +186,7 @@
                     class="photo"
                     v-if="!uploadIdCardFrontPhotoLoading"
                     :src="
-                      providerInfo.idCardFrontPhoto ||
+                      merchantInfo.idCardFrontPhoto ||
                       require('./images/front.png')
                     "
                     alt=""
@@ -203,7 +203,7 @@
                     class="photo"
                     v-if="!uploadIdCardBackPhotoLoading"
                     :src="
-                      providerInfo.idCardBackPhoto ||
+                      merchantInfo.idCardBackPhoto ||
                       require('./images/behind.png')
                     "
                     alt=""
@@ -222,16 +222,16 @@
                     class="photo"
                     v-if="
                       !uploadHoldIdCardPhotoLoading &&
-                      providerInfo.holdIdCardPhoto
+                      merchantInfo.holdIdCardPhoto
                     "
-                    :src="providerInfo.holdIdCardPhoto"
+                    :src="merchantInfo.holdIdCardPhoto"
                     alt=""
                   />
                   <div
                     class="default-img"
                     v-if="
                       !uploadHoldIdCardPhotoLoading &&
-                      !providerInfo.holdIdCardPhoto
+                      !merchantInfo.holdIdCardPhoto
                     "
                   >
                     <div class="img-wrap">
@@ -257,7 +257,7 @@
               <div class="form-title">持卡人姓名</div>
               <input
                 class="input"
-                v-model="providerInfo.bankCardOwnerName"
+                v-model="merchantInfo.bankCardOwnerName"
                 type="text"
                 placeholder="例：小明"
               />
@@ -266,7 +266,7 @@
               <div class="form-title">银行账号</div>
               <input
                 class="input"
-                v-model="providerInfo.bankCardNumber"
+                v-model="merchantInfo.bankCardNumber"
                 type="tel"
                 placeholder="例：622123456789012345"
               />
@@ -275,7 +275,7 @@
               <div class="form-title">开户银行及支行名称</div>
               <input
                 class="input"
-                v-model="providerInfo.bankName"
+                v-model="merchantInfo.bankName"
                 type="text"
                 placeholder="例：中国招商银行城西支行"
               />
@@ -284,18 +284,18 @@
           <div class="form-wrap" v-show="step === 3">
             <div class="title">店铺信息</div>
             <div class="form-item">
-              <div class="form-title">店铺头像</div>
+              <div class="form-title">店铺封面</div>
               <Uploader
-                v-model="providerInfo.shopLogo"
+                v-model="merchantInfo.shopBg"
                 :after-read="uploadFile"
                 style="margin-top: 0.32rem"
                 max-count="1"
               />
             </div>
             <div class="form-item">
-              <div class="form-title">店铺封面</div>
+              <div class="form-title">店铺头像</div>
               <Uploader
-                v-model="providerInfo.shopCover"
+                v-model="merchantInfo.shopLogo"
                 :after-read="uploadFile"
                 style="margin-top: 0.32rem"
                 max-count="1"
@@ -305,9 +305,9 @@
               <div class="form-title">店铺名称</div>
               <input
                 class="input"
-                v-model="providerInfo.shopName"
+                v-model="merchantInfo.shopName"
                 type="text"
-                placeholder="例：小明的店"
+                placeholder="请输入店铺名称"
               />
             </div>
             <div class="form-item">
@@ -331,80 +331,66 @@
       </div>
     </div>
     <div class="status" v-else>
-      <div class="status-illus" v-if="statusInfo.status !== 1">
+      <div class="status-illus">
         <img
           class="illus"
-          :src="
-            statusInfo.status === 0
-              ? 'https://static.tiddler.cn/mp/default_illus/waiting.png'
-              : statusInfo.status === 2
-              ? 'https://static.tiddler.cn/mp/default_illus/success.png'
-              : 'https://static.tiddler.cn/mp/default_illus/fail.png'
-          "
+          :src="`https://static.tiddler.cn/mp/default_illus/${
+            ['waiting', 'success', 'success', 'fail'][statusInfo.status]
+          }.png`"
           alt=""
         />
         <div class="title">
           {{
-            statusInfo.status === 0
-              ? "等待审核"
-              : statusInfo.status === 2
-              ? "缴纳成功"
-              : "审核失败"
+            ["等待审核", "审核通过", "缴纳成功", "审核失败"][statusInfo.status]
           }}
         </div>
-        <div class="desc" :class="{ err: statusInfo.status === 3 }">
+        <div
+          class="desc"
+          :class="{ err: statusInfo.status === 3 }"
+          v-if="statusInfo.status !== 1"
+        >
           {{
-            statusInfo.status === 0
-              ? "已提交申请，请耐心等待平台人员处理"
-              : statusInfo.status === 2
-              ? "店铺已开通"
-              : `失败原因：${statusInfo.failureReason}`
+            [
+              "已提交申请，请耐心等待平台人员处理",
+              "",
+              "店铺已开通",
+              `失败原因：${statusInfo.failureReason}`,
+            ][statusInfo.status]
           }}
         </div>
-        <div class="btn back" v-if="statusInfo.status !== 3" @click="back">
+        <div class="pay-amount" v-if="statusInfo.status === 1">
+          缴纳保证金：<span style="color: #eaab63"
+            >{{ statusInfo.deposit }}元</span
+          >
+        </div>
+        <div
+          class="btn back"
+          v-if="[0, 2].includes(statusInfo.status)"
+          @click="back"
+        >
           返回
         </div>
         <div class="btn back" v-if="statusInfo.status === 3" @click="reApply">
           重新申请
         </div>
-      </div>
-      <div class="payment" v-else>
-        <div class="title">审核通过</div>
-        <div class="pay-amount">
-          缴纳保证金：<span style="color: #eaab63">10000元</span>
+        <div class="btn-wrap" v-if="statusInfo.status === 1">
+          <div
+            class="btn confirm"
+            :class="{ active: bondAgreementsChecked }"
+            @click="pay"
+          >
+            点击缴纳
+          </div>
+          <div class="agreements">
+            <Checkbox v-model="bondAgreementsChecked" icon-size="16px" />
+            <div style="margin-left: 0.1rem">
+              我已阅读并同意
+              <span style="color: #1b89fa" @click="checkBondAgreement"
+                >《小鱼游电商商家保证金协议》</span
+              >
+            </div>
+          </div>
         </div>
-        <div class="agreement">
-          <p>缴纳保证金默认接受以下条款:</p>
-          <p>
-            1.
-            商家在小鱼游参与经营活动必须缴纳服务保证金，保证金主要用于保证商家直播带货符合法律法规及小鱼游的平台规定。
-          </p>
-          <p>
-            2.
-            商家在入驻申请通过后需一次性足额缴纳保证金，保证金金额统一为人民币壹仟元。
-          </p>
-          <p>
-            3.
-            小鱼游有权根据商家的业务变化及实际违约赔付情况通知商家调整保证金金额，商家应在收到小鱼游通知后的3个工作日内补足保证金，如果没有及时补足保证金金额的，小鱼游有权中止合作。
-          </p>
-          <p>
-            4.
-            商家缴纳的保证金将冻结在商家的小鱼游公司账户中，在冻结期内保证金不产生利息，小鱼游不开具发票。
-          </p>
-          <p>
-            5.
-            商家需要退出小鱼游，终止合作，需向小鱼游提出保证金退还申请，小鱼游审核通过后会在30天内将保证金原路退回到您缴纳保证金时的支付账户。商家退出时存在前期违约金尚未支付的情况的，小鱼游从保证金余额中扣取。
-          </p>
-          <p>
-            6.
-            因重大违规被清退的商家将不退还保证金，因违规行为扣取的保证金不退还，作为商家违约金赔偿给用户及小鱼游，具体保证金扣取情况参见《平台商家违规管理规则》。
-          </p>
-          <p>
-            7.
-            小鱼游将根据国家经济情况、市场状况及小鱼游经营情况，适时适当调整保证金制度。保证金制度的调整会按相关规定提前公示予以所有商家。
-          </p>
-        </div>
-        <div class="btn pay" @click="pay">点击缴纳</div>
       </div>
     </div>
   </div>
@@ -430,8 +416,8 @@ import { upload, uploadFile } from "@/utils/upload";
 import {
   uploadMerchantInfo,
   getMerchantStatusInfo,
-  deleteMerchant,
   getShopDepositPayParams,
+  getMerchantInfo,
 } from "./utils/api";
 
 import type { UploaderAfterRead } from "vant/lib/uploader/types";
@@ -446,7 +432,7 @@ const router = useRouter();
 
 const step = ref(0);
 const agreementsChecked = ref(false);
-const providerInfo = reactive<MerchantInfo>({
+const merchantInfo = reactive<MerchantInfo>({
   companyName: "",
   businessLicensePhoto: "",
   regionDesc: "",
@@ -462,10 +448,10 @@ const providerInfo = reactive<MerchantInfo>({
   bankCardOwnerName: "",
   bankCardNumber: "",
   bankName: "",
+  shopType: 0,
+  shopBg: [],
   shopLogo: [],
   shopName: "",
-  shopType: 0,
-  shopCover: [],
 });
 const areaPickerPopupVisible = ref(false);
 const uploadIdCardFrontPhotoLoading = ref(false);
@@ -479,6 +465,7 @@ const categoryOptions = [
 const categoryPickerPopupVisible = ref(false);
 const pickedCategoryDesc = ref("");
 const statusInfo = ref<MerchantStatusInfo | undefined>();
+const bondAgreementsChecked = ref(false);
 
 onMounted(async () => {
   await setStatusInfo();
@@ -494,60 +481,60 @@ const nextStep = () => {
       step.value = 1;
       break;
     case 1:
-      if (!providerInfo.companyName) {
+      if (!merchantInfo.companyName) {
         showToast("请输入公司名称");
         return;
       }
-      if (!providerInfo.regionCodeList) {
+      if (!merchantInfo.regionCodeList) {
         showToast("请选择省市区");
         return;
       }
-      if (!providerInfo.addressDetail) {
+      if (!merchantInfo.addressDetail) {
         showToast("请输入详细地址");
         return;
       }
-      if (!providerInfo.businessLicensePhoto) {
+      if (!merchantInfo.businessLicensePhoto) {
         showToast("请上传营业执照照片");
         return;
       }
-      if (!providerInfo.name) {
+      if (!merchantInfo.name) {
         showToast("请输入法人姓名");
         return;
       }
       if (
-        !providerInfo.mobile ||
-        !/^1[345789][0-9]{9}$/.test(providerInfo.mobile)
+        !merchantInfo.mobile ||
+        !/^1[345789][0-9]{9}$/.test(merchantInfo.mobile)
       ) {
         showToast("请输入正确手机号");
         return;
       }
       if (
-        !providerInfo.email ||
+        !merchantInfo.email ||
         !/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(
-          providerInfo.email
+          merchantInfo.email
         )
       ) {
         showToast("请输入正确电子邮箱");
         return;
       }
       if (
-        !providerInfo.idCardNumber ||
+        !merchantInfo.idCardNumber ||
         !/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(
-          providerInfo.idCardNumber
+          merchantInfo.idCardNumber
         )
       ) {
         showToast("请输入正确身份证号");
         return;
       }
-      if (!providerInfo.idCardFrontPhoto) {
+      if (!merchantInfo.idCardFrontPhoto) {
         showToast("请上传身份证正面照片");
         return;
       }
-      if (!providerInfo.idCardBackPhoto) {
+      if (!merchantInfo.idCardBackPhoto) {
         showToast("请上传身份证反面照片");
         return;
       }
-      if (!providerInfo.holdIdCardPhoto) {
+      if (!merchantInfo.holdIdCardPhoto) {
         showToast("请上传手持身份证照片");
         return;
       }
@@ -555,18 +542,18 @@ const nextStep = () => {
       break;
 
     case 2:
-      if (!providerInfo.bankCardOwnerName) {
+      if (!merchantInfo.bankCardOwnerName) {
         showToast("请输入持卡人姓名");
         return;
       }
       if (
-        !providerInfo.bankCardNumber ||
-        !/^([1-9]{1})(\d{15}|\d{16}|\d{18})$/.test(providerInfo.bankCardNumber)
+        !merchantInfo.bankCardNumber ||
+        !/^([1-9]{1})(\d{15}|\d{16}|\d{18})$/.test(merchantInfo.bankCardNumber)
       ) {
         showToast("请输入正确银行卡号");
         return;
       }
-      if (!providerInfo.bankName) {
+      if (!merchantInfo.bankName) {
         showToast("请输入开户银行及支行名称");
         return;
       }
@@ -574,15 +561,15 @@ const nextStep = () => {
       break;
 
     case 3:
-      if (!providerInfo.shopLogo.length) {
+      if (!merchantInfo.shopLogo.length) {
         showToast("请上传店铺头像");
         return;
       }
-      if (!providerInfo.shopName) {
+      if (!merchantInfo.shopName) {
         showToast("请输入店铺名称");
         return;
       }
-      if (!providerInfo.shopType) {
+      if (!merchantInfo.shopType) {
         showToast("请选择店铺类型");
         return;
       }
@@ -595,15 +582,24 @@ const setStatusInfo = async () => {
   statusInfo.value = await getMerchantStatusInfo();
 };
 
+const setMerchantInfo = async () => {
+  const { shopLogo, shopBg, ...rest } = await getMerchantInfo();
+  Object.assign(merchantInfo, {
+    shopLogo: [{ url: shopLogo }],
+    shopBg: [{ url: shopBg }],
+    ...rest,
+  });
+};
+
 const submit = async () => {
   try {
-    const { shopLogo, shopCover, ...rest } = providerInfo;
+    const { shopLogo, shopBg, ...rest } = merchantInfo;
     const createMerchantInfo: CreateMerchantInfo = {
       shopLogo: shopLogo[0].url as string,
       ...rest,
     };
-    if (shopCover.length) {
-      createMerchantInfo.shopCover = shopCover[0].url;
+    if (shopBg.length) {
+      createMerchantInfo.shopBg = shopBg[0].url;
     }
     await uploadMerchantInfo(createMerchantInfo);
     setStatusInfo();
@@ -619,29 +615,29 @@ const areaConfirm = ({
   selectedValues: string[];
   selectedOptions: Option[];
 }) => {
-  providerInfo.regionCodeList = JSON.stringify(selectedValues);
-  providerInfo.regionDesc = `${selectedOptions[0].text} ${selectedOptions[1].text} ${selectedOptions[2].text}`;
+  merchantInfo.regionCodeList = JSON.stringify(selectedValues);
+  merchantInfo.regionDesc = `${selectedOptions[0].text} ${selectedOptions[1].text} ${selectedOptions[2].text}`;
   areaPickerPopupVisible.value = false;
 };
 
 const uploadIdCardFrontPhoto = (async ({ file }: { file: File }) => {
   uploadIdCardFrontPhotoLoading.value = true;
-  providerInfo.idCardFrontPhoto = await upload(file);
+  merchantInfo.idCardFrontPhoto = await upload(file);
   uploadIdCardFrontPhotoLoading.value = false;
 }) as UploaderAfterRead;
 const uploadIdCardBackPhoto = (async ({ file }: { file: File }) => {
   uploadIdCardBackPhotoLoading.value = true;
-  providerInfo.idCardBackPhoto = await upload(file);
+  merchantInfo.idCardBackPhoto = await upload(file);
   uploadIdCardBackPhotoLoading.value = false;
 }) as UploaderAfterRead;
 const uploadHoldIdCardPhoto = (async ({ file }: { file: File }) => {
   uploadHoldIdCardPhotoLoading.value = true;
-  providerInfo.holdIdCardPhoto = await upload(file);
+  merchantInfo.holdIdCardPhoto = await upload(file);
   uploadHoldIdCardPhotoLoading.value = false;
 }) as UploaderAfterRead;
 const uploadBusinessLicensePhoto = (async ({ file }: { file: File }) => {
   uploadBusinessLicensePhotoLoading.value = true;
-  providerInfo.businessLicensePhoto = await upload(file);
+  merchantInfo.businessLicensePhoto = await upload(file);
   uploadBusinessLicensePhotoLoading.value = false;
 }) as UploaderAfterRead;
 
@@ -652,12 +648,15 @@ const categoryConfirm = ({
   selectedValues: number[];
   selectedOptions: Option[];
 }) => {
-  providerInfo.shopType = selectedValues[0];
+  merchantInfo.shopType = selectedValues[0];
   pickedCategoryDesc.value = selectedOptions[0].text;
   categoryPickerPopupVisible.value = false;
 };
 
 const checkAgreement = () => router.push("/scenic/agreements/merchant_service");
+
+const checkBondAgreement = () =>
+  router.push("/shop/agreements/merchant_service");
 
 const pay = async () => {
   if (statusInfo.value) {
@@ -675,8 +674,9 @@ const pay = async () => {
 
 const reApply = async () => {
   try {
-    await deleteMerchant();
-    setStatusInfo();
+    setMerchantInfo();
+    statusInfo.value = undefined;
+    step.value = 1;
   } catch (error) {
     showToast("操作失败请重试");
   }

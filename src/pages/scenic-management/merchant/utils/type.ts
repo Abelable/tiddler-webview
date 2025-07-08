@@ -16,16 +16,16 @@ export interface MerchantInfo {
   bankCardOwnerName: string;
   bankCardNumber: string;
   bankName: string;
+  shopType: number;
+  shopBg: UploaderFileListItem[];
   shopLogo: UploaderFileListItem[];
   shopName: string;
-  shopType: number;
-  shopCover: UploaderFileListItem[];
 }
 
 export interface CreateMerchantInfo
-  extends Omit<MerchantInfo, "shopLogo" | "shopCover"> {
+  extends Omit<MerchantInfo, "shopLogo" | "shopBg"> {
   shopLogo: string;
-  shopCover?: string;
+  shopBg?: string;
 }
 
 export interface ShopTypeOption {

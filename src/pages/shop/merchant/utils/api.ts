@@ -12,17 +12,17 @@ export const uploadMerchantInfo = async (info: CreateMerchantInfo) =>
 export const getMerchantStatusInfo = async (): Promise<MerchantStatusInfo> =>
   await http("merchant/status");
 
-export const getShopDepositPayParams = async (shopId: number) =>
-  await http("shop/deposit/pay_params", {
-    method: "POST",
-    data: { shopId },
-  });
-
 export const getMerchantInfo = async (): Promise<MerchantInfo> =>
   await http("merchant/info");
 
 export const deleteMerchant = async () =>
   await http("merchant/delete", { method: "POST" });
+
+export const getShopDepositPayParams = async (shopId: number) =>
+  await http("shop/deposit/pay_params", {
+    method: "POST",
+    data: { shopId },
+  });
 
 export const getShopCategoryOptions = async (): Promise<ShopCategoryOption[]> =>
   await http("shop/category_options");
