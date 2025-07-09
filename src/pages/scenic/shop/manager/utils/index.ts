@@ -4,6 +4,7 @@ export const initialManagerInfo = {
   avatar: "",
   nickname: "",
   mobile: "",
+  scenicIds: [],
 };
 
 export const roleOptions = [

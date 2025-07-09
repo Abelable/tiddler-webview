@@ -15,8 +15,8 @@ const router = useRouter();
 const save = async ({ managerInfo }: { managerInfo: Omit<Manager, "id"> }) => {
   const shopId = +(route.query.shop_id as string);
   try {
-    const { userId, roleId, senicIds } = managerInfo;
-    await createManager(shopId, userId, roleId, senicIds);
+    const { userId, roleId, scenicIds } = managerInfo;
+    await createManager(shopId, userId, roleId, scenicIds);
     router.back();
   } catch (error) {
     showToast("保存失败，请重试");

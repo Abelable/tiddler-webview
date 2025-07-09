@@ -29,6 +29,15 @@
             <Icon name="arrow" />
           </div>
         </li>
+        <li class="form-item flex" v-if="managerInfo.roleId === 3">
+          <div class="name required">关联景点</div>
+          <div class="picker" @click="scenicPickerPopupVisible = true">
+            <div class="content" :class="{ active: scenicNames }">
+              {{ scenicNames || "请选择关联景点" }}
+            </div>
+            <Icon name="arrow" />
+          </div>
+        </li>
       </ul>
     </div>
 
@@ -57,15 +66,25 @@
     @confirm="selectUser"
     @cancel="userPickerPopupVisible = false"
   />
+  <MultiPickerPopup
+    :visible="scenicPickerPopupVisible"
+    :options="
+      scenicOptions.map((item) => ({ text: item.name, value: item.id }))
+    "
+    @confirm="setScenicIds"
+    @cancel="scenicPickerPopupVisible = false"
+  />
 </template>
 
 <script setup lang="ts">
 import { Icon, showToast } from "vant";
 import PickerPopup from "@/components/PickerPopup.vue";
+import MultiPickerPopup from "@/components/MultiPickerPopup.vue";
 import UserPickerPopup from "@/components/UserPickerPopup.vue";
 
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { initialManagerInfo, roleOptions } from "../utils/index";
+import { scenicOptions } from "../../ticket/utils";
 
 import type { ManagerDetail } from "../utils/type";
 
@@ -77,6 +96,13 @@ const emit = defineEmits(["save", "delete"]);
 const managerInfo = ref<Omit<ManagerDetail, "id">>(initialManagerInfo);
 const userPickerPopupVisible = ref(false);
 const rolePickerPopupVisible = ref(false);
+const scenicPickerPopupVisible = ref(false);
+
+const scenicNames = computed(() =>
+  managerInfo.value.scenicIds
+    .map((id) => scenicOptions.value.find((item) => item.id === id)?.name)
+    .join()
+);
 
 watch(props, (props) => {
   if (props.editingManagerInfo) {
@@ -101,13 +127,23 @@ const selectRole = ({ selectedValues }: { selectedValues: number[] }) => {
   rolePickerPopupVisible.value = false;
 };
 
+const setScenicIds = ({ selectedValues }: { selectedValues: number[] }) => {
+  managerInfo.value.scenicIds = selectedValues;
+  scenicPickerPopupVisible.value = false;
+};
+
 const save = () => {
-  if (!managerInfo.value.userId) {
+  const { userId, roleId, scenicIds } = managerInfo.value;
+  if (!userId) {
     showToast("请选择人员");
     return;
   }
-  if (!managerInfo.value.roleId) {
+  if (!roleId) {
     showToast("请选择职位");
+    return;
+  }
+  if (roleId === 3 && !scenicIds.length) {
+    showToast("请选择关联景点");
     return;
   }
   emit("save", { managerInfo: managerInfo.value });

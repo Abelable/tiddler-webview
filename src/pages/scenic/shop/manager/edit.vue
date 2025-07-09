@@ -29,8 +29,8 @@ onMounted(async () => {
 
 const save = async ({ managerInfo }: { managerInfo: Omit<Manager, "id"> }) => {
   try {
-    const { roleId, senicIds } = managerInfo;
-    await editManager(shopId.value, managerId.value, roleId, senicIds);
+    const { roleId, scenicIds } = managerInfo;
+    await editManager(shopId.value, managerId.value, roleId, scenicIds);
     router.back();
   } catch (error) {
     showToast("保存失败，请重试");
