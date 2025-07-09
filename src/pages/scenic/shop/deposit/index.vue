@@ -15,11 +15,6 @@
       </div>
     </div>
 
-    <!-- <div class="btn-wrap">
-      <div class="pay-btn">点击补缴</div>
-      <div class="refund-btn">申请退款</div>
-    </div> -->
-
     <PullRefresh v-model="refreshing" @refresh="onRefresh">
       <List
         v-model="loading"
