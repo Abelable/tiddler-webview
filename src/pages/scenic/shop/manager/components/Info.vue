@@ -29,9 +29,9 @@
             <Icon name="arrow" />
           </div>
         </li>
-        <li class="form-item flex" v-if="managerInfo.roleId === 3">
-          <div class="name required">关联景点</div>
-          <div class="picker" @click="scenicPickerPopupVisible = true">
+        <li class="form-item row between" v-if="managerInfo.roleId === 3">
+          <div class="name">关联景点</div>
+          <div class="picker row" @click="scenicPickerPopupVisible = true">
             <div class="content" :class="{ active: scenicNames }">
               {{ scenicNames || "请选择关联景点" }}
             </div>
