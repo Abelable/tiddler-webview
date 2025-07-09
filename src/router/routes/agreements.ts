@@ -10,6 +10,22 @@ const agreements: Array<RouteRecordRaw> = [
     component: () => import("@/pages/agreements/userService.vue"),
   },
   {
+    path: "/agreements/merchant_service",
+    name: "withdraw_rules",
+    meta: {
+      title: "电商商家服务协议",
+    },
+    component: () => import("@/pages/agreements/merchantService.vue"),
+  },
+  {
+    path: "/agreements/scenic_merchant_service",
+    name: "withdraw_rules",
+    meta: {
+      title: "景区商家服务协议",
+    },
+    component: () => import("@/pages/agreements/scenicMerchantService.vue"),
+  },
+  {
     path: "/agreements/withdraw_rules",
     name: "withdraw_rules",
     meta: {
