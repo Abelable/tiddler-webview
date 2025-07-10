@@ -124,7 +124,10 @@ const deleteCurTicket = () =>
 
 const editTicket = () => {
   if (props.status === 2 || props.status === 3) {
-    router.push({ path: "/scenic/ticket/edit", query: { id: props.item.id } });
+    router.push({
+      path: "/scenic/shop/ticket/edit",
+      query: { id: props.item.id },
+    });
   }
 };
 </script>

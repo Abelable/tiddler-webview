@@ -348,11 +348,11 @@ const editScenic = (id: number) =>
       .inner {
         display: flex;
         padding: 0.24rem;
-
         .image {
           width: 1.8rem;
           height: 1.8rem;
           border-radius: 0.24rem;
+          object-fit: cover;
         }
         .content {
           display: flex;

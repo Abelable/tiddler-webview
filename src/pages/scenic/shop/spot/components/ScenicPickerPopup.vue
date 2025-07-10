@@ -26,7 +26,7 @@
             >
               <template #right-icon>
                 <Checkbox
-                  :name="item.name"
+                  :name="item.id"
                   :ref="(el: CheckboxInstance) => (optionRefs[index] = el)"
                   @click.stop
                 />
