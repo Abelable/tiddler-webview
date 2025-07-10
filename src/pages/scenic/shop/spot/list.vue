@@ -8,7 +8,7 @@
       @click="selectMenu(index)"
     >
       <div class="name">{{ item.name }}</div>
-      <div class="total">（{{ item.total }}）</div>
+      <div class="total" v-if="item.total">（{{ item.total }}）</div>
     </li>
   </ul>
 
@@ -151,22 +151,20 @@ import {
 import MultiPickerPopup from "@/components/MultiPickerPopup.vue";
 
 import { ref, reactive, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import dayjs from "dayjs";
 import {
   getScenicOptions,
-  getProviderScenicSpotList,
-  deleteProviderScenicSpot,
+  getShopScenicSpotList,
+  deleteShopScenicSpot,
   applyScenicSpot,
   getScenicListTotals,
 } from "./utils/api";
 
 import type { ApiOption as ScenicOption } from "@/utils/type";
-import type { ProviderScenicSpot } from "./utils/type";
+import type { ShopScenicSpot } from "./utils/type";
 
-const loading = ref(false);
-const finished = ref(false);
-const refreshing = ref(false);
+const shopId = ref(0);
 const menuList = ref([
   {
     name: "已过审",
@@ -185,14 +183,19 @@ const menuList = ref([
   },
 ]);
 const curMenuIndex = ref(0);
-const spotLists = reactive<ProviderScenicSpot[][]>([[], [], []]);
+const spotLists = reactive<ShopScenicSpot[][]>([[], [], []]);
 const pageList = [0, 0, 0];
+const loading = ref(false);
+const finished = ref(false);
+const refreshing = ref(false);
 const scenicOptions = ref<ScenicOption[]>([]);
 const scenicPickerPopupVisible = ref(false);
 
+const route = useRoute();
 const router = useRouter();
 
 onMounted(() => {
+  shopId.value = +(route.query.shop_id as string);
   setTotals();
 });
 
@@ -209,11 +212,11 @@ const selectMenu = (index: number) => {
 };
 
 const setScenicOptions = async () => {
-  scenicOptions.value = await getScenicOptions();
+  scenicOptions.value = await getScenicOptions(shopId.value);
 };
 
 const setTotals = async () => {
-  const totals = await getScenicListTotals();
+  const totals = await getScenicListTotals(shopId.value);
   totals.forEach((item, index) => (menuList.value[index].total = item));
 };
 
@@ -223,7 +226,8 @@ const setSpotLists = async (init = false) => {
     finished.value = false;
   }
   const list =
-    (await getProviderScenicSpotList(
+    (await getShopScenicSpotList(
+      shopId.value,
       menuList.value[curMenuIndex.value].status,
       ++pageList[curMenuIndex.value]
     )) || {};
@@ -247,7 +251,7 @@ const selectScenic = async ({
   selectedValues: number[];
 }) => {
   try {
-    await applyScenicSpot(selectedValues);
+    await applyScenicSpot(shopId.value, selectedValues);
     setTotals();
   } catch (error) {
     showToast((error as { code: number; message: string }).message);
@@ -259,7 +263,10 @@ const deleteSpot = (index: number) =>
   showConfirmDialog({ title: "确定删除景点吗？" })
     .then(async () => {
       try {
-        await deleteProviderScenicSpot(spotLists[curMenuIndex.value][index].id);
+        await deleteShopScenicSpot(
+          shopId.value,
+          spotLists[curMenuIndex.value][index].id
+        );
         spotLists[curMenuIndex.value].splice(index, 1);
         setTotals();
       } catch (error) {
