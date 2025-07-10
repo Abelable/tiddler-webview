@@ -4,8 +4,13 @@ import { cleanObject } from "@/utils";
 import type { ScenicInfo, ShopScenicSpot } from "./type";
 import type { ApiOption } from "@/utils/type";
 
-export const getScenicOptions = async (shopId: number): Promise<ApiOption[]> =>
-  await http("scenic/shop_options", { data: { shopId } });
+export const getScenicOptions = async (
+  shopId: number,
+  keywords: string
+): Promise<ApiOption[]> =>
+  await http("scenic/shop_options", {
+    data: cleanObject({ shopId, keywords }),
+  });
 
 export const getScenicListTotals = async (shopId: number): Promise<number[]> =>
   await http("scenic/shop/scenic/totals", { data: { shopId } });

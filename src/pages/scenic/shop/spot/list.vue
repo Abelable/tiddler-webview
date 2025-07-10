@@ -127,20 +127,16 @@
     </List>
   </PullRefresh>
 
-  <button class="add-btn" @click="showScenicPickerPopup">添加景点</button>
+  <button class="add-btn" @click="scenicPickerPopupVisible = true">
+    添加景点
+  </button>
 
-  <MultiPickerPopup
+  <ScenicPickerPopup
     :visible="scenicPickerPopupVisible"
-    :options="
-      scenicOptions.map((item) => ({ text: item.name, value: item.id }))
-    "
+    :shopId="shopId"
     @confirm="selectScenic"
     @cancel="scenicPickerPopupVisible = false"
-  >
-    <div class="no-tips row center" @click="createScenic">
-      没有找到您的景点？<span style="color: #1182fb">点此创建</span>
-    </div>
-  </MultiPickerPopup>
+  />
 </template>
 
 <script setup lang="ts">
@@ -154,20 +150,18 @@ import {
   Empty,
   showToast,
 } from "vant";
-import MultiPickerPopup from "@/components/MultiPickerPopup.vue";
+import ScenicPickerPopup from "./components/ScenicPickerPopup.vue";
 
 import { ref, reactive, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import dayjs from "dayjs";
 import {
-  getScenicOptions,
   getShopScenicSpotList,
   deleteShopScenicSpot,
   applyScenicSpot,
   getScenicListTotals,
 } from "./utils/api";
 
-import type { ApiOption as ScenicOption } from "@/utils/type";
 import type { ShopScenicSpot } from "./utils/type";
 
 const shopId = ref(0);
@@ -194,7 +188,6 @@ const pageList = [0, 0, 0];
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
-const scenicOptions = ref<ScenicOption[]>([]);
 const scenicPickerPopupVisible = ref(false);
 
 const route = useRoute();
@@ -215,10 +208,6 @@ const onLoadMore = () => setSpotLists();
 const selectMenu = (index: number) => {
   curMenuIndex.value = index;
   setSpotLists(true);
-};
-
-const setScenicOptions = async () => {
-  scenicOptions.value = await getScenicOptions(shopId.value);
 };
 
 const setTotals = async () => {
@@ -244,11 +233,6 @@ const setSpotLists = async (init = false) => {
   if (!list.length) finished.value = true;
   loading.value = false;
   refreshing.value = false;
-};
-
-const showScenicPickerPopup = async () => {
-  await setScenicOptions();
-  scenicPickerPopupVisible.value = true;
 };
 
 const selectScenic = async ({
@@ -282,7 +266,6 @@ const deleteSpot = (index: number) =>
     })
     .catch(() => true);
 
-const createScenic = () => router.push("/scenic/spot/create");
 const editScenic = (id: number) =>
   router.push({
     path: "/scenic/spot/edit",
@@ -428,5 +411,10 @@ const editScenic = (id: number) =>
   font-weight: 550;
   border-radius: 0.18rem;
   background: #212121;
+}
+</style>
+<style>
+.van-empty {
+  padding: 4.18rem 0;
 }
 </style>
