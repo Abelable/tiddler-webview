@@ -132,6 +132,7 @@
   </button>
 
   <ScenicPickerPopup
+    v-if="shopId"
     :visible="scenicPickerPopupVisible"
     :shopId="shopId"
     @confirm="selectScenic"

@@ -16,16 +16,6 @@
         />
       </form>
       <div class="scenic-options" v-if="scenicOptions.length">
-        <!-- <RadioGroup v-model="scenicId">
-          <Radio
-            v-for="(scenic, index) in scenicOptions"
-            :key="index"
-            :name="scenic.id"
-            label-position="left"
-          >
-            <div class="scenic-option">{{ scenic.name }}</div>
-          </Radio>
-        </RadioGroup> -->
         <CheckboxGroup class="options" v-model="selectedValues">
           <CellGroup>
             <Cell
