@@ -52,8 +52,8 @@ export const setCategoryOptions = async () => {
     disabled: false,
   }));
 };
-export const setScenicOptions = async () =>
-  (scenicOptions.value = await getScenicOptions());
+export const setScenicOptions = async (shopId: number) =>
+  (scenicOptions.value = await getScenicOptions(shopId));
 
 export const checkTicketInfo = (ticketInfo: FormTicketInfo) => {
   if (!ticketInfo.type) {
