@@ -34,7 +34,9 @@
           <div class="content">
             <div class="row">
               <div class="name">{{ item.scenicName }}</div>
-              <div class="level row">{{ item.scenicLevel }}</div>
+              <div class="level row" v-if="item.scenicLevel">
+                {{ item.scenicLevel }}
+              </div>
             </div>
             <div class="address row">
               <Icon name="location-o" size="0.24rem" />
@@ -64,7 +66,9 @@
           <div class="content">
             <div class="row">
               <div class="name">{{ item.scenicName }}</div>
-              <div class="level row">{{ item.scenicLevel }}</div>
+              <div class="level row" v-if="item.scenicLevel">
+                {{ item.scenicLevel }}
+              </div>
             </div>
             <div class="time">
               提交时间：{{
@@ -95,7 +99,9 @@
           <div class="content">
             <div class="row">
               <div class="name">{{ item.scenicName }}</div>
-              <div class="level row">{{ item.scenicLevel }}</div>
+              <div class="level row" v-if="item.scenicLevel">
+                {{ item.scenicLevel }}
+              </div>
             </div>
             <div class="failure-reason">
               未通过原因：{{ item.failureReason }}
