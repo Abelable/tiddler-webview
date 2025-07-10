@@ -453,6 +453,7 @@ import {
 import type { FormTicketInfo } from "../utils/type";
 
 const props = defineProps<{
+  shopId: number;
   editingTicketInfo?: FormTicketInfo;
 }>();
 const emit = defineEmits(["save"]);
@@ -494,7 +495,7 @@ watch(props, (props) => {
 });
 
 onMounted(() => {
-  setScenicOptions();
+  setScenicOptions(props.shopId);
   setCategoryOptions();
 });
 

@@ -132,7 +132,11 @@ const setTicketList = async (init = false) => {
   refreshing.value = false;
 };
 
-const addTicket = () => router.push("/scenic/shop/ticket/create");
+const addTicket = () =>
+  router.push({
+    path: "/scenic/shop/ticket/create",
+    query: { shop_id: shopId.value },
+  });
 </script>
 
 <style lang="scss" scoped>

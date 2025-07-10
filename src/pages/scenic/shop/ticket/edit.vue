@@ -1,5 +1,5 @@
 <template>
-  <Info :editingTicketInfo="editingTicketInfo" @save="save" />
+  <Info :shopId="shopId" :editingTicketInfo="editingTicketInfo" @save="save" />
 </template>
 
 <script setup lang="ts">
@@ -13,10 +13,12 @@ import type { TicketInfo, FormTicketInfo } from "./utils/type";
 const route = useRoute();
 const router = useRouter();
 
+const shopId = ref(0);
 const ticketId = ref(0);
 const editingTicketInfo = ref<FormTicketInfo>();
 
 onMounted(() => {
+  shopId.value = +(route.query.shop_id as string);
   setTicketInfo();
 });
 
@@ -48,7 +50,10 @@ const setTicketInfo = async () => {
 
 const save = async ({ ticketInfo }: { ticketInfo: Omit<TicketInfo, "id"> }) => {
   try {
-    await editTicket({ id: ticketId.value, ...ticketInfo });
+    await editTicket(shopId.value, {
+      id: ticketId.value,
+      ...ticketInfo,
+    });
     router.back();
   } catch (error) {
     showToast("上传失败，请重试");
