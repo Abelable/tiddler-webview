@@ -79,9 +79,9 @@ export const checkTicketInfo = (ticketInfo: FormTicketInfo) => {
   if (
     !ticketInfo.salesCommissionRate ||
     ticketInfo.salesCommissionRate < 10 ||
-    ticketInfo.salesCommissionRate > 70
+    ticketInfo.salesCommissionRate > 50
   ) {
-    showToast("请输入范围为10%~70%的佣金比例");
+    showToast("请输入范围为10%~50%的佣金比例");
     return false;
   }
   if (

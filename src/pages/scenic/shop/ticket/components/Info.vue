@@ -67,7 +67,7 @@
               placement="bottom-start"
               theme="dark"
             >
-              <div class="warning">范围：10%～70%</div>
+              <div class="warning">范围：10%～50%</div>
               <template #reference>
                 <Icon style="margin-left: 0.06rem" name="question-o" />
               </template>

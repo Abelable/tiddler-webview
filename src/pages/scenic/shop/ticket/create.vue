@@ -1,5 +1,5 @@
 <template>
-  <Info :shopId="shopId" @save="save" />
+  <Info v-if="shopId" :shopId="shopId" @save="save" />
 </template>
 
 <script setup lang="ts">

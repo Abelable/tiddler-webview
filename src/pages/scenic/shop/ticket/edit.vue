@@ -1,5 +1,10 @@
 <template>
-  <Info :shopId="shopId" :editingTicketInfo="editingTicketInfo" @save="save" />
+  <Info
+    v-if="shopId"
+    :shopId="shopId"
+    :editingTicketInfo="editingTicketInfo"
+    @save="save"
+  />
 </template>
 
 <script setup lang="ts">
