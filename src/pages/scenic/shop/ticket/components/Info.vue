@@ -146,15 +146,6 @@
                 placeholder="请输入价格"
               />
             </li>
-            <li class="form-item flex">
-              <div class="name">库存</div>
-              <input
-                class="input"
-                v-model="_item.stock"
-                type="number"
-                placeholder="请输入库存"
-              />
-            </li>
           </ul>
           <template #right>
             <Button
@@ -583,7 +574,6 @@ const addPriceItem = (index: number) => {
     startDate: undefined,
     endDate: undefined,
     price: undefined,
-    stock: undefined,
   });
   dateRangePickerPopupVisible.value = false;
 };

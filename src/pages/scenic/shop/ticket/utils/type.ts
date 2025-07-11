@@ -53,7 +53,6 @@ interface PriceItem {
   startDate: number | undefined;
   endDate: number | undefined;
   price: number | undefined;
-  stock: number | undefined;
 }
 interface FormSpecItem {
   categoryId: number;
