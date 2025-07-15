@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" v-if="mounted">
     <div class="settle-in" v-if="!statusInfo">
       <div class="home" v-if="step === 0">
         <div class="main">
@@ -712,6 +712,27 @@ const back = () => {
     font-weight: 550;
     border-radius: 0.18rem;
   }
+  .btn-wrap {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding: 0 0.32rem 0.48rem;
+    width: 100%;
+    .confirm {
+      margin-top: 1.6rem;
+      color: #fff;
+      background: #e6e6e6;
+      &.active {
+        background: #212121;
+      }
+    }
+    .protocol-tips {
+      display: flex;
+      justify-content: center;
+      margin-top: 0.24rem;
+      font-size: 0.24rem;
+    }
+  }
   .settle-in {
     .home {
       position: relative;
@@ -955,25 +976,10 @@ const back = () => {
         }
       }
     }
-    .payment {
-      height: 100%;
-      overflow-y: scroll;
-      .title {
-        color: #333;
-        font-size: 0.36rem;
-        font-weight: 550;
-      }
-      .pay-amount {
-        margin-top: 0.12rem;
-        color: #333;
-        font-size: 0.3rem;
-      }
-      .agreement {
-        margin-top: 0.24rem;
-        color: #666;
-        font-size: 0.26rem;
-        line-height: 1.6;
-      }
+    .pay-amount {
+      margin-top: 0.12rem;
+      color: #333;
+      font-size: 0.3rem;
     }
   }
 }
