@@ -5,10 +5,10 @@ import type { ApiOption } from "@/utils/type";
 import type { RoomListItem, RoomInfo } from "./type";
 
 export const getHotelOptions = async (): Promise<ApiOption[]> =>
-  await http("hotel/provider/hotel_options");
+  await http("hotel/shop/hotel_options");
 
 export const getRoomTotals = async (): Promise<number[]> =>
-  await http("hotel/provider/room/totals");
+  await http("hotel/shop/room/totals");
 
 export const getRoomList = async (
   status: number,
@@ -16,7 +16,7 @@ export const getRoomList = async (
   limit = 10
 ): Promise<RoomListItem[]> => {
   const { list = [] } =
-    (await http("hotel/provider/room/list", {
+    (await http("hotel/shop/room/list", {
       data: { status, page, limit },
     })) || {};
   return list;
@@ -28,25 +28,25 @@ export const getRoomTypeOptions = async (
   await http("hotel/room/type_options", { data: { hotelId } });
 
 export const offShelfRoom = async (id: number) =>
-  await http("hotel/provider/room/down", { method: "POST", data: { id } });
+  await http("hotel/shop/room/down", { method: "POST", data: { id } });
 
 export const onShelfRoom = async (id: number) =>
-  await http("hotel/provider/room/up", { method: "POST", data: { id } });
+  await http("hotel/shop/room/up", { method: "POST", data: { id } });
 
 export const deleteRoom = async (id: number) =>
-  await http("hotel/provider/room/delete", { method: "POST", data: { id } });
+  await http("hotel/shop/room/delete", { method: "POST", data: { id } });
 
 export const getRoomInfo = async (id: number): Promise<RoomInfo> =>
-  await http("hotel/provider/room/detail", { data: { id } });
+  await http("hotel/shop/room/detail", { data: { id } });
 
 export const createRoom = async (roomInfo: Partial<Omit<RoomInfo, "id">>) =>
-  await http("hotel/provider/room/add", {
+  await http("hotel/shop/room/add", {
     method: "POST",
     data: cleanObject(roomInfo),
   });
 
 export const editRoom = async (roomInfo: Partial<RoomInfo>) =>
-  await http("hotel/provider/room/edit", {
+  await http("hotel/shop/room/edit", {
     method: "POST",
     data: cleanObject(roomInfo),
   });

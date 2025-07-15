@@ -58,7 +58,7 @@ const hotel: Array<RouteRecordRaw> = [
     component: () => import("@/pages/hotel/shop/manager/edit.vue"),
   },
   {
-    path: "/hotel/list",
+    path: "/hotel/shop/hotel/list",
     name: "hotel_list",
     meta: {
       title: "酒店列表",
@@ -66,7 +66,7 @@ const hotel: Array<RouteRecordRaw> = [
     component: () => import("@/pages/hotel/shop/hotel/list.vue"),
   },
   {
-    path: "/hotel/create",
+    path: "/hotel/shop/hotel/create",
     name: "hotel_create",
     meta: {
       title: "新增酒店",
@@ -74,7 +74,7 @@ const hotel: Array<RouteRecordRaw> = [
     component: () => import("@/pages/hotel/shop/hotel/create.vue"),
   },
   {
-    path: "/hotel/edit",
+    path: "/hotel/shop/hotel/edit",
     name: "hotel_edit",
     meta: {
       title: "编辑酒店",
@@ -82,7 +82,7 @@ const hotel: Array<RouteRecordRaw> = [
     component: () => import("@/pages/hotel/shop/hotel/edit.vue"),
   },
   {
-    path: "/hotel/room/list",
+    path: "/hotel/shop/room/list",
     name: "hotel_room_list",
     meta: {
       title: "房间列表",
@@ -90,7 +90,7 @@ const hotel: Array<RouteRecordRaw> = [
     component: () => import("@/pages/hotel/shop/room/list.vue"),
   },
   {
-    path: "/hotel/room/create",
+    path: "/hotel/shop/room/create",
     name: "hotel_room_create",
     meta: {
       title: "新增房间",
@@ -98,7 +98,7 @@ const hotel: Array<RouteRecordRaw> = [
     component: () => import("@/pages/hotel/shop/room/create.vue"),
   },
   {
-    path: "/hotel/room/edit",
+    path: "/hotel/shop/room/edit",
     name: "hotel_room_edit",
     meta: {
       title: "编辑房间",

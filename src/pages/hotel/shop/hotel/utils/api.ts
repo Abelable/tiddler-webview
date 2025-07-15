@@ -5,10 +5,10 @@ import type { Hotel, ProviderHotel } from "./type";
 import type { ApiOption } from "@/utils/type";
 
 export const getHotelOptions = async (): Promise<ApiOption[]> =>
-  await http("hotel/provider_options");
+  await http("hotel/shop_options");
 
 export const getHotelListTotals = async (): Promise<number[]> =>
-  await http("hotel/provider/hotel/totals");
+  await http("hotel/shop/hotel/totals");
 
 export const getProviderHotelList = async (
   status: number,
@@ -16,20 +16,20 @@ export const getProviderHotelList = async (
   limit = 10
 ): Promise<ProviderHotel[]> => {
   const { list = [] } =
-    (await http("hotel/provider/hotel/list", {
+    (await http("hotel/shop/hotel/list", {
       data: { status, page, limit },
     })) || {};
   return list;
 };
 
 export const applyHotel = async (hotelIds: number[]) =>
-  await http("hotel/provider/hotel/apply", {
+  await http("hotel/shop/hotel/apply", {
     method: "POST",
     data: { hotelIds },
   });
 
 export const deleteProviderHotel = async (id: number) =>
-  await http("hotel/provider/hotel/delete", { method: "POST", data: { id } });
+  await http("hotel/shop/hotel/delete", { method: "POST", data: { id } });
 
 export const getHotelCategoryOptions = async (): Promise<ApiOption[]> =>
   await http("hotel/category_options");
