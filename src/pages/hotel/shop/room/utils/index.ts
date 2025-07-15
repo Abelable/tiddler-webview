@@ -22,8 +22,8 @@ export const initialRoomInfo = {
 export const setTypeOptions = async (hotelId: number) => {
   typeOptions.value = await getRoomTypeOptions(hotelId);
 };
-export const setHotelOptions = async () =>
-  (hotelOptions.value = await getHotelOptions());
+export const setHotelOptions = async (shopId: number) =>
+  (hotelOptions.value = await getHotelOptions(shopId));
 
 export const checkRoomInfo = (roomInfo: FormRoomInfo) => {
   if (!roomInfo.hotelId) {

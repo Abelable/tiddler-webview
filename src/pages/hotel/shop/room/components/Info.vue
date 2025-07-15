@@ -201,6 +201,7 @@ import {
 import type { FormRoomInfo } from "../utils/type";
 
 const props = defineProps<{
+  shopId: number;
   editingRoomInfo?: FormRoomInfo;
 }>();
 const emit = defineEmits(["save"]);
@@ -231,7 +232,7 @@ watch(props, (props) => {
 });
 
 onMounted(() => {
-  setHotelOptions();
+  setHotelOptions(props.shopId);
 });
 
 const setHotelId = ({ selectedValues }: { selectedValues: number[] }) => {

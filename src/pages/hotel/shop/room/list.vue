@@ -8,7 +8,7 @@
       @click="selectMenu(index)"
     >
       <div class="name">{{ item.name }}</div>
-      <div class="total">（{{ item.total }}）</div>
+      <div class="total" v-if="item.total">（{{ item.total }}）</div>
     </li>
   </ul>
 
@@ -18,6 +18,7 @@
     </div>
     <List
       class="room-list"
+      v-if="shopId"
       v-model="loading"
       :finished="finished"
       @load="onLoadMore"
@@ -25,6 +26,7 @@
     >
       <RoomItem
         v-for="item in roomLists[curMenuIndex]"
+        :shopId="shopId"
         :key="item.id"
         :item="item"
         :status="menuList[curMenuIndex].status"
@@ -47,17 +49,16 @@ import { PullRefresh, List, Empty } from "vant";
 import RoomItem from "./components/RoomItem.vue";
 
 import { ref, reactive, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { getRoomTotals, getRoomList } from "./utils/api";
 import { hotelOptions, setHotelOptions } from "./utils/index";
 
 import type { RoomListItem } from "./utils/type";
 
 const router = useRouter();
+const route = useRoute();
 
-const loading = ref(false);
-const finished = ref(false);
-const refreshing = ref(false);
+const shopId = ref(0);
 const menuList = ref([
   {
     name: "出售中",
@@ -83,9 +84,13 @@ const menuList = ref([
 const curMenuIndex = ref(0);
 const roomLists = reactive<RoomListItem[][]>([[], [], [], []]);
 const pageList = [0, 0, 0, 0];
+const loading = ref(false);
+const finished = ref(false);
+const refreshing = ref(false);
 
 onMounted(async () => {
-  setHotelOptions();
+  shopId.value = +(route.query.shop_id as string);
+  setHotelOptions(shopId.value);
   setTotals();
   setRoomList(true);
 });
@@ -103,7 +108,7 @@ const selectMenu = (index: number) => {
 };
 
 const setTotals = async () => {
-  const totals = await getRoomTotals();
+  const totals = await getRoomTotals(shopId.value);
   totals.forEach((item, index) => (menuList.value[index].total = item));
 };
 
@@ -114,6 +119,7 @@ const setRoomList = async (init = false) => {
   }
   const list =
     (await getRoomList(
+      shopId.value,
       menuList.value[curMenuIndex.value].status,
       ++pageList[curMenuIndex.value]
     )) || {};
@@ -126,7 +132,11 @@ const setRoomList = async (init = false) => {
   refreshing.value = false;
 };
 
-const addRoom = () => router.push("/hotel/room/create");
+const addRoom = () =>
+  router.push({
+    path: "/hotel/shop/room/create",
+    query: { shop_id: shopId.value },
+  });
 </script>
 
 <style lang="scss" scoped>

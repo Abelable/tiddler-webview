@@ -1,5 +1,10 @@
 <template>
-  <Info :editingRoomInfo="editingRoomInfo" @save="save" />
+  <Info
+    v-if="shopId"
+    :shopId="shopId"
+    :editingRoomInfo="editingRoomInfo"
+    @save="save"
+  />
 </template>
 
 <script setup lang="ts">
@@ -13,10 +18,12 @@ import type { RoomInfo, FormRoomInfo } from "./utils/type";
 const route = useRoute();
 const router = useRouter();
 
+const shopId = ref(0);
 const roomId = ref(0);
 const editingRoomInfo = ref<FormRoomInfo>();
 
 onMounted(() => {
+  shopId.value = +(route.query.shop_id as string);
   setRoomInfo();
 });
 
@@ -30,7 +37,7 @@ const setRoomInfo = async () => {
 
 const save = async ({ roomInfo }: { roomInfo: Omit<RoomInfo, "id"> }) => {
   try {
-    await editRoom({ id: roomId.value, ...roomInfo });
+    await editRoom(shopId.value, { id: roomId.value, ...roomInfo });
     router.back();
   } catch (error) {
     showToast("上传失败，请重试");

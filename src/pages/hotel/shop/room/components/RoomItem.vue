@@ -79,6 +79,7 @@ import type { RoomListItem } from "../utils/type";
 const router = useRouter();
 
 const props = defineProps<{
+  shopId: number;
   status: number;
   item: RoomListItem;
   hotelOptions: ApiOption[];
@@ -89,7 +90,7 @@ const offShelf = () =>
   showConfirmDialog({ title: "确定下架该房间吗？" })
     .then(async () => {
       try {
-        await offShelfRoom(props.item.id);
+        await offShelfRoom(props.shopId, props.item.id);
         emit("refresh");
       } catch (error) {
         showToast("下架失败，请重试");
@@ -100,7 +101,7 @@ const offShelf = () =>
 
 const onShelf = async () => {
   try {
-    await onShelfRoom(props.item.id);
+    await onShelfRoom(props.shopId, props.item.id);
     emit("refresh");
   } catch (error) {
     showToast("上架失败，请重试");
@@ -112,7 +113,7 @@ const deleteCurRoom = () =>
   showConfirmDialog({ title: "确定删除该房间吗？" })
     .then(async () => {
       try {
-        await deleteRoom(props.item.id);
+        await deleteRoom(props.shopId, props.item.id);
         emit("refresh");
       } catch (error) {
         showToast("删除失败，请重试");
@@ -123,7 +124,10 @@ const deleteCurRoom = () =>
 
 const editRoom = () => {
   if (props.status === 2 || props.status === 3) {
-    router.push({ path: "/hotel/room/edit", query: { id: props.item.id } });
+    router.push({
+      path: "/hotel/shop/room/edit",
+      query: { shop_id: props.shopId, id: props.item.id },
+    });
   }
 };
 </script>
