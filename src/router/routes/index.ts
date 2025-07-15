@@ -1,5 +1,5 @@
 import { RouteRecordRaw } from "vue-router";
-import agreements from "./agreements";
+import protocol from "./protocol";
 import goods from "./goods";
 import scenic from "./scenic";
 import hotel from "./hotel";
@@ -23,7 +23,7 @@ const routes: Array<RouteRecordRaw> = [
     },
     component: () => import("@/pages/gift-goods/index.vue"),
   },
-  ...agreements,
+  ...protocol,
   ...goods,
   ...scenic,
   ...hotel,
