@@ -24,9 +24,9 @@ export interface MerchantInfo {
 }
 
 export interface CreateMerchantInfo
-  extends Omit<MerchantInfo, "shopLogo" | "shopBg"> {
-  shopLogo: string;
+  extends Omit<MerchantInfo, "shopBg" | "shopLogo"> {
   shopBg?: string;
+  shopLogo: string;
 }
 
 export interface ShopTypeOption {

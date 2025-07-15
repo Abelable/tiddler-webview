@@ -16,7 +16,7 @@
             <Checkbox v-model="agreementsChecked" icon-size="16px" />
             <div style="margin-left: 0.1rem">
               我已阅读并同意
-              <span style="color: #1b89fa" @click="checkAgreement"
+              <span style="color: #1b89fa" @click="checkProtocol"
                 >《小鱼游景区服务商服务协议》</span
               >
             </div>
@@ -74,17 +74,6 @@
               >
                 {{ merchantInfo.regionDesc || "请选择省、市、区" }}
               </div>
-              <Popup
-                v-model:show="areaPickerPopupVisible"
-                position="bottom"
-                round
-              >
-                <Area
-                  :area-list="areaList"
-                  @confirm="areaConfirm"
-                  @cancel="areaPickerPopupVisible = false"
-                />
-              </Popup>
             </div>
             <div class="form-item">
               <div class="form-title">公司地址详情</div>
@@ -385,7 +374,7 @@
             <Checkbox v-model="bondAgreementsChecked" icon-size="16px" />
             <div style="margin-left: 0.1rem">
               我已阅读并同意
-              <span style="color: #1b89fa" @click="checkBondAgreement"
+              <span style="color: #1b89fa" @click="checkDepositProtocol"
                 >《小鱼游景区服务商保证金协议》</span
               >
             </div>
@@ -401,15 +390,20 @@
     @confirm="typeConfirm"
     @cancel="typePickerPopupVisible = false"
   />
+  <AreaPickerPopup
+    :visible="areaPickerPopupVisible"
+    @confirm="areaConfirm"
+    @cancel="areaPickerPopupVisible = false"
+  />
 </template>
 
 <script setup lang="ts">
-import { Checkbox, Area, Popup, Uploader, Loading, showToast } from "vant";
+import { Checkbox, Uploader, Loading, showToast } from "vant";
 import PickerPopup from "@/components/PickerPopup.vue";
+import AreaPickerPopup from "@/components/AreaPickerPopup.vue";
 
 import { ref, onMounted, reactive, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
-import { areaList } from "@vant/area-data";
 import { upload, uploadFile } from "@/utils/upload";
 import {
   uploadMerchantInfo,
@@ -675,9 +669,9 @@ const typeConfirm = ({
   typePickerPopupVisible.value = false;
 };
 
-const checkAgreement = () => router.push("/scenic/agreements/merchant_service");
+const checkProtocol = () => router.push("/scenic/agreements/merchant_service");
 
-const checkBondAgreement = () =>
+const checkDepositProtocol = () =>
   router.push("/shop/agreements/merchant_service");
 
 const pay = async () => {

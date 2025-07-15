@@ -31,7 +31,7 @@
               <Checkbox v-model="agreementsChecked" icon-size="16px" />
               <div style="margin-left: 0.1rem">
                 我已阅读并同意
-                <span style="color: #1b89fa" @click="checkAgreement"
+                <span style="color: #1b89fa" @click="checkProtocol"
                   >《小鱼游电商商家服务协议》</span
                 >
               </div>
@@ -557,7 +557,7 @@
             <Checkbox v-model="bondAgreementsChecked" icon-size="16px" />
             <div style="margin-left: 0.1rem">
               我已阅读并同意
-              <span style="color: #1b89fa" @click="checkBondAgreement"
+              <span style="color: #1b89fa" @click="checkDepositProtocol"
                 >《小鱼游电商商家保证金协议》</span
               >
             </div>
@@ -920,9 +920,9 @@ const categoryConfirm = ({
   categoryPickerPopupVisible.value = false;
 };
 
-const checkAgreement = () => router.push("/shop/agreements/merchant_service");
+const checkProtocol = () => router.push("/protocol/merchant");
 
-const checkBondAgreement = () =>
+const checkDepositProtocol = () =>
   router.push("/shop/agreements/merchant_service");
 
 const pay = async () => {

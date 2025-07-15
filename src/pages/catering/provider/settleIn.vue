@@ -31,7 +31,7 @@
               <Checkbox v-model="agreementsChecked" icon-size="16px" />
               <div style="margin-left: 0.1rem">
                 我已阅读并同意
-                <span style="color: #1b89fa" @click="checkAgreement"
+                <span style="color: #1b89fa" @click="checkProtocol"
                   >《小鱼游餐饮商家服务协议》</span
                 >
               </div>
@@ -534,7 +534,7 @@ const uploadHygienicLicensePhoto = (photo: string) => {
   providerInfo.hygienicLicensePhoto = photo;
 };
 
-const checkAgreement = () => router.push("/shop/agreements/provider_service");
+const checkProtocol = () => router.push("/shop/agreements/provider_service");
 
 const pay = async () => {
   if (statusInfo.value) {

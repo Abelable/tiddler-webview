@@ -1,17 +1,17 @@
 import { http } from "@/utils/http";
-import { CreateProviderInfo, ProviderStatusInfo } from "./type";
+import { CreateMerchantInfo, MerchantStatusInfo } from "./type";
 
-export const uploadProviderInfo = async (info: CreateProviderInfo) =>
-  await http("hotel/provider/settle_in", { method: "POST", data: info });
+export const uploadMerchantInfo = async (info: CreateMerchantInfo) =>
+  await http("hotel/merchant/settle_in", { method: "POST", data: info });
 
-export const getProviderStatusInfo = async (): Promise<ProviderStatusInfo> =>
-  await http("hotel/provider/status");
+export const getMerchantStatusInfo = async (): Promise<MerchantStatusInfo> =>
+  await http("hotel/merchant/status");
 
-export const payProviderDeposit = async (orderId: number) =>
-  await http("hotel/provider/pay_deposit", {
+export const payMerchantDeposit = async (orderId: number) =>
+  await http("hotel/merchant/pay_deposit", {
     method: "POST",
     data: { orderId },
   });
 
-export const deleteProvider = async () =>
-  await http("hotel/provider/delete", { method: "POST" });
+export const deleteMerchant = async () =>
+  await http("hotel/merchant/delete", { method: "POST" });
