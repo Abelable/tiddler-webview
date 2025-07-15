@@ -30,10 +30,10 @@
           </div>
         </li>
         <li class="form-item row between" v-if="managerInfo.roleId === 3">
-          <div class="name">关联景点</div>
+          <div class="name">关联酒店</div>
           <div class="picker row" @click="hotelPickerPopupVisible = true">
             <div class="content" :class="{ active: hotelNames }">
-              {{ hotelNames || "请选择关联景点" }}
+              {{ hotelNames || "请选择关联酒店" }}
             </div>
             <Icon name="arrow" />
           </div>
@@ -141,7 +141,7 @@ const save = () => {
     return;
   }
   if (roleId === 3 && !hotelIds.length) {
-    showToast("请选择关联景点");
+    showToast("请选择关联酒店");
     return;
   }
   emit("save", { managerInfo: managerInfo.value });
