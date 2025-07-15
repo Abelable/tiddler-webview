@@ -3,16 +3,16 @@
     <div class="inner" @click="editRoom">
       <div class="row">
         <div class="name">{{ item.typeName }}</div>
+        <div class="status">
+          {{ item.breakfastNum ? `${item.breakfastNum}份早餐` : "无早餐" }}
+        </div>
+        <div class="status">{{ item.guestNum }}人入住</div>
         <div
           class="status"
           :class="{ valid: item.cancellable, unvalid: !item.cancellable }"
         >
           {{ item.cancellable ? "免费取消" : "不可取消" }}
         </div>
-        <div class="status">
-          {{ item.breakfastNum ? `${item.breakfastNum}份早餐` : "无早餐" }}
-        </div>
-        <div class="status">{{ item.guestNum }}人入住</div>
       </div>
       <div class="hotel-list row">
         <div class="label">关联酒店：</div>
