@@ -47,7 +47,7 @@
         <template #right>
           <Button
             class="delete-btn"
-            @click.stop="deleteSpot(index)"
+            @click.stop="deleteScenic(index)"
             square
             text="删除"
             type="danger"
@@ -80,7 +80,7 @@
         <template #right>
           <Button
             class="delete-btn"
-            @click.stop="deleteSpot(index)"
+            @click.stop="deleteScenic(index)"
             square
             text="删除"
             type="danger"
@@ -111,7 +111,7 @@
         <template #right>
           <Button
             class="delete-btn"
-            @click.stop="deleteSpot(index)"
+            @click.stop="deleteScenic(index)"
             square
             text="删除"
             type="danger"
@@ -250,7 +250,7 @@ const selectScenic = async ({
   scenicPickerPopupVisible.value = false;
 };
 
-const deleteSpot = (index: number) =>
+const deleteScenic = (index: number) =>
   showConfirmDialog({ title: "确定删除景点吗？" })
     .then(async () => {
       try {
@@ -269,7 +269,7 @@ const deleteSpot = (index: number) =>
 
 const editScenic = (id: number) =>
   router.push({
-    path: "/scenic/spot/edit",
+    path: "/scenic/shop/spot/edit",
     query: { id },
   });
 </script>

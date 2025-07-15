@@ -8,7 +8,7 @@
       @click="selectMenu(index)"
     >
       <div class="name">{{ item.name }}</div>
-      <div class="total">（{{ item.total }}）</div>
+      <div class="total" v-if="item.total">（{{ item.total }}）</div>
     </li>
   </ul>
 
@@ -127,18 +127,17 @@
     </List>
   </PullRefresh>
 
-  <button class="add-btn" @click="showHotelPickerPopup">添加酒店</button>
+  <button class="add-btn" @click="hotelPickerPopupVisible = true">
+    添加酒店
+  </button>
 
-  <MultiPickerPopup
+  <HotelPickerPopup
+    v-if="shopId"
     :visible="hotelPickerPopupVisible"
-    :options="hotelOptions.map((item) => ({ text: item.name, value: item.id }))"
+    :shopId="shopId"
     @confirm="selectHotel"
     @cancel="hotelPickerPopupVisible = false"
-  >
-    <div class="no-tips row center" @click="createHotel">
-      没有找到您的酒店？<span style="color: #1182fb">点此创建</span>
-    </div>
-  </MultiPickerPopup>
+  />
 </template>
 
 <script setup lang="ts">
@@ -152,25 +151,21 @@ import {
   Empty,
   showToast,
 } from "vant";
-import MultiPickerPopup from "@/components/MultiPickerPopup.vue";
+import HotelPickerPopup from "./components/HotelPickerPopup.vue";
 
 import { ref, reactive, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import dayjs from "dayjs";
 import {
-  getHotelOptions,
-  getProviderHotelList,
-  deleteProviderHotel,
+  getShopHotelList,
+  deleteShopHotel,
   applyHotel,
   getHotelListTotals,
 } from "./utils/api";
 
-import type { ApiOption as HotelOption } from "@/utils/type";
 import type { ProviderHotel } from "./utils/type";
 
-const loading = ref(false);
-const finished = ref(false);
-const refreshing = ref(false);
+const shopId = ref(0);
 const menuList = ref([
   {
     name: "已过审",
@@ -191,12 +186,16 @@ const menuList = ref([
 const curMenuIndex = ref(0);
 const hotelLists = reactive<ProviderHotel[][]>([[], [], []]);
 const pageList = [0, 0, 0];
-const hotelOptions = ref<HotelOption[]>([]);
+const loading = ref(false);
+const finished = ref(false);
+const refreshing = ref(false);
 const hotelPickerPopupVisible = ref(false);
 
+const route = useRoute();
 const router = useRouter();
 
 onMounted(() => {
+  shopId.value = +(route.query.shop_id as string);
   setTotals();
 });
 
@@ -212,12 +211,8 @@ const selectMenu = (index: number) => {
   setHotelLists(true);
 };
 
-const setHotelOptions = async () => {
-  hotelOptions.value = await getHotelOptions();
-};
-
 const setTotals = async () => {
-  const totals = await getHotelListTotals();
+  const totals = await getHotelListTotals(shopId.value);
   totals.forEach((item, index) => (menuList.value[index].total = item));
 };
 
@@ -227,7 +222,8 @@ const setHotelLists = async (init = false) => {
     finished.value = false;
   }
   const list =
-    (await getProviderHotelList(
+    (await getShopHotelList(
+      shopId.value,
       menuList.value[curMenuIndex.value].status,
       ++pageList[curMenuIndex.value]
     )) || {};
@@ -240,18 +236,13 @@ const setHotelLists = async (init = false) => {
   refreshing.value = false;
 };
 
-const showHotelPickerPopup = async () => {
-  await setHotelOptions();
-  hotelPickerPopupVisible.value = true;
-};
-
 const selectHotel = async ({
   selectedValues,
 }: {
   selectedValues: number[];
 }) => {
   try {
-    await applyHotel(selectedValues);
+    await applyHotel(shopId.value, selectedValues);
     setTotals();
   } catch (error) {
     showToast((error as { code: number; message: string }).message);
@@ -263,7 +254,10 @@ const deleteHotel = (index: number) =>
   showConfirmDialog({ title: "确定删除酒店吗？" })
     .then(async () => {
       try {
-        await deleteProviderHotel(hotelLists[curMenuIndex.value][index].id);
+        await deleteShopHotel(
+          shopId.value,
+          hotelLists[curMenuIndex.value][index].id
+        );
         hotelLists[curMenuIndex.value].splice(index, 1);
         setTotals();
       } catch (error) {
@@ -273,10 +267,9 @@ const deleteHotel = (index: number) =>
     })
     .catch(() => true);
 
-const createHotel = () => router.push("/hotel/create");
 const editHotel = (id: number) =>
   router.push({
-    path: "/hotel/edit",
+    path: "/hotel/shop/hotel/edit",
     query: { id },
   });
 </script>
@@ -372,6 +365,11 @@ const editHotel = (id: number) =>
             color: #333;
             font-size: 0.28rem;
             font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
           }
           .level {
             margin-left: 0.08rem;
@@ -381,6 +379,7 @@ const editHotel = (id: number) =>
             font-size: 0.2rem;
             font-weight: bold;
             line-height: 1;
+            white-space: nowrap;
             border-radius: 0.08rem;
             background: #d1f7e5;
           }

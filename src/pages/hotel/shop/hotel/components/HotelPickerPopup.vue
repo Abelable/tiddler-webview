@@ -7,19 +7,19 @@
     safe-area-inset-bottom
   >
     <div class="container">
-      <div class="title">选择景点</div>
+      <div class="title">选择酒店</div>
       <form action="/">
         <Search
           v-model="keywords"
-          @search="setScenicOptions"
-          placeholder="搜索景点"
+          @search="setHotelOptions"
+          placeholder="搜索酒店"
         />
       </form>
-      <div class="scenic-options" v-if="scenicOptions.length">
+      <div class="hotel-options" v-if="hotelOptions.length">
         <CheckboxGroup class="options" v-model="selectedValues">
           <CellGroup>
             <Cell
-              v-for="(item, index) in scenicOptions"
+              v-for="(item, index) in hotelOptions"
               :key="item.id"
               :title="item.name"
               @click="toggleSelected(index)"
@@ -36,12 +36,12 @@
         </CheckboxGroup>
       </div>
       <Empty
-        v-if="!scenicOptions.length"
+        v-if="!hotelOptions.length"
         image="https://static.tiddler.cn/mp/default_illus/empty.png"
-        description="未搜索到相关景点"
+        description="未搜索到相关酒店"
       />
-      <div class="no-tips row center" @click="createScenic">
-        没有找到您的景点？<span style="color: #1182fb">点此创建</span>
+      <div class="no-tips row center" @click="createHotel">
+        没有找到您的酒店？<span style="color: #1182fb">点此创建</span>
       </div>
       <div class="btns-wrap row">
         <div class="cancel-btn row center" @click="cancel">取消</div>
@@ -70,7 +70,7 @@ import {
 
 import { onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
-import { getScenicOptions } from "../utils/api";
+import { getHotelOptions } from "../utils/api";
 
 import type { CheckboxInstance } from "vant";
 import type { ApiOption } from "@/utils/type";
@@ -80,24 +80,24 @@ const emit = defineEmits(["confirm", "cancel"]);
 
 const optionRefs = ref<CheckboxInstance[]>([]);
 const keywords = ref("");
-const scenicOptions = ref<ApiOption[]>([]);
-const scenicId = ref(0);
+const hotelOptions = ref<ApiOption[]>([]);
+const hotelId = ref(0);
 const selectedValues = ref([]);
 
 const router = useRouter();
 
 watch(props, (props) => {
   if (!props.visible) {
-    scenicId.value = 0;
+    hotelId.value = 0;
   }
 });
 
 onMounted(() => {
-  setScenicOptions();
+  setHotelOptions();
 });
 
-const setScenicOptions = async () => {
-  scenicOptions.value = await getScenicOptions(props.shopId, keywords.value);
+const setHotelOptions = async () => {
+  hotelOptions.value = await getHotelOptions(props.shopId, keywords.value);
 };
 
 const toggleSelected = (index: number) => {
@@ -115,7 +115,7 @@ const cancel = () => {
   emit("cancel");
 };
 
-const createScenic = () => router.push("/scenic/shop/spot/create");
+const createHotel = () => router.push("/hotel/shop/hotel/create");
 </script>
 
 <style lang="scss" scoped>
@@ -136,11 +136,11 @@ const createScenic = () => router.push("/scenic/shop/spot/create");
     font-weight: 500;
     line-height: 1;
   }
-  .scenic-options {
+  .hotel-options {
     margin-top: 0.2rem;
     height: 6.8rem;
     overflow-y: scroll;
-    .scenic-option {
+    .hotel-option {
       display: flex;
       align-items: center;
       padding: 0.18rem 0;

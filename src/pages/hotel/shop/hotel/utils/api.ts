@@ -4,32 +4,39 @@ import { cleanObject } from "@/utils";
 import type { Hotel, ProviderHotel } from "./type";
 import type { ApiOption } from "@/utils/type";
 
-export const getHotelOptions = async (): Promise<ApiOption[]> =>
-  await http("hotel/shop_options");
+export const getHotelOptions = async (
+  shopId: number,
+  keywords: string
+): Promise<ApiOption[]> =>
+  await http("hotel/shop_options", { data: cleanObject({ shopId, keywords }) });
 
-export const getHotelListTotals = async (): Promise<number[]> =>
-  await http("hotel/shop/hotel/totals");
+export const getHotelListTotals = async (shopId: number): Promise<number[]> =>
+  await http("hotel/shop/hotel/totals", { data: { shopId } });
 
-export const getProviderHotelList = async (
+export const getShopHotelList = async (
+  shopId: number,
   status: number,
   page: number,
   limit = 10
 ): Promise<ProviderHotel[]> => {
   const { list = [] } =
     (await http("hotel/shop/hotel/list", {
-      data: { status, page, limit },
+      data: { shopId, status, page, limit },
     })) || {};
   return list;
 };
 
-export const applyHotel = async (hotelIds: number[]) =>
+export const applyHotel = async (shopId: number, hotelIds: number[]) =>
   await http("hotel/shop/hotel/apply", {
     method: "POST",
-    data: { hotelIds },
+    data: { shopId, hotelIds },
   });
 
-export const deleteProviderHotel = async (id: number) =>
-  await http("hotel/shop/hotel/delete", { method: "POST", data: { id } });
+export const deleteShopHotel = async (shopId: number, id: number) =>
+  await http("hotel/shop/hotel/delete", {
+    method: "POST",
+    data: { shopId, id },
+  });
 
 export const getHotelCategoryOptions = async (): Promise<ApiOption[]> =>
   await http("hotel/category_options");
