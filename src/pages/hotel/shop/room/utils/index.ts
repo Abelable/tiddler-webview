@@ -41,9 +41,9 @@ export const checkRoomInfo = (roomInfo: FormRoomInfo) => {
   if (
     !roomInfo.salesCommissionRate ||
     roomInfo.salesCommissionRate < 10 ||
-    roomInfo.salesCommissionRate > 70
+    roomInfo.salesCommissionRate > 50
   ) {
-    showToast("请输入范围为10%~70%的佣金比例");
+    showToast("请输入范围为10%~50%的佣金比例");
     return false;
   }
   if (!roomInfo.priceList.length) {
