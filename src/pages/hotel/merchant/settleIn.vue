@@ -7,17 +7,17 @@
           <div class="sub-title">- 酒店服务商入驻 -</div>
           <div
             class="btn confirm"
-            :class="{ active: agreementsChecked }"
+            :class="{ active: protocolChecked }"
             @click="nextStep"
           >
             下一步
           </div>
-          <div class="agreements">
-            <Checkbox v-model="agreementsChecked" icon-size="16px" />
+          <div class="protocol-tips">
+            <Checkbox v-model="protocolChecked" icon-size="16px" />
             <div style="margin-left: 0.1rem">
               我已阅读并同意
               <span style="color: #1b89fa" @click="checkProtocol"
-                >《小鱼游酒店服务商服务协议》</span
+                >《小鱼游酒店商家服务协议》</span
               >
             </div>
           </div>
@@ -304,7 +304,7 @@
               <div
                 class="picker"
                 :class="{ active: pickedCategoryDesc }"
-                @click="categoryPickerPopupVisible = true"
+                @click="typePickerPopupVisible = true"
               >
                 {{ pickedCategoryDesc || "请选择店铺类型" }}
               </div>
@@ -320,89 +320,75 @@
       </div>
     </div>
     <div class="status" v-else>
-      <div class="status-illus" v-if="statusInfo.status !== 1">
+      <div class="status-illus">
         <img
           class="illus"
-          :src="
-            statusInfo.status === 0
-              ? 'https://static.tiddler.cn/mp/default_illus/waiting.png'
-              : statusInfo.status === 2
-              ? 'https://static.tiddler.cn/mp/default_illus/success.png'
-              : 'https://static.tiddler.cn/mp/default_illus/fail.png'
-          "
+          :src="`https://static.tiddler.cn/mp/default_illus/${
+            ['waiting', 'success', 'success', 'fail'][statusInfo.status]
+          }.png`"
           alt=""
         />
         <div class="title">
           {{
-            statusInfo.status === 0
-              ? "等待审核"
-              : statusInfo.status === 2
-              ? "缴纳成功"
-              : "审核失败"
+            ["等待审核", "审核通过", "缴纳成功", "审核失败"][statusInfo.status]
           }}
         </div>
-        <div class="desc" :class="{ err: statusInfo.status === 3 }">
+        <div
+          class="desc"
+          :class="{ err: statusInfo.status === 3 }"
+          v-if="statusInfo.status !== 1"
+        >
           {{
-            statusInfo.status === 0
-              ? "已提交申请，请耐心等待平台人员处理"
-              : statusInfo.status === 2
-              ? "店铺已开通"
-              : `失败原因：${statusInfo.failureReason}`
+            [
+              "已提交申请，请耐心等待平台人员处理",
+              "",
+              "店铺已开通",
+              `失败原因：${statusInfo.failureReason}`,
+            ][statusInfo.status]
           }}
         </div>
-        <div class="btn back" v-if="statusInfo.status !== 3" @click="back">
+        <div class="pay-amount" v-if="statusInfo.status === 1">
+          缴纳保证金：<span style="color: #eaab63"
+            >{{ statusInfo.deposit }}元</span
+          >
+        </div>
+        <div
+          class="btn back"
+          v-if="[0, 2].includes(statusInfo.status)"
+          @click="back"
+        >
           返回
         </div>
         <div class="btn back" v-if="statusInfo.status === 3" @click="reApply">
           重新申请
         </div>
-      </div>
-      <div class="payment" v-else>
-        <div class="title">审核通过</div>
-        <div class="pay-amount">
-          缴纳保证金：<span style="color: #eaab63">10000元</span>
+        <div class="btn-wrap" v-if="statusInfo.status === 1">
+          <div
+            class="btn confirm"
+            :class="{ active: depositProtocolChecked }"
+            @click="pay"
+          >
+            点击缴纳
+          </div>
+          <div class="protocol-tips">
+            <Checkbox v-model="depositProtocolChecked" icon-size="16px" />
+            <div style="margin-left: 0.1rem">
+              我已阅读并同意
+              <span style="color: #1b89fa" @click="checkDepositProtocol"
+                >《小鱼游酒店商家保证金协议》</span
+              >
+            </div>
+          </div>
         </div>
-        <div class="agreement">
-          <p>缴纳保证金默认接受以下条款:</p>
-          <p>
-            1.
-            商家在小鱼游参与经营活动必须缴纳服务保证金，保证金主要用于保证商家直播带货符合法律法规及小鱼游的平台规定。
-          </p>
-          <p>
-            2.
-            商家在入驻申请通过后需一次性足额缴纳保证金，保证金金额统一为人民币壹仟元。
-          </p>
-          <p>
-            3.
-            小鱼游有权根据商家的业务变化及实际违约赔付情况通知商家调整保证金金额，商家应在收到小鱼游通知后的3个工作日内补足保证金，如果没有及时补足保证金金额的，小鱼游有权中止合作。
-          </p>
-          <p>
-            4.
-            商家缴纳的保证金将冻结在商家的小鱼游公司账户中，在冻结期内保证金不产生利息，小鱼游不开具发票。
-          </p>
-          <p>
-            5.
-            商家需要退出小鱼游，终止合作，需向小鱼游提出保证金退还申请，小鱼游审核通过后会在30天内将保证金原路退回到您缴纳保证金时的支付账户。商家退出时存在前期违约金尚未支付的情况的，小鱼游从保证金余额中扣取。
-          </p>
-          <p>
-            6.
-            因重大违规被清退的商家将不退还保证金，因违规行为扣取的保证金不退还，作为商家违约金赔偿给用户及小鱼游，具体保证金扣取情况参见《平台商家违规管理规则》。
-          </p>
-          <p>
-            7.
-            小鱼游将根据国家经济情况、市场状况及小鱼游经营情况，适时适当调整保证金制度。保证金制度的调整会按相关规定提前公示予以所有商家。
-          </p>
-        </div>
-        <div class="btn pay" @click="pay">点击缴纳</div>
       </div>
     </div>
   </div>
 
   <PickerPopup
-    :visible="categoryPickerPopupVisible"
+    :visible="typePickerPopupVisible"
     :options="typeOptions.map((item) => ({ text: item.name, value: item.id }))"
-    @confirm="categoryConfirm"
-    @cancel="categoryPickerPopupVisible = false"
+    @confirm="typeConfirm"
+    @cancel="typePickerPopupVisible = false"
   />
   <AreaPickerPopup
     :visible="areaPickerPopupVisible"
@@ -416,14 +402,14 @@ import { Checkbox, Uploader, Loading, showToast } from "vant";
 import PickerPopup from "@/components/PickerPopup.vue";
 import AreaPickerPopup from "@/components/AreaPickerPopup.vue";
 
-import { ref, onMounted, reactive } from "vue";
+import { ref, onMounted, reactive, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
 import { upload, uploadFile } from "@/utils/upload";
 import {
   uploadMerchantInfo,
   getMerchantStatusInfo,
-  deleteMerchant,
-  payMerchantDeposit,
+  getShopDepositPayParams,
+  getMerchantInfo,
 } from "./utils/api";
 
 import type { UploaderAfterRead } from "vant/lib/uploader/types";
@@ -436,8 +422,13 @@ import type {
 
 const router = useRouter();
 
+const typeOptions = [
+  { id: 1, name: "酒店官方", deposit: 10000 },
+  { id: 2, name: "专营店", deposit: 10000 },
+];
+const mounted = ref(false);
 const step = ref(0);
-const agreementsChecked = ref(false);
+const protocolChecked = ref(false);
 const merchantInfo = reactive<MerchantInfo>({
   companyName: "",
   businessLicensePhoto: "",
@@ -465,22 +456,35 @@ const uploadIdCardFrontPhotoLoading = ref(false);
 const uploadIdCardBackPhotoLoading = ref(false);
 const uploadHoldIdCardPhotoLoading = ref(false);
 const uploadBusinessLicensePhotoLoading = ref(false);
-const typeOptions = [
-  { id: 1, name: "酒店官方", deposit: 10000 },
-  { id: 2, name: "专营店", deposit: 10000 },
-];
-const categoryPickerPopupVisible = ref(false);
+const typePickerPopupVisible = ref(false);
 const pickedCategoryDesc = ref("");
 const statusInfo = ref<MerchantStatusInfo | undefined>();
+const depositProtocolChecked = ref(false);
 
 onMounted(async () => {
   await setStatusInfo();
+  mounted.value = true;
 });
+
+onMounted(() => {
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("visibilitychange", handleVisibilityChange);
+});
+
+const handleVisibilityChange = async () => {
+  if (document.visibilityState === "visible") {
+    await setStatusInfo();
+    mounted.value = true;
+  }
+};
 
 const nextStep = () => {
   switch (step.value) {
     case 0:
-      if (!agreementsChecked.value) {
+      if (!protocolChecked.value) {
         showToast("请阅读并同意服务商协议");
         return;
       }
@@ -588,6 +592,18 @@ const setStatusInfo = async () => {
   statusInfo.value = await getMerchantStatusInfo();
 };
 
+const setMerchantInfo = async () => {
+  const { shopLogo, shopBg, shopType, ...rest } = await getMerchantInfo();
+  pickedCategoryDesc.value =
+    typeOptions.find((item) => item.id === shopType)?.name || "";
+  Object.assign(merchantInfo, {
+    shopLogo: [{ url: shopLogo }],
+    shopBg: [{ url: shopBg }],
+    shopType,
+    ...rest,
+  });
+};
+
 const submit = async () => {
   try {
     const { shopBg, shopLogo, ...rest } = merchantInfo;
@@ -638,23 +654,27 @@ const uploadBusinessLicensePhoto = (async ({ file }: { file: File }) => {
   uploadBusinessLicensePhotoLoading.value = false;
 }) as UploaderAfterRead;
 
-const categoryConfirm = ({
+const typeConfirm = ({
   selectedValues,
   selectedOptions,
 }: {
   selectedValues: number[];
   selectedOptions: Option[];
 }) => {
-  merchantInfo.shopType = selectedValues[0];
+  const type = selectedValues[0];
+  merchantInfo.shopType = type;
+  merchantInfo.deposit =
+    typeOptions.find((item) => item.id === type)?.deposit || 0;
   pickedCategoryDesc.value = selectedOptions[0].text;
-  categoryPickerPopupVisible.value = false;
+  typePickerPopupVisible.value = false;
 };
 
 const checkProtocol = () => router.push("/protocol/hotel_merchant");
+const checkDepositProtocol = () => router.push("/protocol/hotel_deposit");
 
 const pay = async () => {
   if (statusInfo.value) {
-    const payParams = await payMerchantDeposit(statusInfo.value.shopId);
+    const payParams = await getShopDepositPayParams(statusInfo.value.shopId);
     Object.keys(payParams).forEach(
       (key) => (payParams[key] = encodeURIComponent(payParams[key]))
     );
@@ -666,10 +686,11 @@ const pay = async () => {
   }
 };
 
-const reApply = async () => {
+const reApply = () => {
   try {
-    await deleteMerchant();
-    setStatusInfo();
+    setMerchantInfo();
+    statusInfo.value = undefined;
+    step.value = 1;
   } catch (error) {
     showToast("操作失败请重试");
   }
@@ -726,7 +747,7 @@ const back = () => {
             background: #1b89fa;
           }
         }
-        .agreements {
+        .protocol-tips {
           display: flex;
           justify-content: center;
           margin-top: 0.36rem;

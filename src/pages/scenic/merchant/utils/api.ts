@@ -2,16 +2,13 @@ import { http } from "@/utils/http";
 import { CreateMerchantInfo, MerchantInfo, MerchantStatusInfo } from "./type";
 
 export const uploadMerchantInfo = async (info: CreateMerchantInfo) =>
-  await http("scenic/shop/settle_in", { method: "POST", data: info });
+  await http("scenic/merchant/settle_in", { method: "POST", data: info });
 
 export const getMerchantStatusInfo = async (): Promise<MerchantStatusInfo> =>
-  await http("scenic/shop/status");
+  await http("scenic/merchant/status");
 
 export const getMerchantInfo = async (): Promise<MerchantInfo> =>
-  await http("scenic/shop/info");
-
-export const deleteMerchant = async () =>
-  await http("scenic/shop/delete", { method: "POST" });
+  await http("scenic/merchant/info");
 
 export const getShopDepositPayParams = async (shopId: number) =>
   await http("scenic/shop/deposit/pay_params", {

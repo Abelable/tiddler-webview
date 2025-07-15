@@ -7,13 +7,13 @@
           <div class="sub-title">- 景区服务商入驻 -</div>
           <div
             class="btn confirm"
-            :class="{ active: agreementsChecked }"
+            :class="{ active: protocolChecked }"
             @click="nextStep"
           >
             下一步
           </div>
-          <div class="agreements">
-            <Checkbox v-model="agreementsChecked" icon-size="16px" />
+          <div class="protocol-tips">
+            <Checkbox v-model="protocolChecked" icon-size="16px" />
             <div style="margin-left: 0.1rem">
               我已阅读并同意
               <span style="color: #1b89fa" @click="checkProtocol"
@@ -365,17 +365,17 @@
         <div class="btn-wrap" v-if="statusInfo.status === 1">
           <div
             class="btn confirm"
-            :class="{ active: bondAgreementsChecked }"
+            :class="{ active: depositProtocolChecked }"
             @click="pay"
           >
             点击缴纳
           </div>
-          <div class="agreements">
-            <Checkbox v-model="bondAgreementsChecked" icon-size="16px" />
+          <div class="protocol-tips">
+            <Checkbox v-model="depositProtocolChecked" icon-size="16px" />
             <div style="margin-left: 0.1rem">
               我已阅读并同意
               <span style="color: #1b89fa" @click="checkDepositProtocol"
-                >《小鱼游景区服务商保证金协议》</span
+                >《小鱼游景区商家保证金协议》</span
               >
             </div>
           </div>
@@ -422,8 +422,13 @@ import type {
 
 const router = useRouter();
 
+const typeOptions = [
+  { id: 1, name: "景区官方", deposit: 10000 },
+  { id: 2, name: "旅行社", deposit: 10000 },
+];
+const mounted = ref(false);
 const step = ref(0);
-const agreementsChecked = ref(false);
+const protocolChecked = ref(false);
 const merchantInfo = reactive<MerchantInfo>({
   companyName: "",
   businessLicensePhoto: "",
@@ -451,15 +456,10 @@ const uploadIdCardFrontPhotoLoading = ref(false);
 const uploadIdCardBackPhotoLoading = ref(false);
 const uploadHoldIdCardPhotoLoading = ref(false);
 const uploadBusinessLicensePhotoLoading = ref(false);
-const typeOptions = [
-  { id: 1, name: "景区官方", deposit: 10000 },
-  { id: 2, name: "旅行社", deposit: 10000 },
-];
 const typePickerPopupVisible = ref(false);
 const pickedCategoryDesc = ref("");
 const statusInfo = ref<MerchantStatusInfo | undefined>();
-const bondAgreementsChecked = ref(false);
-const mounted = ref(false);
+const depositProtocolChecked = ref(false);
 
 onMounted(async () => {
   await setStatusInfo();
@@ -484,7 +484,7 @@ const handleVisibilityChange = async () => {
 const nextStep = () => {
   switch (step.value) {
     case 0:
-      if (!agreementsChecked.value) {
+      if (!protocolChecked.value) {
         showToast("请阅读并同意服务商协议");
         return;
       }
@@ -669,10 +669,8 @@ const typeConfirm = ({
   typePickerPopupVisible.value = false;
 };
 
-const checkProtocol = () => router.push("/scenic/agreements/merchant_service");
-
-const checkDepositProtocol = () =>
-  router.push("/shop/agreements/merchant_service");
+const checkProtocol = () => router.push("/protocol/scenic_merchant");
+const checkDepositProtocol = () => router.push("/protocol/scenic_deposit");
 
 const pay = async () => {
   if (statusInfo.value) {
@@ -688,7 +686,7 @@ const pay = async () => {
   }
 };
 
-const reApply = async () => {
+const reApply = () => {
   try {
     setMerchantInfo();
     statusInfo.value = undefined;
@@ -728,7 +726,7 @@ const back = () => {
         background: #212121;
       }
     }
-    .agreements {
+    .protocol-tips {
       display: flex;
       justify-content: center;
       margin-top: 0.24rem;
@@ -770,7 +768,7 @@ const back = () => {
             background: #1b89fa;
           }
         }
-        .agreements {
+        .protocol-tips {
           display: flex;
           justify-content: center;
           margin-top: 0.36rem;
