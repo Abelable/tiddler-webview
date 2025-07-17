@@ -26,6 +26,14 @@ const protocol: Array<RouteRecordRaw> = [
     component: () => import("@/pages/protocol/hotelMerchantProtocol.vue"),
   },
   {
+    path: "/protocol/catering_merchant",
+    name: "catering_merchant_protocol",
+    meta: {
+      title: "餐饮商家服务协议",
+    },
+    component: () => import("@/pages/protocol/cateringMerchantProtocol.vue"),
+  },
+  {
     path: "/protocol/merchant",
     name: "merchant_protocol",
     meta: {
