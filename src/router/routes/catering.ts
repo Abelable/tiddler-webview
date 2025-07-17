@@ -63,7 +63,7 @@ const catering: Array<RouteRecordRaw> = [
     meta: {
       title: "餐饮套餐列表",
     },
-    component: () => import("@/pages/catering/set-meal/list.vue"),
+    component: () => import("@/pages/catering/shop/set-meal/list.vue"),
   },
   {
     path: "/catering/set_meal/create",
@@ -71,7 +71,7 @@ const catering: Array<RouteRecordRaw> = [
     meta: {
       title: "新增餐饮套餐",
     },
-    component: () => import("@/pages/catering/set-meal/create.vue"),
+    component: () => import("@/pages/catering/shop/set-meal/create.vue"),
   },
   {
     path: "/catering/set_meal/edit",
@@ -79,7 +79,7 @@ const catering: Array<RouteRecordRaw> = [
     meta: {
       title: "编辑餐饮套餐",
     },
-    component: () => import("@/pages/catering/set-meal/edit.vue"),
+    component: () => import("@/pages/catering/shop/set-meal/edit.vue"),
   },
 ];
 
