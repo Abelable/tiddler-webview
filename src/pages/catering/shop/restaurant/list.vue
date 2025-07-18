@@ -146,8 +146,8 @@ import { useRouter } from "vue-router";
 import dayjs from "dayjs";
 import {
   getRestaurantOptions,
-  getProviderRestaurantList,
-  deleteProviderRestaurant,
+  getShopRestaurantList,
+  deleteShopRestaurant,
   applyRestaurant,
   getRestaurantListTotals,
 } from "./utils/api";
@@ -214,7 +214,7 @@ const setRestaurantLists = async (init = false) => {
     finished.value = false;
   }
   const list =
-    (await getProviderRestaurantList(
+    (await getShopRestaurantList(
       menuList.value[curMenuIndex.value].status,
       ++pageList[curMenuIndex.value]
     )) || {};
@@ -252,7 +252,7 @@ const confirmDelete = (index: number) =>
   showConfirmDialog({ title: "确定删除门店吗？" })
     .then(async () => {
       try {
-        await deleteProviderRestaurant(spotLists[curMenuIndex.value][index].id);
+        await deleteShopRestaurant(spotLists[curMenuIndex.value][index].id);
         spotLists[curMenuIndex.value].splice(index, 1);
         setTotals();
       } catch (error) {

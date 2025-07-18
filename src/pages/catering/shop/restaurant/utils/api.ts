@@ -4,34 +4,45 @@ import { cleanObject } from "@/utils/index";
 import type { ApiOption } from "@/utils/type";
 import type { ProviderRestaurant, RestaurantInfo } from "./type";
 
-export const getRestaurantOptions = async (): Promise<ApiOption[]> =>
-  await http("catering/restaurant/user_options");
+export const getRestaurantOptions = async (
+  shopId: number,
+  keywords: string
+): Promise<ApiOption[]> =>
+  await http("catering/restaurant/shop_options", {
+    data: cleanObject({ shopId, keywords }),
+  });
 
-export const getRestaurantListTotals = async (): Promise<number[]> =>
-  await http("catering/merchant/restaurant/totals");
+export const getRestaurantListTotals = async (
+  shopId: number
+): Promise<number[]> =>
+  await http("catering/shop/restaurant/totals", { data: { shopId } });
 
-export const getProviderRestaurantList = async (
+export const getShopRestaurantList = async (
+  shopId: number,
   status: number,
   page: number,
   limit = 10
 ): Promise<ProviderRestaurant[]> => {
   const { list = [] } =
-    (await http("catering/merchant/restaurant/list", {
-      data: { status, page, limit },
+    (await http("catering/shop/restaurant/list", {
+      data: { shopId, status, page, limit },
     })) || {};
   return list;
 };
 
-export const applyRestaurant = async (restaurantIds: number[]) =>
-  await http("catering/merchant/restaurant/apply", {
+export const applyRestaurant = async (
+  shopId: number,
+  restaurantIds: number[]
+) =>
+  await http("catering/shop/restaurant/apply", {
     method: "POST",
-    data: { restaurantIds },
+    data: { shopId, restaurantIds },
   });
 
-export const deleteProviderRestaurant = async (id: number) =>
-  await http("catering/merchant/restaurant/delete", {
+export const deleteShopRestaurant = async (shopId: number, id: number) =>
+  await http("catering/shop/restaurant/delete", {
     method: "POST",
-    data: { id },
+    data: { shopId, id },
   });
 
 export const getRestaurantCategoryOptions = async (): Promise<ApiOption[]> =>
