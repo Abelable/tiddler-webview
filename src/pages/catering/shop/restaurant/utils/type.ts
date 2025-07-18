@@ -5,7 +5,7 @@ export interface ShopRestaurant {
   status: number;
   failureReason: string;
   restaurantId: number;
-  restaurantImage: string;
+  restaurantCover: string;
   restaurantName: string;
   restaurantAddress: string;
   createdAt: string;

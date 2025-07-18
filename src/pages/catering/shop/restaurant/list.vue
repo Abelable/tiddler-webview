@@ -30,12 +30,12 @@
         v-show="curMenuIndex === 0"
       >
         <div class="inner" @click="editRestaurant(item.id)">
-          <img class="image" :src="item.restaurantImage" alt="" />
+          <img class="image" :src="item.restaurantCover" alt="" />
           <div class="content">
-            <div class="name">{{ item.restaurantName }}</div>
+            <div class="name omit">{{ item.restaurantName }}</div>
             <div class="address row">
               <Icon name="location-o" size="0.24rem" />
-              <div>{{ item.restaurantAddress }}</div>
+              <div class="omit">{{ item.restaurantAddress }}</div>
             </div>
           </div>
         </div>
@@ -57,7 +57,7 @@
         v-show="curMenuIndex === 1"
       >
         <div class="inner">
-          <img class="image" :src="item.restaurantImage" alt="" />
+          <img class="image" :src="item.restaurantCover" alt="" />
           <div class="content">
             <div class="name">{{ item.restaurantName }}</div>
             <div class="time">
@@ -85,7 +85,7 @@
         v-show="curMenuIndex === 2"
       >
         <div class="inner">
-          <img class="image" :src="item.restaurantImage" alt="" />
+          <img class="image" :src="item.restaurantCover" alt="" />
           <div class="content">
             <div class="name">{{ item.restaurantName }}</div>
             <div class="failure-reason">
@@ -263,7 +263,7 @@ const editRestaurant = (id: number) =>
 </script>
 
 <style lang="scss" scoped>
-.limit {
+.omit {
   display: -webkit-box;
   overflow: hidden;
   line-height: 1;
