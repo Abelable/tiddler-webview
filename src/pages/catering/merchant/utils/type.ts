@@ -1,4 +1,6 @@
-export interface ProviderInfo {
+import type { UploaderFileListItem } from "vant";
+
+export interface MerchantInfo {
   type: number;
   companyName?: string;
   businessLicensePhoto?: string;
@@ -12,12 +14,27 @@ export interface ProviderInfo {
   idCardNumber: string;
   idCardFrontPhoto: string;
   idCardBackPhoto: string;
+  holdIdCardPhoto: string;
+  bankCardOwnerName: string;
+  bankCardNumber: string;
+  bankName: string;
+  shopType: number;
+  deposit: number;
+  shopBg: UploaderFileListItem[];
+  shopLogo: UploaderFileListItem[];
+  shopName: string;
 }
 
-export interface ProviderStatusInfo {
+export interface CreateMerchantInfo
+  extends Omit<MerchantInfo, "shopBg" | "shopLogo"> {
+  shopBg?: string;
+  shopLogo: string;
+}
+
+export interface MerchantStatusInfo {
   id: number;
-  type: number;
   status: number;
   failureReason: string;
   orderId: number;
+  deposit: number;
 }

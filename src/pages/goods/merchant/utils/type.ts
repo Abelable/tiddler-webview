@@ -2,7 +2,6 @@ import type { UploaderFileListItem } from "vant";
 
 export interface MerchantInfo {
   type: number;
-  deposit: number;
   companyName?: string;
   businessLicensePhoto?: string;
   regionDesc: string;
@@ -18,10 +17,11 @@ export interface MerchantInfo {
   bankCardOwnerName: string;
   bankCardNumber: string;
   bankName: string;
+  shopCategoryIds: number[];
+  deposit: number;
   shopBg: UploaderFileListItem[];
   shopLogo: UploaderFileListItem[];
   shopName: string;
-  shopCategoryIds: number[];
 }
 
 export interface CreateMerchantInfo

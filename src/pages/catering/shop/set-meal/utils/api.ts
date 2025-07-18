@@ -5,10 +5,10 @@ import type { ApiOption } from "@/utils/type";
 import type { SetMealListItem, SetMealInfo } from "./type";
 
 export const getRestaurantOptions = async (): Promise<ApiOption[]> =>
-  await http("catering/provider/restaurant/options");
+  await http("catering/merchant/restaurant/options");
 
 export const getSetMealTotals = async (): Promise<number[]> =>
-  await http("catering/provider/set_meal/totals");
+  await http("catering/merchant/set_meal/totals");
 
 export const getSetMealList = async (
   status: number,
@@ -16,43 +16,43 @@ export const getSetMealList = async (
   limit = 10
 ): Promise<SetMealListItem[]> => {
   const { list = [] } =
-    (await http("catering/provider/set_meal/list", {
+    (await http("catering/merchant/set_meal/list", {
       data: { status, page, limit },
     })) || {};
   return list;
 };
 
 export const offShelfSetMeal = async (id: number) =>
-  await http("catering/provider/set_meal/down", {
+  await http("catering/merchant/set_meal/down", {
     method: "POST",
     data: { id },
   });
 
 export const onShelfSetMeal = async (id: number) =>
-  await http("catering/provider/set_meal/up", {
+  await http("catering/merchant/set_meal/up", {
     method: "POST",
     data: { id },
   });
 
 export const deleteSetMeal = async (id: number) =>
-  await http("catering/provider/set_meal/delete", {
+  await http("catering/merchant/set_meal/delete", {
     method: "POST",
     data: { id },
   });
 
 export const getSetMealInfo = async (id: number): Promise<SetMealInfo> =>
-  await http("catering/provider/set_meal/detail", { data: { id } });
+  await http("catering/merchant/set_meal/detail", { data: { id } });
 
 export const createSetMeal = async (
   setMealInfo: Partial<Omit<SetMealInfo, "id">>
 ) =>
-  await http("catering/provider/set_meal/add", {
+  await http("catering/merchant/set_meal/add", {
     method: "POST",
     data: cleanObject(setMealInfo),
   });
 
 export const editSetMeal = async (setMealInfo: Partial<SetMealInfo>) =>
-  await http("catering/provider/set_meal/edit", {
+  await http("catering/merchant/set_meal/edit", {
     method: "POST",
     data: cleanObject(setMealInfo),
   });

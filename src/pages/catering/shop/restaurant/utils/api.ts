@@ -8,7 +8,7 @@ export const getRestaurantOptions = async (): Promise<ApiOption[]> =>
   await http("catering/restaurant/user_options");
 
 export const getRestaurantListTotals = async (): Promise<number[]> =>
-  await http("catering/provider/restaurant/totals");
+  await http("catering/merchant/restaurant/totals");
 
 export const getProviderRestaurantList = async (
   status: number,
@@ -16,20 +16,20 @@ export const getProviderRestaurantList = async (
   limit = 10
 ): Promise<ProviderRestaurant[]> => {
   const { list = [] } =
-    (await http("catering/provider/restaurant/list", {
+    (await http("catering/merchant/restaurant/list", {
       data: { status, page, limit },
     })) || {};
   return list;
 };
 
 export const applyRestaurant = async (restaurantIds: number[]) =>
-  await http("catering/provider/restaurant/apply", {
+  await http("catering/merchant/restaurant/apply", {
     method: "POST",
     data: { restaurantIds },
   });
 
 export const deleteProviderRestaurant = async (id: number) =>
-  await http("catering/provider/restaurant/delete", {
+  await http("catering/merchant/restaurant/delete", {
     method: "POST",
     data: { id },
   });
