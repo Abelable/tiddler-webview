@@ -91,7 +91,7 @@
                 <div class="uploader-wrap">
                   <Uploader
                     title="手持身份证照片"
-                    @finish="uploadIdCardBackPhoto"
+                    @finish="uploadHoldIdCardPhoto"
                   />
                   <img class="photo" src="./images/person-example.png" alt="" />
                 </div>
@@ -264,7 +264,7 @@
                 <div class="uploader-wrap">
                   <Uploader
                     title="手持身份证照片"
-                    @finish="uploadIdCardBackPhoto"
+                    @finish="uploadHoldIdCardPhoto"
                   />
                   <img class="photo" src="./images/person-example.png" alt="" />
                 </div>
@@ -732,6 +732,9 @@ const uploadIdCardFrontPhoto = (photo: string) => {
 };
 const uploadIdCardBackPhoto = (photo: string) => {
   merchantInfo.idCardBackPhoto = photo;
+};
+const uploadHoldIdCardPhoto = (photo: string) => {
+  merchantInfo.holdIdCardPhoto = photo;
 };
 const uploadBusinessLicensePhoto = (photo: string) => {
   merchantInfo.businessLicensePhoto = photo;
