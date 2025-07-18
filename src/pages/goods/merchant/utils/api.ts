@@ -1,4 +1,6 @@
 import { http } from "@/utils/http";
+import { cleanObject } from "@/utils";
+
 import type {
   CreateMerchantInfo,
   MerchantInfo,
@@ -6,8 +8,8 @@ import type {
   ShopCategoryOption,
 } from "./type";
 
-export const uploadMerchantInfo = async (info: CreateMerchantInfo) =>
-  await http("merchant/settle_in", { method: "POST", data: info });
+export const uploadMerchantInfo = async (info: Partial<CreateMerchantInfo>) =>
+  await http("merchant/settle_in", { method: "POST", data: cleanObject(info) });
 
 export const getMerchantStatusInfo = async (): Promise<MerchantStatusInfo> =>
   await http("merchant/status");

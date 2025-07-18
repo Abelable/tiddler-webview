@@ -77,11 +77,17 @@
                 <div class="form-title">上传经营者身份证</div>
                 <div class="uploader-wrap">
                   <Uploader
-                    :default-img="require('./images/front.png')"
+                    :default-img="
+                      merchantInfo.idCardFrontPhoto ||
+                      require('./images/front.png')
+                    "
                     @finish="uploadIdCardFrontPhoto"
                   />
                   <Uploader
-                    :default-img="require('./images/behind.png')"
+                    :default-img="
+                      merchantInfo.idCardBackPhoto ||
+                      require('./images/behind.png')
+                    "
                     @finish="uploadIdCardBackPhoto"
                   />
                 </div>
@@ -91,6 +97,7 @@
                 <div class="uploader-wrap">
                   <Uploader
                     title="手持身份证照片"
+                    :default-img="merchantInfo.holdIdCardPhoto || ''"
                     @finish="uploadHoldIdCardPhoto"
                   />
                   <img class="photo" src="./images/person-example.png" alt="" />
@@ -119,10 +126,12 @@
                 <div class="uploader-wrap">
                   <Uploader
                     title="营业执照照片"
+                    :default-img="merchantInfo.businessLicensePhoto || ''"
                     @finish="uploadBusinessLicensePhoto"
                   />
                   <Uploader
                     title="卫生许可证照片"
+                    :default-img="merchantInfo.hygienicLicensePhoto || ''"
                     @finish="uploadHygienicLicensePhoto"
                   />
                 </div>
@@ -201,10 +210,12 @@
                 <div class="uploader-wrap">
                   <Uploader
                     title="营业执照照片"
+                    :default-img="merchantInfo.businessLicensePhoto || ''"
                     @finish="uploadBusinessLicensePhoto"
                   />
                   <Uploader
                     title="卫生许可证照片"
+                    :default-img="merchantInfo.hygienicLicensePhoto || ''"
                     @finish="uploadHygienicLicensePhoto"
                   />
                 </div>
@@ -250,11 +261,17 @@
                 <div class="form-title">上传法人身份证</div>
                 <div class="uploader-wrap">
                   <Uploader
-                    :default-img="require('./images/front.png')"
+                    :default-img="
+                      merchantInfo.idCardFrontPhoto ||
+                      require('./images/front.png')
+                    "
                     @finish="uploadIdCardFrontPhoto"
                   />
                   <Uploader
-                    :default-img="require('./images/behind.png')"
+                    :default-img="
+                      merchantInfo.idCardBackPhoto ||
+                      require('./images/behind.png')
+                    "
                     @finish="uploadIdCardBackPhoto"
                   />
                 </div>
@@ -264,6 +281,7 @@
                 <div class="uploader-wrap">
                   <Uploader
                     title="手持身份证照片"
+                    :default-img="merchantInfo.holdIdCardPhoto || ''"
                     @finish="uploadHoldIdCardPhoto"
                   />
                   <img class="photo" src="./images/person-example.png" alt="" />
