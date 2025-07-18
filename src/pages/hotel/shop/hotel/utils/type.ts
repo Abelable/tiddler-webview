@@ -1,6 +1,6 @@
 import type { UploaderFileListItem } from "vant";
 
-export interface ProviderHotel {
+export interface ShopHotel {
   id: number;
   status: number;
   failureReason: string;

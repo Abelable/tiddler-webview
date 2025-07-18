@@ -163,7 +163,7 @@ import {
   getHotelListTotals,
 } from "./utils/api";
 
-import type { ProviderHotel } from "./utils/type";
+import type { ShopHotel } from "./utils/type";
 
 const shopId = ref(0);
 const menuList = ref([
@@ -184,7 +184,7 @@ const menuList = ref([
   },
 ]);
 const curMenuIndex = ref(0);
-const hotelLists = reactive<ProviderHotel[][]>([[], [], []]);
+const hotelLists = reactive<ShopHotel[][]>([[], [], []]);
 const pageList = [0, 0, 0];
 const loading = ref(false);
 const finished = ref(false);

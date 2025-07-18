@@ -8,7 +8,7 @@
       @click="selectMenu(index)"
     >
       <div class="name">{{ item.name }}</div>
-      <div class="total">（{{ item.total }}）</div>
+      <div class="total" v-if="item.total">（{{ item.total }}）</div>
     </li>
   </ul>
 
@@ -17,15 +17,15 @@
       温馨提示：审核时间是3个工作日
     </div>
     <List
-      class="spot-list"
+      class="restaurant-list"
       v-model="loading"
       :finished="finished"
       @load="onLoadMore"
-      :finished-text="spotLists[curMenuIndex].length ? '没有更多了' : ''"
+      :finished-text="restaurantLists[curMenuIndex].length ? '没有更多了' : ''"
     >
       <SwipeCell
-        class="spot-item"
-        v-for="(item, index) in spotLists[0]"
+        class="restaurant-item"
+        v-for="(item, index) in restaurantLists[0]"
         :key="index"
         v-show="curMenuIndex === 0"
       >
@@ -51,8 +51,8 @@
       </SwipeCell>
 
       <SwipeCell
-        class="spot-item"
-        v-for="(item, index) in spotLists[1]"
+        class="restaurant-item"
+        v-for="(item, index) in restaurantLists[1]"
         :key="index"
         v-show="curMenuIndex === 1"
       >
@@ -79,8 +79,8 @@
       </SwipeCell>
 
       <SwipeCell
-        class="spot-item"
-        v-for="(item, index) in spotLists[2]"
+        class="restaurant-item"
+        v-for="(item, index) in restaurantLists[2]"
         :key="index"
         v-show="curMenuIndex === 2"
       >
@@ -105,27 +105,24 @@
       </SwipeCell>
 
       <Empty
-        v-if="!spotLists[curMenuIndex].length"
+        v-if="!restaurantLists[curMenuIndex].length"
         image="https://static.tiddler.cn/mp/default_illus/empty.png"
         description="暂无门店列表"
       />
     </List>
   </PullRefresh>
 
-  <button class="add-btn" @click="showRestaurantPickerPopup">添加门店</button>
+  <button class="add-btn" @click="restaurantPickerPopupVisible = true">
+    添加门店
+  </button>
 
-  <MultiPickerPopup
+  <RestaurantPickerPopup
+    v-if="shopId"
     :visible="restaurantPickerPopupVisible"
-    :options="
-      restaurantOptions.map((item) => ({ text: item.name, value: item.id }))
-    "
+    :shopId="shopId"
     @confirm="selectRestaurant"
     @cancel="restaurantPickerPopupVisible = false"
-  >
-    <div class="no-tips row center" @click="createRestaurant">
-      没有找到您的门店？<span style="color: #1182fb">点此创建</span>
-    </div>
-  </MultiPickerPopup>
+  />
 </template>
 
 <script setup lang="ts">
@@ -139,27 +136,23 @@ import {
   Empty,
   showToast,
 } from "vant";
-import MultiPickerPopup from "@/components/MultiPickerPopup.vue";
+import RestaurantPickerPopup from "./components/RestaurantPickerPopup.vue";
 
 import { ref, reactive, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import dayjs from "dayjs";
 import {
-  getRestaurantOptions,
   getShopRestaurantList,
   deleteShopRestaurant,
   applyRestaurant,
   getRestaurantListTotals,
 } from "./utils/api";
 
-import type { ApiOption as RestaurantOption } from "@/utils/type";
-import type { ProviderRestaurant } from "./utils/type";
+import type { ShopRestaurant } from "./utils/type";
 
+const route = useRoute();
 const router = useRouter();
 
-const loading = ref(false);
-const finished = ref(false);
-const refreshing = ref(false);
 const menuList = ref([
   {
     name: "已过审",
@@ -177,13 +170,18 @@ const menuList = ref([
     total: 0,
   },
 ]);
+
+const shopId = ref(0);
 const curMenuIndex = ref(0);
-const spotLists = reactive<ProviderRestaurant[][]>([[], [], []]);
+const restaurantLists = reactive<ShopRestaurant[][]>([[], [], []]);
 const pageList = [0, 0, 0];
-const restaurantOptions = ref<RestaurantOption[]>([]);
+const loading = ref(false);
+const finished = ref(false);
+const refreshing = ref(false);
 const restaurantPickerPopupVisible = ref(false);
 
 onMounted(() => {
+  shopId.value = +(route.query.shop_id as string);
   setTotals();
 });
 
@@ -199,12 +197,8 @@ const selectMenu = (index: number) => {
   setRestaurantLists(true);
 };
 
-const setRestaurantOptions = async () => {
-  restaurantOptions.value = await getRestaurantOptions();
-};
-
 const setTotals = async () => {
-  const totals = await getRestaurantListTotals();
+  const totals = await getRestaurantListTotals(shopId.value);
   totals.forEach((item, index) => (menuList.value[index].total = item));
 };
 
@@ -215,21 +209,17 @@ const setRestaurantLists = async (init = false) => {
   }
   const list =
     (await getShopRestaurantList(
+      shopId.value,
       menuList.value[curMenuIndex.value].status,
       ++pageList[curMenuIndex.value]
     )) || {};
 
-  spotLists[curMenuIndex.value] = init
+  restaurantLists[curMenuIndex.value] = init
     ? list
-    : [...spotLists[curMenuIndex.value], ...list];
+    : [...restaurantLists[curMenuIndex.value], ...list];
   if (!list.length) finished.value = true;
   loading.value = false;
   refreshing.value = false;
-};
-
-const showRestaurantPickerPopup = async () => {
-  await setRestaurantOptions();
-  restaurantPickerPopupVisible.value = true;
 };
 
 const selectRestaurant = async ({
@@ -239,7 +229,7 @@ const selectRestaurant = async ({
 }) => {
   if (restaurantIds.length) {
     try {
-      await applyRestaurant(restaurantIds);
+      await applyRestaurant(shopId.value, restaurantIds);
       setTotals();
     } catch (error) {
       showToast((error as { code: number; message: string }).message);
@@ -252,8 +242,11 @@ const confirmDelete = (index: number) =>
   showConfirmDialog({ title: "确定删除门店吗？" })
     .then(async () => {
       try {
-        await deleteShopRestaurant(spotLists[curMenuIndex.value][index].id);
-        spotLists[curMenuIndex.value].splice(index, 1);
+        await deleteShopRestaurant(
+          shopId.value,
+          restaurantLists[curMenuIndex.value][index].id
+        );
+        restaurantLists[curMenuIndex.value].splice(index, 1);
         setTotals();
       } catch (error) {
         showToast("删除失败，请重试");
@@ -262,7 +255,6 @@ const confirmDelete = (index: number) =>
     })
     .catch(() => true);
 
-const createRestaurant = () => router.push("/catering/restaurant/create");
 const editRestaurant = (id: number) =>
   router.push({
     path: "/catering/restaurant/edit",
@@ -335,9 +327,9 @@ const editRestaurant = (id: number) =>
     line-height: 1;
     background: #fffaed;
   }
-  .spot-list {
+  .restaurant-list {
     padding: 0.24rem;
-    .spot-item {
+    .restaurant-item {
       margin-bottom: 0.24rem;
       border-radius: 0.24rem;
       background: #fff;

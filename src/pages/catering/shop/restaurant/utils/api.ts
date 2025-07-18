@@ -2,7 +2,7 @@ import { http } from "@/utils/http";
 import { cleanObject } from "@/utils/index";
 
 import type { ApiOption } from "@/utils/type";
-import type { ProviderRestaurant, RestaurantInfo } from "./type";
+import type { ShopRestaurant, RestaurantInfo } from "./type";
 
 export const getRestaurantOptions = async (
   shopId: number,
@@ -22,7 +22,7 @@ export const getShopRestaurantList = async (
   status: number,
   page: number,
   limit = 10
-): Promise<ProviderRestaurant[]> => {
+): Promise<ShopRestaurant[]> => {
   const { list = [] } =
     (await http("catering/shop/restaurant/list", {
       data: { shopId, status, page, limit },
