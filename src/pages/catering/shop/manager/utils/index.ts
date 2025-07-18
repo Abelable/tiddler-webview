@@ -4,7 +4,7 @@ export const initialManagerInfo = {
   avatar: "",
   nickname: "",
   mobile: "",
-  hotelIds: [],
+  restaurantIds: [],
 };
 
 export const roleOptions = [

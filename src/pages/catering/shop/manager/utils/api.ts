@@ -3,34 +3,34 @@ import { http } from "@/utils/http";
 import type { Manager } from "./type";
 
 export const getManagerList = async (shopId: number): Promise<Manager[]> =>
-  await http("hotel/shop/manager/list", { data: { shopId } });
+  await http("catering/shop/manager/list", { data: { shopId } });
 
 export const getManager = async (
   shopId: number,
   id: number
 ): Promise<Manager> =>
-  await http("hotel/shop/manager/detail", { data: { shopId, id } });
+  await http("catering/shop/manager/detail", { data: { shopId, id } });
 
 export const createManager = async (
   shopId: number,
   userId: number,
   roleId: number,
-  hotelIds: number[]
+  restaurantIds: number[]
 ) =>
-  await http("hotel/shop/manager/add", {
+  await http("catering/shop/manager/add", {
     method: "POST",
-    data: { shopId, userId, roleId, hotelIds },
+    data: { shopId, userId, roleId, restaurantIds },
   });
 
 export const editManager = async (
   shopId: number,
   id: number,
   roleId: number,
-  hotelIds: number[]
+  restaurantIds: number[]
 ) =>
-  await http("hotel/shop/manager/edit", {
+  await http("catering/shop/manager/edit", {
     method: "POST",
-    data: { shopId, id, roleId, hotelIds },
+    data: { shopId, id, roleId, restaurantIds },
   });
 
 export const deleteManager = async (shopId: number, id: number) =>

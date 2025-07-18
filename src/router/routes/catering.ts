@@ -10,10 +10,58 @@ const catering: Array<RouteRecordRaw> = [
     component: () => import("@/pages/catering/merchant/settleIn.vue"),
   },
   {
+    path: "/catering/shop/deposit",
+    name: "catering_shop_deposit",
+    meta: {
+      title: "保证金记录",
+    },
+    component: () => import("@/pages/catering/shop/deposit/index.vue"),
+  },
+  {
+    path: "/catering/shop/withdrawal_record",
+    name: "catering_shop_withdrawal_record",
+    meta: {
+      title: "收益提现记录",
+    },
+    component: () => import("@/pages/catering/shop/withdrawal/record.vue"),
+  },
+  {
+    path: "/catering/shop/info",
+    name: "catering_shop_info",
+    meta: {
+      title: "店铺信息",
+    },
+    component: () => import("@/pages/catering/shop/info/index.vue"),
+  },
+  {
+    path: "/catering/shop/manager/list",
+    name: "catering_shop_manager_list",
+    meta: {
+      title: "人员管理",
+    },
+    component: () => import("@/pages/catering/shop/manager/list.vue"),
+  },
+  {
+    path: "/catering/shop/manager/create",
+    name: "catering_manager_create",
+    meta: {
+      title: "新增人员",
+    },
+    component: () => import("@/pages/catering/shop/manager/create.vue"),
+  },
+  {
+    path: "/catering/shop/manager/edit",
+    name: "catering_shop_manager_edit",
+    meta: {
+      title: "编辑人员",
+    },
+    component: () => import("@/pages/catering/shop/manager/edit.vue"),
+  },
+  {
     path: "/catering/restaurant/list",
     name: "restaurant_list",
     meta: {
-      title: "餐饮门店列表",
+      title: "餐厅列表",
     },
     component: () => import("@/pages/catering/shop/restaurant/list.vue"),
   },
@@ -21,7 +69,7 @@ const catering: Array<RouteRecordRaw> = [
     path: "/catering/restaurant/create",
     name: "restaurant_create",
     meta: {
-      title: "新增餐饮门店",
+      title: "新增餐厅",
     },
     component: () => import("@/pages/catering/shop/restaurant/create.vue"),
   },
@@ -29,7 +77,7 @@ const catering: Array<RouteRecordRaw> = [
     path: "/catering/restaurant/edit",
     name: "restaurant_edit",
     meta: {
-      title: "编辑餐饮门店",
+      title: "编辑餐厅",
     },
     component: () => import("@/pages/catering/shop/restaurant/edit.vue"),
   },

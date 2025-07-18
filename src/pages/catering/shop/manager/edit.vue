@@ -29,8 +29,8 @@ onMounted(async () => {
 
 const save = async ({ managerInfo }: { managerInfo: Omit<Manager, "id"> }) => {
   try {
-    const { roleId, scenicIds } = managerInfo;
-    await editManager(shopId.value, managerId.value, roleId, scenicIds);
+    const { roleId, restaurantIds } = managerInfo;
+    await editManager(shopId.value, managerId.value, roleId, restaurantIds);
     router.back();
   } catch (error) {
     showToast("保存失败，请重试");
@@ -38,7 +38,7 @@ const save = async ({ managerInfo }: { managerInfo: Omit<Manager, "id"> }) => {
 };
 
 const _delete = () =>
-  showConfirmDialog({ title: "确定删除该退货地址吗？" })
+  showConfirmDialog({ title: "确定删除该人员吗？" })
     .then(async () => {
       try {
         await deleteManager(shopId.value, managerId.value);

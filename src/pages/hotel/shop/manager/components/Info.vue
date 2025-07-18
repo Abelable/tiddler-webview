@@ -69,7 +69,7 @@
   <MultiPickerPopup
     :visible="hotelPickerPopupVisible"
     :options="hotelOptions.map((item) => ({ text: item.name, value: item.id }))"
-    @confirm="setScenicIds"
+    @confirm="setHotelIds"
     @cancel="hotelPickerPopupVisible = false"
   />
 </template>
@@ -125,7 +125,7 @@ const selectRole = ({ selectedValues }: { selectedValues: number[] }) => {
   rolePickerPopupVisible.value = false;
 };
 
-const setScenicIds = ({ selectedValues }: { selectedValues: number[] }) => {
+const setHotelIds = ({ selectedValues }: { selectedValues: number[] }) => {
   managerInfo.value.hotelIds = selectedValues;
   hotelPickerPopupVisible.value = false;
 };

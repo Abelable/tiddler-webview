@@ -31,7 +31,7 @@
         </li>
         <li class="form-item row between" v-if="managerInfo.roleId === 3">
           <div class="name">关联酒店</div>
-          <div class="picker row" @click="hotelPickerPopupVisible = true">
+          <div class="picker row" @click="restaurantPickerPopupVisible = true">
             <div class="content" :class="{ active: hotelNames }">
               {{ hotelNames || "请选择关联酒店" }}
             </div>
@@ -67,10 +67,12 @@
     @cancel="userPickerPopupVisible = false"
   />
   <MultiPickerPopup
-    :visible="hotelPickerPopupVisible"
-    :options="hotelOptions.map((item) => ({ text: item.name, value: item.id }))"
-    @confirm="setScenicIds"
-    @cancel="hotelPickerPopupVisible = false"
+    :visible="restaurantPickerPopupVisible"
+    :options="
+      restaurantOptions.map((item) => ({ text: item.name, value: item.id }))
+    "
+    @confirm="setRestaurantIds"
+    @cancel="restaurantPickerPopupVisible = false"
   />
 </template>
 
@@ -82,7 +84,7 @@ import UserPickerPopup from "@/components/UserPickerPopup.vue";
 
 import { computed, ref, watch } from "vue";
 import { initialManagerInfo, roleOptions } from "../utils/index";
-import { hotelOptions } from "../../room/utils";
+import { restaurantOptions } from "../../meal-ticket/utils";
 
 import type { ManagerDetail } from "../utils/type";
 
@@ -94,11 +96,11 @@ const emit = defineEmits(["save", "delete"]);
 const managerInfo = ref<Omit<ManagerDetail, "id">>(initialManagerInfo);
 const userPickerPopupVisible = ref(false);
 const rolePickerPopupVisible = ref(false);
-const hotelPickerPopupVisible = ref(false);
+const restaurantPickerPopupVisible = ref(false);
 
 const hotelNames = computed(() =>
-  managerInfo.value.hotelIds
-    .map((id) => hotelOptions.value.find((item) => item.id === id)?.name)
+  managerInfo.value.restaurantIds
+    .map((id) => restaurantOptions.value.find((item) => item.id === id)?.name)
     .join()
 );
 
@@ -125,13 +127,13 @@ const selectRole = ({ selectedValues }: { selectedValues: number[] }) => {
   rolePickerPopupVisible.value = false;
 };
 
-const setScenicIds = ({ selectedValues }: { selectedValues: number[] }) => {
-  managerInfo.value.hotelIds = selectedValues;
-  hotelPickerPopupVisible.value = false;
+const setRestaurantIds = ({ selectedValues }: { selectedValues: number[] }) => {
+  managerInfo.value.restaurantIds = selectedValues;
+  restaurantPickerPopupVisible.value = false;
 };
 
 const save = () => {
-  const { userId, roleId, hotelIds } = managerInfo.value;
+  const { userId, roleId, restaurantIds } = managerInfo.value;
   if (!userId) {
     showToast("请选择人员");
     return;
@@ -140,8 +142,8 @@ const save = () => {
     showToast("请选择职位");
     return;
   }
-  if (roleId === 3 && !hotelIds.length) {
-    showToast("请选择关联酒店");
+  if (roleId === 3 && !restaurantIds.length) {
+    showToast("请选择关联餐厅");
     return;
   }
   emit("save", { managerInfo: managerInfo.value });

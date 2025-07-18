@@ -5,7 +5,7 @@ export interface Manager {
   avatar: string;
   nickname: string;
   mobile: string;
-  hotelIds: number[];
+  restaurantIds: number[];
 }
 
 export interface ManagerDetail {
@@ -15,5 +15,5 @@ export interface ManagerDetail {
   avatar: string;
   nickname: string;
   mobile: string;
-  hotelIds: number[];
+  restaurantIds: number[];
 }

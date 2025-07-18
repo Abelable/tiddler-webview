@@ -62,12 +62,12 @@ onMounted(async () => {
 
 const addManager = () =>
   router.push({
-    path: "/scenic/shop/manager/create",
+    path: "/catering/shop/manager/create",
     query: { shop_id: shopId.value },
   });
 const editManager = (id: number) =>
   router.push({
-    path: "/scenic/shop/manager/edit",
+    path: "/catering/shop/manager/edit",
     query: { id, shop_id: shopId.value },
   });
 
