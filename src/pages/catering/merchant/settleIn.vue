@@ -877,10 +877,40 @@ const back = () => {
           color: #999;
           font-size: 0.24rem;
         }
+        .steps {
+          display: flex;
+          margin-top: 0.36rem;
+          padding: 0 0.16rem;
+          .step {
+            margin: 0 0.08em;
+            flex: 1;
+            .name {
+              color: #999;
+              font-size: 0.26rem;
+              text-align: center;
+              font-weight: 550;
+              &.active {
+                color: #1b89fa;
+              }
+              &.finished {
+                color: #333;
+              }
+            }
+            .progress-bar {
+              margin-top: 0.12rem;
+              height: 0.1rem;
+              background: #ddd;
+              border-radius: 0.05rem;
+              &.finished {
+                background: #1b89fa;
+              }
+            }
+          }
+        }
       }
       .main {
         position: relative;
-        margin-top: 0.32rem;
+        margin-top: 0.48rem;
         padding-bottom: 1.52rem;
         flex: 1;
         border-radius: 0.32rem 0.32rem 0 0;
@@ -930,6 +960,40 @@ const back = () => {
               margin-top: 0.2rem;
               display: flex;
               justify-content: space-between;
+              .photo,
+              .default-img,
+              .loading-wrap {
+                width: 3.3rem;
+                height: 2.14rem;
+                box-shadow: 0 0 10px 0 #e6e6e6;
+                border-radius: 0.24rem;
+              }
+              .default-img {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                .img-wrap {
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  width: 1rem;
+                  height: 1rem;
+                  background: rgba(0, 0, 0, 0.6);
+                  border-radius: 50%;
+                }
+                .desc {
+                  margin-top: 0.3rem;
+                  color: #000;
+                  font-size: 0.2rem;
+                }
+              }
+              .loading-wrap {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(0, 0, 0, 0.6);
+              }
             }
           }
         }
