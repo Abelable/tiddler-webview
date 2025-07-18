@@ -766,7 +766,7 @@ const checkDepositProtocol = () => router.push("/protocol/catering_deposit");
 
 const pay = async () => {
   if (statusInfo.value) {
-    const payParams = await getShopDepositPayParams(statusInfo.value.orderId);
+    const payParams = await getShopDepositPayParams(statusInfo.value.shopId);
     Object.keys(payParams).forEach(
       (key) => (payParams[key] = encodeURIComponent(payParams[key]))
     );

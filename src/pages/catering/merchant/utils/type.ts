@@ -35,6 +35,6 @@ export interface MerchantStatusInfo {
   id: number;
   status: number;
   failureReason: string;
-  orderId: number;
+  shopId: number;
   deposit: number;
 }
