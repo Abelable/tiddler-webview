@@ -249,6 +249,16 @@
                   />
                 </div>
               </div>
+              <div class="form-item">
+                <div class="form-title">请点击上传手持身份证照片</div>
+                <div class="uploader-wrap">
+                  <Uploader
+                    title="手持身份证照片"
+                    @finish="uploadIdCardBackPhoto"
+                  />
+                  <img class="photo" src="./images/person-example.png" alt="" />
+                </div>
+              </div>
             </template>
           </div>
           <div class="form-wrap" v-show="step === 2">
@@ -603,6 +613,7 @@ const nextStep = () => {
           return;
         }
       }
+      step.value = 2;
       break;
 
     case 2:

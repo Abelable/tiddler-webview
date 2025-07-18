@@ -101,4 +101,10 @@ const uploadPhoto = (async ({ file }: { file: File }) => {
   justify-content: center;
   background: rgba(0, 0, 0, 0.6);
 }
+.photo,
+.default-img,
+.loading-wrap {
+  box-shadow: 0 0 10px 0 #f5f6f8;
+  border-radius: 0.24rem;
+}
 </style>
