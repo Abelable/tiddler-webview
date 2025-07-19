@@ -1,7 +1,7 @@
 import { http } from "@/utils/http";
 import { cleanObject } from "@/utils";
 
-import type { ScenicInfo, ShopScenicSpot } from "./type";
+import type { ScenicInfo, ShopScenic } from "./type";
 import type { ApiOption } from "@/utils/type";
 
 export const getScenicOptions = async (
@@ -15,12 +15,12 @@ export const getScenicOptions = async (
 export const getScenicListTotals = async (shopId: number): Promise<number[]> =>
   await http("scenic/shop/scenic/totals", { data: { shopId } });
 
-export const getShopScenicSpotList = async (
+export const getShopScenicList = async (
   shopId: number,
   status: number,
   page: number,
   limit = 10
-): Promise<ShopScenicSpot[]> => {
+): Promise<ShopScenic[]> => {
   const { list = [] } =
     (await http("scenic/shop/scenic/list", {
       data: { shopId, status, page, limit },
@@ -28,13 +28,13 @@ export const getShopScenicSpotList = async (
   return list;
 };
 
-export const applyScenicSpot = async (shopId: number, scenicIds: number[]) =>
+export const applyScenic = async (shopId: number, scenicIds: number[]) =>
   await http("scenic/shop/scenic/apply", {
     method: "POST",
     data: { shopId, scenicIds },
   });
 
-export const deleteShopScenicSpot = async (shopId: number, id: number) =>
+export const deleteShopScenic = async (shopId: number, id: number) =>
   await http("scenic/shop/scenic/delete", {
     method: "POST",
     data: { shopId, id },

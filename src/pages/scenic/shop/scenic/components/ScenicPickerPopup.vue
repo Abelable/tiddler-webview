@@ -115,7 +115,7 @@ const cancel = () => {
   emit("cancel");
 };
 
-const createScenic = () => router.push("/scenic/shop/spot/create");
+const createScenic = () => router.push("/scenic/shop/scenic/create");
 </script>
 
 <style lang="scss" scoped>

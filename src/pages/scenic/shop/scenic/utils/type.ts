@@ -1,6 +1,6 @@
 import type { UploaderFileListItem } from "vant";
 
-export interface ShopScenicSpot {
+export interface ShopScenic {
   id: number;
   status: number;
   failureReason: string;

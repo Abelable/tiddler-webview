@@ -17,15 +17,15 @@
       温馨提示：审核时间是3个工作日
     </div>
     <List
-      class="spot-list"
+      class="scenic-list"
       v-model="loading"
       :finished="finished"
       @load="onLoadMore"
-      :finished-text="spotLists[curMenuIndex].length ? '没有更多了' : ''"
+      :finished-text="scenicLists[curMenuIndex].length ? '没有更多了' : ''"
     >
       <SwipeCell
-        class="spot-item"
-        v-for="(item, index) in spotLists[0]"
+        class="scenic-item"
+        v-for="(item, index) in scenicLists[0]"
         :key="index"
         v-show="curMenuIndex === 0"
       >
@@ -56,8 +56,8 @@
       </SwipeCell>
 
       <SwipeCell
-        class="spot-item"
-        v-for="(item, index) in spotLists[1]"
+        class="scenic-item"
+        v-for="(item, index) in scenicLists[1]"
         :key="index"
         v-show="curMenuIndex === 1"
       >
@@ -89,8 +89,8 @@
       </SwipeCell>
 
       <SwipeCell
-        class="spot-item"
-        v-for="(item, index) in spotLists[2]"
+        class="scenic-item"
+        v-for="(item, index) in scenicLists[2]"
         :key="index"
         v-show="curMenuIndex === 2"
       >
@@ -120,7 +120,7 @@
       </SwipeCell>
 
       <Empty
-        v-if="!spotLists[curMenuIndex].length"
+        v-if="!scenicLists[curMenuIndex].length"
         image="https://static.tiddler.cn/mp/default_illus/empty.png"
         description="暂无景点列表"
       />
@@ -157,13 +157,13 @@ import { ref, reactive, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import dayjs from "dayjs";
 import {
-  getShopScenicSpotList,
-  deleteShopScenicSpot,
-  applyScenicSpot,
+  getShopScenicList,
+  deleteShopScenic,
+  applyScenic,
   getScenicListTotals,
 } from "./utils/api";
 
-import type { ShopScenicSpot } from "./utils/type";
+import type { ShopScenic } from "./utils/type";
 
 const shopId = ref(0);
 const menuList = ref([
@@ -184,7 +184,7 @@ const menuList = ref([
   },
 ]);
 const curMenuIndex = ref(0);
-const spotLists = reactive<ShopScenicSpot[][]>([[], [], []]);
+const scenicLists = reactive<ShopScenic[][]>([[], [], []]);
 const pageList = [0, 0, 0];
 const loading = ref(false);
 const finished = ref(false);
@@ -201,14 +201,14 @@ onMounted(() => {
 
 const onRefresh = () => {
   setTotals();
-  setSpotLists(true);
+  setScenicLists(true);
 };
 
-const onLoadMore = () => setSpotLists();
+const onLoadMore = () => setScenicLists();
 
 const selectMenu = (index: number) => {
   curMenuIndex.value = index;
-  setSpotLists(true);
+  setScenicLists(true);
 };
 
 const setTotals = async () => {
@@ -216,21 +216,21 @@ const setTotals = async () => {
   totals.forEach((item, index) => (menuList.value[index].total = item));
 };
 
-const setSpotLists = async (init = false) => {
+const setScenicLists = async (init = false) => {
   if (init) {
     pageList[curMenuIndex.value] = 0;
     finished.value = false;
   }
   const list =
-    (await getShopScenicSpotList(
+    (await getShopScenicList(
       shopId.value,
       menuList.value[curMenuIndex.value].status,
       ++pageList[curMenuIndex.value]
     )) || {};
 
-  spotLists[curMenuIndex.value] = init
+  scenicLists[curMenuIndex.value] = init
     ? list
-    : [...spotLists[curMenuIndex.value], ...list];
+    : [...scenicLists[curMenuIndex.value], ...list];
   if (!list.length) finished.value = true;
   loading.value = false;
   refreshing.value = false;
@@ -242,7 +242,7 @@ const selectScenic = async ({
   selectedValues: number[];
 }) => {
   try {
-    await applyScenicSpot(shopId.value, selectedValues);
+    await applyScenic(shopId.value, selectedValues);
     setTotals();
   } catch (error) {
     showToast((error as { code: number; message: string }).message);
@@ -254,11 +254,11 @@ const deleteScenic = (index: number) =>
   showConfirmDialog({ title: "确定删除景点吗？" })
     .then(async () => {
       try {
-        await deleteShopScenicSpot(
+        await deleteShopScenic(
           shopId.value,
-          spotLists[curMenuIndex.value][index].id
+          scenicLists[curMenuIndex.value][index].id
         );
-        spotLists[curMenuIndex.value].splice(index, 1);
+        scenicLists[curMenuIndex.value].splice(index, 1);
         setTotals();
       } catch (error) {
         showToast("删除失败，请重试");
@@ -269,7 +269,7 @@ const deleteScenic = (index: number) =>
 
 const editScenic = (id: number) =>
   router.push({
-    path: "/scenic/shop/spot/edit",
+    path: "/scenic/shop/scenic/edit",
     query: { id },
   });
 </script>
@@ -339,9 +339,9 @@ const editScenic = (id: number) =>
     line-height: 1;
     background: #fffaed;
   }
-  .spot-list {
+  .scenic-list {
     padding: 0.24rem;
-    .spot-item {
+    .scenic-item {
       margin-bottom: 0.24rem;
       border-radius: 0.24rem;
       background: #fff;
