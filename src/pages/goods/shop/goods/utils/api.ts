@@ -25,7 +25,7 @@ export const getGoodsCategoryOptions = async (
   await http("shop/goods/category_options", { data: { shopId } });
 
 export const getGoodsInfo = async (id: number): Promise<GoodsInfo> =>
-  await http("shop/goods/info", { data: { id } });
+  await http("shop/goods/detail", { data: { id } });
 
 export const offShelfGoods = async (shopId: number, id: number) =>
   await http("shop/goods/down", { method: "POST", data: { shopId, id } });

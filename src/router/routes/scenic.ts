@@ -58,28 +58,28 @@ const scenic: Array<RouteRecordRaw> = [
     component: () => import("@/pages/scenic/shop/manager/edit.vue"),
   },
   {
-    path: "/scenic/shop/spot/list",
-    name: "scenic_shop_spot_list",
+    path: "/scenic/shop/scenic/list",
+    name: "scenic_shop_scenic_list",
     meta: {
       title: "景点列表",
     },
-    component: () => import("@/pages/scenic/shop/spot/list.vue"),
+    component: () => import("@/pages/scenic/shop/scenic/list.vue"),
   },
   {
-    path: "/scenic/shop/spot/create",
-    name: "scenic_shop_spot_create",
+    path: "/scenic/shop/scenic/create",
+    name: "scenic_shop_scenic_create",
     meta: {
       title: "新增景点",
     },
-    component: () => import("@/pages/scenic/shop/spot/create.vue"),
+    component: () => import("@/pages/scenic/shop/scenic/create.vue"),
   },
   {
-    path: "/scenic/shop/spot/edit",
-    name: "scenic_shop_spot_edit",
+    path: "/scenic/shop/scenic/edit",
+    name: "scenic_shop_scenic_edit",
     meta: {
       title: "编辑景点",
     },
-    component: () => import("@/pages/scenic/shop/spot/edit.vue"),
+    component: () => import("@/pages/scenic/shop/scenic/edit.vue"),
   },
   {
     path: "/scenic/shop/ticket/list",
