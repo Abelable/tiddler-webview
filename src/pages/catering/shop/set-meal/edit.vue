@@ -1,5 +1,10 @@
 <template>
-  <Info :editingSetMealInfo="editingSetMealInfo" @save="save" />
+  <Info
+    v-if="shopId"
+    :shopId="shopId"
+    :editingSetMealInfo="editingSetMealInfo"
+    @save="save"
+  />
 </template>
 
 <script setup lang="ts">
@@ -13,10 +18,12 @@ import type { SetMealInfo, FormSetMealInfo } from "./utils/type";
 const route = useRoute();
 const router = useRouter();
 
+const shopId = ref(0);
 const setMealId = ref(0);
 const editingSetMealInfo = ref<FormSetMealInfo>();
 
 onMounted(async () => {
+  shopId.value = +(route.query.shop_id as string);
   setSetMealInfo();
 });
 
@@ -39,7 +46,7 @@ const save = async ({
   setMealInfo: Omit<SetMealInfo, "id">;
 }) => {
   try {
-    await editSetMeal({ id: setMealId.value, ...setMealInfo });
+    await editSetMeal(shopId.value, { id: setMealId.value, ...setMealInfo });
     router.back();
   } catch (error) {
     showToast("上传失败，请重试");

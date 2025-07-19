@@ -25,6 +25,7 @@
     >
       <TicketItem
         v-for="item in ticketLists[curMenuIndex]"
+        :shopId="shopId"
         :key="item.id"
         :item="item"
         :status="menuList[curMenuIndex].status"
@@ -47,17 +48,16 @@ import { PullRefresh, List, Empty } from "vant";
 import TicketItem from "./components/TicketItem.vue";
 
 import { ref, reactive, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { getTicketTotals, getTicketList } from "./utils/api";
 import { restaurantOptions, setRestaurantOptions } from "./utils/index";
 
 import type { TicketListItem } from "./utils/type";
 
 const router = useRouter();
+const route = useRoute();
 
-const loading = ref(false);
-const finished = ref(false);
-const refreshing = ref(false);
+const shopId = ref(0);
 const menuList = ref([
   {
     name: "出售中",
@@ -83,9 +83,13 @@ const menuList = ref([
 const curMenuIndex = ref(0);
 const ticketLists = reactive<TicketListItem[][]>([[], [], [], []]);
 const pageList = [0, 0, 0, 0];
+const loading = ref(false);
+const finished = ref(false);
+const refreshing = ref(false);
 
 onMounted(async () => {
-  setRestaurantOptions();
+  shopId.value = +(route.query.shop_id as string);
+  setRestaurantOptions(shopId.value);
   setTotals();
   setTicketList(true);
 });
@@ -103,7 +107,7 @@ const selectMenu = (index: number) => {
 };
 
 const setTotals = async () => {
-  const totals = await getTicketTotals();
+  const totals = await getTicketTotals(shopId.value);
   totals.forEach((item, index) => (menuList.value[index].total = item));
 };
 
@@ -114,6 +118,7 @@ const setTicketList = async (init = false) => {
   }
   const list =
     (await getTicketList(
+      shopId.value,
       menuList.value[curMenuIndex.value].status,
       ++pageList[curMenuIndex.value]
     )) || {};
@@ -126,7 +131,11 @@ const setTicketList = async (init = false) => {
   refreshing.value = false;
 };
 
-const addTicket = () => router.push("/catering/meal_ticket/create");
+const addTicket = () =>
+  router.push({
+    path: "/catering/shop/meal_ticket/create",
+    query: { shop_id: shopId.value },
+  });
 </script>
 
 <style lang="scss" scoped>

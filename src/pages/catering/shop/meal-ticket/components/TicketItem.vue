@@ -75,6 +75,7 @@ import type { TicketListItem } from "../utils/type";
 const router = useRouter();
 
 const props = defineProps<{
+  shopId: number;
   status: number;
   item: TicketListItem;
   restaurantOptions: ApiOption[];
@@ -85,7 +86,7 @@ const offShelf = () =>
   showConfirmDialog({ title: "确定下架该门票吗？" })
     .then(async () => {
       try {
-        await offShelfTicket(props.item.id);
+        await offShelfTicket(props.shopId, props.item.id);
         emit("refresh");
       } catch (error) {
         showToast("下架失败，请重试");
@@ -96,7 +97,7 @@ const offShelf = () =>
 
 const onShelf = async () => {
   try {
-    await onShelfTicket(props.item.id);
+    await onShelfTicket(props.shopId, props.item.id);
     emit("refresh");
   } catch (error) {
     showToast("上架失败，请重试");
@@ -108,7 +109,7 @@ const confirmDelete = () =>
   showConfirmDialog({ title: "确定删除该门票吗？" })
     .then(async () => {
       try {
-        await deleteTicket(props.item.id);
+        await deleteTicket(props.shopId, props.item.id);
         emit("refresh");
       } catch (error) {
         showToast("删除失败，请重试");
@@ -120,8 +121,8 @@ const confirmDelete = () =>
 const editTicket = () => {
   if (props.status === 2 || props.status === 3) {
     router.push({
-      path: "/catering/meal_ticket/edit",
-      query: { id: props.item.id },
+      path: "/catering/shop/meal_ticket/edit",
+      query: { shop_id: props.shopId, id: props.item.id },
     });
   }
 };

@@ -442,6 +442,7 @@ import {
 import type { FormSetMealInfo } from "../utils/type";
 
 const props = defineProps<{
+  shopId: number;
   editingSetMealInfo?: FormSetMealInfo;
 }>();
 const emit = defineEmits(["save"]);
@@ -491,7 +492,7 @@ watch(props, (props) => {
 });
 
 onMounted(() => {
-  setRestaurantOptions();
+  setRestaurantOptions(props.shopId);
 });
 
 const setRestaurantIds = ({ selectedValues }: { selectedValues: number[] }) => {

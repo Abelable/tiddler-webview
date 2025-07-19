@@ -356,6 +356,7 @@ import {
 import type { FormTicketInfo } from "../utils/type";
 
 const props = defineProps<{
+  shopId: number;
   editingTicketInfo?: FormTicketInfo;
 }>();
 const emit = defineEmits(["save"]);
@@ -404,7 +405,7 @@ watch(props, (props) => {
 });
 
 onMounted(() => {
-  setRestaurantOptions();
+  setRestaurantOptions(props.shopId);
 });
 
 const setRestaurantIds = ({ selectedValues }: { selectedValues: number[] }) => {

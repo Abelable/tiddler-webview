@@ -25,6 +25,7 @@
     >
       <SetMealItem
         v-for="item in setMealLists[curMenuIndex]"
+        :shopId="shopId"
         :key="item.id"
         :item="item"
         :status="menuList[curMenuIndex].status"
@@ -47,17 +48,16 @@ import { PullRefresh, List, Empty } from "vant";
 import SetMealItem from "./components/SetMealItem.vue";
 
 import { ref, reactive, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { getSetMealTotals, getSetMealList } from "./utils/api";
 import { restaurantOptions, setRestaurantOptions } from "./utils/index";
 
 import type { SetMealListItem } from "./utils/type";
 
 const router = useRouter();
+const route = useRoute();
 
-const loading = ref(false);
-const finished = ref(false);
-const refreshing = ref(false);
+const shopId = ref(0);
 const menuList = ref([
   {
     name: "出售中",
@@ -83,9 +83,13 @@ const menuList = ref([
 const curMenuIndex = ref(0);
 const setMealLists = reactive<SetMealListItem[][]>([[], [], [], []]);
 const pageList = [0, 0, 0, 0];
+const loading = ref(false);
+const finished = ref(false);
+const refreshing = ref(false);
 
 onMounted(async () => {
-  setRestaurantOptions();
+  shopId.value = +(route.query.shop_id as string);
+  setRestaurantOptions(shopId.value);
   setTotals();
   setSetMealList(true);
 });
@@ -103,7 +107,7 @@ const selectMenu = (index: number) => {
 };
 
 const setTotals = async () => {
-  const totals = await getSetMealTotals();
+  const totals = await getSetMealTotals(shopId.value);
   totals.forEach((item, index) => (menuList.value[index].total = item));
 };
 
@@ -114,6 +118,7 @@ const setSetMealList = async (init = false) => {
   }
   const list =
     (await getSetMealList(
+      shopId.value,
       menuList.value[curMenuIndex.value].status,
       ++pageList[curMenuIndex.value]
     )) || {};
@@ -126,7 +131,11 @@ const setSetMealList = async (init = false) => {
   refreshing.value = false;
 };
 
-const addSetMeal = () => router.push("/catering/set_meal/create");
+const addSetMeal = () =>
+  router.push({
+    path: "/catering/shop/set_meal/create",
+    query: { shop_id: shopId.value },
+  });
 </script>
 
 <style lang="scss" scoped>

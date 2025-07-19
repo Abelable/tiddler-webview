@@ -77,6 +77,7 @@ import type { SetMealListItem } from "../utils/type";
 const router = useRouter();
 
 const props = defineProps<{
+  shopId: number;
   status: number;
   item: SetMealListItem;
   restaurantOptions: ApiOption[];
@@ -87,7 +88,7 @@ const offShelf = () =>
   showConfirmDialog({ title: "确定下架该门票吗？" })
     .then(async () => {
       try {
-        await offShelfSetMeal(props.item.id);
+        await offShelfSetMeal(props.shopId, props.item.id);
         emit("refresh");
       } catch (error) {
         showToast("下架失败，请重试");
@@ -98,7 +99,7 @@ const offShelf = () =>
 
 const onShelf = async () => {
   try {
-    await onShelfSetMeal(props.item.id);
+    await onShelfSetMeal(props.shopId, props.item.id);
     emit("refresh");
   } catch (error) {
     showToast("上架失败，请重试");
@@ -110,7 +111,7 @@ const deleteCurSetMeal = () =>
   showConfirmDialog({ title: "确定删除该门票吗？" })
     .then(async () => {
       try {
-        await deleteSetMeal(props.item.id);
+        await deleteSetMeal(props.shopId, props.item.id);
         emit("refresh");
       } catch (error) {
         showToast("删除失败，请重试");
@@ -122,8 +123,8 @@ const deleteCurSetMeal = () =>
 const editSetMeal = () => {
   if (props.status === 2 || props.status === 3) {
     router.push({
-      path: "/catering/set_meal/edit",
-      query: { id: props.item.id },
+      path: "/catering/shop/set_meal/edit",
+      query: { shop_id: props.shopId, id: props.item.id },
     });
   }
 };
