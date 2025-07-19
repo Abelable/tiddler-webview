@@ -1,6 +1,7 @@
-import { ref } from "vue";
 import { showToast } from "vant";
-import { getRestaurantOptions } from "./api";
+
+import { ref } from "vue";
+import { getShopRestaurantOptions } from "../../restaurant/utils/api";
 
 import type { ApiOption } from "@/utils/type";
 import type { FormTicketInfo } from "./type";
@@ -35,8 +36,8 @@ export const initialTicketInfo = {
 };
 
 export const restaurantOptions = ref<ApiOption[]>([]);
-export const setRestaurantOptions = async () =>
-  (restaurantOptions.value = await getRestaurantOptions());
+export const setRestaurantOptions = async (shopId: number) =>
+  (restaurantOptions.value = await getShopRestaurantOptions(shopId));
 
 export const checkTicketInfo = (ticketInfo: FormTicketInfo) => {
   if (!ticketInfo.restaurantIds.length) {

@@ -1,58 +1,59 @@
 import { http } from "@/utils/http";
 import { cleanObject } from "@/utils/index";
 
-import type { ApiOption } from "@/utils/type";
 import type { SetMealListItem, SetMealInfo } from "./type";
 
-export const getRestaurantOptions = async (): Promise<ApiOption[]> =>
-  await http("catering/merchant/restaurant/options");
-
-export const getSetMealTotals = async (): Promise<number[]> =>
-  await http("catering/merchant/set_meal/totals");
+export const getSetMealTotals = async (shopId: number): Promise<number[]> =>
+  await http("catering/shop/set_meal/totals", { data: { shopId } });
 
 export const getSetMealList = async (
+  shopId: number,
   status: number,
   page: number,
   limit = 10
 ): Promise<SetMealListItem[]> => {
   const { list = [] } =
-    (await http("catering/merchant/set_meal/list", {
-      data: { status, page, limit },
+    (await http("catering/shop/set_meal/list", {
+      data: { shopId, status, page, limit },
     })) || {};
   return list;
 };
 
-export const offShelfSetMeal = async (id: number) =>
-  await http("catering/merchant/set_meal/down", {
+export const offShelfSetMeal = async (shopId: number, id: number) =>
+  await http("catering/shop/set_meal/down", {
     method: "POST",
-    data: { id },
+    data: { shopId, id },
   });
 
-export const onShelfSetMeal = async (id: number) =>
-  await http("catering/merchant/set_meal/up", {
+export const onShelfSetMeal = async (shopId: number, id: number) =>
+  await http("catering/shop/set_meal/up", {
     method: "POST",
-    data: { id },
+    data: { shopId, id },
   });
 
-export const deleteSetMeal = async (id: number) =>
-  await http("catering/merchant/set_meal/delete", {
+export const deleteSetMeal = async (shopId: number, id: number) =>
+  await http("catering/shop/set_meal/delete", {
     method: "POST",
-    data: { id },
+    data: { shopId, id },
   });
 
 export const getSetMealInfo = async (id: number): Promise<SetMealInfo> =>
-  await http("catering/merchant/set_meal/detail", { data: { id } });
+  await http("catering/set_meal/detail", { data: { id } });
 
 export const createSetMeal = async (
+  shopId: number,
   setMealInfo: Partial<Omit<SetMealInfo, "id">>
 ) =>
-  await http("catering/merchant/set_meal/add", {
+  await http("catering/shop/set_meal/add", {
     method: "POST",
-    data: cleanObject(setMealInfo),
+    data: cleanObject({ shopId, ...setMealInfo }),
   });
 
-export const editSetMeal = async (setMealInfo: Partial<SetMealInfo>) =>
-  await http("catering/merchant/set_meal/edit", {
+export const editSetMeal = async (
+  shopId: number,
+  setMealInfo: Partial<SetMealInfo>
+) =>
+  await http("catering/shop/set_meal/edit", {
     method: "POST",
-    data: cleanObject(setMealInfo),
+    data: cleanObject({ shopId, ...setMealInfo }),
   });

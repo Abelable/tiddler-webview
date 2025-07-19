@@ -4,6 +4,11 @@ import { cleanObject } from "@/utils/index";
 import type { ApiOption } from "@/utils/type";
 import type { ShopRestaurant, RestaurantInfo } from "./type";
 
+export const getShopRestaurantOptions = async (
+  shopId: number
+): Promise<ApiOption[]> =>
+  await http("catering/shop/restaurant/options", { data: { shopId } });
+
 export const getRestaurantOptions = async (
   shopId: number,
   keywords: string
