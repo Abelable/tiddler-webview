@@ -8,7 +8,7 @@
       @click="selectMenu(index)"
     >
       <div class="name">{{ item.name }}</div>
-      <div class="total">（{{ item.total }}）</div>
+      <div class="total" v-if="item.total">（{{ item.total }}）</div>
     </li>
   </ul>
 
@@ -36,11 +36,11 @@
     <Empty
       v-if="!ticketLists[curMenuIndex].length"
       image="https://static.tiddler.cn/mp/default_illus/empty.png"
-      description="暂无代金券列表"
+      description="暂无餐券列表"
     />
   </PullRefresh>
 
-  <button class="add-btn" @click="addTicket">添加代金券</button>
+  <button class="add-btn" @click="addTicket">添加餐券</button>
 </template>
 
 <script setup lang="ts">
