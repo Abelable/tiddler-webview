@@ -8,7 +8,7 @@
       @click="selectMenu(index)"
     >
       <div class="name">{{ item.name }}</div>
-      <div class="total">（{{ item.total }}）</div>
+      <div class="total" v-if="item.total">（{{ item.total }}）</div>
     </li>
   </ul>
 
