@@ -762,7 +762,10 @@ const save = async () => {
   border-radius: 0.12rem;
 }
 </style>
-<style>
+<style scoped>
+.van-empty {
+  padding: 1rem 0;
+}
 .van-empty__description {
   font-size: 0.24rem;
 }
