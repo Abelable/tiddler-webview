@@ -9,7 +9,11 @@
     <div class="container">
       <div class="title">选择人员</div>
       <form action="/">
-        <Search v-model="keywords" placeholder="请输入手机号或昵称进行搜索" />
+        <Search
+          v-model="keywords"
+          @search="setUserOptions"
+          placeholder="请输入手机号或昵称进行搜索"
+        />
       </form>
       <div class="user-options" v-if="userOptions.length">
         <RadioGroup v-model="userId">
@@ -50,7 +54,9 @@
 
 <script setup lang="ts">
 import { Popup, Search, RadioGroup, Radio, Empty } from "vant";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import { getUserOptions } from "@/utils/api";
+
 import type { User } from "@/utils/type";
 
 defineProps<{ visible: boolean }>();
@@ -59,6 +65,14 @@ const emit = defineEmits(["confirm", "cancel"]);
 const keywords = ref("");
 const userOptions = ref<User[]>([]);
 const userId = ref(0);
+
+onMounted(() => {
+  setUserOptions();
+});
+
+const setUserOptions = async () => {
+  userOptions.value = await getUserOptions(keywords.value);
+};
 
 const confirm = () => {
   if (userId.value === 0) {
