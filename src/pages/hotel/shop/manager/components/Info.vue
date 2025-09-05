@@ -111,9 +111,18 @@ watch(props, (props) => {
 const pickUser = () => {
   userPickerPopupVisible.value = true;
 };
-const selectUser = ({ userId, avatar }: { userId: number; avatar: string }) => {
-  managerInfo.value.userId = userId;
+const selectUser = ({
+  id,
+  avatar,
+  nickname,
+}: {
+  id: number;
+  avatar: string;
+  nickname: string;
+}) => {
+  managerInfo.value.userId = id;
   managerInfo.value.avatar = avatar;
+  managerInfo.value.nickname = nickname;
   userPickerPopupVisible.value = false;
 };
 

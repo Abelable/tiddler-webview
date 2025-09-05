@@ -79,7 +79,11 @@ const confirm = () => {
     return;
   }
   const user = userOptions.value.find((user) => user.id === userId.value);
-  emit("confirm", { userId: user?.id, avatar: user?.avatar });
+  emit("confirm", {
+    id: user?.id,
+    avatar: user?.avatar,
+    nickname: user?.nickname,
+  });
 };
 const cancel = () => {
   emit("cancel");

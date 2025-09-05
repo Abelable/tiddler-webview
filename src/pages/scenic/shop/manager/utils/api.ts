@@ -14,12 +14,14 @@ export const getManager = async (
 export const createManager = async (
   shopId: number,
   userId: number,
+  avatar: string,
+  nickname: string,
   roleId: number,
   scenicIds: number[]
 ) =>
   await http("scenic/shop/manager/add", {
     method: "POST",
-    data: { shopId, userId, roleId, scenicIds },
+    data: { shopId, userId, avatar, nickname, roleId, scenicIds },
   });
 
 export const editManager = async (
