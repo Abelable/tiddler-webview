@@ -1,5 +1,7 @@
 <template>
   <Info
+    v-if="shopId"
+    :shopId="shopId"
     :editingManagerInfo="editingManagerInfo"
     @save="save"
     @delete="_delete"

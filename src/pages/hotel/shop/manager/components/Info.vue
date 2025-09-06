@@ -29,7 +29,7 @@
             <Icon name="arrow" />
           </div>
         </li>
-        <li class="form-item row between" v-if="managerInfo.roleId === 3">
+        <li class="form-item row between">
           <div class="name">关联酒店</div>
           <div class="picker row" @click="hotelPickerPopupVisible = true">
             <div class="content" :class="{ active: hotelNames }">
@@ -80,13 +80,14 @@ import PickerPopup from "@/components/PickerPopup.vue";
 import MultiPickerPopup from "@/components/MultiPickerPopup.vue";
 import UserPickerPopup from "@/components/UserPickerPopup.vue";
 
-import { computed, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { initialManagerInfo, roleOptions } from "../utils/index";
-import { hotelOptions } from "../../room/utils";
+import { hotelOptions, setHotelOptions } from "../../room/utils/index";
 
 import type { ManagerDetail } from "../utils/type";
 
 const props = defineProps<{
+  shopId: number;
   editingManagerInfo?: Omit<ManagerDetail, "id">;
 }>();
 const emit = defineEmits(["save", "delete"]);
@@ -106,6 +107,10 @@ watch(props, (props) => {
   if (props.editingManagerInfo) {
     managerInfo.value = props.editingManagerInfo;
   }
+});
+
+onMounted(() => {
+  setHotelOptions(props.shopId);
 });
 
 const pickUser = () => {
