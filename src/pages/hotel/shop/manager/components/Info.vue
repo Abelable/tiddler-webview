@@ -29,7 +29,7 @@
             <Icon name="arrow" />
           </div>
         </li>
-        <li class="form-item row between">
+        <li class="form-item row between" v-if="managerInfo.roleId === 3">
           <div class="name">关联酒店</div>
           <div class="picker row" @click="hotelPickerPopupVisible = true">
             <div class="content" :class="{ active: hotelNames }">

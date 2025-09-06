@@ -29,11 +29,11 @@
             <Icon name="arrow" />
           </div>
         </li>
-        <li class="form-item row between">
-          <div class="name">关联酒店</div>
+        <li class="form-item row between" v-if="managerInfo.roleId === 3">
+          <div class="name">关联餐厅</div>
           <div class="picker row" @click="restaurantPickerPopupVisible = true">
-            <div class="content" :class="{ active: hotelNames }">
-              {{ hotelNames || "请选择关联酒店" }}
+            <div class="content" :class="{ active: restaurantNames }">
+              {{ restaurantNames || "请选择关联餐厅" }}
             </div>
             <Icon name="arrow" />
           </div>
@@ -102,7 +102,7 @@ const userPickerPopupVisible = ref(false);
 const rolePickerPopupVisible = ref(false);
 const restaurantPickerPopupVisible = ref(false);
 
-const hotelNames = computed(() =>
+const restaurantNames = computed(() =>
   managerInfo.value.restaurantIds
     .map((id) => restaurantOptions.value.find((item) => item.id === id)?.name)
     .join()
