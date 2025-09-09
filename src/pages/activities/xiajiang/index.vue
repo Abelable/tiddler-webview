@@ -1,11 +1,11 @@
 <template>
-  <div class="container">
+  <div class="container" @click="checkScenic(35)">
     <img
       class="scenic"
       v-for="(id, index) in scenicList"
       :key="index"
       :src="require(`./images/scenic/${index + 1}.png`)"
-      @click="checkScenic(id)"
+      @click.stop="checkScenic(id)"
       alt=""
     />
   </div>
