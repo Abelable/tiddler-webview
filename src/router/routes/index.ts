@@ -5,6 +5,7 @@ import scenic from "./scenic";
 import hotel from "./hotel";
 import catering from "./catering";
 import promoter from "./promoter";
+import activity from "./activity";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -29,6 +30,7 @@ const routes: Array<RouteRecordRaw> = [
   ...hotel,
   ...catering,
   ...promoter,
+  ...activity,
 ];
 
 export default routes;
