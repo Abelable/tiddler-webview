@@ -3,7 +3,7 @@
     <div class="header row center">
       <img
         class="bg"
-        :src="shopInfo?.bg || 'https://static.tiddler.cn/mp/bg.png'"
+        :src="shopInfo?.bg || 'https://static.tiddler.cn/mp/shp_bg.png'"
       />
       <div class="avatar-wrap">
         <Uploader
