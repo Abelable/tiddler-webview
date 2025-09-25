@@ -4,7 +4,7 @@
       <div class="home" v-if="step === 0">
         <div class="main">
           <div class="title">欢迎加入小鱼游</div>
-          <div class="sub-title">- 景区服务商入驻 -</div>
+          <div class="sub-title">景区服务商入驻</div>
           <div
             class="btn confirm"
             :class="{ active: protocolChecked }"
@@ -16,7 +16,7 @@
             <Checkbox v-model="protocolChecked" icon-size="16px" />
             <div style="margin-left: 0.1rem">
               我已阅读并同意
-              <span style="color: #1b89fa" @click="checkProtocol"
+              <span style="color: #00b2ff" @click="checkProtocol"
                 >《小鱼游景区服务商服务协议》</span
               >
             </div>
@@ -374,7 +374,7 @@
             <Checkbox v-model="depositProtocolChecked" icon-size="16px" />
             <div style="margin-left: 0.1rem">
               我已阅读并同意
-              <span style="color: #1b89fa" @click="checkDepositProtocol"
+              <span style="color: #00b2ff" @click="checkDepositProtocol"
                 >《小鱼游景区商家保证金协议》</span
               >
             </div>
@@ -744,28 +744,42 @@ const back = () => {
         position: absolute;
         left: 0;
         bottom: 0;
-        padding: 0.64rem 0.32rem;
+        padding: 0 0.5rem 1.4rem;
         width: 100%;
-        background: linear-gradient(
-          rgba(0, 0, 0, 0) 0%,
-          rgba(0, 0, 0, 68) 100%
-        );
         .title {
           color: #fff;
-          font-size: 0.5rem;
-          font-weight: 550;
+          font-size: 0.62rem;
         }
         .sub-title {
-          margin-top: 0.06rem;
+          position: relative;
+          margin-top: 0.24rem;
+          margin-left: 0.48rem;
+          width: fit-content;
           color: #fff;
           font-size: 0.28rem;
+          &::before,
+          &::after {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0.32rem;
+            height: 0.01rem;
+            content: "";
+            background: #fff;
+          }
+          &::before {
+            left: -0.48rem;
+          }
+          &::after {
+            right: -0.48rem;
+          }
         }
         .confirm {
           margin-top: 0.88rem;
           color: #fff;
           background: #e6e6e6;
           &.active {
-            background: #1b89fa;
+            background: #00b2ff;
           }
         }
         .protocol-tips {
@@ -808,7 +822,7 @@ const back = () => {
               text-align: center;
               font-weight: 550;
               &.active {
-                color: #1b89fa;
+                color: #00b2ff;
               }
               &.finished {
                 color: #333;
@@ -820,7 +834,7 @@ const back = () => {
               background: #ddd;
               border-radius: 0.05rem;
               &.finished {
-                background: #1b89fa;
+                background: #00b2ff;
               }
             }
           }
