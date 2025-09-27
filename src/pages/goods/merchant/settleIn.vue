@@ -39,7 +39,7 @@
               >
                 <div class="name-wrap">
                   <div class="name">
-                    {{ item === "enterprise" ? "企业店铺" : "个人店铺" }}
+                    {{ item === "enterprise" ? "企业店铺" : "个体店铺" }}
                   </div>
                   <div class="desc">
                     {{
@@ -1070,7 +1070,7 @@ const back = () => {
           }
         }
         .selection {
-          margin-top: 0.68rem;
+          margin-top: 0.58rem;
           flex: 1;
           overflow-y: scroll;
           .tips {

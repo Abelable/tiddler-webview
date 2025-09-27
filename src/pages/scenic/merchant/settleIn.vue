@@ -867,7 +867,6 @@ const back = () => {
           }
         }
         .course {
-          margin-top: 0.32rem;
           flex: 1;
           overflow-y: scroll;
           .step {
