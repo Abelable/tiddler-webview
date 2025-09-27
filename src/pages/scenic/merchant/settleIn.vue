@@ -2,15 +2,99 @@
   <div class="container" v-if="mounted">
     <div class="settle-in" v-if="!statusInfo">
       <div class="home" v-if="step === 0">
+        <div class="header">
+          <div class="title">
+            <p>入驻<span style="color: #00b2ff">小鱼游</span></p>
+            <p>收入<span style="color: #e4b785">节节高</span></p>
+          </div>
+          <img
+            class="illus"
+            src="@/assets/images/merchant/trip_illus.png"
+            alt=""
+          />
+        </div>
         <div class="main">
-          <div class="title">欢迎加入小鱼游</div>
-          <div class="sub-title">景区服务商入驻</div>
+          <div class="title">
+            <img
+              class="icon"
+              src="@/assets/images/merchant/title_decoration_left.png"
+              alt=""
+            />
+            <div>景区服务商入驻流程</div>
+            <img
+              class="icon"
+              src="@/assets/images/merchant/title_decoration_right.png"
+              alt=""
+            />
+          </div>
+          <div class="course">
+            <div class="step">
+              <div class="index">1</div>
+              <div>材料准备</div>
+            </div>
+            <div class="content">
+              <div class="desc">证照需拍摄原件或复印件盖章，且在有效期内</div>
+              <div class="material-list">
+                <div class="material-item">
+                  <div class="info">
+                    <div class="name">营业执照</div>
+                    <div class="desc">企业执照或个体户执照</div>
+                  </div>
+                  <img
+                    class="material"
+                    src="@/assets/images/merchant/business_license.webp"
+                    alt=""
+                  />
+                </div>
+                <div class="material-item">
+                  <div class="info">
+                    <div class="name">行业资质</div>
+                    <div class="desc">部分行业需要，按行业补充</div>
+                  </div>
+                  <img
+                    class="material"
+                    src="@/assets/images/merchant/industry_qualification.webp"
+                    alt=""
+                  />
+                </div>
+                <div class="material-item">
+                  <div class="info">
+                    <div class="name">法人或经营者证件</div>
+                    <div class="desc">身份证或护照等</div>
+                  </div>
+                  <img
+                    class="material"
+                    src="@/assets/images/merchant/id_card.webp"
+                    alt=""
+                  />
+                </div>
+                <div class="material-item">
+                  <div class="info">
+                    <div class="name">银行账户信息</div>
+                    <div class="desc">企业对公银行开户信息</div>
+                  </div>
+                  <img
+                    class="material"
+                    src="@/assets/images/merchant/bank_card.webp"
+                    alt=""
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="index">2</div>
+              <div>景区认领</div>
+            </div>
+            <div class="content">
+              <div class="desc">提交资质信息，认领景区</div>
+            </div>
+          </div>
           <div
             class="btn confirm"
             :class="{ active: protocolChecked }"
             @click="nextStep"
           >
-            下一步
+            立即入驻
           </div>
           <div class="protocol-tips">
             <Checkbox v-model="protocolChecked" icon-size="16px" />
@@ -737,47 +821,111 @@ const back = () => {
     .home {
       position: relative;
       height: 100vh;
-      background-image: url("./images/bg.webp");
+      background-color: #f4f8fe;
+      background-image: url("@/assets/images/merchant/bg.webp");
+      background-size: 100% 5.5rem;
       background-repeat: no-repeat;
-      background-size: cover;
-      .main {
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        padding: 0 0.5rem 1.4rem;
-        width: 100%;
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-left: 0.68rem;
+        padding-right: 0.32rem;
         .title {
-          color: #fff;
-          font-size: 0.62rem;
+          color: #141925;
+          font-size: 0.58rem;
+          font-weight: bolder;
         }
-        .sub-title {
-          position: relative;
-          margin-top: 0.24rem;
-          margin-left: 0.48rem;
-          width: fit-content;
-          color: #fff;
-          font-size: 0.28rem;
-          &::before,
-          &::after {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 0.32rem;
-            height: 0.01rem;
-            content: "";
-            background: #fff;
+        .illus {
+          width: 3rem;
+          height: 3rem;
+        }
+      }
+      .main {
+        padding: 0.32rem;
+        height: calc(100vh - 3rem);
+        background: #fff;
+        border-radius: 0.4rem 0.4rem 0 0;
+        .title {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #141925;
+          font-size: 0.36rem;
+          font-weight: bold;
+          .icon {
+            margin: 0 0.12rem;
+            width: 0.4rem;
+            height: 0.16rem;
           }
-          &::before {
-            left: -0.48rem;
+        }
+        .course {
+          margin-top: 0.48rem;
+          .step {
+            display: flex;
+            align-items: center;
+            margin-top: 0.48rem;
+            color: #141925;
+            font-size: 0.32rem;
+            font-weight: bold;
+            .index {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-right: 0.2rem;
+              width: 0.36rem;
+              height: 0.36rem;
+              color: #fff;
+              font-size: 0.24rem;
+              font-style: italic;
+              background: linear-gradient(135deg, #76dcff 0%, #05a8ff 100%);
+              border-radius: 50%;
+            }
           }
-          &::after {
-            right: -0.48rem;
+          .content {
+            margin-top: 0.08rem;
+            padding-left: 0.56rem;
+            .desc {
+              color: #999;
+              font-size: 0.26rem;
+            }
+            .material-list {
+              margin-top: 0.48rem;
+              .material-item {
+                display: flex;
+                align-items: center;
+                margin-bottom: 0.24rem;
+                padding: 0 0.24rem;
+                height: 1.4rem;
+                background: #f5f6f8;
+                border-radius: 0.24rem;
+                .info {
+                  flex: 1;
+                  .name {
+                    color: #333;
+                    font-size: 0.28rem;
+                    font-weight: bold;
+                  }
+                  .desc {
+                    margin-top: 0.08rem;
+                    color: #999;
+                    font-size: 0.26rem;
+                  }
+                }
+                .material {
+                  width: 1.5rem;
+                  height: 1rem;
+                }
+              }
+            }
           }
         }
         .confirm {
-          margin-top: 0.88rem;
+          margin-top: 0.48rem;
+          height: 1rem;
           color: #fff;
           background: #e6e6e6;
+          border-radius: 0.32rem;
           &.active {
             background: #00b2ff;
           }
@@ -786,7 +934,7 @@ const back = () => {
           display: flex;
           justify-content: center;
           margin-top: 0.36rem;
-          color: #fff;
+          color: #999;
           font-size: 0.24rem;
         }
       }
