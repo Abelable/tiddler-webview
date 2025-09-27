@@ -2,39 +2,75 @@
   <div class="container" v-if="mounted">
     <div class="settle-in" v-if="!statusInfo">
       <div class="home" v-if="step === 0">
+        <div class="header">
+          <div class="title">
+            <p>入驻<span style="color: #00b2ff">小鱼游</span></p>
+            <p>收入<span style="color: #e4b785">节节高</span></p>
+          </div>
+          <img
+            class="illus"
+            src="@/assets/images/merchant/cart_illus.webp"
+            alt=""
+          />
+        </div>
         <div class="main">
-          <div class="title">商家入驻</div>
-          <div class="sub-title">请选择店铺类型:</div>
+          <div class="title">
+            <img
+              class="icon"
+              src="@/assets/images/merchant/title_decoration_left.png"
+              alt=""
+            />
+            <div>电商商家入驻</div>
+            <img
+              class="icon"
+              src="@/assets/images/merchant/title_decoration_right.png"
+              alt=""
+            />
+          </div>
           <div class="selection">
-            <div
-              class="option"
-              :class="{ selected: merchantInfo.type === index + 1 }"
-              v-for="(item, index) in ['personal', 'enterprise']"
-              :key="index"
-              @click="merchantInfo.type = index + 1"
-            >
-              <img class="icon" :src="require(`./images/${item}.png`)" alt="" />
-              <div class="name">
-                {{ item === "enterprise" ? "企业店铺" : "个人店铺" }}
+            <div class="tips">请选择您的商家类型</div>
+            <div class="options">
+              <div
+                class="option"
+                :class="{ selected: merchantInfo.type === index + 1 }"
+                v-for="(item, index) in ['shop', 'enterprise']"
+                :key="index"
+                @click="merchantInfo.type = index + 1"
+              >
+                <div class="name-wrap">
+                  <div class="name">
+                    {{ item === "enterprise" ? "企业店铺" : "个人店铺" }}
+                  </div>
+                  <div class="desc">
+                    {{
+                      item === "enterprise"
+                        ? "适用于公司主体、连锁品牌、加盟门店、集团旗下子公司等"
+                        : "适用于个体工商户、小微商家、流动摊点等经营者，入驻流程更便捷"
+                    }}
+                  </div>
+                </div>
+                <img
+                  class="icon"
+                  :src="require(`@/assets/images/merchant/${item}.png`)"
+                  alt=""
+                />
               </div>
             </div>
           </div>
-          <div class="btn-wrap">
-            <div
-              class="btn confirm"
-              :class="{ active: agreementsChecked }"
-              @click="nextStep"
-            >
-              下一步
-            </div>
-            <div class="agreements">
-              <Checkbox v-model="agreementsChecked" icon-size="16px" />
-              <div style="margin-left: 0.1rem">
-                阅读并同意
-                <span style="color: #1b89fa" @click="checkProtocol"
-                  >《小鱼游电商商家服务协议》</span
-                >
-              </div>
+          <div
+            class="btn confirm"
+            :class="{ active: protocolChecked }"
+            @click="nextStep"
+          >
+            立即入驻
+          </div>
+          <div class="protocol-tips">
+            <Checkbox v-model="protocolChecked" icon-size="16px" />
+            <div style="margin-left: 0.1rem">
+              阅读并同意
+              <span style="color: #00b2ff" @click="checkProtocol"
+                >《小鱼游电商商家服务协议》</span
+              >
             </div>
           </div>
         </div>
@@ -607,7 +643,7 @@ import type {
 const router = useRouter();
 
 const step = ref(0);
-const agreementsChecked = ref(false);
+const protocolChecked = ref(false);
 const merchantInfo = reactive<MerchantInfo>({
   type: 1,
   deposit: 0,
@@ -672,7 +708,7 @@ const handleVisibilityChange = async () => {
 const nextStep = () => {
   switch (step.value) {
     case 0:
-      if (!agreementsChecked.value) {
+      if (!protocolChecked.value) {
         showToast("请阅读并同意商家协议");
         return;
       }
@@ -989,60 +1025,110 @@ const back = () => {
   }
   .settle-in {
     .home {
-      display: flex;
-      flex-direction: column;
-      padding-top: 3.5rem;
+      position: relative;
       height: 100vh;
-      background-color: #fff;
-      background-image: url("./images/bg.jpeg");
-      background-size: 100% 5.62rem;
-      background-position-y: -1rem;
+      background-color: #f4f8fe;
+      background-image: url("@/assets/images/merchant/bg.webp");
+      background-size: 100% 5.5rem;
       background-repeat: no-repeat;
-      .main {
-        position: relative;
-        padding: 0.32rem;
-        flex: 1;
-        background: #fff;
-        border-radius: 0.24rem 0.24rem 0 0;
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-left: 0.68rem;
+        padding-right: 0.32rem;
+        height: 3rem;
         .title {
-          color: #333;
-          font-size: 0.5rem;
-          font-weight: 550;
+          color: #141925;
+          font-size: 0.58rem;
+          font-weight: bolder;
         }
-        .sub-title {
-          margin-top: 0.1rem;
-          color: #666;
-          font-size: 0.28rem;
-          font-weight: 500;
+        .illus {
+          width: 3rem;
+          height: 3rem;
+        }
+      }
+      .main {
+        display: flex;
+        flex-direction: column;
+        padding: 0.32rem;
+        padding-bottom: 0.64rem;
+        height: calc(100vh - 3rem);
+        background: #fff;
+        border-radius: 0.4rem 0.4rem 0 0;
+        .title {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #141925;
+          font-size: 0.36rem;
+          font-weight: bold;
+          .icon {
+            margin: 0 0.12rem;
+            width: 0.4rem;
+            height: 0.16rem;
+          }
         }
         .selection {
-          display: flex;
-          justify-content: space-between;
-          margin-top: 0.8rem;
-          .option {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 0.24rem;
-            width: 3.3rem;
-            border-radius: 0.24rem;
-            border: 1px solid #eee;
-            &.selected {
-              border: 1px solid #1b89fa;
-            }
-            .icon {
-              margin: 1rem 0;
-              width: 1.2rem;
-              height: 1.2rem;
-              opacity: 0.8;
-            }
-            .name {
-              margin-top: 0.24rem;
-              color: #333;
-              font-size: 0.28rem;
-              font-weight: 550;
+          margin-top: 0.68rem;
+          flex: 1;
+          overflow-y: scroll;
+          .tips {
+            color: #666;
+            font-size: 0.3rem;
+            text-align: center;
+          }
+          .options {
+            .option {
+              display: flex;
+              align-items: center;
+              margin-top: 0.32rem;
+              padding: 0 0.4rem;
+              height: 2.56rem;
+              background: #f5f9ff;
+              border-radius: 0.32rem;
+              &.selected {
+                background-image: url("@/assets/images/merchant/selected_bg.png");
+                background-size: 100% 100%;
+                background-repeat: no-repeat;
+              }
+              .name-wrap {
+                margin-right: 0.4rem;
+                flex: 1;
+                .name {
+                  color: #141925;
+                  font-size: 0.36rem;
+                  font-weight: 550;
+                }
+                .desc {
+                  margin-top: 0.12rem;
+                  color: #999;
+                  font-size: 0.24rem;
+                }
+              }
+              .icon {
+                width: 1.8rem;
+                height: 1.8rem;
+              }
             }
           }
+        }
+        .confirm {
+          margin-top: 0.32rem;
+          height: 1rem;
+          color: #fff;
+          background: #e6e6e6;
+          border-radius: 0.32rem;
+          &.active {
+            background: #00b2ff;
+          }
+        }
+        .protocol-tips {
+          display: flex;
+          justify-content: center;
+          margin-top: 0.36rem;
+          color: #999;
+          font-size: 0.24rem;
         }
       }
     }

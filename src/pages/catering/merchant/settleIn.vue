@@ -940,7 +940,7 @@ const back = () => {
                 background-repeat: no-repeat;
               }
               .name-wrap {
-                margin-right: 0.32rem;
+                margin-right: 0.4rem;
                 flex: 1;
                 .name {
                   color: #141925;
