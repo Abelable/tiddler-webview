@@ -867,12 +867,12 @@ const back = () => {
           }
         }
         .course {
+          margin-top: 0.32rem;
           flex: 1;
           overflow-y: scroll;
           .step {
             display: flex;
             align-items: center;
-            margin-top: 0.48rem;
             color: #141925;
             font-size: 0.32rem;
             font-weight: bold;
@@ -890,7 +890,7 @@ const back = () => {
             }
           }
           .content {
-            margin-top: 0.08rem;
+            margin: 0.08rem 0 0.48rem;
             padding-left: 0.56rem;
             .desc {
               color: #999;
