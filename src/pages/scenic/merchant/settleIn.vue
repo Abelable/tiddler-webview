@@ -20,7 +20,7 @@
               src="@/assets/images/merchant/title_decoration_left.png"
               alt=""
             />
-            <div>景区服务商入驻流程</div>
+            <div>景区商家入驻流程</div>
             <img
               class="icon"
               src="@/assets/images/merchant/title_decoration_right.png"
@@ -99,9 +99,9 @@
           <div class="protocol-tips">
             <Checkbox v-model="protocolChecked" icon-size="16px" />
             <div style="margin-left: 0.1rem">
-              我已阅读并同意
+              阅读并同意
               <span style="color: #00b2ff" @click="checkProtocol"
-                >《小鱼游景区服务商服务协议》</span
+                >《小鱼游景区商家服务协议》</span
               >
             </div>
           </div>
@@ -194,7 +194,7 @@
                     <div class="img-wrap">
                       <img
                         style="width: 0.5rem; height: 0.5rem"
-                        src="./images/camera.png"
+                        src="@/assets/images/merchant/camera.png"
                         alt=""
                       />
                     </div>
@@ -209,7 +209,7 @@
                 </Uploader>
                 <img
                   class="photo"
-                  src="./images/enterprise-example.png"
+                  src="@/assets/images/merchant/enterprise-example.png"
                   alt=""
                 />
               </div>
@@ -260,7 +260,7 @@
                     v-if="!uploadIdCardFrontPhotoLoading"
                     :src="
                       merchantInfo.idCardFrontPhoto ||
-                      require('./images/front.png')
+                      require('@/assets/images/merchant/front.png')
                     "
                     alt=""
                   />
@@ -277,7 +277,7 @@
                     v-if="!uploadIdCardBackPhotoLoading"
                     :src="
                       merchantInfo.idCardBackPhoto ||
-                      require('./images/behind.png')
+                      require('@/assets/images/merchant/behind.png')
                     "
                     alt=""
                   />
@@ -310,7 +310,7 @@
                     <div class="img-wrap">
                       <img
                         style="width: 0.5rem; height: 0.5rem"
-                        src="./images/camera.png"
+                        src="@/assets/images/merchant/camera.png"
                         alt=""
                       />
                     </div>
@@ -320,7 +320,11 @@
                     <Loading vertical color="#fff">上传中...</Loading>
                   </div>
                 </Uploader>
-                <img class="photo" src="./images/person-example.png" alt="" />
+                <img
+                  class="photo"
+                  src="@/assets/images/merchant/person-example.png"
+                  alt=""
+                />
               </div>
             </div>
           </div>
@@ -457,7 +461,7 @@
           <div class="protocol-tips">
             <Checkbox v-model="depositProtocolChecked" icon-size="16px" />
             <div style="margin-left: 0.1rem">
-              我已阅读并同意
+              阅读并同意
               <span style="color: #00b2ff" @click="checkDepositProtocol"
                 >《小鱼游景区商家保证金协议》</span
               >
@@ -569,7 +573,7 @@ const nextStep = () => {
   switch (step.value) {
     case 0:
       if (!protocolChecked.value) {
-        showToast("请阅读并同意服务商协议");
+        showToast("请阅读并同意商家协议");
         return;
       }
       step.value = 1;
@@ -842,7 +846,10 @@ const back = () => {
         }
       }
       .main {
+        display: flex;
+        flex-direction: column;
         padding: 0.32rem;
+        padding-bottom: 0.64rem;
         height: calc(100vh - 3rem);
         background: #fff;
         border-radius: 0.4rem 0.4rem 0 0;
@@ -860,7 +867,9 @@ const back = () => {
           }
         }
         .course {
-          margin-top: 0.48rem;
+          margin-top: 0.32rem;
+          flex: 1;
+          overflow-y: scroll;
           .step {
             display: flex;
             align-items: center;
@@ -877,7 +886,6 @@ const back = () => {
               height: 0.36rem;
               color: #fff;
               font-size: 0.24rem;
-              font-style: italic;
               background: linear-gradient(135deg, #76dcff 0%, #05a8ff 100%);
               border-radius: 50%;
             }
@@ -895,8 +903,7 @@ const back = () => {
                 display: flex;
                 align-items: center;
                 margin-bottom: 0.24rem;
-                padding: 0 0.24rem;
-                height: 1.4rem;
+                padding: 0.24rem;
                 background: #f5f6f8;
                 border-radius: 0.24rem;
                 .info {
@@ -915,13 +922,14 @@ const back = () => {
                 .material {
                   width: 1.5rem;
                   height: 1rem;
+                  border-radius: 0.08rem;
                 }
               }
             }
           }
         }
         .confirm {
-          margin-top: 0.48rem;
+          margin-top: 0.32rem;
           height: 1rem;
           color: #fff;
           background: #e6e6e6;

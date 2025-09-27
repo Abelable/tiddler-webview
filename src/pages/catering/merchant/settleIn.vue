@@ -30,7 +30,7 @@
             <div class="agreements">
               <Checkbox v-model="protocolChecked" icon-size="16px" />
               <div style="margin-left: 0.1rem">
-                我已阅读并同意
+                阅读并同意
                 <span style="color: #1b89fa" @click="checkProtocol"
                   >《小鱼游餐饮商家服务协议》</span
                 >
@@ -422,7 +422,7 @@
           <div class="protocol-tips">
             <Checkbox v-model="depositProtocolChecked" icon-size="16px" />
             <div style="margin-left: 0.1rem">
-              我已阅读并同意
+              阅读并同意
               <span style="color: #1b89fa" @click="checkDepositProtocol"
                 >《小鱼游酒店商家保证金协议》</span
               >

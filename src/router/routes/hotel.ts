@@ -5,7 +5,7 @@ const hotel: Array<RouteRecordRaw> = [
     path: "/hotel/merchant/settle_in",
     name: "hotel_merchant_settle_in",
     meta: {
-      title: "酒店服务商入驻",
+      title: "酒店商家入驻",
     },
     component: () => import("@/pages/hotel/merchant/settleIn.vue"),
   },

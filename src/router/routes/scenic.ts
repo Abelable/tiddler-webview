@@ -5,7 +5,7 @@ const scenic: Array<RouteRecordRaw> = [
     path: "/scenic/merchant/settle_in",
     name: "scenic_merchant_settle_in",
     meta: {
-      title: "景区服务商入驻",
+      title: "景区商家入驻",
     },
     component: () => import("@/pages/scenic/merchant/settleIn.vue"),
   },
