@@ -940,13 +940,15 @@ const back = () => {
                 background-repeat: no-repeat;
               }
               .name-wrap {
+                margin-right: 0.32rem;
+                flex: 1;
                 .name {
                   color: #141925;
                   font-size: 0.36rem;
                   font-weight: 550;
                 }
                 .desc {
-                  margin-top: 0.1rem;
+                  margin-top: 0.12rem;
                   color: #999;
                   font-size: 0.24rem;
                 }
