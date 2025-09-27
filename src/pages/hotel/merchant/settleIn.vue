@@ -873,7 +873,6 @@ const back = () => {
           .step {
             display: flex;
             align-items: center;
-            margin-top: 0.48rem;
             color: #141925;
             font-size: 0.32rem;
             font-weight: bold;
