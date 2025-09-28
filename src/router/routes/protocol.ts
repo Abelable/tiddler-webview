@@ -18,12 +18,28 @@ const protocol: Array<RouteRecordRaw> = [
     component: () => import("@/pages/protocol/scenicMerchantProtocol.vue"),
   },
   {
+    path: "/protocol/scenic_deposit",
+    name: "scenic_deposit_protocol",
+    meta: {
+      title: "景区商家保证金协议",
+    },
+    component: () => import("@/pages/protocol/scenicDepositProtocol.vue"),
+  },
+  {
     path: "/protocol/hotel_merchant",
     name: "hotel_merchant_protocol",
     meta: {
       title: "酒店商家服务协议",
     },
     component: () => import("@/pages/protocol/hotelMerchantProtocol.vue"),
+  },
+  {
+    path: "/protocol/hotel_deposit",
+    name: "hotel_deposit_protocol",
+    meta: {
+      title: "酒店商家保证金协议",
+    },
+    component: () => import("@/pages/protocol/hotelDepositProtocol.vue"),
   },
   {
     path: "/protocol/catering_merchant",
@@ -34,12 +50,28 @@ const protocol: Array<RouteRecordRaw> = [
     component: () => import("@/pages/protocol/cateringMerchantProtocol.vue"),
   },
   {
+    path: "/protocol/catering_deposit",
+    name: "catering_deposit_protocol",
+    meta: {
+      title: "餐饮商家保证金协议",
+    },
+    component: () => import("@/pages/protocol/cateringDepositProtocol.vue"),
+  },
+  {
     path: "/protocol/merchant",
     name: "merchant_protocol",
     meta: {
       title: "电商商家服务协议",
     },
     component: () => import("@/pages/protocol/merchantProtocol.vue"),
+  },
+  {
+    path: "/protocol/deposit",
+    name: "deposit_protocol",
+    meta: {
+      title: "电商商家保证金协议",
+    },
+    component: () => import("@/pages/protocol/depositProtocol.vue"),
   },
   {
     path: "/protocol/withdraw",
