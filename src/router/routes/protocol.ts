@@ -10,6 +10,14 @@ const protocol: Array<RouteRecordRaw> = [
     component: () => import("@/pages/protocol/userProtocol.vue"),
   },
   {
+    path: "/protocol/user_auth",
+    name: "user_auth_protocol",
+    meta: {
+      title: "个人信息授权声明",
+    },
+    component: () => import("@/pages/protocol/userAuthProtocol.vue"),
+  },
+  {
     path: "/protocol/scenic_merchant",
     name: "scenic_merchant_protocol",
     meta: {
@@ -40,6 +48,14 @@ const protocol: Array<RouteRecordRaw> = [
       title: "酒店商家保证金协议",
     },
     component: () => import("@/pages/protocol/hotelDepositProtocol.vue"),
+  },
+  {
+    path: "/protocol/hotel_order",
+    name: "hotel_order_protocol",
+    meta: {
+      title: "酒店预订条款",
+    },
+    component: () => import("@/pages/protocol/hotelOrderProtocol.vue"),
   },
   {
     path: "/protocol/catering_merchant",
