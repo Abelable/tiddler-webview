@@ -957,9 +957,7 @@ const categoryConfirm = ({
 };
 
 const checkProtocol = () => router.push("/protocol/merchant");
-
-const checkDepositProtocol = () =>
-  router.push("/shop/agreements/merchant_service");
+const checkDepositProtocol = () => router.push("/protocol/deposit");
 
 const pay = async () => {
   if (statusInfo.value) {
