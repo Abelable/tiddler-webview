@@ -13,7 +13,7 @@ const team: Array<RouteRecordRaw> = [
     path: "/activity/summer",
     name: "activity_summer",
     meta: {
-      title: "夏日狂欢",
+      title: "夏日畅游",
     },
     component: () => import("@/pages/activities/summer/index.vue"),
   },
