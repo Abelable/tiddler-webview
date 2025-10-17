@@ -1,337 +1,476 @@
 <template>
-  <div class="settle-in">
-    <div class="information-filling">
-      <div class="header">
-        <div class="title">信息填写</div>
-        <div class="sub-title">真实有效的信息有助于您快速通过审核</div>
-        <div class="steps">
-          <div
-            class="step"
-            v-for="(item, index) in [
-              merchantInfo.type === 1 ? '填写个体信息' : '填写企业信息',
-              '填写银行信息',
-              '填写店铺信息',
-            ]"
-            :key="index"
-          >
-            <div
-              class="name"
-              :class="{
-                active: step === index + 1,
-                finished: step > index + 1,
-              }"
-            >
-              {{ item }}
+  <div class="container" v-if="mounted">
+    <div class="settle-in" v-if="!statusInfo">
+      <div class="home" v-if="step === 0">
+        <div class="header">
+          <div class="title">
+            <p>入驻<span style="color: #00b2ff">小鱼游</span></p>
+            <p>收入<span style="color: #e4b785">节节高</span></p>
+          </div>
+          <img
+            class="illus"
+            src="@/assets/images/merchant/food_illus.webp"
+            alt=""
+          />
+        </div>
+        <div class="main">
+          <div class="title">
+            <img
+              class="icon"
+              src="@/assets/images/merchant/title_decoration_left.png"
+              alt=""
+            />
+            <div>餐饮商家入驻</div>
+            <img
+              class="icon"
+              src="@/assets/images/merchant/title_decoration_right.png"
+              alt=""
+            />
+          </div>
+          <div class="selection">
+            <div class="tips">请选择您的商家类型</div>
+            <div class="options">
+              <div
+                class="option"
+                :class="{ selected: merchantInfo.type === index + 1 }"
+                v-for="(item, index) in ['restaurant', 'enterprise']"
+                :key="index"
+                @click="merchantInfo.type = index + 1"
+              >
+                <div class="name-wrap">
+                  <div class="name">
+                    {{ item === "enterprise" ? "企业店铺" : "个体店铺" }}
+                  </div>
+                  <div class="desc">
+                    {{
+                      item === "enterprise"
+                        ? "适用于公司主体、连锁品牌、加盟门店、集团旗下子公司等"
+                        : "适用于个体工商户、小微商家、流动摊点等经营者，入驻流程更便捷"
+                    }}
+                  </div>
+                </div>
+                <img
+                  class="icon"
+                  :src="require(`@/assets/images/merchant/${item}.png`)"
+                  alt=""
+                />
+              </div>
             </div>
-            <div
-              class="progress-bar"
-              :class="{ finished: step >= index + 1 }"
-            ></div>
+          </div>
+          <div
+            class="btn confirm"
+            :class="{ active: protocolChecked }"
+            @click="nextStep"
+          >
+            立即入驻
+          </div>
+          <div class="protocol-tips">
+            <Checkbox v-model="protocolChecked" icon-size="16px" />
+            <div style="margin-left: 0.1rem">
+              阅读并同意
+              <span style="color: #00b2ff" @click="checkProtocol"
+                >《小鱼游餐饮商家服务协议》</span
+              >
+            </div>
           </div>
         </div>
       </div>
-      <div class="main">
-        <div class="form-wrap" v-show="step === 1">
-          <template v-if="merchantInfo.type === 1">
-            <div class="title">个体工商户信息</div>
-            <div class="form-item">
-              <div class="form-title">上传经营者身份证</div>
-              <div class="uploader-wrap">
-                <Uploader
-                  :default-img="
-                    merchantInfo.idCardFrontPhoto ||
-                    require('@/assets/images/merchant/front.png')
-                  "
-                  @finish="uploadIdCardFrontPhoto"
-                />
-                <Uploader
-                  :default-img="
-                    merchantInfo.idCardBackPhoto ||
-                    require('@/assets/images/merchant/behind.png')
-                  "
-                  @finish="uploadIdCardBackPhoto"
-                />
-              </div>
-            </div>
-            <div class="form-item">
-              <div class="form-title">请点击上传手持身份证照片</div>
-              <div class="uploader-wrap">
-                <Uploader
-                  title="手持身份证照片"
-                  :default-img="merchantInfo.holdIdCardPhoto || ''"
-                  @finish="uploadHoldIdCardPhoto"
-                />
-                <img
-                  class="photo"
-                  src="@/assets/images/merchant/person-example.png"
-                  alt=""
-                />
-              </div>
-            </div>
-            <div class="form-item">
-              <div class="form-title">经营者姓名</div>
-              <input
-                class="input"
-                v-model="merchantInfo.name"
-                type="text"
-                placeholder="例：小明"
-              />
-            </div>
-            <div class="form-item">
-              <div class="form-title">经营者身份证号</div>
-              <input
-                class="input"
-                v-model="merchantInfo.idCardNumber"
-                type="text"
-                placeholder="请输入18位身份证号"
-              />
-            </div>
-            <div class="form-item">
-              <div class="form-title">上传营业执照、卫生许可证</div>
-              <div class="uploader-wrap">
-                <Uploader
-                  title="营业执照照片"
-                  :default-img="merchantInfo.businessLicensePhoto || ''"
-                  @finish="uploadBusinessLicensePhoto"
-                />
-                <Uploader
-                  title="卫生许可证照片"
-                  :default-img="merchantInfo.hygienicLicensePhoto || ''"
-                  @finish="uploadHygienicLicensePhoto"
-                />
-              </div>
-            </div>
-            <div class="title">联系方式</div>
-            <div class="form-item">
-              <div class="form-title">手机号</div>
-              <input
-                class="input"
-                v-model="merchantInfo.mobile"
-                type="tel"
-                placeholder="请输入手机号"
-              />
-            </div>
-            <div class="form-item">
-              <div class="form-title">电子邮箱</div>
-              <input
-                class="input"
-                v-model="merchantInfo.email"
-                type="email"
-                placeholder="请输入电子邮箱"
-              />
-            </div>
-            <div class="form-item">
-              <div class="form-title">联系地址</div>
-              <div
-                class="picker"
-                :class="{ active: merchantInfo.regionDesc }"
-                @click="areaPickerPopupVisible = true"
-              >
-                {{ merchantInfo.regionDesc || "请选择省、市、区" }}
-              </div>
-            </div>
-            <div class="form-item">
-              <div class="form-title">详细地址</div>
-              <input
-                class="input"
-                v-model="merchantInfo.addressDetail"
-                type="text"
-                placeholder="请输入详细地址"
-              />
-            </div>
-          </template>
-          <template v-else>
-            <div class="title">企业信息</div>
-            <div class="form-item">
-              <div class="form-title">企业名称</div>
-              <input
-                class="input"
-                v-model="merchantInfo.companyName"
-                type="text"
-                placeholder="请输入企业名称"
-              />
-            </div>
-            <div class="form-item">
-              <div class="form-title">企业经营地址</div>
-              <div
-                class="picker"
-                :class="{ active: merchantInfo.regionDesc }"
-                @click="areaPickerPopupVisible = true"
-              >
-                {{ merchantInfo.regionDesc || "请选择省、市、区" }}
-              </div>
-            </div>
-            <div class="form-item">
-              <div class="form-title">企业地址详情</div>
-              <input
-                class="input"
-                v-model="merchantInfo.addressDetail"
-                type="text"
-                placeholder="请输入详细地址"
-              />
-            </div>
-            <div class="form-item">
-              <div class="form-title">上传营业执照、卫生许可证</div>
-              <div class="uploader-wrap">
-                <Uploader
-                  title="营业执照照片"
-                  :default-img="merchantInfo.businessLicensePhoto || ''"
-                  @finish="uploadBusinessLicensePhoto"
-                />
-                <Uploader
-                  title="卫生许可证照片"
-                  :default-img="merchantInfo.hygienicLicensePhoto || ''"
-                  @finish="uploadHygienicLicensePhoto"
-                />
-              </div>
-            </div>
-            <div class="title">法人信息</div>
-            <div class="form-item">
-              <div class="form-title">姓名</div>
-              <input
-                class="input"
-                v-model="merchantInfo.name"
-                type="text"
-                placeholder="例：小明"
-              />
-            </div>
-            <div class="form-item">
-              <div class="form-title">手机号</div>
-              <input
-                class="input"
-                v-model="merchantInfo.mobile"
-                type="tel"
-                placeholder="请输入手机号"
-              />
-            </div>
-            <div class="form-item">
-              <div class="form-title">电子邮箱</div>
-              <input
-                class="input"
-                v-model="merchantInfo.email"
-                type="email"
-                placeholder="请输入电子邮箱"
-              />
-            </div>
-            <div class="form-item">
-              <div class="form-title">身份证号</div>
-              <input
-                class="input"
-                v-model="merchantInfo.idCardNumber"
-                type="text"
-                placeholder="请输入18位身份证号"
-              />
-            </div>
-            <div class="form-item">
-              <div class="form-title">上传法人身份证</div>
-              <div class="uploader-wrap">
-                <Uploader
-                  :default-img="
-                    merchantInfo.idCardFrontPhoto ||
-                    require('@/assets/images/merchant/front.png')
-                  "
-                  @finish="uploadIdCardFrontPhoto"
-                />
-                <Uploader
-                  :default-img="
-                    merchantInfo.idCardBackPhoto ||
-                    require('@/assets/images/merchant/behind.png')
-                  "
-                  @finish="uploadIdCardBackPhoto"
-                />
-              </div>
-            </div>
-            <div class="form-item">
-              <div class="form-title">请点击上传手持身份证照片</div>
-              <div class="uploader-wrap">
-                <Uploader
-                  title="手持身份证照片"
-                  :default-img="merchantInfo.holdIdCardPhoto || ''"
-                  @finish="uploadHoldIdCardPhoto"
-                />
-                <img
-                  class="photo"
-                  src="@/assets/images/merchant/person-example.png"
-                  alt=""
-                />
-              </div>
-            </div>
-          </template>
-        </div>
-        <div class="form-wrap" v-show="step === 2">
-          <div class="title">银行信息</div>
-          <div class="form-item">
-            <div class="form-title">持卡人姓名</div>
-            <input
-              class="input"
-              v-model="merchantInfo.bankCardOwnerName"
-              type="text"
-              placeholder="例：小明"
-            />
-          </div>
-          <div class="form-item">
-            <div class="form-title">银行账号</div>
-            <input
-              class="input"
-              v-model="merchantInfo.bankCardNumber"
-              type="tel"
-              placeholder="例：622123456789012345"
-            />
-          </div>
-          <div class="form-item">
-            <div class="form-title">开户银行及支行名称</div>
-            <input
-              class="input"
-              v-model="merchantInfo.bankName"
-              type="text"
-              placeholder="例：中国招商银行城西支行"
-            />
-          </div>
-        </div>
-        <div class="form-wrap" v-show="step === 3">
-          <div class="title">店铺信息</div>
-          <div class="form-item">
-            <div class="form-title">店铺头像</div>
-            <VantUploader
-              v-model="merchantInfo.shopLogo"
-              :after-read="uploadFile"
-              style="margin-top: 0.32rem"
-              max-count="1"
-            />
-          </div>
-          <div class="form-item">
-            <div class="form-title">店铺封面</div>
-            <VantUploader
-              v-model="merchantInfo.shopBg"
-              :after-read="uploadFile"
-              style="margin-top: 0.32rem"
-              max-count="1"
-            />
-          </div>
-          <div class="form-item">
-            <div class="form-title">店铺名称</div>
-            <input
-              class="input"
-              v-model="merchantInfo.shopName"
-              type="text"
-              placeholder="例：小明的店"
-            />
-          </div>
-          <div class="form-item">
-            <div class="form-title">店铺类型</div>
+      <div class="information-filling" v-else>
+        <div class="header">
+          <div class="title">信息填写</div>
+          <div class="sub-title">真实有效的信息有助于您快速通过审核</div>
+          <div class="steps">
             <div
-              class="picker"
-              :class="{ active: pickedCategoryDesc }"
-              @click="typePickerPopupVisible = true"
+              class="step"
+              v-for="(item, index) in [
+                merchantInfo.type === 1 ? '填写个体信息' : '填写企业信息',
+                '填写银行信息',
+                '填写店铺信息',
+              ]"
+              :key="index"
             >
-              {{ pickedCategoryDesc || "请选择店铺类型" }}
+              <div
+                class="name"
+                :class="{
+                  active: step === index + 1,
+                  finished: step > index + 1,
+                }"
+              >
+                {{ item }}
+              </div>
+              <div
+                class="progress-bar"
+                :class="{ finished: step >= index + 1 }"
+              ></div>
             </div>
           </div>
         </div>
-        <div class="btns">
-          <div class="btn previous-step" @click="step = step - 1">上一步</div>
-          <div class="btn next-step" @click="nextStep">
-            {{ step === 3 ? "提交审核" : "下一步" }}
+        <div class="main">
+          <div class="form-wrap" v-show="step === 1">
+            <template v-if="merchantInfo.type === 1">
+              <div class="title">个体工商户信息</div>
+              <div class="form-item">
+                <div class="form-title">上传经营者身份证</div>
+                <div class="uploader-wrap">
+                  <Uploader
+                    :default-img="
+                      merchantInfo.idCardFrontPhoto ||
+                      require('@/assets/images/merchant/front.png')
+                    "
+                    @finish="uploadIdCardFrontPhoto"
+                  />
+                  <Uploader
+                    :default-img="
+                      merchantInfo.idCardBackPhoto ||
+                      require('@/assets/images/merchant/behind.png')
+                    "
+                    @finish="uploadIdCardBackPhoto"
+                  />
+                </div>
+              </div>
+              <div class="form-item">
+                <div class="form-title">请点击上传手持身份证照片</div>
+                <div class="uploader-wrap">
+                  <Uploader
+                    title="手持身份证照片"
+                    :default-img="merchantInfo.holdIdCardPhoto || ''"
+                    @finish="uploadHoldIdCardPhoto"
+                  />
+                  <img
+                    class="photo"
+                    src="@/assets/images/merchant/person-example.png"
+                    alt=""
+                  />
+                </div>
+              </div>
+              <div class="form-item">
+                <div class="form-title">经营者姓名</div>
+                <input
+                  class="input"
+                  v-model="merchantInfo.name"
+                  type="text"
+                  placeholder="例：小明"
+                />
+              </div>
+              <div class="form-item">
+                <div class="form-title">经营者身份证号</div>
+                <input
+                  class="input"
+                  v-model="merchantInfo.idCardNumber"
+                  type="text"
+                  placeholder="请输入18位身份证号"
+                />
+              </div>
+              <div class="form-item">
+                <div class="form-title">上传营业执照、卫生许可证</div>
+                <div class="uploader-wrap">
+                  <Uploader
+                    title="营业执照照片"
+                    :default-img="merchantInfo.businessLicensePhoto || ''"
+                    @finish="uploadBusinessLicensePhoto"
+                  />
+                  <Uploader
+                    title="卫生许可证照片"
+                    :default-img="merchantInfo.hygienicLicensePhoto || ''"
+                    @finish="uploadHygienicLicensePhoto"
+                  />
+                </div>
+              </div>
+              <div class="title">联系方式</div>
+              <div class="form-item">
+                <div class="form-title">手机号</div>
+                <input
+                  class="input"
+                  v-model="merchantInfo.mobile"
+                  type="tel"
+                  placeholder="请输入手机号"
+                />
+              </div>
+              <div class="form-item">
+                <div class="form-title">电子邮箱</div>
+                <input
+                  class="input"
+                  v-model="merchantInfo.email"
+                  type="email"
+                  placeholder="请输入电子邮箱"
+                />
+              </div>
+              <div class="form-item">
+                <div class="form-title">联系地址</div>
+                <div
+                  class="picker"
+                  :class="{ active: merchantInfo.regionDesc }"
+                  @click="areaPickerPopupVisible = true"
+                >
+                  {{ merchantInfo.regionDesc || "请选择省、市、区" }}
+                </div>
+              </div>
+              <div class="form-item">
+                <div class="form-title">详细地址</div>
+                <input
+                  class="input"
+                  v-model="merchantInfo.addressDetail"
+                  type="text"
+                  placeholder="请输入详细地址"
+                />
+              </div>
+            </template>
+            <template v-else>
+              <div class="title">企业信息</div>
+              <div class="form-item">
+                <div class="form-title">企业名称</div>
+                <input
+                  class="input"
+                  v-model="merchantInfo.companyName"
+                  type="text"
+                  placeholder="请输入企业名称"
+                />
+              </div>
+              <div class="form-item">
+                <div class="form-title">企业经营地址</div>
+                <div
+                  class="picker"
+                  :class="{ active: merchantInfo.regionDesc }"
+                  @click="areaPickerPopupVisible = true"
+                >
+                  {{ merchantInfo.regionDesc || "请选择省、市、区" }}
+                </div>
+              </div>
+              <div class="form-item">
+                <div class="form-title">企业地址详情</div>
+                <input
+                  class="input"
+                  v-model="merchantInfo.addressDetail"
+                  type="text"
+                  placeholder="请输入详细地址"
+                />
+              </div>
+              <div class="form-item">
+                <div class="form-title">上传营业执照、卫生许可证</div>
+                <div class="uploader-wrap">
+                  <Uploader
+                    title="营业执照照片"
+                    :default-img="merchantInfo.businessLicensePhoto || ''"
+                    @finish="uploadBusinessLicensePhoto"
+                  />
+                  <Uploader
+                    title="卫生许可证照片"
+                    :default-img="merchantInfo.hygienicLicensePhoto || ''"
+                    @finish="uploadHygienicLicensePhoto"
+                  />
+                </div>
+              </div>
+              <div class="title">法人信息</div>
+              <div class="form-item">
+                <div class="form-title">姓名</div>
+                <input
+                  class="input"
+                  v-model="merchantInfo.name"
+                  type="text"
+                  placeholder="例：小明"
+                />
+              </div>
+              <div class="form-item">
+                <div class="form-title">手机号</div>
+                <input
+                  class="input"
+                  v-model="merchantInfo.mobile"
+                  type="tel"
+                  placeholder="请输入手机号"
+                />
+              </div>
+              <div class="form-item">
+                <div class="form-title">电子邮箱</div>
+                <input
+                  class="input"
+                  v-model="merchantInfo.email"
+                  type="email"
+                  placeholder="请输入电子邮箱"
+                />
+              </div>
+              <div class="form-item">
+                <div class="form-title">身份证号</div>
+                <input
+                  class="input"
+                  v-model="merchantInfo.idCardNumber"
+                  type="text"
+                  placeholder="请输入18位身份证号"
+                />
+              </div>
+              <div class="form-item">
+                <div class="form-title">上传法人身份证</div>
+                <div class="uploader-wrap">
+                  <Uploader
+                    :default-img="
+                      merchantInfo.idCardFrontPhoto ||
+                      require('@/assets/images/merchant/front.png')
+                    "
+                    @finish="uploadIdCardFrontPhoto"
+                  />
+                  <Uploader
+                    :default-img="
+                      merchantInfo.idCardBackPhoto ||
+                      require('@/assets/images/merchant/behind.png')
+                    "
+                    @finish="uploadIdCardBackPhoto"
+                  />
+                </div>
+              </div>
+              <div class="form-item">
+                <div class="form-title">请点击上传手持身份证照片</div>
+                <div class="uploader-wrap">
+                  <Uploader
+                    title="手持身份证照片"
+                    :default-img="merchantInfo.holdIdCardPhoto || ''"
+                    @finish="uploadHoldIdCardPhoto"
+                  />
+                  <img
+                    class="photo"
+                    src="@/assets/images/merchant/person-example.png"
+                    alt=""
+                  />
+                </div>
+              </div>
+            </template>
+          </div>
+          <div class="form-wrap" v-show="step === 2">
+            <div class="title">银行信息</div>
+            <div class="form-item">
+              <div class="form-title">持卡人姓名</div>
+              <input
+                class="input"
+                v-model="merchantInfo.bankCardOwnerName"
+                type="text"
+                placeholder="例：小明"
+              />
+            </div>
+            <div class="form-item">
+              <div class="form-title">银行账号</div>
+              <input
+                class="input"
+                v-model="merchantInfo.bankCardNumber"
+                type="tel"
+                placeholder="例：622123456789012345"
+              />
+            </div>
+            <div class="form-item">
+              <div class="form-title">开户银行及支行名称</div>
+              <input
+                class="input"
+                v-model="merchantInfo.bankName"
+                type="text"
+                placeholder="例：中国招商银行城西支行"
+              />
+            </div>
+          </div>
+          <div class="form-wrap" v-show="step === 3">
+            <div class="title">店铺信息</div>
+            <div class="form-item">
+              <div class="form-title">店铺头像</div>
+              <VantUploader
+                v-model="merchantInfo.shopLogo"
+                :after-read="uploadFile"
+                style="margin-top: 0.32rem"
+                max-count="1"
+              />
+            </div>
+            <div class="form-item">
+              <div class="form-title">店铺封面</div>
+              <VantUploader
+                v-model="merchantInfo.shopBg"
+                :after-read="uploadFile"
+                style="margin-top: 0.32rem"
+                max-count="1"
+              />
+            </div>
+            <div class="form-item">
+              <div class="form-title">店铺名称</div>
+              <input
+                class="input"
+                v-model="merchantInfo.shopName"
+                type="text"
+                placeholder="例：小明的店"
+              />
+            </div>
+            <div class="form-item">
+              <div class="form-title">店铺类型</div>
+              <div
+                class="picker"
+                :class="{ active: pickedCategoryDesc }"
+                @click="typePickerPopupVisible = true"
+              >
+                {{ pickedCategoryDesc || "请选择店铺类型" }}
+              </div>
+            </div>
+          </div>
+          <div class="btns">
+            <div class="btn previous-step" @click="step = step - 1">上一步</div>
+            <div class="btn next-step" @click="nextStep">
+              {{ step === 3 ? "提交审核" : "下一步" }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="status" v-else>
+      <div class="status-illus">
+        <img
+          class="illus"
+          :src="`https://static.tiddler.cn/mp/default_illus/${
+            ['waiting', 'success', 'success', 'fail'][statusInfo.status]
+          }.png`"
+          alt=""
+        />
+        <div class="title">
+          {{
+            ["等待审核", "审核通过", "缴纳成功", "审核失败"][statusInfo.status]
+          }}
+        </div>
+        <div
+          class="desc"
+          :class="{ err: statusInfo.status === 3 }"
+          v-if="statusInfo.status !== 1"
+        >
+          {{
+            [
+              "已提交申请，请耐心等待平台人员处理",
+              "",
+              "店铺已开通",
+              `失败原因：${statusInfo.failureReason}`,
+            ][statusInfo.status]
+          }}
+        </div>
+        <div class="pay-amount" v-if="statusInfo.status === 1">
+          缴纳保证金：<span style="color: #eaab63"
+            >{{ statusInfo.deposit }}元</span
+          >
+        </div>
+        <div
+          class="btn back"
+          v-if="[0, 2].includes(statusInfo.status)"
+          @click="back"
+        >
+          返回
+        </div>
+        <div class="btn back" v-if="statusInfo.status === 3" @click="reApply">
+          重新申请
+        </div>
+        <div class="btn-wrap" v-if="statusInfo.status === 1">
+          <div
+            class="btn confirm"
+            :class="{ active: depositProtocolChecked }"
+            @click="pay"
+          >
+            点击缴纳
+          </div>
+          <div class="protocol-tips">
+            <Checkbox v-model="depositProtocolChecked" icon-size="16px" />
+            <div style="margin-left: 0.1rem">
+              阅读并同意
+              <span style="color: #1b89fa" @click="checkDepositProtocol"
+                >《小鱼游餐饮商家保证金协议》</span
+              >
+            </div>
           </div>
         </div>
       </div>
