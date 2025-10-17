@@ -5,9 +5,17 @@ const goods: Array<RouteRecordRaw> = [
     path: "/goods/merchant/settle_in",
     name: "merchant_settle_in",
     meta: {
-      title: "商家入驻",
+      title: "电商商家入驻",
     },
     component: () => import("@/pages/goods/merchant/settleIn.vue"),
+  },
+  {
+    path: "/goods/merchant/settle_status",
+    name: "merchant_settle_status",
+    meta: {
+      title: "电商商家入驻",
+    },
+    component: () => import("@/pages/goods/merchant/settleStatus.vue"),
   },
   {
     path: "/goods/shop/deposit",
