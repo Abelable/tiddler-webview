@@ -21,7 +21,7 @@ const protocol: Array<RouteRecordRaw> = [
     path: "/protocol/scenic_merchant",
     name: "scenic_merchant_protocol",
     meta: {
-      title: "景区商家服务协议",
+      title: "景区服务商服务协议",
     },
     component: () => import("@/pages/protocol/scenicMerchantProtocol.vue"),
   },
@@ -29,7 +29,7 @@ const protocol: Array<RouteRecordRaw> = [
     path: "/protocol/scenic_deposit",
     name: "scenic_deposit_protocol",
     meta: {
-      title: "景区商家保证金协议",
+      title: "景区服务商保证金协议",
     },
     component: () => import("@/pages/protocol/scenicDepositProtocol.vue"),
   },
@@ -37,7 +37,7 @@ const protocol: Array<RouteRecordRaw> = [
     path: "/protocol/hotel_merchant",
     name: "hotel_merchant_protocol",
     meta: {
-      title: "酒店商家服务协议",
+      title: "酒店服务商服务协议",
     },
     component: () => import("@/pages/protocol/hotelMerchantProtocol.vue"),
   },
@@ -45,7 +45,7 @@ const protocol: Array<RouteRecordRaw> = [
     path: "/protocol/hotel_deposit",
     name: "hotel_deposit_protocol",
     meta: {
-      title: "酒店商家保证金协议",
+      title: "酒店服务商保证金协议",
     },
     component: () => import("@/pages/protocol/hotelDepositProtocol.vue"),
   },
