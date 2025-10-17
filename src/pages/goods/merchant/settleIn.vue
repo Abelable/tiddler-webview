@@ -55,73 +55,35 @@
             <div class="form-item">
               <div class="form-title">请点击上传身份证正反面照片</div>
               <div class="uploader-wrap">
-                <Uploader max-count="1" :after-read="uploadIdCardFrontPhoto">
-                  <img
-                    class="photo"
-                    v-if="!uploadIdCardFrontPhotoLoading"
-                    :src="
-                      merchantInfo.idCardFrontPhoto ||
-                      require('./images/front.png')
-                    "
-                    alt=""
-                  />
-                  <div
-                    class="loading-wrap"
-                    v-if="uploadIdCardFrontPhotoLoading"
-                  >
-                    <Loading vertical color="#fff">上传中...</Loading>
-                  </div>
-                </Uploader>
-                <Uploader max-count="1" :after-read="uploadIdCardBackPhoto">
-                  <img
-                    class="photo"
-                    v-if="!uploadIdCardBackPhotoLoading"
-                    :src="
-                      merchantInfo.idCardBackPhoto ||
-                      require('./images/behind.png')
-                    "
-                    alt=""
-                  />
-                  <div class="loading-wrap" v-if="uploadIdCardBackPhotoLoading">
-                    <Loading vertical color="#fff">上传中...</Loading>
-                  </div>
-                </Uploader>
+                <Uploader
+                  :default-img="
+                    merchantInfo.idCardFrontPhoto ||
+                    require('@/assets/images/merchant/front.png')
+                  "
+                  @finish="uploadIdCardFrontPhoto"
+                />
+                <Uploader
+                  :default-img="
+                    merchantInfo.idCardBackPhoto ||
+                    require('@/assets/images/merchant/behind.png')
+                  "
+                  @finish="uploadIdCardBackPhoto"
+                />
               </div>
             </div>
             <div class="form-item">
               <div class="form-title">请点击上传手持身份证照片</div>
               <div class="uploader-wrap">
-                <Uploader max-count="1" :after-read="uploadHoldIdCardPhoto">
-                  <img
-                    class="photo"
-                    v-if="
-                      !uploadHoldIdCardPhotoLoading &&
-                      merchantInfo.holdIdCardPhoto
-                    "
-                    :src="merchantInfo.holdIdCardPhoto"
-                    alt=""
-                  />
-                  <div
-                    class="default-img"
-                    v-if="
-                      !uploadHoldIdCardPhotoLoading &&
-                      !merchantInfo.holdIdCardPhoto
-                    "
-                  >
-                    <div class="img-wrap">
-                      <img
-                        style="width: 0.5rem; height: 0.5rem"
-                        src="./images/camera.png"
-                        alt=""
-                      />
-                    </div>
-                    <div class="desc">手持身份证照片</div>
-                  </div>
-                  <div class="loading-wrap" v-if="uploadHoldIdCardPhotoLoading">
-                    <Loading vertical color="#fff">上传中...</Loading>
-                  </div>
-                </Uploader>
-                <img class="photo" src="./images/person-example.png" alt="" />
+                <Uploader
+                  title="手持身份证照片"
+                  :default-img="merchantInfo.holdIdCardPhoto || ''"
+                  @finish="uploadHoldIdCardPhoto"
+                />
+                <img
+                  class="photo"
+                  src="@/assets/images/merchant/person-example.png"
+                  alt=""
+                />
               </div>
             </div>
             <div class="title">联系方式</div>
@@ -219,44 +181,13 @@
               <div class="form-title">请点击上传企业营业执照照片</div>
               <div class="uploader-wrap">
                 <Uploader
-                  max-count="1"
-                  :after-read="uploadBusinessLicensePhoto"
-                >
-                  <img
-                    class="photo"
-                    v-if="
-                      !uploadBusinessLicensePhotoLoading &&
-                      merchantInfo.businessLicensePhoto
-                    "
-                    :src="merchantInfo.businessLicensePhoto"
-                    alt=""
-                  />
-                  <div
-                    class="default-img"
-                    v-if="
-                      !uploadBusinessLicensePhotoLoading &&
-                      !merchantInfo.businessLicensePhoto
-                    "
-                  >
-                    <div class="img-wrap">
-                      <img
-                        style="width: 0.5rem; height: 0.5rem"
-                        src="./images/camera.png"
-                        alt=""
-                      />
-                    </div>
-                    <div class="desc">营业执照照片</div>
-                  </div>
-                  <div
-                    class="loading-wrap"
-                    v-if="uploadBusinessLicensePhotoLoading"
-                  >
-                    <Loading vertical color="#fff">上传中...</Loading>
-                  </div>
-                </Uploader>
+                  title="营业执照照片"
+                  :default-img="merchantInfo.businessLicensePhoto || ''"
+                  @finish="uploadBusinessLicensePhoto"
+                />
                 <img
                   class="photo"
-                  src="./images/enterprise-example.png"
+                  src="@/assets/images/merchant/enterprise-example.png"
                   alt=""
                 />
               </div>
@@ -301,73 +232,35 @@
             <div class="form-item">
               <div class="form-title">请点击上传身份证正反面照片</div>
               <div class="uploader-wrap">
-                <Uploader max-count="1" :after-read="uploadIdCardFrontPhoto">
-                  <img
-                    class="photo"
-                    v-if="!uploadIdCardFrontPhotoLoading"
-                    :src="
-                      merchantInfo.idCardFrontPhoto ||
-                      require('./images/front.png')
-                    "
-                    alt=""
-                  />
-                  <div
-                    class="loading-wrap"
-                    v-if="uploadIdCardFrontPhotoLoading"
-                  >
-                    <Loading vertical color="#fff">上传中...</Loading>
-                  </div>
-                </Uploader>
-                <Uploader max-count="1" :after-read="uploadIdCardBackPhoto">
-                  <img
-                    class="photo"
-                    v-if="!uploadIdCardBackPhotoLoading"
-                    :src="
-                      merchantInfo.idCardBackPhoto ||
-                      require('./images/behind.png')
-                    "
-                    alt=""
-                  />
-                  <div class="loading-wrap" v-if="uploadIdCardBackPhotoLoading">
-                    <Loading vertical color="#fff">上传中...</Loading>
-                  </div>
-                </Uploader>
+                <Uploader
+                  :default-img="
+                    merchantInfo.idCardFrontPhoto ||
+                    require('@/assets/images/merchant/front.png')
+                  "
+                  @finish="uploadIdCardFrontPhoto"
+                />
+                <Uploader
+                  :default-img="
+                    merchantInfo.idCardBackPhoto ||
+                    require('@/assets/images/merchant/behind.png')
+                  "
+                  @finish="uploadIdCardBackPhoto"
+                />
               </div>
             </div>
             <div class="form-item">
               <div class="form-title">请点击上传手持身份证照片</div>
               <div class="uploader-wrap">
-                <Uploader max-count="1" :after-read="uploadHoldIdCardPhoto">
-                  <img
-                    class="photo"
-                    v-if="
-                      !uploadHoldIdCardPhotoLoading &&
-                      merchantInfo.holdIdCardPhoto
-                    "
-                    :src="merchantInfo.holdIdCardPhoto"
-                    alt=""
-                  />
-                  <div
-                    class="default-img"
-                    v-if="
-                      !uploadHoldIdCardPhotoLoading &&
-                      !merchantInfo.holdIdCardPhoto
-                    "
-                  >
-                    <div class="img-wrap">
-                      <img
-                        style="width: 0.5rem; height: 0.5rem"
-                        src="./images/camera.png"
-                        alt=""
-                      />
-                    </div>
-                    <div class="desc">手持身份证照片</div>
-                  </div>
-                  <div class="loading-wrap" v-if="uploadHoldIdCardPhotoLoading">
-                    <Loading vertical color="#fff">上传中...</Loading>
-                  </div>
-                </Uploader>
-                <img class="photo" src="./images/person-example.png" alt="" />
+                <Uploader
+                  title="手持身份证照片"
+                  :default-img="merchantInfo.holdIdCardPhoto || ''"
+                  @finish="uploadHoldIdCardPhoto"
+                />
+                <img
+                  class="photo"
+                  src="@/assets/images/merchant/person-example.png"
+                  alt=""
+                />
               </div>
             </div>
           </template>
@@ -406,7 +299,7 @@
           <div class="title">店铺信息</div>
           <div class="form-item">
             <div class="form-title">店铺封面</div>
-            <Uploader
+            <VantUploader
               v-model="merchantInfo.shopBg"
               :after-read="uploadFile"
               style="margin-top: 0.32rem"
@@ -415,7 +308,7 @@
           </div>
           <div class="form-item">
             <div class="form-title">店铺头像</div>
-            <Uploader
+            <VantUploader
               v-model="merchantInfo.shopLogo"
               :after-read="uploadFile"
               style="margin-top: 0.32rem"
@@ -465,21 +358,21 @@
 </template>
 
 <script setup lang="ts">
-import { Area, Popup, Uploader, Loading, showToast } from "vant";
+import { Area, Popup, Uploader as VantUploader, showToast } from "vant";
+import Uploader from "@/components/Uploader.vue";
 import MultiPickerPopup from "@/components/MultiPickerPopup.vue";
 
 import { ref, onMounted, reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { areaList } from "@vant/area-data";
 import _ from "lodash";
-import { upload, uploadFile } from "@/utils/upload";
+import { uploadFile } from "@/utils/upload";
 import {
   uploadMerchantInfo,
   getMerchantInfo,
   getShopCategoryOptions,
 } from "./utils/api";
 
-import type { UploaderAfterRead } from "vant/lib/uploader/types";
 import type { Option } from "@/utils/type";
 import type { MerchantInfo, ShopCategoryOption } from "./utils/type";
 
@@ -511,10 +404,6 @@ const merchantInfo = reactive<MerchantInfo>({
   shopCategoryIds: [],
 });
 const areaPickerPopupVisible = ref(false);
-const uploadIdCardFrontPhotoLoading = ref(false);
-const uploadIdCardBackPhotoLoading = ref(false);
-const uploadHoldIdCardPhotoLoading = ref(false);
-const uploadBusinessLicensePhotoLoading = ref(false);
 const categoryOptions = ref<ShopCategoryOption[]>([]);
 const categoryPickerPopupVisible = ref(false);
 const pickedCategoryDesc = ref("");
@@ -740,26 +629,18 @@ const areaConfirm = ({
   areaPickerPopupVisible.value = false;
 };
 
-const uploadIdCardFrontPhoto = (async ({ file }: { file: File }) => {
-  uploadIdCardFrontPhotoLoading.value = true;
-  merchantInfo.idCardFrontPhoto = await upload(file);
-  uploadIdCardFrontPhotoLoading.value = false;
-}) as UploaderAfterRead;
-const uploadIdCardBackPhoto = (async ({ file }: { file: File }) => {
-  uploadIdCardBackPhotoLoading.value = true;
-  merchantInfo.idCardBackPhoto = await upload(file);
-  uploadIdCardBackPhotoLoading.value = false;
-}) as UploaderAfterRead;
-const uploadHoldIdCardPhoto = (async ({ file }: { file: File }) => {
-  uploadHoldIdCardPhotoLoading.value = true;
-  merchantInfo.holdIdCardPhoto = await upload(file);
-  uploadHoldIdCardPhotoLoading.value = false;
-}) as UploaderAfterRead;
-const uploadBusinessLicensePhoto = (async ({ file }: { file: File }) => {
-  uploadBusinessLicensePhotoLoading.value = true;
-  merchantInfo.businessLicensePhoto = await upload(file);
-  uploadBusinessLicensePhotoLoading.value = false;
-}) as UploaderAfterRead;
+const uploadIdCardFrontPhoto = (photo: string) => {
+  merchantInfo.idCardFrontPhoto = photo;
+};
+const uploadIdCardBackPhoto = (photo: string) => {
+  merchantInfo.idCardBackPhoto = photo;
+};
+const uploadHoldIdCardPhoto = (photo: string) => {
+  merchantInfo.holdIdCardPhoto = photo;
+};
+const uploadBusinessLicensePhoto = (photo: string) => {
+  merchantInfo.businessLicensePhoto = photo;
+};
 
 const categoryConfirm = ({
   selectedValues: shopCategoryIds,
