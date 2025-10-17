@@ -364,18 +364,6 @@ onMounted(() => {
   setMerchantInfo();
 });
 
-const setMerchantInfo = async () => {
-  const { shopLogo, shopBg, shopType, ...rest } = await getMerchantInfo();
-  pickedCategoryDesc.value =
-    typeOptions.find((item) => item.id === shopType)?.name || "";
-  Object.assign(merchantInfo, {
-    shopLogo: [{ url: shopLogo }],
-    shopBg: [{ url: shopBg }],
-    shopType,
-    ...rest,
-  });
-};
-
 const back = () => {
   if (step.value > 1) {
     step.value = step.value - 1;
@@ -489,6 +477,18 @@ const next = () => {
       submit();
       break;
   }
+};
+
+const setMerchantInfo = async () => {
+  const { shopLogo, shopBg, shopType, ...rest } = await getMerchantInfo();
+  pickedCategoryDesc.value =
+    typeOptions.find((item) => item.id === shopType)?.name || "";
+  Object.assign(merchantInfo, {
+    shopLogo: [{ url: shopLogo }],
+    shopBg: [{ url: shopBg }],
+    shopType,
+    ...rest,
+  });
 };
 
 const submit = async () => {

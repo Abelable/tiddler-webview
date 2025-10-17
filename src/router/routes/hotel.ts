@@ -5,9 +5,17 @@ const hotel: Array<RouteRecordRaw> = [
     path: "/hotel/merchant/settle_in",
     name: "hotel_merchant_settle_in",
     meta: {
-      title: "酒店商家入驻",
+      title: "酒店服务商入驻",
     },
     component: () => import("@/pages/hotel/merchant/settleIn.vue"),
+  },
+  {
+    path: "/hotel/merchant/settle_status",
+    name: "hotel_merchant_settle_status",
+    meta: {
+      title: "酒店服务商入驻",
+    },
+    component: () => import("@/pages/hotel/merchant/settleStatus.vue"),
   },
   {
     path: "/hotel/shop/deposit",
