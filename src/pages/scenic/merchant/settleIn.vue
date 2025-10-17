@@ -329,7 +329,6 @@ const typeOptions = [
   { id: 2, name: "旅行社", deposit: 10000 },
 ];
 const step = ref(1);
-const protocolChecked = ref(false);
 const merchantInfo = reactive<MerchantInfo>({
   companyName: "",
   businessLicensePhoto: "",
@@ -374,13 +373,6 @@ const back = () => {
 
 const next = () => {
   switch (step.value) {
-    case 0:
-      if (!protocolChecked.value) {
-        showToast("请阅读并同意商家协议");
-        return;
-      }
-      step.value = 1;
-      break;
     case 1:
       if (!merchantInfo.companyName) {
         showToast("请输入公司名称");

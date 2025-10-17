@@ -10,6 +10,14 @@ const catering: Array<RouteRecordRaw> = [
     component: () => import("@/pages/catering/merchant/settleIn.vue"),
   },
   {
+    path: "/catering/merchant/settle_status",
+    name: "catering_merchant_settle_status",
+    meta: {
+      title: "餐饮商家入驻",
+    },
+    component: () => import("@/pages/catering/merchant/settleStatus.vue"),
+  },
+  {
     path: "/catering/shop/deposit",
     name: "catering_shop_deposit",
     meta: {
