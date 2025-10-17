@@ -472,15 +472,18 @@ const next = () => {
 };
 
 const setMerchantInfo = async () => {
-  const { shopLogo, shopBg, shopType, ...rest } = await getMerchantInfo();
-  pickedCategoryDesc.value =
-    typeOptions.find((item) => item.id === shopType)?.name || "";
-  Object.assign(merchantInfo, {
-    shopLogo: [{ url: shopLogo }],
-    shopBg: [{ url: shopBg }],
-    shopType,
-    ...rest,
-  });
+  const info = await getMerchantInfo();
+  if (info) {
+    const { shopLogo, shopBg, shopType, ...rest } = info;
+    pickedCategoryDesc.value =
+      typeOptions.find((item) => item.id === shopType)?.name || "";
+    Object.assign(merchantInfo, {
+      shopLogo: [{ url: shopLogo }],
+      shopBg: [{ url: shopBg }],
+      shopType,
+      ...rest,
+    });
+  }
 };
 
 const submit = async () => {

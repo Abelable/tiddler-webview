@@ -696,20 +696,22 @@ const setCategoryOptions = async () => {
 };
 
 const setMerchantInfo = async () => {
-  const { shopLogo, shopBg, shopCategoryIds, ...rest } =
-    await getMerchantInfo();
-  const selectedShopCategoryOptions = categoryOptions.value.filter((item) =>
-    shopCategoryIds.includes(item.id)
-  );
-  pickedCategoryDesc.value = selectedShopCategoryOptions
-    .map((item) => item.name)
-    .join();
-  Object.assign(merchantInfo, {
-    shopLogo: [{ url: shopLogo }],
-    shopBg: [{ url: shopBg }],
-    shopCategoryIds,
-    ...rest,
-  });
+  const info = await getMerchantInfo();
+  if (info) {
+    const { shopLogo, shopBg, shopCategoryIds, ...rest } = info;
+    const selectedShopCategoryOptions = categoryOptions.value.filter((item) =>
+      shopCategoryIds.includes(item.id)
+    );
+    pickedCategoryDesc.value = selectedShopCategoryOptions
+      .map((item) => item.name)
+      .join();
+    Object.assign(merchantInfo, {
+      shopLogo: [{ url: shopLogo }],
+      shopBg: [{ url: shopBg }],
+      shopCategoryIds,
+      ...rest,
+    });
+  }
 };
 
 const submit = async () => {
