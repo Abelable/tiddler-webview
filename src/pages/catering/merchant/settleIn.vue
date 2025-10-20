@@ -373,6 +373,9 @@ const typeOptions = [
   { id: 2, name: "专营店", deposit: 10000 },
 ];
 
+const inviterId = ref<number | undefined>();
+const taskId = ref<number | undefined>();
+
 const step = ref(1);
 const merchantInfo = reactive<MerchantInfo>({
   type: 1,
@@ -403,6 +406,11 @@ const typePickerPopupVisible = ref(false);
 const pickedCategoryDesc = ref("");
 
 onMounted(() => {
+  inviterId.value = route.query.inviter_id
+    ? +route.query.inviter_id
+    : undefined;
+  taskId.value = route.query.task_id ? +route.query.task_id : undefined;
+
   const type = +(route.query.type as string);
   if (type) {
     merchantInfo.type = type;
@@ -588,6 +596,8 @@ const submit = async () => {
     const createMerchantInfo: CreateMerchantInfo = {
       shopLogo: shopLogo[0].url as string,
       ...rest,
+      inviterId: inviterId.value,
+      taskId: taskId.value,
     };
     if (shopBg.length) {
       createMerchantInfo.shopBg = shopBg[0].url;

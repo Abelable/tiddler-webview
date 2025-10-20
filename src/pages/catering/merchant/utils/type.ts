@@ -29,6 +29,8 @@ export interface CreateMerchantInfo
   extends Omit<MerchantInfo, "shopBg" | "shopLogo"> {
   shopBg?: string;
   shopLogo: string;
+  inviterId?: number;
+  taskId?: number;
 }
 
 export interface MerchantStatusInfo {

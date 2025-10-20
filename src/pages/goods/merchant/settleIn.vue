@@ -379,6 +379,9 @@ import type { MerchantInfo, ShopCategoryOption } from "./utils/type";
 const route = useRoute();
 const router = useRouter();
 
+const inviterId = ref<number | undefined>();
+const taskId = ref<number | undefined>();
+
 const step = ref(1);
 const merchantInfo = reactive<MerchantInfo>({
   type: 1,
@@ -409,6 +412,11 @@ const categoryPickerPopupVisible = ref(false);
 const pickedCategoryDesc = ref("");
 
 onMounted(async () => {
+  inviterId.value = route.query.inviter_id
+    ? +route.query.inviter_id
+    : undefined;
+  taskId.value = route.query.task_id ? +route.query.task_id : undefined;
+
   await setCategoryOptions();
 
   const type = +(route.query.type as string);
@@ -610,6 +618,8 @@ const submit = async () => {
       shopLogo: shopLogo[0].url as string,
       shopBg: shopBg.length ? (shopBg[0].url as string) : "",
       ...rest,
+      inviterId: inviterId.value,
+      taskId: taskId.value,
     });
     router.push("/goods/merchant/settle_status");
   } catch (error) {

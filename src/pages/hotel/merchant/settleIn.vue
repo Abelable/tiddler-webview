@@ -248,19 +248,24 @@ import PickerPopup from "@/components/PickerPopup.vue";
 import AreaPickerPopup from "@/components/AreaPickerPopup.vue";
 
 import { ref, onMounted, reactive } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { uploadFile } from "@/utils/upload";
 import { uploadMerchantInfo, getMerchantInfo } from "./utils/api";
 
 import type { Option } from "@/utils/type";
 import type { MerchantInfo, CreateMerchantInfo } from "./utils/type";
 
+const route = useRoute();
 const router = useRouter();
 
 const typeOptions = [
   { id: 1, name: "酒店官方", deposit: 10000 },
   { id: 2, name: "专营店", deposit: 10000 },
 ];
+
+const inviterId = ref<number | undefined>();
+const taskId = ref<number | undefined>();
+
 const step = ref(1);
 const merchantInfo = reactive<MerchantInfo>({
   companyName: "",
@@ -289,6 +294,11 @@ const typePickerPopupVisible = ref(false);
 const pickedCategoryDesc = ref("");
 
 onMounted(() => {
+  inviterId.value = route.query.inviter_id
+    ? +route.query.inviter_id
+    : undefined;
+  taskId.value = route.query.task_id ? +route.query.task_id : undefined;
+
   setMerchantInfo();
 });
 
@@ -421,6 +431,8 @@ const submit = async () => {
     const createMerchantInfo: CreateMerchantInfo = {
       shopLogo: shopLogo[0].url as string,
       ...rest,
+      inviterId: inviterId.value,
+      taskId: taskId.value,
     };
     if (shopBg.length) {
       createMerchantInfo.shopBg = shopBg[0].url;
