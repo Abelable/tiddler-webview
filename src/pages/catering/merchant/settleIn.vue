@@ -8,7 +8,7 @@
           <div
             class="step"
             v-for="(item, index) in [
-              merchantInfo.type === 1 ? '填写个体信息' : '填写企业信息',
+              merchantInfo.type === 2 ? '填写个体信息' : '填写企业信息',
               '填写银行信息',
               '填写店铺信息',
             ]"
@@ -32,7 +32,7 @@
       </div>
       <div class="main">
         <div class="form-wrap" v-show="step === 1">
-          <template v-if="merchantInfo.type === 1">
+          <template v-if="merchantInfo.type === 2">
             <div class="title">个体工商户信息</div>
             <div class="form-item">
               <div class="form-title">上传经营者身份证</div>
@@ -430,7 +430,7 @@ const back = () => {
 const next = () => {
   switch (step.value) {
     case 1:
-      if (merchantInfo.type === 1) {
+      if (merchantInfo.type === 2) {
         if (!merchantInfo.name) {
           showToast("请输入姓名");
           return;
