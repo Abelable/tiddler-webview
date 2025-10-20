@@ -25,7 +25,7 @@
                   fail: item.status === 2,
                 }"
                 :src="
-                  require(`./images/status_${
+                  require(`@/assets/images/status_${
                     ['waiting', 'success', 'fail'][item.status]
                   }.png`)
                 "
@@ -40,6 +40,9 @@
               <div class="record-amount">
                 <text style="font-size: 0.24rem">¥</text>
                 <text>{{ item.withdrawAmount.toFixed(2) }}</text>
+              </div>
+              <div class="amount-type">
+                {{ ["自购", "分享", "礼包"][item.scene - 1] }}
               </div>
             </div>
             <div class="record-commission">
@@ -64,13 +67,13 @@ import { closeToast, Empty, List, PullRefresh, showLoadingToast } from "vant";
 
 import { ref } from "vue";
 import dayjs from "dayjs";
-import type { WithdrawRecord } from "./utils/type";
-import { getWithdrawRecordList } from "./utils/api";
+import type { CommissionWithdrawRecord } from "./utils/type";
+import { getCommissionWithdrawRecordList } from "./utils/api";
 
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
-const recordList = ref<WithdrawRecord[]>([]);
+const recordList = ref<CommissionWithdrawRecord[]>([]);
 
 const onRefresh = () => setRecordList(true);
 const onLoadMore = () => setRecordList();
@@ -86,7 +89,7 @@ const setRecordList = async (init = true) => {
     page = 0;
     finished.value = false;
   }
-  const list = await getWithdrawRecordList(++page);
+  const list = await getCommissionWithdrawRecordList(++page);
   recordList.value = init ? list : [...recordList.value, ...list];
   if (!list.length) {
     finished.value = true;

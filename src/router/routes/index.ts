@@ -22,7 +22,7 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: "家乡推广",
     },
-    component: () => import("@/pages/gift-goods/index.vue"),
+    component: () => import("@/pages/giftGoods/index.vue"),
   },
   ...protocol,
   ...goods,

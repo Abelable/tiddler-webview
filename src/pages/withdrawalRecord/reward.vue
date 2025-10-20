@@ -25,7 +25,7 @@
                   fail: item.status === 2,
                 }"
                 :src="
-                  require(`./images/status_${
+                  require(`@/assets/images/status_${
                     ['waiting', 'success', 'fail'][item.status]
                   }.png`)
                 "
@@ -64,13 +64,13 @@ import { closeToast, Empty, List, PullRefresh, showLoadingToast } from "vant";
 
 import { ref } from "vue";
 import dayjs from "dayjs";
-import type { WithdrawRecord } from "./utils/type";
-import { getWithdrawRecordList } from "./utils/api";
+import type { RewardWithdrawRecord } from "./utils/type";
+import { getRewardWithdrawRecordList } from "./utils/api";
 
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
-const recordList = ref<WithdrawRecord[]>([]);
+const recordList = ref<RewardWithdrawRecord[]>([]);
 
 const onRefresh = () => setRecordList(true);
 const onLoadMore = () => setRecordList();
@@ -86,7 +86,7 @@ const setRecordList = async (init = true) => {
     page = 0;
     finished.value = false;
   }
-  const list = await getWithdrawRecordList(++page);
+  const list = await getRewardWithdrawRecordList(++page);
   recordList.value = init ? list : [...recordList.value, ...list];
   if (!list.length) {
     finished.value = true;
@@ -149,14 +149,6 @@ const setRecordList = async (init = true) => {
       color: #111;
       font-size: 0.32rem;
       text-align: right;
-    }
-    .amount-type {
-      margin-left: 0.08rem;
-      padding: 0 6rem;
-      color: var(--blue-1);
-      font-size: 0.2rem;
-      border: 1px solid var(--blue-1);
-      border-radius: 0.08rem;
     }
     .record-commission {
       margin-top: 0.07rem;

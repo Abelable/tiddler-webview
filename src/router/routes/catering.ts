@@ -26,14 +26,6 @@ const catering: Array<RouteRecordRaw> = [
     component: () => import("@/pages/catering/shop/deposit/index.vue"),
   },
   {
-    path: "/catering/shop/withdrawal_record",
-    name: "catering_shop_withdrawal_record",
-    meta: {
-      title: "收益提现记录",
-    },
-    component: () => import("@/pages/catering/shop/withdrawal/record.vue"),
-  },
-  {
     path: "/catering/shop/info",
     name: "catering_shop_info",
     meta: {

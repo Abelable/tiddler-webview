@@ -1,6 +1,6 @@
 import { RouteRecordRaw } from "vue-router";
 
-const team: Array<RouteRecordRaw> = [
+const activity: Array<RouteRecordRaw> = [
   {
     path: "/activity/xiajiang",
     name: "activity_xiajiang",
@@ -19,4 +19,4 @@ const team: Array<RouteRecordRaw> = [
   },
 ];
 
-export default team;
+export default activity;

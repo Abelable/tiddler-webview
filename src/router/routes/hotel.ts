@@ -26,14 +26,6 @@ const hotel: Array<RouteRecordRaw> = [
     component: () => import("@/pages/hotel/shop/deposit/index.vue"),
   },
   {
-    path: "/hotel/shop/withdrawal_record",
-    name: "hotel_shop_withdrawal_record",
-    meta: {
-      title: "收益提现记录",
-    },
-    component: () => import("@/pages/hotel/shop/withdrawal/record.vue"),
-  },
-  {
     path: "/hotel/shop/info",
     name: "hotel_shop_info",
     meta: {

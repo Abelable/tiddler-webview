@@ -26,14 +26,6 @@ const scenic: Array<RouteRecordRaw> = [
     component: () => import("@/pages/scenic/shop/deposit/index.vue"),
   },
   {
-    path: "/scenic/shop/withdrawal_record",
-    name: "scenic_shop_withdrawal_record",
-    meta: {
-      title: "收益提现记录",
-    },
-    component: () => import("@/pages/scenic/shop/withdrawal/record.vue"),
-  },
-  {
     path: "/scenic/shop/info",
     name: "scenic_shop_info",
     meta: {

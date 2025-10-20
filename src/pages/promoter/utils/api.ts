@@ -4,7 +4,6 @@ import type {
   OrderCommission,
   Achievement,
   EnterpriseInfo,
-  WithdrawRecord,
 } from "./type";
 
 export const getUserInfo = async (): Promise<UserInfo> =>
@@ -44,13 +43,3 @@ export const editEnterpriseInfo = async (
     method: "POST",
     data: enterpriseInfo,
   });
-
-export const getWithdrawRecordList = async (
-  page: number,
-  limit = 10
-): Promise<WithdrawRecord[]> => {
-  const { list = [] } = await http("commission/withdraw/record_list", {
-    data: { page, limit },
-  });
-  return list;
-};

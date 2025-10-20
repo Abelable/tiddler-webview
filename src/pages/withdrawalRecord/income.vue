@@ -25,7 +25,7 @@
                   fail: item.status === 2,
                 }"
                 :src="
-                  require(`./images/status_${
+                  require(`@/assets/images/status_${
                     ['waiting', 'success', 'fail'][item.status]
                   }.png`)
                 "
@@ -44,7 +44,6 @@
             </div>
             <div class="record-commission">
               <text>手续费¥{{ item.handlingFee.toFixed(2) }}，</text>
-              <text>税费¥{{ item.taxFee.toFixed(2) }}，</text>
               <text>到账¥{{ item.actualAmount.toFixed(2) }}</text>
             </div>
           </div>
@@ -62,15 +61,27 @@
 <script setup lang="ts">
 import { closeToast, Empty, List, PullRefresh, showLoadingToast } from "vant";
 
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import dayjs from "dayjs";
+import { useRoute } from "vue-router";
+import { getIncomeWithdrawRecordList } from "./utils/api";
+
 import type { WithdrawRecord } from "./utils/type";
-import { getWithdrawRecordList } from "./utils/api";
+
+const route = useRoute();
+
+const merchantType = ref(0);
+const shopId = ref(0);
 
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
 const recordList = ref<WithdrawRecord[]>([]);
+
+onMounted(async () => {
+  merchantType.value = +(route.query.merchant_type as string);
+  shopId.value = +(route.query.shop_id as string);
+});
 
 const onRefresh = () => setRecordList(true);
 const onLoadMore = () => setRecordList();
@@ -86,7 +97,11 @@ const setRecordList = async (init = true) => {
     page = 0;
     finished.value = false;
   }
-  const list = await getWithdrawRecordList(++page);
+  const list = await getIncomeWithdrawRecordList(
+    merchantType.value,
+    shopId.value,
+    ++page
+  );
   recordList.value = init ? list : [...recordList.value, ...list];
   if (!list.length) {
     finished.value = true;
@@ -149,14 +164,6 @@ const setRecordList = async (init = true) => {
       color: #111;
       font-size: 0.32rem;
       text-align: right;
-    }
-    .amount-type {
-      margin-left: 0.08rem;
-      padding: 0 6rem;
-      color: var(--blue-1);
-      font-size: 0.2rem;
-      border: 1px solid var(--blue-1);
-      border-radius: 0.08rem;
     }
     .record-commission {
       margin-top: 0.07rem;
