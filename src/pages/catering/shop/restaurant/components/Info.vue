@@ -399,8 +399,7 @@ const addTel = (action: string) => {
   }
   if (
     !tel.value ||
-    (!/^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/.test(tel.value) &&
-      !/^0\d{2,3}-?\d{7,8}$/.test(tel.value))
+    (!/^1[3-9]\d{9}$/.test(tel.value) && !/^0\d{2,3}-?\d{7,8}$/.test(tel.value))
   ) {
     showToast("请输入正确联系电话");
     return;

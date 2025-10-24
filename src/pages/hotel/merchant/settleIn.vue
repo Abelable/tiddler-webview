@@ -335,7 +335,7 @@ const next = () => {
       }
       if (
         !merchantInfo.mobile ||
-        !/^1[345789][0-9]{9}$/.test(merchantInfo.mobile)
+        !/^1[3-9]\d{9}$/.test(merchantInfo.mobile)
       ) {
         showToast("请输入正确手机号");
         return;

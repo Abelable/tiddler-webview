@@ -225,7 +225,7 @@ const submit = async () => {
     return;
   }
   const mobile = authInfo.mobile;
-  if (!mobile || (mobile && !/^[1][3,4,5,6,7,8,9][0-9]{9}$/.test(mobile))) {
+  if (!mobile || (mobile && !/^1[3-9]\d{9}$/.test(mobile))) {
     showToast("请输入正确手机号");
     return;
   }

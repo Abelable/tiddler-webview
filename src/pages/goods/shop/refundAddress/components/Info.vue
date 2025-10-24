@@ -82,7 +82,7 @@ const save = () => {
   }
   if (
     !addressInfo.value.mobile ||
-    !/^1[345789][0-9]{9}$/.test(addressInfo.value.mobile)
+    !/^1[3-9]\d{9}$/.test(addressInfo.value.mobile)
   ) {
     showToast("请输入正确手机号");
     return;

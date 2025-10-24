@@ -84,7 +84,7 @@ export const checkHotelInfo = (hotelInfo: FormHotel) => {
     showToast("请输入房间数量");
     return false;
   }
-  if (!hotelInfo.tel || !/^[1][3,4,5,6,7,8,9][0-9]{9}$/.test(hotelInfo.tel)) {
+  if (!hotelInfo.tel || !/^1[3-9]\d{9}$/.test(hotelInfo.tel)) {
     showToast("请输入正确联系电话");
     return false;
   }

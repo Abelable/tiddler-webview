@@ -595,7 +595,7 @@ const addHotline = (action: string) => {
   }
   if (
     !hotline.value ||
-    (!/^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/.test(
+    (!/^1[3-9]\d{9}$/.test(
       hotline.value
     ) &&
       !/^0\d{2,3}-?\d{7,8}$/.test(hotline.value))
