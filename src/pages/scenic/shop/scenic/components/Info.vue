@@ -595,9 +595,7 @@ const addHotline = (action: string) => {
   }
   if (
     !hotline.value ||
-    (!/^1[3-9]\d{9}$/.test(
-      hotline.value
-    ) &&
+    (!/^1[3-9]\d{9}$/.test(hotline.value) &&
       !/^0\d{2,3}-?\d{7,8}$/.test(hotline.value))
   ) {
     showToast("请输入正确咨询热线");

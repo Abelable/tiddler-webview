@@ -333,10 +333,7 @@ const next = () => {
         showToast("请输入法人姓名");
         return;
       }
-      if (
-        !merchantInfo.mobile ||
-        !/^1[3-9]\d{9}$/.test(merchantInfo.mobile)
-      ) {
+      if (!merchantInfo.mobile || !/^1[3-9]\d{9}$/.test(merchantInfo.mobile)) {
         showToast("请输入正确手机号");
         return;
       }
