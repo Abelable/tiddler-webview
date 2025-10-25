@@ -1,6 +1,7 @@
 import { ref } from "vue";
 import { showToast } from "vant";
-import { getHotelOptions, getRoomTypeOptions } from "./api";
+import { getRoomTypeList } from "../../roomType/utils/api";
+import { getHotelOptions } from "./api";
 
 import type { ApiOption } from "@/utils/type";
 import type { FormRoomInfo } from "./type";
@@ -20,7 +21,7 @@ export const initialRoomInfo = {
 };
 
 export const setTypeOptions = async (hotelId: number) => {
-  typeOptions.value = await getRoomTypeOptions(hotelId);
+  typeOptions.value = await getRoomTypeList(hotelId);
 };
 export const setHotelOptions = async (shopId: number) =>
   (hotelOptions.value = await getHotelOptions(shopId));

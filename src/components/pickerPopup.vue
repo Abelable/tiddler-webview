@@ -1,6 +1,7 @@
 <template>
   <Popup :show="visible" @click-overlay="cancel" position="bottom" round>
     <Picker :columns="options" @confirm="confirm" @cancel="cancel" />
+    <slot></slot>
   </Popup>
 </template>
 

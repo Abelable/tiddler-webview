@@ -105,6 +105,30 @@ const hotel: Array<RouteRecordRaw> = [
     },
     component: () => import("@/pages/hotel/shop/room/edit.vue"),
   },
+  {
+    path: "/hotel/shop/room_type/list",
+    name: "hotel_room_type_list",
+    meta: {
+      title: "房间类型列表",
+    },
+    component: () => import("@/pages/hotel/shop/roomType/list.vue"),
+  },
+  {
+    path: "/hotel/shop/room_type/create",
+    name: "hotel_room_type_create",
+    meta: {
+      title: "新增房间类型",
+    },
+    component: () => import("@/pages/hotel/shop/roomType/create.vue"),
+  },
+  {
+    path: "/hotel/shop/room_type/edit",
+    name: "hotel_room_type_edit",
+    meta: {
+      title: "编辑房间类型",
+    },
+    component: () => import("@/pages/hotel/shop/roomType/edit.vue"),
+  },
 ];
 
 export default hotel;

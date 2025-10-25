@@ -164,7 +164,9 @@
     :options="typeOptions.map((item) => ({ text: item.name, value: item.id }))"
     @confirm="setType"
     @cancel="typePickerPopupVisible = false"
-  />
+  >
+    <div class="add-type-btn" @click="addRoomType">+ 新增房间类型</div>
+  </PickerPopup>
   <Calendar
     v-model:show="dateRangePickerPopupVisible"
     type="range"
@@ -187,6 +189,7 @@ import {
 import PickerPopup from "@/components/PickerPopup.vue";
 
 import { ref, computed, onMounted, watch } from "vue";
+import { useRouter } from "vue-router";
 import _ from "lodash";
 import dayjs from "dayjs";
 import {
@@ -205,6 +208,8 @@ const props = defineProps<{
   editingRoomInfo?: FormRoomInfo;
 }>();
 const emit = defineEmits(["save"]);
+
+const router = useRouter();
 
 const roomInfo = ref<FormRoomInfo>(initialRoomInfo);
 
@@ -297,6 +302,13 @@ const save = async () => {
       ...rest,
       cancellable: cancellable ? 1 : 0,
     },
+  });
+};
+
+const addRoomType = () => {
+  router.push({
+    path: "/hotel/shop/room_type/list",
+    query: { hotel_id: roomInfo.value.hotelId },
   });
 };
 </script>
@@ -416,6 +428,18 @@ const save = async () => {
   font-size: 0.24rem;
   line-height: 1.5;
   white-space: wrap;
+}
+.add-type-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.24rem auto;
+  width: 2.4rem;
+  height: 0.6rem;
+  color: #666;
+  font-size: 0.24rem;
+  border: 1px solid #eee;
+  border-radius: 0.3rem;
 }
 </style>
 <style>

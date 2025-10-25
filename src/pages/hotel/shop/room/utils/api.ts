@@ -23,11 +23,6 @@ export const getRoomList = async (
   return list;
 };
 
-export const getRoomTypeOptions = async (
-  hotelId: number
-): Promise<ApiOption[]> =>
-  await http("hotel/room/type_options", { data: { hotelId } });
-
 export const offShelfRoom = async (shopId: number, id: number) =>
   await http("hotel/shop/room/down", { method: "POST", data: { shopId, id } });
 
@@ -41,7 +36,7 @@ export const deleteRoom = async (shopId: number, id: number) =>
   });
 
 export const getRoomInfo = async (id: number): Promise<RoomInfo> =>
-  await http("hotel/shop/room/detail", { data: { id } });
+  await http("hotel/room/detail", { data: { id } });
 
 export const createRoom = async (
   shopId: number,
