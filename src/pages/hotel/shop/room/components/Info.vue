@@ -433,7 +433,7 @@ const addRoomType = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0.24rem auto;
+  margin: 0.24rem auto 0.48rem;
   width: 2.4rem;
   height: 0.6rem;
   color: #666;
