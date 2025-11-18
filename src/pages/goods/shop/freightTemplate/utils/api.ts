@@ -6,11 +6,14 @@ export const getFreightTemplateList = async (
   shopId: number,
   page: number,
   limit = 10
-): Promise<FreightTemplateListItem[]> =>
-  await http("shop/freight_template/list", {
-    method: "POST",
-    data: { shopId, page, limit },
-  });
+): Promise<FreightTemplateListItem[]> => {
+  const { list = [] } =
+    (await http("shop/freight_template/list", {
+      method: "POST",
+      data: { shopId, page, limit },
+    })) || {};
+  return list;
+};
 
 export const getFreightTemplate = async (
   id: number

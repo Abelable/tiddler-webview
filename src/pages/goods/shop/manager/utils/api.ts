@@ -6,11 +6,14 @@ export const getManagerList = async (
   shopId: number,
   page: number,
   limit = 10
-): Promise<Manager[]> =>
-  await http("shop/manager/list", {
-    method: "POST",
-    data: { shopId, page, limit },
-  });
+): Promise<Manager[]> => {
+  const { list = [] } =
+    (await http("shop/manager/list", {
+      method: "POST",
+      data: { shopId, page, limit },
+    })) || {};
+  return list;
+};
 
 export const getManager = async (
   id: number,
