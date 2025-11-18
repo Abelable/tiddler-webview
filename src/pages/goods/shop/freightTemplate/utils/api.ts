@@ -36,3 +36,10 @@ export const editFreightTemplate = async (
 
 export const deleteFreightTemplate = async (id: number) =>
   await http("shop/freight_template/delete", { method: "POST", data: { id } });
+
+export const getFreightTemplateOptions = async (
+  shopId: number
+): Promise<FreightTemplateListItem[]> =>
+  await http("shop/freight_template/options", {
+    data: { shopId },
+  });

@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { getFreightTemplateList } from "../../freightTemplate/utils/api";
+import { getFreightTemplateOptions } from "../../freightTemplate/utils/api";
 import { getPickupAddressList } from "../../pickupAddress/utils/api";
 import { getRefundAddressList } from "../../refundAddress/utils/api";
 import { getGoodsCategoryOptions } from "./api";
@@ -37,7 +37,7 @@ export const freightTemplateOptions = ref<FreightTemplateListItem[]>([]);
 export const setFreightTemplateOptions = async (shopId: number) =>
   (freightTemplateOptions.value = [
     { id: 0, name: "全国包邮" },
-    ...(await getFreightTemplateList(shopId)),
+    ...(await getFreightTemplateOptions(shopId)),
   ]);
 
 export const categoryOptions = ref<GoodsCategoryOption[]>([]);
