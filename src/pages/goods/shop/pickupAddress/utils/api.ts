@@ -4,9 +4,14 @@ import { cleanObject } from "@/utils/index";
 import type { PickupAddressItem, PickupAddress } from "./type";
 
 export const getPickupAddressList = async (
-  shopId: number
+  shopId: number,
+  page: number,
+  limit = 10
 ): Promise<PickupAddressItem[]> =>
-  await http("shop/pickup_address/list", { method: "POST", data: { shopId } });
+  await http("shop/pickup_address/list", {
+    method: "POST",
+    data: { shopId, page, limit },
+  });
 
 export const getAddress = async (id: number): Promise<PickupAddress> =>
   await http("shop/pickup_address/detail", { data: { id } });
@@ -30,4 +35,11 @@ export const deleteAddress = async (id: number) =>
   await http("shop/pickup_address/delete", {
     method: "POST",
     data: { id },
+  });
+
+export const getPickupAddressOptions = async (
+  shopId: number
+): Promise<PickupAddressItem[]> =>
+  await http("shop/pickup_address/options", {
+    data: { shopId },
   });

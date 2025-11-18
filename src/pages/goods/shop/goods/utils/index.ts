@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import { getFreightTemplateOptions } from "../../freightTemplate/utils/api";
-import { getPickupAddressList } from "../../pickupAddress/utils/api";
-import { getRefundAddressList } from "../../refundAddress/utils/api";
+import { getPickupAddressOptions } from "../../pickupAddress/utils/api";
+import { getRefundAddressOptions } from "../../refundAddress/utils/api";
 import { getGoodsCategoryOptions } from "./api";
 
 import type { FreightTemplateListItem } from "../../freightTemplate/utils/type";
@@ -46,8 +46,8 @@ export const setCategoryOptions = async (shopId: number) =>
 
 export const pickupAddressOptions = ref<PickupAddressItem[]>([]);
 export const setPickupAddressOptions = async (shopId: number) =>
-  (pickupAddressOptions.value = await getPickupAddressList(shopId));
+  (pickupAddressOptions.value = await getPickupAddressOptions(shopId));
 
 export const refundAddressOptions = ref<RefundAddressItem[]>([]);
 export const setRefundAddressOptions = async (shopId: number) =>
-  (refundAddressOptions.value = await getRefundAddressList(shopId));
+  (refundAddressOptions.value = await getRefundAddressOptions(shopId));

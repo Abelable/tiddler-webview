@@ -1,28 +1,36 @@
 <template>
-  <div class="address-list">
-    <SwipeCell v-for="(item, index) in addressList" :key="index">
-      <div class="address row" @click="editAddress(item.id)">
-        <Icon name="location-o" size="0.32rem" />
-        <div class="content">
-          <div class="row">
-            <div class="name">{{ item.consigneeName }}</div>
-            <div class="mobile">{{ item.mobile }}</div>
+  <PullRefresh class="container" v-model="refreshing" @refresh="onRefresh">
+    <List
+      class="address-list"
+      v-model="loading"
+      :finished="finished"
+      @load="onLoadMore"
+      :finished-text="addressList.length ? '没有更多了' : ''"
+    >
+      <SwipeCell v-for="(item, index) in addressList" :key="index">
+        <div class="address row" @click="editAddress(item.id)">
+          <Icon name="location-o" size="0.32rem" />
+          <div class="content">
+            <div class="row">
+              <div class="name">{{ item.consigneeName }}</div>
+              <div class="mobile">{{ item.mobile }}</div>
+            </div>
+            <div class="detail limit">{{ item.addressDetail }}</div>
           </div>
-          <div class="detail limit">{{ item.addressDetail }}</div>
+          <Icon name="edit" size="0.32rem" />
         </div>
-        <Icon name="edit" size="0.32rem" />
-      </div>
-      <template #right>
-        <Button
-          class="delete-btn"
-          @click.stop="confirmDelete(index)"
-          square
-          text="删除"
-          type="danger"
-        />
-      </template>
-    </SwipeCell>
-  </div>
+        <template #right>
+          <Button
+            class="delete-btn"
+            @click.stop="confirmDelete(index)"
+            square
+            text="删除"
+            type="danger"
+          />
+        </template>
+      </SwipeCell>
+    </List>
+  </PullRefresh>
   <Empty
     v-if="!addressList.length"
     image="https://static.tiddler.cn/mp/default_illus/empty.png"
@@ -33,6 +41,8 @@
 
 <script setup lang="ts">
 import {
+  PullRefresh,
+  List,
   SwipeCell,
   Button,
   Icon,
@@ -51,11 +61,30 @@ const router = useRouter();
 
 const shopId = ref(0);
 const addressList = ref<RefundAddressItem[]>([]);
+const loading = ref(false);
+const finished = ref(false);
+const refreshing = ref(false);
+let page = 0;
 
 onMounted(async () => {
   shopId.value = +(route.query.shop_id as string);
-  addressList.value = await getRefundAddressList(shopId.value);
 });
+
+const onRefresh = () => setRefundAddressList(true);
+const onLoadMore = () => setRefundAddressList();
+
+const setRefundAddressList = async (init = false) => {
+  if (init) {
+    page = 0;
+    finished.value = false;
+  }
+  const list = (await getRefundAddressList(shopId.value, ++page)) || {};
+
+  addressList.value = init ? list : [...addressList.value, ...list];
+  if (!list.length) finished.value = true;
+  loading.value = false;
+  refreshing.value = false;
+};
 
 const addAddress = () =>
   router.push({
