@@ -2,8 +2,15 @@ import { http } from "@/utils/http";
 
 import type { Manager } from "./type";
 
-export const getManagerList = async (shopId: number): Promise<Manager[]> =>
-  await http("shop/manager/list", { method: "POST", data: { shopId } });
+export const getManagerList = async (
+  shopId: number,
+  page: number,
+  limit = 10
+): Promise<Manager[]> =>
+  await http("shop/manager/list", {
+    method: "POST",
+    data: { shopId, page, limit },
+  });
 
 export const getManager = async (
   id: number,
