@@ -3,11 +3,13 @@ import type { FreightTemplateListItem, FreightTemplate } from "./type";
 import { cleanObject } from "@/utils";
 
 export const getFreightTemplateList = async (
-  shopId: number
+  shopId: number,
+  page: number,
+  limit = 10
 ): Promise<FreightTemplateListItem[]> =>
   await http("shop/freight_template/list", {
     method: "POST",
-    data: { shopId },
+    data: { shopId, page, limit },
   });
 
 export const getFreightTemplate = async (

@@ -1,21 +1,29 @@
 <template>
-  <div class="template-list">
-    <SwipeCell v-for="(item, index) in templateList" :key="index">
-      <div class="template" @click="editTemplate(item.id)">
-        <div class="name">{{ item.name }}</div>
-        <Icon name="edit" size="0.3rem" />
-      </div>
-      <template #right>
-        <Button
-          class="delete-btn"
-          @click.stop="deleteTempalte(index)"
-          square
-          text="删除"
-          type="danger"
-        />
-      </template>
-    </SwipeCell>
-  </div>
+  <PullRefresh class="container" v-model="refreshing" @refresh="onRefresh">
+    <List
+      class="template-list"
+      v-model="loading"
+      :finished="finished"
+      @load="onLoadMore"
+      :finished-text="templateList.length ? '没有更多了' : ''"
+    >
+      <SwipeCell v-for="(item, index) in templateList" :key="index">
+        <div class="template" @click="editTemplate(item.id)">
+          <div class="name">{{ item.name }}</div>
+          <Icon name="edit" size="0.3rem" />
+        </div>
+        <template #right>
+          <Button
+            class="delete-btn"
+            @click.stop="deleteTempalte(index)"
+            square
+            text="删除"
+            type="danger"
+          />
+        </template>
+      </SwipeCell>
+    </List>
+  </PullRefresh>
   <Empty
     v-if="!templateList.length"
     image="https://static.tiddler.cn/mp/default_illus/empty.png"
@@ -26,6 +34,7 @@
 
 <script setup lang="ts">
 import {
+  PullRefresh,
   SwipeCell,
   Button,
   Icon,
@@ -45,17 +54,37 @@ const router = useRouter();
 
 const shopId = ref(0);
 const templateList = ref<FreightTemplateListItem[]>([]);
+const loading = ref(false);
+const finished = ref(false);
+const refreshing = ref(false);
+let page = 0;
 
 onMounted(async () => {
   shopId.value = +(route.query.shop_id as string);
-  templateList.value = await getFreightTemplateList(shopId.value);
 });
+
+const onRefresh = () => setFreightTemplateList(true);
+const onLoadMore = () => setFreightTemplateList();
+
+const setFreightTemplateList = async (init = false) => {
+  if (init) {
+    page = 0;
+    finished.value = false;
+  }
+  const list = (await getFreightTemplateList(shopId.value, ++page)) || {};
+
+  templateList.value = init ? list : [...templateList.value, ...list];
+  if (!list.length) finished.value = true;
+  loading.value = false;
+  refreshing.value = false;
+};
 
 const addTemplate = () =>
   router.push({
     path: "/shop/freight_template/create",
     query: { shop_id: shopId.value },
   });
+
 const editTemplate = (id: number) =>
   router.push({
     path: "/shop/freight_template/edit",
