@@ -3,7 +3,7 @@ import { http } from "@/utils/http";
 import type { Manager } from "./type";
 
 export const getManagerList = async (shopId: number): Promise<Manager[]> =>
-  await http("shop/manager/list", { data: { shopId } });
+  await http("shop/manager/list", { method: "POST", data: { shopId } });
 
 export const getManager = async (
   id: number,

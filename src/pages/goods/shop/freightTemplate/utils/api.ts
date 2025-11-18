@@ -5,7 +5,10 @@ import { cleanObject } from "@/utils";
 export const getFreightTemplateList = async (
   shopId: number
 ): Promise<FreightTemplateListItem[]> =>
-  await http("shop/freight_template/list", { data: { shopId } });
+  await http("shop/freight_template/list", {
+    method: "POST",
+    data: { shopId },
+  });
 
 export const getFreightTemplate = async (
   id: number

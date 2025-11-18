@@ -6,7 +6,7 @@ import type { RefundAddressItem, AddressDetail } from "./type";
 export const getRefundAddressList = async (
   shopId: number
 ): Promise<RefundAddressItem[]> =>
-  await http("shop/refund_address/list", { data: { shopId } });
+  await http("shop/refund_address/list", { method: "POST", data: { shopId } });
 
 export const getAddress = async (id: number): Promise<AddressDetail> =>
   await http("shop/refund_address/detail", { data: { id } });

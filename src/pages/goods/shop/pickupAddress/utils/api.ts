@@ -6,7 +6,7 @@ import type { PickupAddressItem, PickupAddress } from "./type";
 export const getPickupAddressList = async (
   shopId: number
 ): Promise<PickupAddressItem[]> =>
-  await http("shop/pickup_address/list", { data: { shopId } });
+  await http("shop/pickup_address/list", { method: "POST", data: { shopId } });
 
 export const getAddress = async (id: number): Promise<PickupAddress> =>
   await http("shop/pickup_address/detail", { data: { id } });

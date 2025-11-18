@@ -14,6 +14,7 @@ export const getGoodsList = async (
 ): Promise<GoodsListItem[]> => {
   const { list = [] } =
     (await http("shop/goods/list", {
+      method: "POST",
       data: { shopId, status, page, limit },
     })) || {};
   return list;
