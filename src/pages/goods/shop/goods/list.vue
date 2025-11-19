@@ -285,13 +285,13 @@ const deleteCurGoods = (index: number) =>
 
 const editGoods = (id: number) =>
   router.push({
-    path: "/shop/goods/edit",
+    path: "/goods/shop/goods/edit",
     query: { id, shop_id: shopId.value },
   });
 
 const addGoods = () =>
   router.push({
-    path: "/shop/goods/create",
+    path: "/goods/shop/goods/create",
     query: { shop_id: shopId.value },
   });
 </script>
