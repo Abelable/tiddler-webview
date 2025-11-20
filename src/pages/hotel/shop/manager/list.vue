@@ -1,30 +1,38 @@
 <template>
-  <div class="manager-list">
-    <SwipeCell v-for="(item, index) in managerList" :key="index">
-      <div class="manager row" @click="editManager(item.id)">
-        <img class="avatar" :src="item.avatar" alt="" />
-        <div class="content">
-          <div class="name-wrap row">
-            <div class="name">{{ item.nickname }}</div>
-            <div class="role-tag row">
-              {{ roleOptions.find((role) => role.id === item.roleId)?.name }}
+  <PullRefresh class="container" v-model="refreshing" @refresh="onRefresh">
+    <List
+      class="manager-list"
+      v-model="loading"
+      :finished="finished"
+      @load="onLoadMore"
+      :finished-text="managerList.length ? '没有更多了' : ''"
+    >
+      <SwipeCell v-for="(item, index) in managerList" :key="index">
+        <div class="manager row" @click="editManager(item.id)">
+          <img class="avatar" :src="item.avatar" alt="" />
+          <div class="content">
+            <div class="name-wrap row">
+              <div class="name">{{ item.nickname }}</div>
+              <div class="role-tag row">
+                {{ roleOptions.find((role) => role.id === item.roleId)?.name }}
+              </div>
             </div>
+            <div class="mobile">{{ item.mobile }}</div>
           </div>
-          <div class="mobile">{{ item.mobile }}</div>
+          <Icon name="edit" size="0.32rem" />
         </div>
-        <Icon name="edit" size="0.32rem" />
-      </div>
-      <template #right>
-        <Button
-          class="delete-btn"
-          @click.stop="confirmDelete(index)"
-          square
-          text="删除"
-          type="danger"
-        />
-      </template>
-    </SwipeCell>
-  </div>
+        <template #right>
+          <Button
+            class="delete-btn"
+            @click.stop="confirmDelete(index)"
+            square
+            text="删除"
+            type="danger"
+          />
+        </template>
+      </SwipeCell>
+    </List>
+  </PullRefresh>
   <Empty
     v-if="!managerList.length"
     image="https://static.tiddler.cn/mp/default_illus/empty.png"
@@ -35,6 +43,8 @@
 
 <script setup lang="ts">
 import {
+  PullRefresh,
+  List,
   SwipeCell,
   Button,
   Icon,
@@ -54,11 +64,30 @@ const router = useRouter();
 
 const shopId = ref(0);
 const managerList = ref<Manager[]>([]);
+const loading = ref(false);
+const finished = ref(false);
+const refreshing = ref(false);
+let page = 0;
 
 onMounted(async () => {
   shopId.value = +(route.query.shop_id as string);
-  managerList.value = await getManagerList(shopId.value);
 });
+
+const onRefresh = () => setManagerList(true);
+const onLoadMore = () => setManagerList();
+
+const setManagerList = async (init = false) => {
+  if (init) {
+    page = 0;
+    finished.value = false;
+  }
+  const list = (await getManagerList(shopId.value, ++page)) || {};
+
+  managerList.value = init ? list : [...managerList.value, ...list];
+  if (!list.length) finished.value = true;
+  loading.value = false;
+  refreshing.value = false;
+};
 
 const addManager = () =>
   router.push({
