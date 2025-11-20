@@ -109,7 +109,7 @@ const goods: Array<RouteRecordRaw> = [
     path: "/goods/shop/pickup_address/list",
     name: "shop_pickup_address_list",
     meta: {
-      title: "提货地址列表",
+      title: "提货地点列表",
     },
     component: () => import("@/pages/goods/shop/pickupAddress/list.vue"),
   },
@@ -117,7 +117,7 @@ const goods: Array<RouteRecordRaw> = [
     path: "/goods/shop/pickup_address/create",
     name: "shop_pickup_address_create",
     meta: {
-      title: "新增提货地址",
+      title: "新增提货地点",
     },
     component: () => import("@/pages/goods/shop/pickupAddress/create.vue"),
   },
@@ -125,7 +125,7 @@ const goods: Array<RouteRecordRaw> = [
     path: "/goods/shop/pickup_address/edit",
     name: "shop_pickup_address_edit",
     meta: {
-      title: "编辑提货地址",
+      title: "编辑提货地点",
     },
     component: () => import("@/pages/goods/shop/pickupAddress/edit.vue"),
   },

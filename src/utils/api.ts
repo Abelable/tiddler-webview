@@ -9,5 +9,5 @@ export const getOssConfig = async (): Promise<OssConfig> =>
 export const getExpressOptions = async (name: string): Promise<Express[]> =>
   await http("shop/express_options", { data: cleanObject({ name }) });
 
-export const getUserOptions = async (nickname: string): Promise<User[]> =>
-  await http("user/options", { data: cleanObject({ nickname }) });
+export const getUserOptions = async (keywords: string): Promise<User[]> =>
+  await http("user/options", { data: cleanObject({ keywords }) });

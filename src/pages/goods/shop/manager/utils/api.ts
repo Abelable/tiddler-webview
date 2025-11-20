@@ -24,13 +24,11 @@ export const getManager = async (
 export const createManager = async (
   shopId: number,
   userId: number,
-  avatar: string,
-  nickname: string,
   roleId: number
 ) =>
   await http("shop/manager/add", {
     method: "POST",
-    data: { shopId, userId, avatar, nickname, roleId },
+    data: { shopId, userId, roleId },
   });
 
 export const editManager = async (

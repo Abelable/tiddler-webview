@@ -31,13 +31,13 @@
           />
         </li>
         <li class="form-item flex">
-          <div class="name required">店铺价格</div>
+          <div class="name required">起始价格</div>
           <input
             class="input"
             v-model="goodsInfo.price"
             type="number"
             step="0.01"
-            placeholder="请输入店铺价格"
+            placeholder="请输入起始价格"
           />
         </li>
         <li class="form-item flex">
@@ -122,10 +122,10 @@
           class="form-item flex"
           v-if="goodsInfo.deliveryMode === 2 || goodsInfo.deliveryMode === 3"
         >
-          <div class="name required">提货地址</div>
+          <div class="name required">提货地点</div>
           <div class="picker" @click="pickupAddressPickerPopupVisible = true">
             <div class="content" :class="{ active: selectedPickupAddress }">
-              {{ selectedPickupAddress || "请选择提货地址" }}
+              {{ selectedPickupAddress || "请选择提货地点" }}
             </div>
             <Icon name="arrow" />
           </div>
@@ -745,7 +745,7 @@ const nextStep = () => {
           goodsInfo.value.deliveryMode === 3) &&
         !goodsInfo.value.pickupAddressIds.length
       ) {
-        showToast("请选择提货地址");
+        showToast("请选择提货地点");
         return false;
       }
       if (

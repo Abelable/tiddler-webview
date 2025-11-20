@@ -31,9 +31,9 @@
   <Empty
     v-if="!addressList.length"
     image="https://static.tiddler.cn/mp/default_illus/empty.png"
-    description="暂无提货地址列表"
+    description="暂无提货地点列表"
   />
-  <button class="add-btn" @click="addAddress">新增提货地址</button>
+  <button class="add-btn" @click="addAddress">新增提货地点</button>
 </template>
 
 <script setup lang="ts">
@@ -95,7 +95,7 @@ const editAddress = (id: number) =>
   });
 
 const confirmDelete = (index: number) =>
-  showConfirmDialog({ title: "确定删除该提货地址吗？" })
+  showConfirmDialog({ title: "确定删除该提货地点吗？" })
     .then(async () => {
       try {
         await deleteAddress(addressList.value[index].id);
