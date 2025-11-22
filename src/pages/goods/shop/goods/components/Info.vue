@@ -449,7 +449,7 @@
     @confirm="selectPickupAddress"
     @cancel="pickupAddressPickerPopupVisible = false"
   />
-  <MultiPickerPopup
+  <PickerPopup
     :visible="refundAddressPickerPopupVisible"
     :options="
       refundAddressOptions.map((item) => ({
@@ -567,13 +567,11 @@ const selectedPickupAddress = computed(() =>
     )
     .join()
 );
-const selectedRefundAddress = computed(() =>
-  goodsInfo.value.refundAddressIds
-    .map(
-      (id) =>
-        refundAddressOptions.value.find((item) => item.id === id)?.addressDetail
-    )
-    .join()
+const selectedRefundAddress = computed(
+  () =>
+    refundAddressOptions.value.find(
+      (item) => item.id === goodsInfo.value.refundAddressId
+    )?.addressDetail
 );
 
 onMounted(() => {
@@ -627,7 +625,7 @@ const selectRefundAddress = ({
 }: {
   selectedValues: number[];
 }) => {
-  goodsInfo.value.refundAddressIds = selectedValues;
+  goodsInfo.value.refundAddressId = selectedValues[0];
   refundAddressPickerPopupVisible.value = false;
 };
 
@@ -748,10 +746,7 @@ const nextStep = () => {
         showToast("请选择提货地点");
         return false;
       }
-      if (
-        goodsInfo.value.refundStatus &&
-        !goodsInfo.value.refundAddressIds.length
-      ) {
+      if (goodsInfo.value.refundStatus && !goodsInfo.value.refundAddressId) {
         showToast("请选择退货地址");
         return false;
       }

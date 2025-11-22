@@ -55,7 +55,7 @@ export interface GoodsInfo {
   freightTemplateId: number;
   pickupAddressIds: number[];
   refundStatus: 0 | 1;
-  refundAddressIds: number[];
+  refundAddressId: number;
 }
 
 export interface FormSkuItem {
@@ -89,5 +89,5 @@ export interface FormGoodsInfo {
   freightTemplateId: number | undefined;
   pickupAddressIds: number[];
   refundStatus: boolean;
-  refundAddressIds: number[];
+  refundAddressId: number | undefined;
 }

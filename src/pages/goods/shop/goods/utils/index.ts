@@ -30,7 +30,7 @@ export const initialGoodsInfo = {
   freightTemplateId: undefined,
   pickupAddressIds: [],
   refundStatus: false,
-  refundAddressIds: [],
+  refundAddressId: undefined,
 };
 
 export const freightTemplateOptions = ref<FreightTemplateListItem[]>([]);
