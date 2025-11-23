@@ -1,10 +1,12 @@
 import { RouteRecordRaw } from "vue-router";
+
 import protocol from "./protocol";
 import goods from "./goods";
 import scenic from "./scenic";
 import hotel from "./hotel";
 import catering from "./catering";
 import promoter from "./promoter";
+import withdrawalRecord from "./withdrawalRecord";
 import activity from "./activity";
 
 const routes: Array<RouteRecordRaw> = [
@@ -30,6 +32,7 @@ const routes: Array<RouteRecordRaw> = [
   ...hotel,
   ...catering,
   ...promoter,
+  ...withdrawalRecord,
   ...activity,
 ];
 
