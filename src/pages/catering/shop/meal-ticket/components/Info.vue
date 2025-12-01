@@ -272,6 +272,7 @@
     :options="
       restaurantOptions.map((item) => ({ text: item.name, value: item.id }))
     "
+    :selected-values="ticketInfo.restaurantIds"
     @confirm="setRestaurantIds"
     @cancel="restaurantPickerPopupVisible = false"
   />

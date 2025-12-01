@@ -58,6 +58,7 @@
   <PickerPopup
     :visible="rolePickerPopupVisible"
     :options="roleOptions.map((role) => ({ text: role.name, value: role.id }))"
+    :selected-values="[managerInfo.roleId || 0]"
     @confirm="selectRole"
     @cancel="rolePickerPopupVisible = false"
   />
@@ -71,6 +72,7 @@
     :options="
       restaurantOptions.map((item) => ({ text: item.name, value: item.id }))
     "
+    :selected-values="managerInfo.restaurantIds"
     @confirm="setRestaurantIds"
     @cancel="restaurantPickerPopupVisible = false"
   />
