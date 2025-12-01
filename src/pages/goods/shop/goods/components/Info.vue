@@ -341,7 +341,7 @@
               <li class="form-item">
                 <div class="name">图片</div>
                 <Uploader
-                  v-model="item.cover"
+                  v-model="item.image"
                   :after-read="uploadFile"
                   style="margin-top: 0.32rem"
                   max-count="1"
@@ -361,7 +361,7 @@
                 <div class="name">市场价格</div>
                 <input
                   class="input"
-                  v-model="item.marketPrice"
+                  v-model="item.originalPrice"
                   type="number"
                   step="0.01"
                   placeholder="请输入市场价格"
@@ -371,7 +371,7 @@
                 <div class="name">佣金比例</div>
                 <input
                   class="input"
-                  v-model="item.salesCommissionRate"
+                  v-model="item.commissionRate"
                   type="number"
                   placeholder="请输入佣金比例"
                 />
@@ -390,7 +390,7 @@
                 <div class="name">限购数量</div>
                 <input
                   class="input"
-                  v-model="item.numberLimit"
+                  v-model="item.limit"
                   type="number"
                   placeholder="请输入限购数量"
                 />
@@ -673,12 +673,12 @@ watch(goodsInfo.value.specList, () => {
     return (
       sku || {
         name: item.join(),
-        cover: [],
+        image: [],
         price: undefined,
-        marketPrice: undefined,
-        salesCommissionRate: undefined,
+        originalPrice: undefined,
+        commissionRate: undefined,
         stock: undefined,
-        numberLimit: undefined,
+        limit: undefined,
       }
     );
   });
@@ -852,7 +852,7 @@ const submit = async () => {
       specList: specList,
       skuList: skuList.map((item) => ({
         ...item,
-        cover: item.cover.length ? item.cover[0].url : "",
+        image: item.image.length ? item.image[0].url : "",
       })),
       refundStatus: refundStatus ? 1 : 0,
     },

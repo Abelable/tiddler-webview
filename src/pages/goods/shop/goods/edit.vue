@@ -58,7 +58,7 @@ const setGoodsInfo = async () => {
     marketPrice: marketPrice || undefined,
     skuList: skuList.map((item) => ({
       ...item,
-      cover: item.cover ? [{ url: item.cover }] : [],
+      image: item.image ? [{ url: item.image }] : [],
     })),
     refundStatus: refundStatus === 1,
   };

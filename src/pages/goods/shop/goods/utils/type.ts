@@ -25,12 +25,12 @@ export interface SpecItem {
 
 export interface SkuItem {
   name: string;
-  cover: string;
+  image: string;
   price: number;
-  marketPrice: number;
-  salesCommissionRate: number;
+  originalPrice: number;
+  commissionRate: number;
   stock: number;
-  numberLimit: number;
+  limit: number;
 }
 export interface GoodsInfo {
   id: number;
@@ -58,12 +58,12 @@ export interface GoodsInfo {
 
 export interface FormSkuItem {
   name: string;
-  cover: UploaderFileListItem[];
+  image: UploaderFileListItem[];
   price: number | undefined;
-  marketPrice: number | undefined;
-  salesCommissionRate: number | undefined;
+  originalPrice: number | undefined;
+  commissionRate: number | undefined;
   stock: number | undefined;
-  numberLimit: number | undefined;
+  limit: number | undefined;
 }
 
 export interface FormGoodsInfo {
