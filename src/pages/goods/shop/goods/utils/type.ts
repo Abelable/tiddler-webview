@@ -2,7 +2,6 @@ import type { UploaderFileListItem } from "vant";
 
 export interface GoodsCategoryOption {
   id: number;
-  shopCategoryId: number;
   name: string;
   minSalesCommissionRate: number;
   maxSalesCommissionRate: number;
@@ -35,8 +34,7 @@ export interface SkuItem {
 }
 export interface GoodsInfo {
   id: number;
-  shopCategoryId: number;
-  categoryId: number;
+  categoryIds: number[];
   cover: string;
   video: string;
   imageList: string[];
@@ -69,8 +67,7 @@ export interface FormSkuItem {
 }
 
 export interface FormGoodsInfo {
-  shopCategoryId: number | undefined;
-  categoryId: number | undefined;
+  categoryIds: number[];
   cover: UploaderFileListItem[];
   video: UploaderFileListItem[];
   imageList: UploaderFileListItem[];

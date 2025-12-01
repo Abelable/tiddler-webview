@@ -28,21 +28,39 @@
 
 <script setup lang="ts">
 import { Popup, CheckboxGroup, Checkbox, CellGroup, Cell } from "vant";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 import type { CheckboxInstance } from "vant";
 import type { Option } from "@/utils/type";
 
-defineProps<{ visible: boolean; options: Option[] }>();
-const emit = defineEmits(["confirm", "cancel"]);
+const props = defineProps<{
+  visible: boolean;
+  options: Option[];
+  selectedValues?: (string | number)[];
+}>();
 
-const selectedValues = ref([]);
+const emit = defineEmits(["update:selectedValues", "confirm", "cancel"]);
+
+const selectedValues = ref<(string | number)[]>(props.selectedValues ?? []);
+
+watch(
+  () => props.selectedValues,
+  (val) => {
+    if (val) selectedValues.value = [...val];
+  }
+);
+
 const optionRefs = ref<CheckboxInstance[]>([]);
 
 const toggleSelected = (index: number) => {
-  optionRefs.value[index].toggle();
+  optionRefs.value[index]?.toggle();
 };
-const confirm = () => emit("confirm", { selectedValues: selectedValues.value });
+
+const confirm = () => {
+  emit("update:selectedValues", selectedValues.value);
+  emit("confirm", { selectedValues: selectedValues.value });
+};
+
 const cancel = () => emit("cancel");
 </script>
 

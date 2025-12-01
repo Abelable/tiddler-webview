@@ -50,7 +50,7 @@
             placeholder="请输入市场价格"
           />
         </li>
-        <li class="form-item flex" v-if="goodsInfo.categoryId">
+        <li class="form-item flex" v-if="goodsInfo.categoryIds.length">
           <div class="name flex required">
             <div>佣金比例</div>
             <Popover
@@ -410,6 +410,25 @@
     </div>
   </div>
 
+  <MultiPickerPopup
+    :visible="categoryPickerPopupVisible"
+    :options="
+      categoryOptions.map((item) => ({
+        text: item.name,
+        value: item.id,
+      }))
+    "
+    :selected-values="goodsInfo.categoryIds"
+    @confirm="selectCategory"
+    @cancel="categoryPickerPopupVisible = false"
+  />
+  <PickerPopup
+    :visible="deliveryModePickerPopupVisible"
+    :options="deliveryModeOptions"
+    :selected-values="[goodsInfo.deliveryMode || 0]"
+    @confirm="selectDeliveryMode"
+    @cancel="deliveryModePickerPopupVisible = false"
+  />
   <PickerPopup
     :visible="freightTemplatePickerPopupVisible"
     :options="
@@ -418,25 +437,9 @@
         value: item.id,
       }))
     "
+    :selected-values="[goodsInfo.freightTemplateId || 0]"
     @confirm="selectFreightTemplate"
     @cancel="freightTemplatePickerPopupVisible = false"
-  />
-  <PickerPopup
-    :visible="categoryPickerPopupVisible"
-    :options="
-      categoryOptions.map((item) => ({
-        text: item.name,
-        value: item.id,
-      }))
-    "
-    @confirm="selectCategory"
-    @cancel="categoryPickerPopupVisible = false"
-  />
-  <PickerPopup
-    :visible="deliveryModePickerPopupVisible"
-    :options="deliveryModeOptions"
-    @confirm="selectDeliveryMode"
-    @cancel="deliveryModePickerPopupVisible = false"
   />
   <MultiPickerPopup
     :visible="pickupAddressPickerPopupVisible"
@@ -446,6 +449,7 @@
         value: item.id,
       }))
     "
+    :selected-values="goodsInfo.pickupAddressIds"
     @confirm="selectPickupAddress"
     @cancel="pickupAddressPickerPopupVisible = false"
   />
@@ -457,6 +461,7 @@
         value: item.id,
       }))
     "
+    :selected-values="[goodsInfo.refundAddressId || 0]"
     @confirm="selectRefundAddress"
     @cancel="refundAddressPickerPopupVisible = false"
   />
@@ -555,10 +560,11 @@ const selectedDeliveryModeDesc = computed(
       (item) => item.value === goodsInfo.value.deliveryMode
     )?.text
 );
-const selectedCategoryName = computed(
-  () =>
-    categoryOptions.value.find((item) => item.id === goodsInfo.value.categoryId)
-      ?.name
+const selectedCategoryName = computed(() =>
+  categoryOptions.value
+    .filter((item) => goodsInfo.value.categoryIds.includes(item.id))
+    ?.map((item) => item.name)
+    .join()
 );
 const selectedPickupAddress = computed(() =>
   goodsInfo.value.pickupAddressIds
@@ -576,12 +582,18 @@ const selectedRefundAddress = computed(
 
 onMounted(() => {
   if (props.editingGoodsInfo) {
-    const curCategoryOption = categoryOptions.value.find(
-      (item) => item.id === props.editingGoodsInfo?.categoryId
-    ) as GoodsCategoryOption;
-    if (curCategoryOption) {
-      minSalesCommissionRate.value = curCategoryOption.minSalesCommissionRate;
-      maxSalesCommissionRate.value = curCategoryOption.maxSalesCommissionRate;
+    const curCategoryOptions = categoryOptions.value.filter((item) =>
+      props.editingGoodsInfo?.categoryIds.includes(item.id)
+    ) as GoodsCategoryOption[];
+    if (curCategoryOptions) {
+      minSalesCommissionRate.value = Math.max(
+        ...curCategoryOptions.map((item) => item.minSalesCommissionRate || 0)
+      );
+      maxSalesCommissionRate.value = Math.min(
+        ...curCategoryOptions.map(
+          (item) => item.maxSalesCommissionRate || Infinity
+        )
+      );
     }
   }
 });
@@ -595,13 +607,18 @@ const selectFreightTemplate = ({
   freightTemplatePickerPopupVisible.value = false;
 };
 const selectCategory = ({ selectedValues }: { selectedValues: number[] }) => {
-  const curCategoryInfo = categoryOptions.value.find(
-    (item) => item.id === selectedValues[0]
-  ) as GoodsCategoryOption;
-  goodsInfo.value.categoryId = curCategoryInfo.id;
-  goodsInfo.value.shopCategoryId = curCategoryInfo.shopCategoryId;
-  minSalesCommissionRate.value = curCategoryInfo.minSalesCommissionRate;
-  maxSalesCommissionRate.value = curCategoryInfo.maxSalesCommissionRate;
+  const selectedCategoryOptions = categoryOptions.value.filter((item) =>
+    selectedValues.includes(item.id)
+  ) as GoodsCategoryOption[];
+  goodsInfo.value.categoryIds = selectedCategoryOptions.map((item) => item.id);
+  minSalesCommissionRate.value = Math.max(
+    ...selectedCategoryOptions.map((item) => item.minSalesCommissionRate || 0)
+  );
+  maxSalesCommissionRate.value = Math.min(
+    ...selectedCategoryOptions.map(
+      (item) => item.maxSalesCommissionRate || Infinity
+    )
+  );
   categoryPickerPopupVisible.value = false;
 };
 const selectDeliveryMode = ({
@@ -701,7 +718,7 @@ const deleteSpecOption = (index: number, optionIndex: number) => {
 const nextStep = () => {
   switch (step.value) {
     case 0:
-      if (!goodsInfo.value.categoryId) {
+      if (!goodsInfo.value.categoryIds.length) {
         showToast("请选择商品分类");
         return false;
       }
@@ -965,6 +982,7 @@ const submit = async () => {
     flex: 1;
     color: #333;
     font-weight: 550;
+    background: #f5f6f8;
     border: 1px solid #ddd;
   }
   .next-step {
