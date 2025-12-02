@@ -4,6 +4,6 @@ export const initialDeliveryInfo = {
 };
 
 export const statusOptions = [
-  { text: "部分发货", value: 1 },
   { text: "全部发货", value: 1 },
+  { text: "部分发货", value: 0 },
 ];

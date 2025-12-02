@@ -1,6 +1,6 @@
 import { http } from "@/utils/http";
 
-import type { Goods, Package } from "./type";
+import type { FormPackage, Goods } from "./type";
 
 export const getUnshippedGoodsList = async (
   shopId: number,
@@ -13,11 +13,11 @@ export const getUnshippedGoodsList = async (
 
 export const ship = async (
   shopId: number,
-  orderId: number,
+  id: number,
   isAllDelivered: number,
-  packageList: Package[]
+  packageList: FormPackage[]
 ) =>
   await http("shop/order/ship", {
     method: "POST",
-    data: { shopId, orderId, isAllDelivered, packageList },
+    data: { shopId, id, isAllDelivered, packageList },
   });

@@ -7,10 +7,10 @@
           <div class="picker row" @click="pickStatus">
             <div
               class="content"
-              :class="{ active: deliveryInfo.isAllDelivered }"
+              :class="{ active: deliveryInfo.isAllDelivered !== undefined }"
             >
               {{
-                deliveryInfo.isAllDelivered
+                deliveryInfo.isAllDelivered !== undefined
                   ? statusOptions.find(
                       (status) => status.value === deliveryInfo.isAllDelivered
                     )?.text
@@ -168,7 +168,7 @@ import { useRoute } from "vue-router";
 import { initialDeliveryInfo, statusOptions } from "./utils/index";
 import { getUnshippedGoodsList, ship } from "./utils/api";
 
-import type { DeliveryInfo, Goods } from "./utils/type";
+import type { DeliveryInfo, Goods, Package } from "./utils/type";
 
 const route = useRoute();
 
@@ -271,12 +271,17 @@ const save = () => {
     return;
   }
 
+  const packageList = deliveryInfo.value.packageList.map((item: Package) => ({
+    ...item,
+    goodsList: JSON.stringify(item.goodsList),
+  }));
+
   try {
     ship(
       shopId.value,
       orderId.value,
       deliveryInfo.value.isAllDelivered,
-      deliveryInfo.value.packageList
+      packageList
     );
     showToast("发货成功");
     setTimeout(() => {

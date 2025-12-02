@@ -13,6 +13,10 @@ export interface Package {
   goodsList: Goods[];
 }
 
+export interface FormPackage extends Omit<Package, "goodsList"> {
+  goodsList: string;
+}
+
 export interface DeliveryInfo {
   isAllDelivered: number | undefined;
   packageList: Package[];
