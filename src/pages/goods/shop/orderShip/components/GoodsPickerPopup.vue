@@ -56,7 +56,7 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(["confirm", "cancel"]);
 
-const goodsOptions = ref<Goods[]>([]);
+// const goodsOptions = ref<Goods[]>([]);
 const goodsId = ref(0);
 
 watch(props, (props) => {
@@ -69,7 +69,7 @@ const confirm = () => {
   if (goodsId.value === 0) {
     return;
   }
-  const goods = goodsOptions.value.find(
+  const goods = props.goodsOptions.find(
     (goods) => goods.goodsId === goodsId.value
   );
   emit("confirm", goods);
@@ -107,11 +107,12 @@ const cancel = () => {
       padding: 0.18rem 0;
       border-bottom: 1px solid #eee;
       .goods-cover {
-        width: 0.68rem;
-        height: 0.68rem;
+        width: 0.48rem;
+        height: 0.48rem;
         border-radius: 0.08rem;
       }
       .goods-name {
+        margin-left: 0.24rem;
         flex: 1;
         color: #333;
         font-size: 0.28rem;

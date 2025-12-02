@@ -76,7 +76,7 @@
                     class="picker row"
                     @click="showGoodsPickerPopup(index, _index)"
                   >
-                    <div class="content" :class="{ active: _item.goodsId }">
+                    <div class="content" :class="{ active: _item.name }">
                       {{ _item.name || "请选择商品" }}
                     </div>
                     <Icon name="arrow" />
@@ -349,8 +349,18 @@ const save = () => {
           flex: 1;
           text-align: right;
         }
+        .picker {
+          flex: 1;
+        }
         .content {
+          flex: 1;
           color: #999;
+          text-align: right;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
           &.active {
             color: #333;
           }
