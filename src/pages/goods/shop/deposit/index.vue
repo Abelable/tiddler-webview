@@ -3,7 +3,7 @@
     <div class="bond-overview">
       <div class="overview-title">保证金(元)</div>
       <div class="bond-amount">
-        {{ depositInfo ? depositInfo.balance.toFixed(2) : "0.00" }}
+        {{ depositInfo ? depositInfo.balance : "0.00" }}
       </div>
       <div class="supplement">
         <div class="supplement-tips">还需补缴(元)</div>
