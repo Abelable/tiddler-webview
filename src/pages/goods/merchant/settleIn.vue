@@ -472,12 +472,12 @@ const next = () => {
           return;
         }
         if (
-          !merchantInfo.email ||
+          merchantInfo.email &&
           !/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(
             merchantInfo.email
           )
         ) {
-          showToast("请输入正确电子邮箱");
+          showToast("电子邮箱格式有误");
           return;
         }
         if (!merchantInfo.regionCodeList) {
