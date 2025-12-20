@@ -555,11 +555,8 @@ const next = () => {
         showToast("请输入持卡人姓名");
         return;
       }
-      if (
-        !merchantInfo.bankCardNumber ||
-        !/^([1-9]{1})(\d{15}|\d{16}|\d{18})$/.test(merchantInfo.bankCardNumber)
-      ) {
-        showToast("请输入正确银行卡号");
+      if (!merchantInfo.bankCardNumber) {
+        showToast("请输入银行卡号");
         return;
       }
       if (!merchantInfo.bankName) {
