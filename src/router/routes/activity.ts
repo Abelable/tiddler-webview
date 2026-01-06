@@ -17,6 +17,14 @@ const activity: Array<RouteRecordRaw> = [
     },
     component: () => import("@/pages/activities/summer/index.vue"),
   },
+  {
+    path: "/activity/new_year",
+    name: "activity_new_year",
+    meta: {
+      title: "团圆家乡年",
+    },
+    component: () => import("@/pages/activities/newYear/index.vue"),
+  },
 ];
 
 export default activity;
