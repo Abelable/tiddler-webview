@@ -127,9 +127,11 @@ onUnmounted(() => {
         }
       }
       .split {
-        margin-top: 0.24rem;
+        display: flex;
+        align-items: center;
+        height: 1rem;
         font-size: 0.36rem;
-        font-weight: bold;
+        line-height: 1;
         color: #ffdcad;
       }
     }
