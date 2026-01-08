@@ -86,7 +86,14 @@
             <div class="prize-name">测试测试测试</div>
           </div>
         </div>
-        <div class="draw-btn">消耗20福气值</div>
+        <div
+          class="draw-btn"
+          @touchstart="press = true"
+          @touchend="press = false"
+          :class="{ pressed: press }"
+        >
+          消耗20福气值
+        </div>
       </div>
     </div>
     <div class="luck-exchange">
@@ -196,6 +203,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
 
+const press = ref(false);
 const days = ref("00");
 const hours = ref("00");
 const minutes = ref("00");
@@ -443,30 +451,44 @@ onUnmounted(() => {
       .draw-btn {
         position: absolute;
         left: 50%;
-        bottom: 0.2rem;
+        bottom: 0.24rem;
         transform: translateX(-50%);
-        width: 2.68rem;
-        height: 1.14rem;
-        border-radius: 0.57rem;
+        width: 2.41rem;
+        height: 1.03rem;
+        border-radius: 0.51rem;
         text-align: center;
-        line-height: 1.16rem;
-        padding-top: 0.18rem;
+        line-height: 1.04rem;
+        padding-top: 0.16rem;
         color: #fff;
-        font-size: 0.22rem;
+        font-size: 0.2rem;
         background: none;
         z-index: 1;
+        cursor: pointer;
+        user-select: none;
+        touch-action: manipulation;
+        transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1),
+          filter 0.1s ease;
         &::before {
           content: "";
           position: absolute;
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
-          width: 3.6rem;
-          height: 3.6rem;
+          width: 3.24rem;
+          height: 3.24rem;
           background: url("./images/draw_btn_bg.webp") no-repeat center center;
           background-size: cover;
           z-index: -1;
-          border-radius: inherit;
+          border-radius: 0.51rem;
+          transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1),
+            filter 0.1s ease;
+        }
+        &.pressed {
+          transform: translateX(-50%) scale(0.96);
+          filter: brightness(1.2);
+        }
+        &.pressed::before {
+          transform: translate(-50%, -50%) scale(0.96);
         }
       }
     }
