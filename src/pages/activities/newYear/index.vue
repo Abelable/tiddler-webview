@@ -86,6 +86,7 @@
             <div class="prize-name">测试测试测试</div>
           </div>
         </div>
+        <div class="draw-btn">消耗20福气值</div>
       </div>
     </div>
     <div class="luck-exchange">
@@ -437,6 +438,35 @@ onUnmounted(() => {
             background: linear-gradient(90deg, #ff48d0 0%, #fd2b81 100%);
             border-bottom-right-radius: 0.18rem;
           }
+        }
+      }
+      .draw-btn {
+        position: absolute;
+        left: 50%;
+        bottom: 0.2rem;
+        transform: translateX(-50%);
+        width: 2.68rem;
+        height: 1.14rem;
+        border-radius: 0.57rem;
+        text-align: center;
+        line-height: 1.16rem;
+        padding-top: 0.18rem;
+        color: #fff;
+        font-size: 0.22rem;
+        background: none;
+        z-index: 1;
+        &::before {
+          content: "";
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 3.6rem;
+          height: 3.6rem;
+          background: url("./images/draw_btn_bg.webp") no-repeat center center;
+          background-size: cover;
+          z-index: -1;
+          border-radius: inherit;
         }
       }
     }
