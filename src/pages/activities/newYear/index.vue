@@ -2,7 +2,6 @@
   <div class="bg-wrap">
     <img class="bg" src="./images/bg.webp" alt="" />
     <div class="count-down-wrap">
-      <!-- <div class="count-down-tips">距离团圆还有</div> -->
       <img class="count-down-tips" src="./images/count_down_tips.webp" alt="" />
       <div class="count-down">
         <div class="count-down-unit">
@@ -28,9 +27,148 @@
     </div>
   </div>
   <div class="container">
-    <div class="activity-part"></div>
-    <div class="activity-part"></div>
-    <div class="activity-part"></div>
+    <div class="luck-draw">
+      <div class="luck-score-wrap">
+        <div class="luck-score">
+          <div class="luck-score-tips">
+            <div>我的福气值</div>
+            <img class="tips-arrow" src="./images/arrow.png" alt="" />
+          </div>
+          <div class="luck-score-value">
+            <img class="luck-bag" src="./images/luck_bag.webp" alt="" />
+            <div>120</div>
+          </div>
+          <div class="activity-time">活动时间：2026.01.08-2026.02.24</div>
+        </div>
+        <div class="luck-btn">获取更多福气值</div>
+      </div>
+      <div class="draw-wheel">
+        <div class="prize-list">
+          <div class="prize">
+            <img class="prize-cover" src="./images/qdcy.webp" />
+            <div class="prize-name">测试测试测试</div>
+          </div>
+          <div class="prize">
+            <img class="prize-cover" src="./images/qdcy.webp" />
+            <div class="prize-name">测试测试测试</div>
+          </div>
+          <div class="prize big">
+            <img class="prize-cover" src="./images/qdcy.webp" />
+            <div class="prize-name">测试测试测试</div>
+            <div class="big-prize-tag">本期大奖</div>
+          </div>
+          <div class="prize">
+            <img class="prize-cover" src="./images/qdcy.webp" />
+            <div class="prize-name">测试测试测试</div>
+          </div>
+          <div class="prize">
+            <img class="prize-cover" src="./images/qdcy.webp" />
+            <div class="prize-name">测试测试测试</div>
+          </div>
+          <div class="prize">
+            <img class="prize-cover" src="./images/qdcy.webp" />
+            <div class="prize-name">测试测试测试</div>
+          </div>
+          <div class="prize">
+            <img class="prize-cover" src="./images/qdcy.webp" />
+            <div class="prize-name">测试测试测试</div>
+          </div>
+          <div class="prize">
+            <img class="prize-cover" src="./images/qdcy.webp" />
+            <div class="prize-name">测试测试测试</div>
+          </div>
+          <div class="prize">
+            <img class="prize-cover" src="./images/qdcy.webp" />
+            <div class="prize-name">测试测试测试</div>
+          </div>
+          <div class="prize">
+            <img class="prize-cover" src="./images/qdcy.webp" />
+            <div class="prize-name">测试测试测试</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="luck-exchange">
+      <img
+        class="luck-exchange-title"
+        src="./images/exchange_title.webp"
+        alt=""
+      />
+      <div class="goods-list">
+        <div class="goods">
+          <img class="goods-cover" src="./images/qdcy.webp" alt="" />
+          <div class="goods-info">
+            <div class="goods-name">
+              测试测试测试测试测试测试测试测试测试测试测试测试测试
+            </div>
+            <div class="goods-exchange">
+              <div class="goods-need-luck">300福气值</div>
+              <div class="goods-exchange-btn">兑换</div>
+            </div>
+          </div>
+        </div>
+        <div class="goods">
+          <img class="goods-cover" src="./images/qdcy.webp" alt="" />
+          <div class="goods-info">
+            <div class="goods-name">
+              测试测试测试测试测试测试测试测试测试测试测试测试测试
+            </div>
+            <div class="goods-exchange">
+              <div class="goods-need-luck">300福气值</div>
+              <div class="goods-exchange-btn">兑换</div>
+            </div>
+          </div>
+        </div>
+        <div class="goods">
+          <img class="goods-cover" src="./images/qdcy.webp" alt="" />
+          <div class="goods-info">
+            <div class="goods-name">
+              测试测试测试测试测试测试测试测试测试测试测试测试测试
+            </div>
+            <div class="goods-exchange">
+              <div class="goods-need-luck">300福气值</div>
+              <div class="goods-exchange-btn">兑换</div>
+            </div>
+          </div>
+        </div>
+        <div class="goods">
+          <img class="goods-cover" src="./images/qdcy.webp" alt="" />
+          <div class="goods-info">
+            <div class="goods-name">
+              测试测试测试测试测试测试测试测试测试测试测试测试测试
+            </div>
+            <div class="goods-exchange">
+              <div class="goods-need-luck">300福气值</div>
+              <div class="goods-exchange-btn">兑换</div>
+            </div>
+          </div>
+        </div>
+        <div class="goods">
+          <img class="goods-cover" src="./images/qdcy.webp" alt="" />
+          <div class="goods-info">
+            <div class="goods-name">
+              测试测试测试测试测试测试测试测试测试测试测试测试测试
+            </div>
+            <div class="goods-exchange">
+              <div class="goods-need-luck">300福气值</div>
+              <div class="goods-exchange-btn">兑换</div>
+            </div>
+          </div>
+        </div>
+        <div class="goods">
+          <img class="goods-cover" src="./images/qdcy.webp" alt="" />
+          <div class="goods-info">
+            <div class="goods-name">
+              测试测试测试测试测试测试测试测试测试测试测试测试测试
+            </div>
+            <div class="goods-exchange">
+              <div class="goods-need-luck">300福气值</div>
+              <div class="goods-exchange-btn">兑换</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="split-tips">合作伙伴</div>
     <div class="partters">
       <div class="partter">
@@ -39,8 +177,12 @@
       <div class="partter">
         <img class="partter-logo" src="./images/qdlw.webp" alt="" />
       </div>
-      <div class="partter"></div>
-      <div class="partter"></div>
+      <div class="partter">
+        <img class="partter-logo" src="./images/qdcy.webp" alt="" />
+      </div>
+      <div class="partter">
+        <img class="partter-logo" src="./images/klj.webp" alt="" />
+      </div>
       <div class="partter"></div>
       <div class="partter"></div>
       <div class="partter"></div>
@@ -159,8 +301,7 @@ onUnmounted(() => {
 }
 .container {
   margin-top: -1rem;
-  padding: 0.32rem;
-  padding-bottom: 0.68rem;
+  padding-bottom: 0.48rem;
   background: linear-gradient(
     180deg,
     rgba(233, 214, 249, 0.5) 0%,
@@ -168,15 +309,211 @@ onUnmounted(() => {
     rgba(233, 214, 249, 1) 100%
   );
   border-radius: 0.8rem 0.8rem 0 0;
-  .activity-part {
-    height: 1.8rem;
-    margin-bottom: 0.32rem;
-    background: #ffffff;
-    border-radius: 0.6rem;
+  .luck-draw {
+    padding: 0.32rem;
+    .luck-score-wrap {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 0.12rem;
+      padding-left: 0.24rem;
+      padding-right: 0.12rem;
+      .luck-score {
+        display: flex;
+        flex-direction: column;
+        .luck-score-tips {
+          display: flex;
+          align-items: center;
+          font-size: 0.22rem;
+          color: #3d099a;
+          .tips-arrow {
+            width: 0.22rem;
+            height: 0.22rem;
+          }
+        }
+        .luck-score-value {
+          display: flex;
+          align-items: center;
+          margin-top: 0.08rem;
+          font-size: 0.48rem;
+          font-weight: bolder;
+          color: #3d099a;
+          .luck-bag {
+            margin-right: 0.08rem;
+            width: 0.48rem;
+            height: 0.48rem;
+          }
+        }
+        .activity-time {
+          display: flex;
+          margin-top: 0.08rem;
+          font-size: 0.22rem;
+          color: #a689d5;
+        }
+      }
+      .luck-btn {
+        display: flex;
+        align-items: center;
+        padding: 0 0.24rem;
+        height: 0.8rem;
+        font-size: 0.28rem;
+        color: #ffffff;
+        font-weight: bold;
+        background: linear-gradient(90deg, #996cfe 0%, #441aef 100%);
+        border-radius: 0.4rem;
+      }
+    }
+    .draw-wheel {
+      position: relative;
+      margin-top: 0.48rem;
+      padding-top: 0.7rem;
+      width: 100%;
+      height: 4.68rem;
+      &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1 / 1;
+        background: url("./images/draw_wheel_bg.webp") no-repeat left bottom;
+        background-size: 100% auto;
+      }
+      .prize-list {
+        position: relative;
+        display: flex;
+        align-items: center;
+        margin: 0 auto;
+        padding-top: 0.4rem;
+        width: calc(100% - 0.08rem);
+        gap: 0.18rem;
+        flex-wrap: nowrap;
+        overflow-x: scroll;
+        -webkit-overflow-scrolling: touch;
+        border-top-right-radius: 0.68rem;
+        scrollbar-width: none;
+        &::-webkit-scrollbar {
+          display: none;
+        }
+        .prize {
+          position: relative;
+          flex-shrink: 0;
+          padding: 0.08rem;
+          width: 1.6rem;
+          height: 2rem;
+          background: #ffffff;
+          border-radius: 0.28rem;
+          overflow: hidden;
+          &.big {
+            width: 2.4rem;
+            .prize-name {
+              color: #ff197d;
+            }
+          }
+          .prize-cover {
+            display: block;
+            width: 100%;
+            height: 1.4rem;
+            object-fit: cover;
+            border-radius: 0.22rem;
+          }
+          .prize-name {
+            margin-top: 0.1rem;
+            font-size: 0.2rem;
+            color: #420f9d;
+            font-weight: bold;
+            text-align: center;
+          }
+          .big-prize-tag {
+            position: absolute;
+            top: 0rem;
+            left: 0;
+            display: flex;
+            align-items: center;
+            padding: 0 0.12rem;
+            height: 0.36rem;
+            font-size: 0.18rem;
+            color: #ffffff;
+            background: linear-gradient(90deg, #ff48d0 0%, #fd2b81 100%);
+            border-bottom-right-radius: 0.18rem;
+          }
+        }
+      }
+    }
+  }
+  .luck-exchange {
+    margin-top: 0.24rem;
+    background: #eec8ff;
+    padding: 0.32rem;
+    border-radius: 0.48rem;
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+    .luck-exchange-title {
+      display: block;
+      width: 1.6rem;
+    }
+    .goods-list {
+      margin-top: 0.32rem;
+      display: flex;
+      gap: 0.18rem;
+      flex-wrap: wrap;
+      .goods {
+        flex: 0 0 auto;
+        width: calc((100% - 0.18rem) / 2);
+        background: #ffffff;
+        border-radius: 0.32rem;
+        overflow: hidden;
+        .goods-cover {
+          display: block;
+          width: 100%;
+          height: 3.2rem;
+          object-fit: cover;
+        }
+        .goods-info {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          padding: 0.18rem;
+          height: 1.8rem;
+          .goods-name {
+            font-size: 0.26rem;
+            color: #333;
+            font-weight: bold;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+          }
+          .goods-exchange {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .goods-need-luck {
+              font-size: 0.26rem;
+              color: #ff6430;
+              font-weight: bold;
+            }
+            .goods-exchange-btn {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              padding: 0 0.2rem;
+              height: 0.48rem;
+              font-size: 0.22rem;
+              font-weight: bold;
+              color: #ffffff;
+              background: linear-gradient(90deg, #ec7e62 0%, #ff483f 100%);
+              border-radius: 0.24rem;
+            }
+          }
+        }
+      }
+    }
   }
   .split-tips {
     position: relative;
-    margin: 0.64rem auto 0;
+    margin: 0.48rem auto 0;
     width: fit-content;
     font-size: 0.3rem;
     color: #160a8c;
@@ -202,7 +539,7 @@ onUnmounted(() => {
     display: flex;
     flex-wrap: wrap;
     gap: 0.24rem;
-    margin-top: 0.32rem;
+    padding: 0.32rem;
     .partter {
       width: calc((100% - 0.48rem) / 3);
       height: 0.88rem;
@@ -213,7 +550,7 @@ onUnmounted(() => {
         display: block;
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        object-fit: cover;
       }
     }
   }
