@@ -27,7 +27,27 @@
       </div>
     </div>
   </div>
-  <div class="container"></div>
+  <div class="container">
+    <div class="activity-part"></div>
+    <div class="activity-part"></div>
+    <div class="activity-part"></div>
+    <div class="split-tips">合作伙伴</div>
+    <div class="partters">
+      <div class="partter">
+        <img class="partter-logo" src="./images/qdnp.webp" alt="" />
+      </div>
+      <div class="partter">
+        <img class="partter-logo" src="./images/qdlw.webp" alt="" />
+      </div>
+      <div class="partter"></div>
+      <div class="partter"></div>
+      <div class="partter"></div>
+      <div class="partter"></div>
+      <div class="partter"></div>
+      <div class="partter"></div>
+      <div class="partter"></div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -139,7 +159,8 @@ onUnmounted(() => {
 }
 .container {
   margin-top: -1rem;
-  height: 100vh;
+  padding: 0.32rem;
+  padding-bottom: 0.68rem;
   background: linear-gradient(
     180deg,
     rgba(233, 214, 249, 0.5) 0%,
@@ -147,5 +168,54 @@ onUnmounted(() => {
     rgba(233, 214, 249, 1) 100%
   );
   border-radius: 0.8rem 0.8rem 0 0;
+  .activity-part {
+    height: 1.8rem;
+    margin-bottom: 0.32rem;
+    background: #ffffff;
+    border-radius: 0.6rem;
+  }
+  .split-tips {
+    position: relative;
+    margin: 0.64rem auto 0;
+    width: fit-content;
+    font-size: 0.3rem;
+    color: #160a8c;
+    font-weight: bold;
+    &::before {
+      left: -1rem;
+    }
+    &::after {
+      right: -1rem;
+    }
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 0.8rem;
+      height: 0.5px;
+      background: #160a8c;
+      transform: translateY(-50%);
+    }
+  }
+  .partters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.24rem;
+    margin-top: 0.32rem;
+    .partter {
+      width: calc((100% - 0.48rem) / 3);
+      height: 0.88rem;
+      background: #ffffff;
+      border-radius: 0.24rem;
+      overflow: hidden;
+      .partter-logo {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+    }
+  }
 }
 </style>
