@@ -452,7 +452,7 @@ onUnmounted(() => {
         position: absolute;
         left: 50%;
         bottom: 0.24rem;
-        transform: translateX(-50%);
+        transform: translateX(-50%) scale(1);
         width: 2.41rem;
         height: 1.03rem;
         border-radius: 0.51rem;
@@ -466,29 +466,29 @@ onUnmounted(() => {
         cursor: pointer;
         user-select: none;
         touch-action: manipulation;
-        transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1),
-          filter 0.1s ease;
+        transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+          filter 0.15s ease;
         &::before {
           content: "";
           position: absolute;
           top: 50%;
           left: 50%;
-          transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%) scale(1);
           width: 3.24rem;
           height: 3.24rem;
           background: url("./images/draw_btn_bg.webp") no-repeat center center;
           background-size: cover;
           z-index: -1;
           border-radius: 0.51rem;
-          transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1),
-            filter 0.1s ease;
+          transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+            filter 0.15s ease;
         }
         &.pressed {
-          transform: translateX(-50%) scale(0.96);
-          filter: brightness(1.2);
+          transform: translateX(-50%) scale(0.94);
+          filter: brightness(1.1);
         }
         &.pressed::before {
-          transform: translate(-50%, -50%) scale(0.96);
+          transform: translate(-50%, -50%) scale(0.94);
         }
       }
     }
