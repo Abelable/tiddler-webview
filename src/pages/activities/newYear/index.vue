@@ -94,6 +94,12 @@
         >
           消耗20福气值
         </div>
+        <div class="my-prize-btn-wrap">
+          <div class="my-prize-btn">
+            <p>我的</p>
+            <p>奖品</p>
+          </div>
+        </div>
       </div>
     </div>
     <div class="luck-exchange">
@@ -474,8 +480,8 @@ onUnmounted(() => {
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%) scale(1);
-          width: 3.24rem;
-          height: 3.24rem;
+          width: 2.58rem;
+          height: 2.12rem;
           background: url("./images/draw_btn_bg.webp") no-repeat center center;
           background-size: cover;
           z-index: -1;
@@ -489,6 +495,28 @@ onUnmounted(() => {
         }
         &.pressed::before {
           transform: translate(-50%, -50%) scale(0.94);
+        }
+      }
+      .my-prize-btn-wrap {
+        position: absolute;
+        right: 0.06rem;
+        bottom: 0;
+        height: 1.12rem;
+        border-bottom-right-radius: 0.68rem;
+        overflow: hidden;
+        .my-prize-btn {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          padding-left: 0.28rem;
+          width: 0.8rem;
+          height: 0.64rem;
+          font-size: 0.2rem;
+          line-height: 1.1;
+          color: #fff;
+          font-weight: bold;
+          background: url("./images/my_prize_btn_bg.webp") no-repeat center;
+          background-size: 100% 100%;
         }
       }
     }
