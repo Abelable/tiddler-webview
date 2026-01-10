@@ -40,7 +40,9 @@
           </div>
           <div class="activity-time">活动时间：2026.01.08-2026.02.24</div>
         </div>
-        <div class="luck-btn">获取更多福气值</div>
+        <div class="luck-btn" @click="taskPopupVisible = true">
+          获取更多福气值
+        </div>
       </div>
       <div class="draw-wheel">
         <div class="prize-list">
@@ -204,9 +206,69 @@
       <div class="partter"></div>
     </div>
   </div>
+
+  <Popup
+    v-model:show="taskPopupVisible"
+    position="bottom"
+    round
+    safe-area-inset-bottom
+  >
+    <div class="task-popup-main">
+      <div class="title-wrap">
+        <img
+          class="task-popup-title"
+          src="./images/task_popup_title.webp"
+          alt=""
+        />
+        <div class="refresh-btn">
+          <div>每日刷新</div>
+          <img class="refresh-icon" src="./images/refresh.png" alt="" />
+        </div>
+      </div>
+      <div class="task-list">
+        <div class="task">
+          <img class="task-icon" src="./images/hometown_goods.webp" alt="" />
+          <div class="task-info">
+            <div class="task-title">逛一逛家乡好物会场</div>
+            <div class="task-content">
+              <span>浏览10秒可得</span>
+              <img class="luck-icon" src="./images/luck_bag.webp" alt="" />
+              <span class="task-luck">10福气值</span>
+            </div>
+          </div>
+          <div class="task-bth">去逛逛</div>
+        </div>
+        <div class="task">
+          <img class="task-icon" src="./images/hometown_goods.webp" alt="" />
+          <div class="task-info">
+            <div class="task-title">分享家乡好物</div>
+            <div class="task-content">
+              <span>分享成功可得</span>
+              <img class="luck-icon" src="./images/luck_bag.webp" alt="" />
+              <span class="task-luck">10福气值</span>
+            </div>
+          </div>
+          <div class="task-bth">去分享</div>
+        </div>
+        <div class="task">
+          <img class="task-icon" src="./images/hometown_goods.webp" alt="" />
+          <div class="task-info">
+            <div class="task-title">选购家乡好物</div>
+            <div class="task-content">
+              <span>选购成功可得</span>
+              <img class="luck-icon" src="./images/luck_bag.webp" alt="" />
+              <span class="task-luck">80福气值</span>
+            </div>
+          </div>
+          <div class="task-bth">去选购</div>
+        </div>
+      </div>
+    </div>
+  </Popup>
 </template>
 
 <script setup lang="ts">
+import { Popup } from "vant";
 import { ref, onMounted, onUnmounted } from "vue";
 
 const press = ref(false);
@@ -214,6 +276,7 @@ const days = ref("00");
 const hours = ref("00");
 const minutes = ref("00");
 const seconds = ref("00");
+const taskPopupVisible = ref(false);
 
 let timer: number | null = null;
 
@@ -390,7 +453,7 @@ onUnmounted(() => {
         bottom: 0;
         width: 100%;
         height: auto;
-        aspect-ratio: 1 / 1;
+        aspect-ratio: 2163 / 1752;
         background: url("./images/draw_wheel_bg.webp") no-repeat left bottom;
         background-size: 100% auto;
       }
@@ -631,6 +694,80 @@ onUnmounted(() => {
         width: 100%;
         height: 100%;
         object-fit: cover;
+      }
+    }
+  }
+}
+.task-popup-main {
+  padding: 0.32rem;
+  height: 10rem;
+  background: linear-gradient(180deg, #eecaff 0%, #fff 30%, #fff 100%);
+  .title-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .task-popup-title {
+      width: 2.4rem;
+    }
+    .refresh-btn {
+      display: flex;
+      align-items: center;
+      font-size: 0.26rem;
+      color: #3d099a;
+      .refresh-icon {
+        width: 0.24rem;
+        height: 0.24rem;
+        margin-left: 0.08rem;
+      }
+    }
+  }
+  .task-list {
+    margin-top: 0.24rem;
+    .task {
+      display: flex;
+      align-items: center;
+      padding: 0.16rem 0;
+      .task-icon {
+        width: 0.88rem;
+        height: 0.88rem;
+        border-radius: 0.16rem;
+      }
+      .task-info {
+        margin-left: 0.16rem;
+        flex: 1;
+        .task-title {
+          font-size: 0.28rem;
+          color: #333;
+          font-weight: bold;
+        }
+        .task-content {
+          margin-top: 0.08rem;
+          font-size: 0.24rem;
+          color: #666;
+          display: flex;
+          align-items: center;
+          .luck-icon {
+            width: 0.22rem;
+            height: 0.22rem;
+            margin: 0 0.04rem;
+          }
+          .task-luck {
+            color: #9338ff;
+            font-weight: bold;
+          }
+        }
+      }
+      .task-bth {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 0.24rem;
+        height: 0.64rem;
+        font-size: 0.22rem;
+        color: #ffffff;
+        font-weight: bold;
+        background: linear-gradient(90deg, #996cfe 0%, #441aef 100%);
+        border-radius: 0.32rem;
       }
     }
   }
