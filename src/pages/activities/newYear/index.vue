@@ -700,7 +700,6 @@ onUnmounted(() => {
 }
 .task-popup-main {
   padding: 0.32rem;
-  height: 10rem;
   background: linear-gradient(180deg, #eecaff 0%, #fff 30%, #fff 100%);
   .title-wrap {
     display: flex;
@@ -723,6 +722,9 @@ onUnmounted(() => {
   }
   .task-list {
     margin-top: 0.24rem;
+    height: 8.8rem;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
     .task {
       display: flex;
       align-items: center;
