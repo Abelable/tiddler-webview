@@ -712,7 +712,7 @@ onUnmounted(() => {
     .refresh-btn {
       display: flex;
       align-items: center;
-      font-size: 0.26rem;
+      font-size: 0.24rem;
       color: #3d099a;
       .refresh-icon {
         width: 0.24rem;
@@ -741,7 +741,7 @@ onUnmounted(() => {
           font-weight: bold;
         }
         .task-content {
-          margin-top: 0.08rem;
+          margin-top: 0.04rem;
           font-size: 0.24rem;
           color: #666;
           display: flex;
@@ -763,7 +763,7 @@ onUnmounted(() => {
         justify-content: center;
         padding: 0 0.24rem;
         height: 0.64rem;
-        font-size: 0.22rem;
+        font-size: 0.24rem;
         color: #ffffff;
         font-weight: bold;
         background: linear-gradient(90deg, #996cfe 0%, #441aef 100%);
