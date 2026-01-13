@@ -36,7 +36,7 @@
           </div>
           <div class="luck-score-value">
             <img class="luck-bag" src="./images/luck_bag.webp" alt="" />
-            <div>120</div>
+            <div>0</div>
           </div>
           <div class="activity-time">活动时间：2026.01.08-2026.02.24</div>
         </div>
@@ -226,6 +226,47 @@
         </div>
       </div>
       <div class="task-list">
+        <div class="task-invite">
+          <div class="task-info">
+            <div class="task-title">邀请好友助力 0/4</div>
+            <div class="task-content">
+              <span>邀请成功可得</span>
+              <img class="luck-icon" src="./images/luck_bag.webp" alt="" />
+              <span class="task-luck">80福气值</span>
+            </div>
+            <div class="friends">
+              <div class="friend">
+                <img
+                  class="friend-avatar"
+                  src="./images/friend_empty.webp"
+                  alt=""
+                />
+              </div>
+              <div class="friend">
+                <img
+                  class="friend-avatar"
+                  src="./images/friend_empty.webp"
+                  alt=""
+                />
+              </div>
+              <div class="friend">
+                <img
+                  class="friend-avatar"
+                  src="./images/friend_empty.webp"
+                  alt=""
+                />
+              </div>
+              <div class="friend">
+                <img
+                  class="friend-avatar"
+                  src="./images/friend_empty.webp"
+                  alt=""
+                />
+              </div>
+            </div>
+          </div>
+          <div class="task-bth">去邀请</div>
+        </div>
         <div class="task">
           <img class="task-icon" src="./images/hometown_goods.webp" alt="" />
           <div class="task-info">
@@ -261,6 +302,18 @@
             </div>
           </div>
           <div class="task-bth">去选购</div>
+        </div>
+        <div class="task">
+          <img class="task-icon" src="./images/group.webp" alt="" />
+          <div class="task-info">
+            <div class="task-title">加入家乡代言人群聊</div>
+            <div class="task-content">
+              <span>加群成功可得</span>
+              <img class="luck-icon" src="./images/luck_bag.webp" alt="" />
+              <span class="task-luck">20福气值</span>
+            </div>
+          </div>
+          <div class="task-bth">去加群</div>
         </div>
       </div>
     </div>
@@ -700,10 +753,9 @@ onUnmounted(() => {
 }
 .task-popup-main {
   padding: 0.32rem;
-  background: linear-gradient(180deg, #eecaff 0%, #fff 30%, #fff 100%);
+  background: linear-gradient(180deg, #eecaff 0%, #fff 50%, #fff 100%);
   .title-wrap {
     display: flex;
-    align-items: center;
     justify-content: space-between;
     .task-popup-title {
       width: 2.4rem;
@@ -725,6 +777,70 @@ onUnmounted(() => {
     height: 8.8rem;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
+    .task-invite {
+      display: flex;
+      margin-bottom: 0.08rem;
+      padding: 0.24rem;
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 0.32rem;
+      .task-info {
+        flex: 1;
+        .task-title {
+          font-size: 0.28rem;
+          color: #333;
+          font-weight: bold;
+        }
+        .task-content {
+          margin-top: 0.04rem;
+          font-size: 0.24rem;
+          color: #666;
+          display: flex;
+          align-items: center;
+          .luck-icon {
+            width: 0.22rem;
+            height: 0.22rem;
+            margin: 0 0.04rem;
+          }
+          .task-luck {
+            color: #9338ff;
+            font-weight: bold;
+          }
+        }
+        .friends {
+          display: flex;
+          margin-top: 0.18rem;
+          .friend {
+            position: relative;
+            width: 0.58rem;
+            height: 0.58rem;
+            font-size: 0;
+            border-radius: 0.24rem;
+            margin-right: 0.16rem;
+            border: 1px dashed #3d099a;
+            overflow: hidden;
+            .friend-avatar {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+          }
+        }
+      }
+      .task-bth {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 0.24rem;
+        height: 0.64rem;
+        font-size: 0.24rem;
+        color: #ffffff;
+        font-weight: bold;
+        background: linear-gradient(90deg, #996cfe 0%, #441aef 100%);
+        border-radius: 0.32rem;
+      }
+    }
     .task {
       display: flex;
       align-items: center;
