@@ -315,6 +315,126 @@
           </div>
           <div class="task-bth">去加群</div>
         </div>
+        <div class="task">
+          <img class="task-icon" src="./images/mine.webp" alt="" />
+          <div class="task-info">
+            <div class="task-title">设置头像昵称</div>
+            <div class="task-content">
+              <span>设置成功可得</span>
+              <img class="luck-icon" src="./images/luck_bag.webp" alt="" />
+              <span class="task-luck">10福气值</span>
+            </div>
+          </div>
+          <div class="task-bth">去设置</div>
+        </div>
+        <div class="task">
+          <img class="task-icon" src="./images/home.webp" alt="" />
+          <div class="task-info">
+            <div class="task-title">去首页逛逛</div>
+            <div class="task-content">
+              <span>浏览10秒可得</span>
+              <img class="luck-icon" src="./images/luck_bag.webp" alt="" />
+              <span class="task-luck">10福气值</span>
+            </div>
+          </div>
+          <div class="task-bth">去逛逛</div>
+        </div>
+        <div class="task">
+          <img class="task-icon" src="./images/tourism.webp" alt="" />
+          <div class="task-info">
+            <div class="task-title">分享趣味游记</div>
+            <div class="task-content">
+              <span>分享成功可得</span>
+              <img class="luck-icon" src="./images/luck_bag.webp" alt="" />
+              <span class="task-luck">10福气值</span>
+            </div>
+          </div>
+          <div class="task-bth">去分享</div>
+        </div>
+        <div class="task">
+          <img class="task-icon" src="./images/scenic.webp" alt="" />
+          <div class="task-info">
+            <div class="task-title">逛一逛景点乐园</div>
+            <div class="task-content">
+              <span>浏览10秒可得</span>
+              <img class="luck-icon" src="./images/luck_bag.webp" alt="" />
+              <span class="task-luck">10福气值</span>
+            </div>
+          </div>
+          <div class="task-bth">去逛逛</div>
+        </div>
+        <div class="task">
+          <img class="task-icon" src="./images/scenic.webp" alt="" />
+          <div class="task-info">
+            <div class="task-title">邀请景点商家入驻</div>
+            <div class="task-content">
+              <span>入驻成功可得</span>
+              <img class="luck-icon" src="./images/luck_bag.webp" alt="" />
+              <span class="task-luck">80福气值</span>
+            </div>
+          </div>
+          <div class="task-bth">去邀请</div>
+        </div>
+        <div class="task">
+          <img class="task-icon" src="./images/hotel.webp" alt="" />
+          <div class="task-info">
+            <div class="task-title">逛一逛酒店名宿</div>
+            <div class="task-content">
+              <span>浏览10秒可得</span>
+              <img class="luck-icon" src="./images/luck_bag.webp" alt="" />
+              <span class="task-luck">10福气值</span>
+            </div>
+          </div>
+          <div class="task-bth">去逛逛</div>
+        </div>
+        <div class="task">
+          <img class="task-icon" src="./images/hotel.webp" alt="" />
+          <div class="task-info">
+            <div class="task-title">邀请酒店商家入驻</div>
+            <div class="task-content">
+              <span>入驻成功可得</span>
+              <img class="luck-icon" src="./images/luck_bag.webp" alt="" />
+              <span class="task-luck">80福气值</span>
+            </div>
+          </div>
+          <div class="task-bth">去邀请</div>
+        </div>
+        <div class="task">
+          <img class="task-icon" src="./images/catering.webp" alt="" />
+          <div class="task-info">
+            <div class="task-title">逛一逛餐饮美食</div>
+            <div class="task-content">
+              <span>浏览10秒可得</span>
+              <img class="luck-icon" src="./images/luck_bag.webp" alt="" />
+              <span class="task-luck">10福气值</span>
+            </div>
+          </div>
+          <div class="task-bth">去逛逛</div>
+        </div>
+        <div class="task">
+          <img class="task-icon" src="./images/catering.webp" alt="" />
+          <div class="task-info">
+            <div class="task-title">邀请餐饮商家入驻</div>
+            <div class="task-content">
+              <span>入驻成功可得</span>
+              <img class="luck-icon" src="./images/luck_bag.webp" alt="" />
+              <span class="task-luck">80福气值</span>
+            </div>
+          </div>
+          <div class="task-bth">去邀请</div>
+        </div>
+        <div class="task">
+          <img class="task-icon" src="./images/bug.webp" alt="" />
+          <div class="task-info">
+            <div class="task-title">发现提交BUG</div>
+            <div class="task-content">
+              <span>提交成功可得</span>
+              <img class="luck-icon" src="./images/luck_bag.webp" alt="" />
+              <span class="task-luck">10福气值</span>
+            </div>
+          </div>
+          <div class="task-bth">去提交</div>
+        </div>
       </div>
     </div>
   </Popup>
