@@ -199,11 +199,21 @@
       <div class="partter">
         <img class="partter-logo" src="./images/klj.webp" alt="" />
       </div>
-      <div class="partter"></div>
-      <div class="partter"></div>
-      <div class="partter"></div>
-      <div class="partter"></div>
-      <div class="partter"></div>
+      <div class="partter">
+        <img class="partter-logo" src="./images/yj.webp" alt="" />
+      </div>
+      <div class="partter">
+        <div class="patter-settle-title">品牌入驻</div>
+      </div>
+      <div class="partter">
+        <div class="patter-settle-title">品牌入驻</div>
+      </div>
+      <div class="partter">
+        <div class="patter-settle-title">品牌入驻</div>
+      </div>
+      <div class="partter">
+        <div class="patter-settle-title">品牌入驻</div>
+      </div>
     </div>
   </div>
 
@@ -867,6 +877,16 @@ onUnmounted(() => {
         width: 100%;
         height: 100%;
         object-fit: cover;
+      }
+      .patter-settle-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        font-size: 0.26rem;
+        color: #e8e8e8;
+        font-weight: bold;
       }
     }
   }
