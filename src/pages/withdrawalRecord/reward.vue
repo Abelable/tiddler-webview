@@ -4,7 +4,7 @@
       v-model="loading"
       :finished="finished"
       @load="onLoadMore"
-      :finished-text="recordList.length ? '没有更多了' : ''"
+      :finished-span="recordList.length ? '没有更多了' : ''"
     >
       <div class="withdraw-record-list" v-if="recordList.length">
         <div
@@ -38,14 +38,14 @@
           <div class="record-amount-wrap">
             <div class="row end">
               <div class="record-amount">
-                <text style="font-size: 0.24rem">¥</text>
-                <text>{{ item.withdrawAmount.toFixed(2) }}</text>
+                <span style="font-size: 0.24rem">¥</span>
+                <span>{{ item.withdrawAmount }}</span>
               </div>
             </div>
             <div class="record-commission">
-              <text>手续费¥{{ item.handlingFee.toFixed(2) }}，</text>
-              <text>税费¥{{ item.taxFee.toFixed(2) }}，</text>
-              <text>到账¥{{ item.actualAmount.toFixed(2) }}</text>
+              <span>手续费¥{{ item.handlingFee }}，</span>
+              <span>税费¥{{ item.taxFee }}，</span>
+              <span>到账¥{{ item.actualAmount }}</span>
             </div>
           </div>
         </div>
