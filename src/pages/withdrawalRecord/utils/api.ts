@@ -21,7 +21,7 @@ export const getIncomeWithdrawRecordList = async (
   page: number,
   limit = 10
 ): Promise<WithdrawRecord[]> => {
-  const { list = [] } = await http("withdraw/commission/record_list", {
+  const { list = [] } = await http("withdraw/income/record_list", {
     data: { merchantType, shopId, page, limit },
   });
   return list;
