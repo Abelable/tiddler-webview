@@ -70,13 +70,16 @@
         </div>
       </div>
 
-      <div class="submit-btn">点击购买</div>
+      <div class="submit-btn" @click="submit">点击购买</div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import { fastAddCart, getGoodsInfo } from "./utils/api";
+
+import type { SkuItem, SpecItem } from "./utils/type";
 
 const xgList = [
   {
@@ -126,6 +129,41 @@ const mrList = [
 const curXgIdx = ref(0);
 const curMrIdx = ref(0);
 const curRbIdx = ref(0);
+
+const skuList = ref<SkuItem[]>([]);
+const specList = ref<SpecItem[]>([]);
+
+onMounted(() => {
+  setGoodsInfo();
+});
+
+const setGoodsInfo = async () => {
+  const goodsInfo = await getGoodsInfo(87);
+  specList.value = goodsInfo.specList;
+  skuList.value = goodsInfo.skuList;
+};
+
+const submit = async () => {
+  if (!specList.value.length) {
+    return;
+  }
+  const curSkuName = specList.value
+    .map(
+      (spec: SpecItem, index: number) =>
+        spec.options[[curXgIdx.value, curMrIdx.value, curRbIdx.value][index]]
+    )
+    .join(",");
+  const selectedSkuIndex = skuList.value.findIndex(
+    (sku: SkuItem) => sku.name === curSkuName
+  );
+
+  const cartGoodsId = await fastAddCart(87, selectedSkuIndex, 1);
+  window.wx.miniProgram.navigateTo({
+    url: `/pages/subpages/mall/goods/subpages/order-check/index?pay_params=${JSON.stringify(
+      [cartGoodsId]
+    )}`,
+  });
+};
 </script>
 
 <style lang="scss" scoped>
