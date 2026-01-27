@@ -211,6 +211,8 @@ const submit = async () => {
         overflow: hidden;
         &.selected {
           border-color: #f9d17a;
+          animation: glowBreath 2s ease-in-out infinite,
+            notice-me 2.5s infinite ease-in-out;
           .goods-name {
             color: #d4af37;
             font-weight: bolder;
@@ -255,8 +257,12 @@ const submit = async () => {
         border-radius: 0.24rem;
         border: 0.04rem solid transparent;
         overflow: hidden;
+        transition: transform 0.1s ease;
         &.selected {
+          position: relative;
           border-color: #f9d17a;
+          animation: glowBreath 2s ease-in-out infinite,
+            notice-me 2.5s infinite ease-in-out;
           .red-bag-name {
             color: #f9d17a;
             font-weight: bolder;
@@ -294,6 +300,38 @@ const submit = async () => {
       font-weight: bolder;
       background: #f9d17a;
     }
+  }
+}
+@keyframes glowBreath {
+  0%,
+  100% {
+    box-shadow: 0 0 4px rgba(255, 215, 0, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.8);
+  }
+}
+@keyframes notice-me {
+  0% {
+    transform: rotate(0deg);
+  }
+  2% {
+    transform: rotate(2deg);
+  }
+  4% {
+    transform: rotate(-2deg);
+  }
+  6% {
+    transform: rotate(2deg);
+  }
+  8% {
+    transform: rotate(-2deg);
+  }
+  10% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(0deg);
   }
 }
 </style>
