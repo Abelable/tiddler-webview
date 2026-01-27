@@ -80,8 +80,8 @@ import { ref } from "vue";
 
 const xgList = [
   {
-    name: "马到成功",
-    cover: require("./images/xg_1.webp"),
+    name: "金榜题名",
+    cover: require("./images/xg_5.webp"),
   },
   {
     name: "如意顺遂",
@@ -96,17 +96,17 @@ const xgList = [
     cover: require("./images/xg_4.webp"),
   },
   {
-    name: "金榜题名",
-    cover: require("./images/xg_5.webp"),
+    name: "马到成功",
+    cover: require("./images/xg_1.webp"),
   },
 ];
 const mrList = [
   {
-    name: "马到成功",
-    cover: require("./images/mr_1.webp"),
+    name: "金榜题名",
+    cover: require("./images/mr_5.webp"),
   },
   {
-    name: "金榜题名",
+    name: "万事如意",
     cover: require("./images/mr_2.webp"),
   },
   {
@@ -114,12 +114,12 @@ const mrList = [
     cover: require("./images/mr_3.webp"),
   },
   {
-    name: "青云直上",
+    name: "鹏程万里",
     cover: require("./images/mr_4.webp"),
   },
   {
-    name: "金榜题名",
-    cover: require("./images/mr_5.webp"),
+    name: "马到成功",
+    cover: require("./images/mr_1.webp"),
   },
 ];
 
@@ -172,9 +172,9 @@ const curRbIdx = ref(0);
         border: 0.04rem solid transparent;
         overflow: hidden;
         &.selected {
-          border-color: #f7cd74;
+          border-color: #f9d17a;
           .goods-name {
-            color: #f7cd74;
+            color: #d4af37;
             font-weight: bolder;
           }
         }
@@ -184,7 +184,7 @@ const curRbIdx = ref(0);
           bottom: 0;
           width: 0.32rem;
           height: 0.32rem;
-          background: #f7cd74;
+          background: #f9d17a;
           border-top-left-radius: 0.12rem;
           .selected-icon {
             width: 100%;
@@ -218,9 +218,9 @@ const curRbIdx = ref(0);
         border: 0.04rem solid transparent;
         overflow: hidden;
         &.selected {
-          border-color: #f7cd74;
+          border-color: #f9d17a;
           .red-bag-name {
-            color: #f7cd74;
+            color: #f9d17a;
             font-weight: bolder;
           }
         }
@@ -230,7 +230,7 @@ const curRbIdx = ref(0);
           bottom: 0;
           width: 0.32rem;
           height: 0.32rem;
-          background: #f7cd74;
+          background: #f9d17a;
           border-top-left-radius: 0.12rem;
           .selected-icon {
             width: 100%;
@@ -251,10 +251,10 @@ const curRbIdx = ref(0);
       width: 100%;
       height: 1rem;
       border-radius: 0.5rem;
-      color: #a40d02;
-      font-size: 0.32rem;
-      font-weight: bold;
-      background: #f7cd74;
+      color: #d71402;
+      font-size: 0.36rem;
+      font-weight: bolder;
+      background: #f9d17a;
     }
   }
 }
