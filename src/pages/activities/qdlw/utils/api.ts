@@ -11,5 +11,6 @@ export const fastAddCart = async (
   number: number
 ): Promise<GoodsInfo> =>
   await http("cart/fast_add", {
+    method: "POST",
     data: { goodsId, selectedSkuIndex, number },
   });
