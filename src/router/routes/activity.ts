@@ -25,6 +25,14 @@ const activity: Array<RouteRecordRaw> = [
     },
     component: () => import("@/pages/activities/newYear/index.vue"),
   },
+  {
+    path: "/activity/qdlw",
+    name: "activity_qdlw",
+    meta: {
+      title: "千岛礼物新春礼包",
+    },
+    component: () => import("@/pages/activities/qdlw/index.vue"),
+  },
 ];
 
 export default activity;
