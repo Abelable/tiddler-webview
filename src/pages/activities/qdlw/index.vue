@@ -73,6 +73,7 @@
       <div class="submit-btn" @click="submit">点击购买</div>
     </div>
   </div>
+  <div class="share-btn" @click="showPosterModal">点击分享</div>
 </template>
 
 <script setup lang="ts">
@@ -144,6 +145,14 @@ const setGoodsInfo = async () => {
 };
 
 const submit = async () => {
+  const token = localStorage.getItem("token") || "";
+  if (!token) {
+    window.wx.miniProgram.navigateTo({
+      url: "pages/subpages/common/register/index",
+    });
+    return;
+  }
+
   if (!specList.value.length) {
     return;
   }
@@ -164,6 +173,16 @@ const submit = async () => {
     )}`,
   });
 };
+
+const showPosterModal = () => {
+  const token = localStorage.getItem("token") || "";
+  if (!token) {
+    window.wx.miniProgram.navigateTo({
+      url: "pages/subpages/common/register/index",
+    });
+    return;
+  }
+};
 </script>
 
 <style lang="scss" scoped>
@@ -182,7 +201,7 @@ const submit = async () => {
     .title-wrap {
       display: flex;
       align-items: flex-end;
-      margin-top: 0.68rem;
+      margin-top: 0.48rem;
       .title {
         width: 1.6rem;
         .long {
@@ -197,13 +216,18 @@ const submit = async () => {
     }
     .goods-selections {
       margin-top: 0.32rem;
+      padding: 0.18rem;
       display: flex;
-      gap: 0.24rem;
+      gap: 0.18rem;
       flex-wrap: wrap;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 0.36rem;
       .goods-selection {
         position: relative;
         padding: 0.08rem;
-        width: calc((100% - 0.24rem * 2) / 3);
+        width: calc((100% - 0.36rem) / 3);
         font-size: 0;
         background: #fff;
         border-radius: 0.24rem;
@@ -211,8 +235,7 @@ const submit = async () => {
         overflow: hidden;
         &.selected {
           border-color: #f9d17a;
-          animation: glowBreath 2s ease-in-out infinite,
-            notice-me 2.5s infinite ease-in-out;
+          animation: notice-me 2.5s ease-in-out;
           .goods-name {
             color: #d4af37;
             font-weight: bolder;
@@ -246,12 +269,17 @@ const submit = async () => {
     }
     .red-bag-selections {
       margin-top: 0.32rem;
+      padding: 0.18rem;
       display: flex;
-      gap: 0.24rem;
+      gap: 0.18rem;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 0.36rem;
       .red-bag-selection {
         position: relative;
         padding: 0.08rem;
-        width: calc((100% - 0.24rem) / 2);
+        width: calc((100% - 0.18rem) / 2);
         font-size: 0;
         background: #fff;
         border-radius: 0.24rem;
@@ -261,8 +289,7 @@ const submit = async () => {
         &.selected {
           position: relative;
           border-color: #f9d17a;
-          animation: glowBreath 2s ease-in-out infinite,
-            notice-me 2.5s infinite ease-in-out;
+          animation: notice-me 2.5s ease-in-out;
           .red-bag-name {
             color: #f9d17a;
             font-weight: bolder;
@@ -296,21 +323,30 @@ const submit = async () => {
       height: 1rem;
       border-radius: 0.5rem;
       color: #d71402;
-      font-size: 0.36rem;
+      font-size: 0.32rem;
       font-weight: bolder;
       background: #f9d17a;
     }
   }
 }
-@keyframes glowBreath {
-  0%,
-  100% {
-    box-shadow: 0 0 4px rgba(255, 215, 0, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 12px rgba(255, 215, 0, 0.8);
-  }
+
+.share-btn {
+  position: fixed;
+  top: 1rem;
+  right: 0;
+  display: flex;
+  align-items: center;
+  padding-left: 0.18rem;
+  width: 1.2rem;
+  height: 0.64rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-top-left-radius: 0.32rem;
+  border-bottom-left-radius: 0.32rem;
+  color: #fff;
+  font-size: 0.24rem;
+  z-index: 100;
 }
+
 @keyframes notice-me {
   0% {
     transform: rotate(0deg);
